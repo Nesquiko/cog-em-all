@@ -9,14 +9,14 @@ public class CameraInputSystem : MonoBehaviour
     private const float MOUSE_EDGE_MOVE_BUFFER = 20;
     private const float MOUSE_DRAG_MOVE_COEF = .5f;
     private const float ZOOM_COEF = 4f;
-    private const float ZOOM_SPEED = 25f;
+    private const float ZOOM_SPEED = 35f;
     private const float ZOOM_MIN = 5f;
-    private const float ZOOM_MAX = 250f;
+    private const float ZOOM_MAX = 200f;
 
-    private const float MAP_MIN_X = 0f;
-    private const float MAP_MAX_X = 1000f;
-    private const float MAP_MIN_Z = 0f;
-    private const float MAP_MAX_Z = 1000f;
+    private const float MAP_MIN_X = 500f;
+    private const float MAP_MAX_X = 2500f;
+    private const float MAP_MIN_Z = 500f;
+    private const float MAP_MAX_Z = 2500f;
 
     private CameraInputActions cameraInputActions;
 
