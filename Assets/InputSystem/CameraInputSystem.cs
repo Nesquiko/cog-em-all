@@ -35,24 +35,24 @@ public class CameraInputSystem : MonoBehaviour
         var inputMoveVec3 = new Vector3(input.x, 0, input.y);
 
         // Mouse edge moving
-        var mousePosition = cameraInputActions.Camera.MousePosition.ReadValue<Vector2>();
-        if (mousePosition.x < MOUSE_EDGE_MOVE_BUFFER)
-        {
-            inputMoveVec3.x = -1;
-        }
-        else if (mousePosition.x > Screen.width - MOUSE_EDGE_MOVE_BUFFER)
-        {
-            inputMoveVec3.x = 1;
-        }
+        // var mousePosition = cameraInputActions.Camera.MousePosition.ReadValue<Vector2>();
+        // if (mousePosition.x < MOUSE_EDGE_MOVE_BUFFER)
+        // {
+        //     inputMoveVec3.x = -1;
+        // }
+        // else if (mousePosition.x > Screen.width - MOUSE_EDGE_MOVE_BUFFER)
+        // {
+        //     inputMoveVec3.x = 1;
+        // }
 
-        if (mousePosition.y < MOUSE_EDGE_MOVE_BUFFER)
-        {
-            inputMoveVec3.z = -1;
-        }
-        else if (mousePosition.y > Screen.height - MOUSE_EDGE_MOVE_BUFFER)
-        {
-            inputMoveVec3.z = 1;
-        }
+        // if (mousePosition.y < MOUSE_EDGE_MOVE_BUFFER)
+        // {
+        //     inputMoveVec3.z = -1;
+        // }
+        // else if (mousePosition.y > Screen.height - MOUSE_EDGE_MOVE_BUFFER)
+        // {
+        //     inputMoveVec3.z = 1;
+        // }
 
         // Mouse drag moving
         if (cameraInputActions.Camera.MouseShouldDrag.IsPressed())
