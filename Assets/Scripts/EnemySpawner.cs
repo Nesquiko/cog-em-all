@@ -7,8 +7,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Enemy enemyPrefab;
     [SerializeField] private SplineContainer path;
 
-    [SerializeField] private float minSpawnTime = 0.5f;
-    [SerializeField] private float maxSpawnTime = 2f;
+    [SerializeField] private float minSpawnTime = 3f;
+    [SerializeField] private float maxSpawnTime = 5f;
 
     void Start()
     {
