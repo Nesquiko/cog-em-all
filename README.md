@@ -1,5 +1,7 @@
 # Cog 'em All
 
+Tower defense inspiration video https://www.youtube.com/watch?v=f6KTtb1r1lg
+
 ## Unity sources
 
 - Camera system: https://www.youtube.com/watch?v=pJQndtJ2rk0
