@@ -510,54 +510,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &891017244
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 891017246}
-  - component: {fileID: 891017245}
-  m_Layer: 0
-  m_Name: EnemySpawner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &891017245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 891017244}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b94cfcb457eabf479826d90f25f2436, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefab: {fileID: -4034069556018195297, guid: 693325028fe6c1c40bd66416464bd64f, type: 3}
-  path: {fileID: 920153810}
-  minSpawnTime: 0.5
-  maxSpawnTime: 2
---- !u!4 &891017246
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 891017244}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -118, y: 0, z: 7}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 920153811}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &920153809
 GameObject:
   m_ObjectHideFlags: 0
@@ -1171,8 +1123,7 @@ Transform:
   m_LocalPosition: {x: 126.775055, y: 0, z: 80.51242}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 891017246}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &920153813
@@ -1254,7 +1205,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920153809}
-  m_Mesh: {fileID: 1188223774}
+  m_Mesh: {fileID: 1405545326}
 --- !u!114 &920153816
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1267,6 +1218,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a12a53f7dcd16f00852ec5fd3b5404c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Level
+  enemyCatalog: {fileID: 11400000, guid: 234a95d750ad2f837b5332c3c09cfa1b, type: 2}
   levelFileName: testing-level.json
 --- !u!1 &1066359650
 GameObject:
@@ -1361,7 +1313,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &1188223774
+--- !u!43 &1405545326
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1553,11 +1505,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4793412355603679537, guid: 819adb8158a15d746944a3396bf1caaa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 616
+      value: 596
       objectReference: {fileID: 0}
     - target: {fileID: 4793412355603679537, guid: 819adb8158a15d746944a3396bf1caaa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4793412355603679537, guid: 819adb8158a15d746944a3396bf1caaa, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1590,6 +1542,10 @@ PrefabInstance:
     - target: {fileID: 4793412355603679537, guid: 819adb8158a15d746944a3396bf1caaa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5259366514032944031, guid: 819adb8158a15d746944a3396bf1caaa, type: 3}
+      propertyPath: fireRate
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

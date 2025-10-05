@@ -68,7 +68,7 @@ public class PatternEntry
     /// <summary> 
     /// type of enemy
     /// </summary> 
-    public string enemy;
+    public EnemyType enemy;
 
     /// <summary> 
     /// how many enemies of this type to spawn

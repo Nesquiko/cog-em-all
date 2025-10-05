@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9ded8bb6e72b892297eef385ea58eaf, type: 3}
+  m_Name: EnemyCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyCatalog
+  entries:
+  - enemyType: 0
+    prefab: {fileID: -4034069556018195297, guid: 693325028fe6c1c40bd66416464bd64f, type: 3}
+  - enemyType: 1
+    prefab: {fileID: -4034069556018195297, guid: f25aaea06ca110827877045cd36f43d7, type: 3}
+  - enemyType: 2
+    prefab: {fileID: -4034069556018195297, guid: ac9f15c6e8fe192b4804b630aff58f0e, type: 3}

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Splines;
 
 public class Enemy : MonoBehaviour
@@ -6,8 +7,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 100f;
     [SerializeField] private float maxHealthPoints = 100f;
-    [SerializeField] private float healthPoints = 100f;
-
+    private float healthPoints;
     [SerializeField] private GameObject healthBarGO;
 
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
@@ -19,8 +19,8 @@ public class Enemy : MonoBehaviour
         path = pathContainer;
         t = Mathf.Clamp01(startT);
 
-        if (path != null)
-            transform.position = path.EvaluatePosition(0, t);
+        Assert.IsNotNull(path);
+        transform.position = path.EvaluatePosition(0, t);
     }
 
     public void TakeDamage(float damage)
@@ -40,6 +40,11 @@ public class Enemy : MonoBehaviour
 
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
 
+    void Awake()
+    {
+        healthPoints = maxHealthPoints;
+    }
+
     void Update()
     {
         if (path == null) return;
@@ -47,7 +52,7 @@ public class Enemy : MonoBehaviour
         float length = path.CalculateLength();
         if (length <= 0.001f) return;
 
-        t += (speed / length) * Time.deltaTime;
+        t += speed / length * Time.deltaTime;
         if (t > 1f) t -= 1f;
 
         Vector3 position = path.EvaluatePosition(0, t);

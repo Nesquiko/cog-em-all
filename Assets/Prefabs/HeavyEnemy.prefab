@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: -4034069556018195297}
   - component: {fileID: 7499334300743155352}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: HeavyEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,7 +120,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 15, z: 0}
-  m_LocalScale: {x: 30, y: 30, z: 30}
+  m_LocalScale: {x: 20, y: 20, z: 20}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8529873751875085342}
@@ -159,7 +159,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: f96821bbefeea864b9b418af4b8615ac, type: 2}
+  - {fileID: 2100000, guid: 4f1ef37ae953c484bbc5d5e4049147e5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -217,8 +217,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   path: {fileID: 0}
   speed: 100
-  maxHealthPoints: 100
-  healthPoints: 100
+  maxHealthPoints: 200
+  healthPoints: 200
+  lateralSplineMiddleOffset: {x: 0, y: 0, z: 0}
   healthBarGO: {fileID: 7906498687575603523}
 --- !u!54 &7499334300743155352
 Rigidbody:
@@ -384,5 +385,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBar
   enemy: {fileID: -4034069556018195297}
   fill: {fileID: 361584530866553310}
-  background: {fileID: 6951657891137710802}
   cam: {fileID: 0}

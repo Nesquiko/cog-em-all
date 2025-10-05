@@ -5,12 +5,20 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 using UnityEditor;
+using UnityEngine.Assertions;
+using System;
+using Unity.VisualScripting;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
 [RequireComponent(typeof(SplineMeshTools.Core.SplineMesh))]
 public class Level : MonoBehaviour
 {
+
+    [Header("Enemy catalog Scriptable Object")]
+    [SerializeField]
+    private EnemyCatalog enemyCatalog;
+
     [Header("Level JSON (relative to Assets/Levels)")]
     [SerializeField]
     private string levelFileName = "testing-level.json";
@@ -127,14 +135,20 @@ public class Level : MonoBehaviour
 
     private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group)
     {
+        Assert.IsNotNull(splineContainer);
+        Assert.IsTrue(splineContainer.Splines.Count > 0);
+
         for (int r = 0; r < group.repeat; r++)
         {
             for (int p = 0; p < group.pattern.Count; p++)
             {
                 var entry = group.pattern[p];
+                Enemy prefab = enemyCatalog.Get(entry.enemy);
+
                 for (int i = 0; i < entry.count; i++)
                 {
-                    Debug.Log($"wave {waveIndex} group {groupIndex} repeat {r + 1}/{group.repeat} entry {p} -> spawn '{entry.enemy}' ({i + 1}/{entry.count})");
+                    Enemy enemy = Instantiate(prefab);
+                    enemy.SetSpline(splineContainer);
 
                     // delay spawn of next enemy in this entry, if the spawnRateSeconds is set to something
                     // greater than 0
@@ -214,6 +228,7 @@ public class Level : MonoBehaviour
 [CustomEditor(typeof(Level))]
 public class LevelEditorInspector : Editor
 {
+    private SerializedProperty enemyCatalogProp;
     private SerializedProperty levelFileNameProp;
     private Level level;
     private Vector2 scroll;
@@ -222,6 +237,7 @@ public class LevelEditorInspector : Editor
     {
         level = (Level)target;
         levelFileNameProp = serializedObject.FindProperty("levelFileName");
+        enemyCatalogProp = serializedObject.FindProperty("enemyCatalog");
     }
 
     public override void OnInspectorGUI()
@@ -232,6 +248,9 @@ public class LevelEditorInspector : Editor
 
         serializedObject.Update();
 
+        EditorGUILayout.PropertyField(enemyCatalogProp, new GUIContent("Enemy Catalog"));
+
+        GUILayout.Space(5);
         DrawLevelFileField();
 
         GUILayout.Space(5);
@@ -293,11 +312,7 @@ public class LevelEditorInspector : Editor
                 }
                 else
                 {
-                    EditorUtility.DisplayDialog(
-                        "Invalid Location",
-                        "Please choose a file inside Assets/Levels.",
-                        "OK"
-                    );
+                    EditorUtility.DisplayDialog("Invalid Location", "Please choose a file inside Assets/Levels.", "OK");
                 }
             }
         }
@@ -421,12 +436,7 @@ public class LevelEditorInspector : Editor
 
                 if (GUILayout.Button("Add Entry"))
                 {
-                    group.pattern.Add(new PatternEntry
-                    {
-                        enemy = "robot",
-                        count = 1,
-                        spawnRateSeconds = 0f
-                    });
+                    group.pattern.Add(new PatternEntry { enemy = EnemyType.Robot, count = 1, spawnRateSeconds = 0f });
                 }
 
                 int removeEntryAt = -1;
@@ -441,7 +451,7 @@ public class LevelEditorInspector : Editor
                         removeEntryAt = p;
                     EditorGUILayout.EndHorizontal();
 
-                    entry.enemy = EditorGUILayout.TextField("Enemy", entry.enemy);
+                    entry.enemy = (EnemyType)EditorGUILayout.EnumPopup("Enemy", entry.enemy);
                     entry.count = EditorGUILayout.IntField("Count", Mathf.Max(0, entry.count));
                     entry.spawnRateSeconds = EditorGUILayout.FloatField("Per-Enemy Delay (s)", Mathf.Max(0f, entry.spawnRateSeconds));
 
