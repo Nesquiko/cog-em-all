@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class Tower : MonoBehaviour
+public class TeslaTower : MonoBehaviour
 {
-    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private GameObject beamPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 300f;
@@ -19,42 +19,43 @@ public class Tower : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
         fireCooldown -= Time.deltaTime;
+        Enemy target = FindClosestEnemy();
 
-        Enemy targetEnemy = FindClosestEnemy();
-
-        if (targetEnemy != null && fireCooldown <= 0f)
+        if (target != null && fireCooldown <= 0f)
         {
-            Shoot(targetEnemy);
+            Shoot(target);
             fireCooldown = 1f / fireRate;
         }
     }
 
-    void Shoot(Enemy enemy)
+    private void Shoot(Enemy enemy)
     {
-        GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        
-        if (bulletGO.TryGetComponent<Bullet>(out var bullet))
+        if (beamPrefab == null || firePoint == null)
+            return;
+
+        GameObject beamGO = Instantiate(beamPrefab, Vector3.zero, Quaternion.identity);
+
+        if (beamGO.TryGetComponent<Beam>(out var beam))
         {
-            bullet.SetTarget(enemy.transform);
+            beam.Initialize(firePoint, enemy.transform);
         }
     }
 
-    Enemy FindClosestEnemy()
+    private Enemy FindClosestEnemy()
     {
         Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
         Enemy closest = null;
-        float minDistance = Mathf.Infinity;
+        float minDist = Mathf.Infinity;
 
         foreach (Enemy e in enemies)
         {
-            float distance = Vector3.Distance(transform.position, e.transform.position);
-
-            if (distance < minDistance && distance <= range)
+            float dist = Vector3.Distance(transform.position, e.transform.position);
+            if (dist < minDist && dist <= range)
             {
-                minDistance = distance;
+                minDist = dist;
                 closest = e;
             }
         }
