@@ -3,10 +3,12 @@ using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class TeslaTower : MonoBehaviour
+public class GatlingTower : MonoBehaviour
 {
-    [SerializeField] private GameObject beamPrefab;
-    [SerializeField] private Transform firePoint;
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform gatlingHead;
+    [SerializeField] private Transform gatlingFirePointL;
+    [SerializeField] private Transform gatlingFirePointR;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
     [SerializeField] private CapsuleCollider capsuleCollider;
@@ -15,11 +17,13 @@ public class TeslaTower : MonoBehaviour
     private Enemy target;
     private float fireCooldown = 0f;
 
+    private bool shootFromLeftFirePoint = true;
+
     void OnDrawGizmosSelected()
     {
         Handles.color = Color.cyan;
         var center = new Vector3(transform.position.x, 0, transform.position.z);
-        Handles.DrawWireDisc(center, Vector3.up, range);
+        Handles.DrawWireDisc(center, Vector3.up, capsuleCollider.radius);
     }
 
     private void Start()
@@ -27,10 +31,10 @@ public class TeslaTower : MonoBehaviour
         capsuleCollider.radius = range;
     }
 
-    private void Update()
+    void Update()
     {
         fireCooldown -= Time.deltaTime;
-        
+
         if (target == null)
         {
             target = TowerMechanics.GetClosestEnemy(transform.position, enemiesInRange);
@@ -48,6 +52,11 @@ public class TeslaTower : MonoBehaviour
             Shoot(target);
             fireCooldown = 1f / fireRate;
         }
+
+        if (gatlingHead != null)
+        {
+            TowerMechanics.RotateTowardTarget(gatlingHead, target.transform, 10f);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -55,7 +64,7 @@ public class TeslaTower : MonoBehaviour
         TowerMechanics.HandleTriggerEnter(other, enemiesInRange, HandleEnemyDeath);
     }
 
-    private void OnTriggerExit(Collider other)
+    void OnTriggerExit(Collider other)
     {
         TowerMechanics.HandleTriggerExit(other, enemiesInRange, HandleEnemyDeath, target, out target);
     }
@@ -65,16 +74,17 @@ public class TeslaTower : MonoBehaviour
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    private void Shoot(Enemy enemy)
+    void Shoot(Enemy enemy)
     {
-        if (beamPrefab == null || firePoint == null) return;
+        Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
+        GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
-        GameObject beamGO = Instantiate(beamPrefab, firePoint.position, Quaternion.identity);
-
-        if (beamGO.TryGetComponent<Beam>(out var beam))
+        if (bulletGO.TryGetComponent<Bullet>(out var bullet))
         {
-            beam.Initialize(firePoint, enemy.transform);
+            bullet.SetTarget(enemy.transform);
         }
+
+        shootFromLeftFirePoint = !shootFromLeftFirePoint;
     }
 
     private void OnDestroy()

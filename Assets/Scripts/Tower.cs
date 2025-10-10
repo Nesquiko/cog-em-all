@@ -1,46 +1,74 @@
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Assertions;
 
-public class Tower : MonoBehaviour
+[RequireComponent(typeof(CapsuleCollider))]
+public class TowerV2 : MonoBehaviour
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 1f;
-    [SerializeField] private float range = 300f;
-    [SerializeField] private Transform rangeIndicator;
+    [SerializeField] private float range = 30f;
+    [SerializeField] private CapsuleCollider capsuleCollider;
 
+    private readonly Dictionary<int, Enemy> enemiesInRange = new();
+    private Enemy target;
     private float fireCooldown = 0f;
-
-    private void Start()
-    {
-        Assert.IsNotNull(rangeIndicator);
-        float scale = range * 2;
-        rangeIndicator.localScale = new Vector3(scale - (range / 10), 0.01f, scale - (range / 10));
-    }
 
     void OnDrawGizmosSelected()
     {
         Handles.color = Color.cyan;
         var center = new Vector3(transform.position.x, 0, transform.position.z);
-        Handles.DrawWireDisc(center, Vector3.up, range);
+        Handles.DrawWireDisc(center, Vector3.up, capsuleCollider.radius);
+    }
+
+    private void Start()
+    {
+        capsuleCollider.radius = range;
     }
 
     void Update()
     {
         fireCooldown -= Time.deltaTime;
 
-        Enemy targetEnemy = FindClosestEnemy();
-
-        if (targetEnemy != null && fireCooldown <= 0f)
+        if (target == null)
         {
-            Shoot(targetEnemy);
+            target = TowerMechanics.GetClosestEnemy(transform.position, enemiesInRange);
+            if (target == null) return;
+        }
+
+        if (!TowerMechanics.IsEnemyInRange(transform.position, target, range))
+        {
+            target = null;
+            return;
+        }
+
+        if (fireCooldown <= 0f)
+        {
+            Shoot(target);
             fireCooldown = 1f / fireRate;
         }
     }
 
+    void OnTriggerEnter(Collider other)
+    {
+        TowerMechanics.HandleTriggerEnter(other, enemiesInRange, HandleEnemyDeath);
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        TowerMechanics.HandleTriggerExit(other, enemiesInRange, HandleEnemyDeath, target, out target);
+    }
+
+    private void HandleEnemyDeath(Enemy deadEnemy)
+    {
+        target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
+    }
+
     void Shoot(Enemy enemy)
     {
+        if (bulletPrefab == null || firePoint == null) return;
+
         GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
         if (bulletGO.TryGetComponent<Bullet>(out var bullet))
@@ -49,23 +77,8 @@ public class Tower : MonoBehaviour
         }
     }
 
-    Enemy FindClosestEnemy()
+    private void OnDestroy()
     {
-        Enemy[] enemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-        Enemy closest = null;
-        float minDistance = Mathf.Infinity;
-
-        foreach (Enemy e in enemies)
-        {
-            float distance = Vector3.Distance(transform.position, e.transform.position);
-
-            if (distance < minDistance && distance <= range)
-            {
-                minDistance = distance;
-                closest = e;
-            }
-        }
-
-        return closest;
+        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);       
     }
 }

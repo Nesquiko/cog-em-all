@@ -1,14 +1,18 @@
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Beam : MonoBehaviour
 {
-    [SerializeField] private float damage = 150f;
-    [SerializeField] private float chainRadius = 100f;
+    [Header("Base Settings")]
+    [SerializeField] private float damage = 30f;
+    [SerializeField] private float speed = 200f;
+
+    [Header("Advanced Settings")]
+    [SerializeField] private float chainRadius = 10f;
     [SerializeField] private int maxChains = 3;
-    [SerializeField] private float speed = 700f;
-    [SerializeField] private float stayTimeOnHit = 0.01f;
+    [SerializeField] private float stayTimeOnHit = 0.05f;
     [SerializeField] private LineRenderer lineRenderer;
 
     private Transform firePoint;
@@ -16,6 +20,8 @@ public class Beam : MonoBehaviour
 
     public void Initialize(Transform from, Transform to)
     {
+        Assert.IsNotNull(from);
+        Assert.IsNotNull(to);
         firePoint = from;
         initialTarget = to;
     }
@@ -39,8 +45,8 @@ public class Beam : MonoBehaviour
         lineRenderer.positionCount = 2;
 
         AnimationCurve widthCurve = new();
-        widthCurve.AddKey(0f, 3f);
-        widthCurve.AddKey(1f, 3f);
+        widthCurve.AddKey(0f, 1.5f);
+        widthCurve.AddKey(1f, 1.5f);
         lineRenderer.widthCurve = widthCurve;
 
         for (int i = 0; i < chainTargets.Count; i++)

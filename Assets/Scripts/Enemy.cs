@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -7,9 +8,11 @@ public class Enemy : MonoBehaviour
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 100f;
     [SerializeField] private float maxHealthPoints = 100f;
-    private float healthPoints;
     [SerializeField] private GameObject healthBarGO;
 
+    public event Action<Enemy> OnDeath;
+
+    private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
 
     private float t = 0f;
@@ -33,9 +36,14 @@ public class Enemy : MonoBehaviour
 
         if (healthPoints <= 0f)
         {
-            Destroy(gameObject);
-            // TODO: you killed a guy
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        OnDeath?.Invoke(this);
+        Destroy(gameObject);
     }
 
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
