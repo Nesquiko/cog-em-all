@@ -6,17 +6,16 @@ public class CameraInputSystem : MonoBehaviour
 
     private const float MOVE_SPEED = 75f;
     private const float ROTATE_SPEED = 75f;
-    private const float MOUSE_EDGE_MOVE_BUFFER = 20;
     private const float MOUSE_DRAG_MOVE_COEF = .5f;
     private const float ZOOM_COEF = 4f;
     private const float ZOOM_SPEED = 35f;
     private const float ZOOM_MIN = 5f;
     private const float ZOOM_MAX = 200f;
 
-    private const float MAP_MIN_X = 500f;
-    private const float MAP_MAX_X = 2500f;
-    private const float MAP_MIN_Z = 500f;
-    private const float MAP_MAX_Z = 2500f;
+    private const float MAP_MIN_X = 100f;
+    private const float MAP_MAX_X = 400f;
+    private const float MAP_MIN_Z = 100f;
+    private const float MAP_MAX_Z = 400f;
 
     private CameraInputActions cameraInputActions;
 
@@ -33,26 +32,6 @@ public class CameraInputSystem : MonoBehaviour
         // Keyboard moving
         var input = cameraInputActions.Camera.Movement.ReadValue<Vector2>();
         var inputMoveVec3 = new Vector3(input.x, 0, input.y);
-
-        // Mouse edge moving
-        // var mousePosition = cameraInputActions.Camera.MousePosition.ReadValue<Vector2>();
-        // if (mousePosition.x < MOUSE_EDGE_MOVE_BUFFER)
-        // {
-        //     inputMoveVec3.x = -1;
-        // }
-        // else if (mousePosition.x > Screen.width - MOUSE_EDGE_MOVE_BUFFER)
-        // {
-        //     inputMoveVec3.x = 1;
-        // }
-
-        // if (mousePosition.y < MOUSE_EDGE_MOVE_BUFFER)
-        // {
-        //     inputMoveVec3.z = -1;
-        // }
-        // else if (mousePosition.y > Screen.height - MOUSE_EDGE_MOVE_BUFFER)
-        // {
-        //     inputMoveVec3.z = 1;
-        // }
 
         // Mouse drag moving
         if (cameraInputActions.Camera.MouseShouldDrag.IsPressed())
@@ -82,5 +61,27 @@ public class CameraInputSystem : MonoBehaviour
             var lerped = Mathf.Lerp(startZoom, endZoom, Time.deltaTime * ZOOM_SPEED);
             cinemachineCamera.Lens.OrthographicSize = Mathf.Clamp(lerped, ZOOM_MIN, ZOOM_MAX);
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        float y = transform.position.y;
+
+        Vector3 p1 = new Vector3(MAP_MIN_X, y, MAP_MIN_Z);
+        Vector3 p2 = new Vector3(MAP_MAX_X, y, MAP_MIN_Z);
+        Vector3 p3 = new Vector3(MAP_MAX_X, y, MAP_MAX_Z);
+        Vector3 p4 = new Vector3(MAP_MIN_X, y, MAP_MAX_Z);
+
+        Gizmos.DrawLine(p1, p2);
+        Gizmos.DrawLine(p2, p3);
+        Gizmos.DrawLine(p3, p4);
+        Gizmos.DrawLine(p4, p1);
+
+        float cubeSize = 2f;
+        Gizmos.DrawWireCube(p1, new Vector3(cubeSize, 0.1f, cubeSize));
+        Gizmos.DrawWireCube(p2, new Vector3(cubeSize, 0.1f, cubeSize));
+        Gizmos.DrawWireCube(p3, new Vector3(cubeSize, 0.1f, cubeSize));
+        Gizmos.DrawWireCube(p4, new Vector3(cubeSize, 0.1f, cubeSize));
     }
 }

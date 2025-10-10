@@ -24,12 +24,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2248606153511172024}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 110, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4793412355603679537}
+  m_Father: {fileID: 4388631257344136792}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2884996292687604640
 GameObject:
@@ -40,8 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4793412355603679537}
-  - component: {fileID: 7625279687241986632}
-  - component: {fileID: 8150849237084409185}
   - component: {fileID: 6017148200290088833}
   m_Layer: 0
   m_Name: TeslaTower
@@ -59,45 +57,15 @@ Transform:
   m_GameObject: {fileID: 2884996292687604640}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 689.30475, y: 100, z: 512.607}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5972273404553727644}
-  - {fileID: 7103826429612278080}
-  - {fileID: 3293714217340556054}
   - {fileID: 4388631257344136792}
+  - {fileID: 3293714217340556054}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &7625279687241986632
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2884996292687604640}
-  m_Mesh: {fileID: 0}
---- !u!65 &8150849237084409185
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2884996292687604640}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 50, y: 150, z: 50}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &6017148200290088833
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -113,7 +81,7 @@ MonoBehaviour:
   beamPrefab: {fileID: 7145407031557086552, guid: a51bdf214f7354c4b82598c4328c147d, type: 3}
   firePoint: {fileID: 7103826429612278080}
   fireRate: 3
-  range: 300
+  range: 60
   rangeIndicator: {fileID: 5972273404553727644}
 --- !u!1 &3500572412449382009
 GameObject:
@@ -143,7 +111,7 @@ Transform:
   m_GameObject: {fileID: 3500572412449382009}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -74, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -253,8 +221,8 @@ Transform:
   m_GameObject: {fileID: 4118535225133776604}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 50, y: 150, z: 50}
+  m_LocalPosition: {x: 0, y: 4, z: 0}
+  m_LocalScale: {x: 4, y: 8, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4793412355603679537}
@@ -342,10 +310,11 @@ Transform:
   m_GameObject: {fileID: 6868665289282454987}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 110, z: 0}
-  m_LocalScale: {x: 75, y: 75, z: 75}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
-  m_Children: []
+  m_Children:
+  - {fileID: 7103826429612278080}
   m_Father: {fileID: 4793412355603679537}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2596283453534736797

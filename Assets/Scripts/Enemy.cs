@@ -45,9 +45,9 @@ public class Enemy : MonoBehaviour
         healthPoints = maxHealthPoints;
     }
 
-    void Update()
+    private void Update()
     {
-        if (path == null) return;
+        Assert.IsNotNull(path);
 
         float length = path.CalculateLength();
         if (length <= 0.001f) return;
@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour
         Vector3 position = path.EvaluatePosition(0, t);
         Vector3 tangent = path.EvaluateTangent(0, t);
 
-        transform.position = new Vector3(position.x, position.y + 16f, position.z);
+        transform.position = new Vector3(position.x, position.y, position.z);
         if (tangent != Vector3.zero)
         {
             transform.rotation = Quaternion.LookRotation(tangent);

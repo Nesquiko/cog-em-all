@@ -1,10 +1,11 @@
+using NUnit.Framework;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float speed = 500f;
+    [SerializeField] private float speed = 10f;
     [SerializeField] private float damage = 50f;
-    [SerializeField] private float lifetime = 5f;
+    [SerializeField] private float lifetime = 1f;
 
     private Transform target;
     private Vector3 flightDirection;
@@ -12,10 +13,8 @@ public class Bullet : MonoBehaviour
     public void SetTarget(Transform enemyTarget)
     {
         target = enemyTarget;
-        if (target != null)
-        {
-            flightDirection = (target.position - transform.position).normalized;
-        }
+        Assert.IsNotNull(target);
+        flightDirection = (target.position - transform.position).normalized;
     }
 
     void Start()
@@ -25,10 +24,8 @@ public class Bullet : MonoBehaviour
 
     void Update()
     {
-        if (target != null)
-        {
-            flightDirection = (target.position - transform.position).normalized;
-        }
+        Assert.IsNotNull(target);
+        flightDirection = (target.position - transform.position).normalized;
 
         transform.position += speed * Time.deltaTime * flightDirection;
         transform.rotation = Quaternion.LookRotation(flightDirection);

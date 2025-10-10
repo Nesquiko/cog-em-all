@@ -1,4 +1,6 @@
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class Tower : MonoBehaviour
 {
@@ -12,11 +14,16 @@ public class Tower : MonoBehaviour
 
     private void Start()
     {
-        if (rangeIndicator != null)
-        {
-            float scale = range * 2;
-            rangeIndicator.localScale = new Vector3(scale - (range / 10), 0.01f, scale - (range / 10));
-        }
+        Assert.IsNotNull(rangeIndicator);
+        float scale = range * 2;
+        rangeIndicator.localScale = new Vector3(scale - (range / 10), 0.01f, scale - (range / 10));
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Handles.color = Color.cyan;
+        var center = new Vector3(transform.position.x, 0, transform.position.z);
+        Handles.DrawWireDisc(center, Vector3.up, range);
     }
 
     void Update()
@@ -35,7 +42,7 @@ public class Tower : MonoBehaviour
     void Shoot(Enemy enemy)
     {
         GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        
+
         if (bulletGO.TryGetComponent<Bullet>(out var bullet))
         {
             bullet.SetTarget(enemy.transform);

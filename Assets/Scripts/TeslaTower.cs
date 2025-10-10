@@ -1,3 +1,4 @@
+using UnityEditor;
 using UnityEngine;
 
 public class TeslaTower : MonoBehaviour
@@ -5,10 +6,17 @@ public class TeslaTower : MonoBehaviour
     [SerializeField] private GameObject beamPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 1f;
-    [SerializeField] private float range = 300f;
+    [SerializeField] private float range = 60f;
     [SerializeField] private Transform rangeIndicator;
 
     private float fireCooldown = 0f;
+
+    void OnDrawGizmosSelected()
+    {
+        Handles.color = Color.cyan;
+        var center = new Vector3(transform.position.x, 0, transform.position.z);
+        Handles.DrawWireDisc(center, Vector3.up, range);
+    }
 
     private void Start()
     {
