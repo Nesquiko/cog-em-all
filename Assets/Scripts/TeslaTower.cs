@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(CapsuleCollider))]
@@ -17,9 +16,7 @@ public class TeslaTower : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        Handles.color = Color.cyan;
-        var center = new Vector3(transform.position.x, 0, transform.position.z);
-        Handles.DrawWireDisc(center, Vector3.up, range);
+        TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, range);
     }
 
     private void Start()

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -7,28 +8,40 @@ public class GatlingTower : MonoBehaviour
 {
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform gatlingHead;
+    [SerializeField] private Transform gatlingGunL;
+    [SerializeField] private Transform gatlingGunR;
     [SerializeField] private Transform gatlingFirePointL;
     [SerializeField] private Transform gatlingFirePointR;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
     [SerializeField] private CapsuleCollider capsuleCollider;
 
+    [SerializeField] private float recoilDistance = 0.2f;
+    [SerializeField] private float recoilSpeed = 20f;
+    [SerializeField] private float recoilReturnSpeed = 5f;
+
     private readonly Dictionary<int, Enemy> enemiesInRange = new();
     private Enemy target;
     private float fireCooldown = 0f;
+
+    private Vector3 gunPositionL;
+    private Vector3 gunPositionR;
+    private Coroutine recoilRoutineL;
+    private Coroutine recoilRoutineR;
 
     private bool shootFromLeftFirePoint = true;
 
     void OnDrawGizmosSelected()
     {
-        Handles.color = Color.cyan;
-        var center = new Vector3(transform.position.x, 0, transform.position.z);
-        Handles.DrawWireDisc(center, Vector3.up, capsuleCollider.radius);
+        TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, range);
     }
 
     private void Start()
     {
         capsuleCollider.radius = range;
+
+        if (gatlingGunL != null) gunPositionL = gatlingGunL.localPosition;
+        if (gatlingGunR != null) gunPositionR = gatlingGunR.localPosition;
     }
 
     void Update()
@@ -76,6 +89,7 @@ public class GatlingTower : MonoBehaviour
 
     void Shoot(Enemy enemy)
     {
+        Transform gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
         GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
@@ -84,7 +98,44 @@ public class GatlingTower : MonoBehaviour
             bullet.SetTarget(enemy.transform);
         }
 
-        shootFromLeftFirePoint = !shootFromLeftFirePoint;
+        if (gun == null) return;
+
+        if (shootFromLeftFirePoint)
+        {
+            if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
+            recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
+        }
+        else
+        {
+            if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
+            recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
+        }
+
+            shootFromLeftFirePoint = !shootFromLeftFirePoint;
+    }
+
+    private IEnumerator RecoilKick(Transform gun, Vector3 defaultLocalPosition)
+    {
+        Vector3 start = gun.localPosition;
+        Vector3 back = defaultLocalPosition + gun.up * recoilDistance;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * recoilSpeed;
+            gun.localPosition = Vector3.Lerp(start, back, t);
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime * recoilReturnSpeed;
+            gun.localPosition = Vector3.Lerp(back, defaultLocalPosition, t);
+            yield return null;
+        }
+
+        gun.localPosition = defaultLocalPosition;
     }
 
     private void OnDestroy()

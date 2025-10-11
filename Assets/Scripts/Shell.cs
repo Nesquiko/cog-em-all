@@ -31,7 +31,8 @@ public class Shell : MonoBehaviour
         launched = true;
 
         float distance = Vector3.Distance(start, target);
-        travelDuration = distance / speed;
+        travelDuration = Mathf.Clamp(1.5f, 0.8f, 2.5f);
+        speed = distance / travelDuration;
 
         Destroy(gameObject, lifetime);
     }

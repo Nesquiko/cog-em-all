@@ -80,10 +80,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TeslaTower
   beamPrefab: {fileID: 7145407031557086552, guid: a51bdf214f7354c4b82598c4328c147d, type: 3}
+  teslaCenter: {fileID: 4388631257344136792}
   firePoint: {fileID: 7103826429612278080}
   fireRate: 1
   range: 50
   capsuleCollider: {fileID: 0}
+  pulseScale: 1.3
+  pulseSpeed: 25
+  pulseReturnSpeed: 8
 --- !u!136 &3990786803379089488
 CapsuleCollider:
   m_ObjectHideFlags: 0

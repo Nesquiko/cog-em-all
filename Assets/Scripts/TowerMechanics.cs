@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public static class TowerMechanics
@@ -102,6 +103,33 @@ public static class TowerMechanics
         foreach (var e in enemies.Values)
         {
             if (e != null) e.OnDeath -= deathAction;
+        }
+    }
+
+    public static void DrawRangeGizmos(Vector3 position, Color? color, params float[] radii)
+    {
+        if (radii == null) return;
+
+        Handles.color = color ?? Color.cyan;
+        Vector3 center = new(position.x, 0f, position.z);
+        foreach (float r in radii)
+        {
+            if (r <= 0f) continue;
+            Handles.DrawWireDisc(center, Vector3.up, r);
+        }
+    }
+
+    public static void DrawRangeGizmos(Vector3 position, IEnumerable<(float radius, Color? color)> ranges)
+    {
+        if (ranges == null) return;
+
+        foreach (var (radius, color) in ranges)
+        {
+            if (radius <= 0f) continue;
+
+            Handles.color = color ?? Color.cyan;
+            Vector3 center = new(position.x, 0f, position.z);
+            Handles.DrawWireDisc(center, Vector3.up, radius);
         }
     }
 }
