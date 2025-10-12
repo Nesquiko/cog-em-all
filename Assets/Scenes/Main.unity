@@ -119,6 +119,88 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1001 &191064840
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_Name
+      value: FlamethrowerTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 116.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 145.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 191064842}
+  m_SourcePrefab: {fileID: 100100000, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+--- !u!1 &191064841 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+  m_PrefabInstance: {fileID: 191064840}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &191064842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 191064841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d57ec12595bd38542965ce24585484f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTower
+  damagePerSecond: 20
+  range: 50
+  flameAngle: 60
+  flameCollider: {fileID: 0}
+  pivot: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1381,7 +1463,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3961458950293801116, guid: 5043bdf9c3fc64d44b287ba9bf5db717, type: 3}
+  - {fileID: 2100000, guid: 47379094a4c596348816e28c8e494a26, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1881,6 +1963,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 854186731148738588, guid: f06e2f43af72fca478a098b02fc5dd5e, type: 3}
+      propertyPath: maxHealthPoints
+      value: 1000000
+      objectReference: {fileID: 0}
     - target: {fileID: 3763980083327337614, guid: f06e2f43af72fca478a098b02fc5dd5e, type: 3}
       propertyPath: m_Name
       value: Nexus
@@ -1945,3 +2031,4 @@ SceneRoots:
   - {fileID: 892129585}
   - {fileID: 474786024}
   - {fileID: 7787454995966775389}
+  - {fileID: 191064840}

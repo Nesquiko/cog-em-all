@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -15,6 +16,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float speed = 100f;
     [SerializeField] private float maxHealthPoints = 100f;
     [SerializeField] private GameObject healthBarGO;
+
+    [SerializeField] private float jumpHeight = 0.5f;
+    [SerializeField] private float forwardDistance = 0.4f;
+    [SerializeField] private float duration = 0.4f;
 
     public event Action<Enemy> OnDeath;
     private float healthPoints;
@@ -108,25 +113,46 @@ public class Enemy : MonoBehaviour
         attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0f)
         {
-            targetNexus.TakeDamage(attackDamage);
+            StartCoroutine(AttackAnimation(targetNexus.transform));
             attackCooldown = attackRate;
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator AttackAnimation(Transform target)
     {
-        if (!other.TryGetComponent(out Nexus nexus)) return;
-        
-        targetNexus = nexus;
-        attackCooldown = 0;
-    }
+        Vector3 startPosition = transform.position;
+        Vector3 targetPosition = target.position;
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent(out Nexus nexus) && nexus == targetNexus)
+        Vector3 direction = (targetPosition - startPosition);
+        direction.y = 0f;
+        direction.Normalize();
+
+        Vector3 apexPosition = startPosition + direction * forwardDistance + Vector3.up * jumpHeight;
+
+        float half = duration * 0.5f;
+        for (float t = 0f; t < half; t += Time.deltaTime)
         {
-            targetNexus = null;
+            float normalized = t / half;
+            transform.position = Vector3.Lerp(startPosition, apexPosition, normalized);
+            yield return null;
         }
+
+        bool hasDealtDamage = false;
+        for (float t = 0f; t < half; t += Time.deltaTime)
+        {
+            float normalized = t / half;
+            transform.position = Vector3.Lerp(apexPosition, startPosition, normalized);
+
+            if (!hasDealtDamage && normalized > 0.3f)
+            {
+                targetNexus.TakeDamage(attackDamage);
+                hasDealtDamage = true;
+            }
+
+            yield return null;
+        }
+
+        transform.position = startPosition;
     }
 
     public void EnterAttackRange(Nexus nexus)

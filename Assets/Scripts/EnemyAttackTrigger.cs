@@ -2,23 +2,18 @@ using UnityEngine;
 
 public class EnemyAttackTrigger : MonoBehaviour
 {
-    private Enemy owner;
-
-    private void Awake()
-    {
-        owner = GetComponentInParent<Enemy>();
-    }
+    public Enemy owner;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent(out Nexus nexus)) return;
+        if (!other.TryGetComponent<Nexus>(out var nexus)) return;
 
         owner.EnterAttackRange(nexus);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.TryGetComponent(out Nexus nexus)) return;
+        if (!other.TryGetComponent<Nexus>(out var nexus)) return;
 
         owner.ExitAttackRange(nexus);
     }

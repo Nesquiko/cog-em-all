@@ -162,12 +162,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   attackDamage: 10
   attackRate: 1
-  attackRange: 1
+  attackRange: 1.2
   sphereCollider: {fileID: 4718485936862218545}
   path: {fileID: 0}
   speed: 20
   maxHealthPoints: 50
   healthBarGO: {fileID: 4862442932023651886}
+  jumpHeight: 0.7
+  forwardDistance: 0.5
+  duration: 0.4
 --- !u!65 &7023257257306693827
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -268,6 +271,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: EnemyAttackTrigger
       objectReference: {fileID: 0}
+    - target: {fileID: 5224423403621122902, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+      propertyPath: m_Radius
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6504268954571296645, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+      propertyPath: owner
+      value: 
+      objectReference: {fileID: -4034069556018195297}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

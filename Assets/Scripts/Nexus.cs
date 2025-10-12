@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Nexus : MonoBehaviour
 {
-    [SerializeField] private float maxHealthPoints = 1000f;
+    [SerializeField] private float maxHealthPoints = 1_000_000f;
     [SerializeField] private GameObject healthBarGO;
 
     private float healthPoints;
