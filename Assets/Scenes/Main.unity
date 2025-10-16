@@ -237,8 +237,8 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
-  orthographic: 1
+  field of view: 50
+  orthographic: 0
   orthographic size: 40
   m_Depth: -1
   m_CullingMask:
@@ -263,8 +263,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22752813, y: 0.13511366, z: -0.031896006, w: 0.9638246}
-  m_LocalPosition: {x: 56.56183, y: 180, z: -199.50885}
+  m_LocalRotation: {x: 0.17669705, y: 0.13659976, z: -0.024770258, w: 0.97442555}
+  m_LocalPosition: {x: 130.8027, y: 35, z: 60.083687}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -334,7 +334,7 @@ MonoBehaviour:
   UpdateMethod: 2
   BlendUpdateMethod: 1
   LensModeOverride:
-    Enabled: 0
+    Enabled: 1
     DefaultMode: 2
   DefaultBlend:
     Style: 1
@@ -574,6 +574,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7505b2b3d1143c748b98e862f0539ef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraInputSystem
+  moveSpeed: 75
+  rotateSpeed: 75
+  mouseDragMoveCoef: 0.5
+  zoomT: 0
+  zoomSpeed: 1.5
+  offsetFar: {x: 0, y: 65, z: -170}
+  offsetNear: {x: 0, y: 5, z: -10}
+  offsetSmoothTime: 0.15
+  mapMinX: 100
+  mapMaxX: 400
+  mapMinZ: 100
+  mapMaxZ: 400
   cinemachineCamera: {fileID: 2051247751}
 --- !u!1 &832575517
 GameObject:
@@ -1842,12 +1854,12 @@ MonoBehaviour:
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
-    FieldOfView: 60
+    FieldOfView: 50
     OrthographicSize: 40
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
-    ModeOverride: 0
+    ModeOverride: 2
     PhysicalProperties:
       GateFit: 2
       SensorSize: {x: 21.946, y: 16.002}
@@ -1869,8 +1881,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2051247750}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.22752813, y: 0.13511366, z: -0.031896006, w: 0.9638246}
-  m_LocalPosition: {x: 56.56183, y: 180, z: -199.50885}
+  m_LocalRotation: {x: 0.17669705, y: 0.13659976, z: -0.024770258, w: 0.97442555}
+  m_LocalPosition: {x: 130.8027, y: 35, z: 60.083687}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1894,7 +1906,7 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 0, y: 0, z: 0}
     QuaternionDamping: 1
-  FollowOffset: {x: 0, y: 175, z: -350}
+  FollowOffset: {x: 0, y: 30, z: -80}
 --- !u!114 &2051247755
 MonoBehaviour:
   m_ObjectHideFlags: 0
