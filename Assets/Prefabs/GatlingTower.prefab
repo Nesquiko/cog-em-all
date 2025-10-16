@@ -401,11 +401,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GatlingTower
   bulletPrefab: {fileID: 8737179034312321847, guid: 6c48efdf8227d8043acb3c2834df7dba, type: 3}
   gatlingHead: {fileID: 2443205329762934196}
+  gatlingGunL: {fileID: 8932205475444249273}
+  gatlingGunR: {fileID: 1416282752194367062}
   gatlingFirePointL: {fileID: 3412665734727855240}
   gatlingFirePointR: {fileID: 7678791758055732170}
   fireRate: 6
   range: 50
   capsuleCollider: {fileID: 7808058316843294582}
+  recoilDistance: 0.2
+  recoilSpeed: 20
+  recoilReturnSpeed: 5
 --- !u!136 &7808058316843294582
 CapsuleCollider:
   m_ObjectHideFlags: 0

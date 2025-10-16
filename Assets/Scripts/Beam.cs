@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Beam : MonoBehaviour
@@ -39,7 +40,15 @@ public class Beam : MonoBehaviour
 
     private IEnumerator ChainRoutine()
     {
-        List<Enemy> chainTargets = BuildChain(initialTarget, maxChains - 1);
+        List<Enemy> chainTargets = BuildChain(initialTarget, maxChains - 1)
+            .Where(e => e != null)
+            .ToList();
+
+        if (chainTargets.Count == 0)
+        {
+            Destroy(gameObject);
+            yield break;
+        }
 
         Vector3 currentPos = firePoint.position;
         lineRenderer.positionCount = 2;
@@ -52,10 +61,9 @@ public class Beam : MonoBehaviour
         for (int i = 0; i < chainTargets.Count; i++)
         {
             Enemy nextEnemy = chainTargets[i];
-            if (nextEnemy == null)
-            {
-                continue;
-            }
+            if (nextEnemy == null) continue;
+
+            if (nextEnemy.Equals(null) || nextEnemy.gameObject == null) break;
 
             Vector3 targetPos = nextEnemy.transform.position;
 
@@ -64,6 +72,12 @@ public class Beam : MonoBehaviour
 
             while (t < 1f)
             {
+                if (nextEnemy == null || nextEnemy.gameObject == null)
+                {
+                    Destroy(gameObject);
+                    yield break;
+                }
+
                 t += Time.deltaTime * (speed / distance);
                 Vector3 point = Vector3.Lerp(currentPos, targetPos, t);
 
@@ -72,8 +86,10 @@ public class Beam : MonoBehaviour
 
                 yield return null;
             }
-
-            nextEnemy.TakeDamage(damage);
+            if (nextEnemy != null)
+            {
+                nextEnemy.TakeDamage(damage);
+            }
 
             yield return new WaitForSeconds(stayTimeOnHit);
 
