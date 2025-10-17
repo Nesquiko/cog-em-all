@@ -52,7 +52,8 @@ public class FlamethrowerTower : MonoBehaviour
 
         if (flamePrefab != null)
         {
-            GameObject flame = Instantiate(flamePrefab, firePoint.position, firePoint.rotation, firePoint);
+            Vector3 flamePosition = new(firePoint.position.x, 0f, firePoint.position.z);
+            GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
             activeFlame = flame.GetComponent<Flame>();
             activeFlame.SetOwner(this);
             activeFlame.SetRange(range);

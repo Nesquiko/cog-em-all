@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3412665734727855240}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingFirePointL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 8932205475444249273}
   - component: {fileID: 204315813686459322}
   - component: {fileID: 4568953282612465923}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingGunL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -129,7 +129,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7678791758055732170}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingFirePointR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 1416282752194367062}
   - component: {fileID: 8503273403247020024}
   - component: {fileID: 771448314938048345}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingGunR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -252,7 +252,7 @@ GameObject:
   - component: {fileID: 7481985427448731367}
   - component: {fileID: 164368396675410480}
   - component: {fileID: 6191313298812493520}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingRangeIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -363,7 +363,8 @@ GameObject:
   - component: {fileID: 8663652031671019757}
   - component: {fileID: 7808058316843294582}
   - component: {fileID: 7301196014310572626}
-  m_Layer: 0
+  - component: {fileID: 1773772322546515770}
+  m_Layer: 8
   m_Name: GatlingTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -424,7 +425,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -461,6 +462,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &1773772322546515770
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3790200311388746545}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 12, y: 20, z: 12}
+  m_Center: {x: 0, y: 10, z: 0}
 --- !u!1 &5556970139889693626
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +494,7 @@ GameObject:
   - component: {fileID: 4641293580901863112}
   - component: {fileID: 7836895788180184883}
   - component: {fileID: 1559209916182586330}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingSeat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -559,7 +581,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6350279153795908788}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -592,7 +614,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2443205329762934196}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -630,7 +652,7 @@ GameObject:
   - component: {fileID: 1182200739460320181}
   - component: {fileID: 3006911545022473838}
   - component: {fileID: 6255166098884115543}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GatlingBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4037127199119463186}
   - component: {fileID: 6953688439352569761}
   - component: {fileID: 8469328010765629315}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusTowerRailingL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 2461099073392365321}
   - component: {fileID: 2290042508161658443}
   - component: {fileID: 5308208864179634132}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusTowerR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 8348665323521386322}
   - component: {fileID: 318435139697025395}
   - component: {fileID: 1819262718027026959}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusTowerRailingR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 2041342897232908961}
   - component: {fileID: 2448261308623986656}
   - component: {fileID: 3484956612176376836}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusRailing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 6482359618883973854}
   - component: {fileID: 1513927871551479224}
   - component: {fileID: 5946134355717328388}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusHeart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -456,7 +456,8 @@ GameObject:
   - component: {fileID: 8682147796950411777}
   - component: {fileID: 854186731148738588}
   - component: {fileID: 8190396389264763879}
-  m_Layer: 0
+  - component: {fileID: 1313883882162105837}
+  m_Layer: 8
   m_Name: Nexus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -507,7 +508,7 @@ BoxCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
@@ -515,6 +516,27 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 50, y: 25, z: 5}
   m_Center: {x: 0, y: 12.5, z: 0}
+--- !u!65 &1313883882162105837
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3763980083327337614}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 65, y: 42, z: 15}
+  m_Center: {x: 0, y: 21, z: 0}
 --- !u!1 &3780637914077996498
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,7 +548,7 @@ GameObject:
   - component: {fileID: 4590278383403396404}
   - component: {fileID: 613176119135780373}
   - component: {fileID: 2507818669848367278}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -615,7 +637,7 @@ GameObject:
   - component: {fileID: 6792110978283632582}
   - component: {fileID: 1943052561675132534}
   - component: {fileID: 6622496699152439124}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusTowerCenterR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -702,7 +724,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7203281513872774741}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -744,7 +766,7 @@ GameObject:
   - component: {fileID: 8330405625267692982}
   - component: {fileID: 8849429665802832753}
   - component: {fileID: 9125127279435814065}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusTowerCenterL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -833,7 +855,7 @@ GameObject:
   - component: {fileID: 7140708623850415595}
   - component: {fileID: 3907603353420315898}
   - component: {fileID: 4940796331185286455}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusTowerL
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4880549200028704985}
   - component: {fileID: 8349312453271583367}
   - component: {fileID: 7432308831374876440}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6170568506409201173}
   - component: {fileID: 5423727203763167462}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: NexusHealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -135,7 +135,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d0b8684fce2b804383f57afd9912722, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NexusHealthBar
-  nexus: {fileID: 0}
   fill: {fileID: 2794178531336719317}
   cam: {fileID: 0}
 --- !u!1 &7612607653093057728
@@ -149,7 +148,7 @@ GameObject:
   - component: {fileID: 2794178531336719317}
   - component: {fileID: 957154927970565520}
   - component: {fileID: 6154984733066932153}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}

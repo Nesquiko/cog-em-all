@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1922437294766781437}
   - component: {fileID: 2364131877118057251}
   - component: {fileID: 8185695715039287883}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerHead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -100,7 +100,7 @@ GameObject:
   - component: {fileID: 6873200104437239633}
   - component: {fileID: 3101361577125713439}
   - component: {fileID: 9200512895891133272}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegFLBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -189,7 +189,7 @@ GameObject:
   - component: {fileID: 6599222443240627744}
   - component: {fileID: 621626314236152346}
   - component: {fileID: 4572404966580389983}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -278,7 +278,7 @@ GameObject:
   - component: {fileID: 7688270432921950110}
   - component: {fileID: 3269052811358543774}
   - component: {fileID: 1266013304927016639}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegBLBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -367,7 +367,7 @@ GameObject:
   - component: {fileID: 4853532664495767289}
   - component: {fileID: 8855655023581826028}
   - component: {fileID: 544835138325377813}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegFL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -456,7 +456,7 @@ GameObject:
   - component: {fileID: 2583130523287136939}
   - component: {fileID: 2077378096519400192}
   - component: {fileID: 4069367093509624985}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegFRBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -545,7 +545,7 @@ GameObject:
   - component: {fileID: 2442188694756004120}
   - component: {fileID: 8781819261297886315}
   - component: {fileID: 978337891355390299}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegFR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -632,7 +632,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7103826429612278080}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FramethrowerFirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -648,7 +648,7 @@ Transform:
   m_GameObject: {fileID: 2248606153511172024}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.05, z: 0}
+  m_LocalPosition: {x: 0, y: 11.5, z: 7.6}
   m_LocalScale: {x: 0.525, y: 3.1500006, z: 0.52500004}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -665,7 +665,7 @@ GameObject:
   - component: {fileID: 6309906269238880850}
   - component: {fileID: 8947123963765575697}
   - component: {fileID: 3343948968567712962}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegBL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -754,7 +754,8 @@ GameObject:
   - component: {fileID: 4793412355603679537}
   - component: {fileID: 8504577141823410101}
   - component: {fileID: 2313671633153293706}
-  m_Layer: 0
+  - component: {fileID: 629992154445011084}
+  m_Layer: 8
   m_Name: FlamethrowerTower
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -824,6 +825,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &629992154445011084
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2884996292687604640}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 12, y: 20, z: 12}
+  m_Center: {x: 0, y: 10, z: 0}
 --- !u!1 &3454720702521180971
 GameObject:
   m_ObjectHideFlags: 0
@@ -835,7 +857,7 @@ GameObject:
   - component: {fileID: 6593410256485147230}
   - component: {fileID: 5076924805477883912}
   - component: {fileID: 7297359660430018326}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegBRBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -913,6 +935,95 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &3944945072794746133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4280563950396584778}
+  - component: {fileID: 6357583393103295689}
+  - component: {fileID: 5399746261442547585}
+  m_Layer: 8
+  m_Name: FlamethrowerGun
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4280563950396584778
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3944945072794746133}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 11.5, z: 6}
+  m_LocalScale: {x: 1, y: 1, z: 3}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3293714217340556054}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!33 &6357583393103295689
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3944945072794746133}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &5399746261442547585
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3944945072794746133}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 3c360e9b3c8d12c489c05a67a586267e, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &4118535225133776604
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,7 +1033,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3293714217340556054}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerModel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -939,7 +1050,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.7, y: 0.7, z: 0.7}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6599222443240627744}
@@ -953,8 +1064,99 @@ Transform:
   - {fileID: 2583130523287136939}
   - {fileID: 7688270432921950110}
   - {fileID: 6593410256485147230}
+  - {fileID: 7125680765631288331}
+  - {fileID: 4280563950396584778}
   m_Father: {fileID: 4793412355603679537}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4655491536490654905
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7125680765631288331}
+  - component: {fileID: 1484087679048756853}
+  - component: {fileID: 4178716590797618299}
+  m_Layer: 8
+  m_Name: FlamethrowerGunHead
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7125680765631288331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4655491536490654905}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 11.5, z: 2}
+  m_LocalScale: {x: 2, y: 3, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3293714217340556054}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!33 &1484087679048756853
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4655491536490654905}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &4178716590797618299
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4655491536490654905}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 47379094a4c596348816e28c8e494a26, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &6189141720254273333
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,7 +1168,7 @@ GameObject:
   - component: {fileID: 8979752078154103944}
   - component: {fileID: 4728653524999511466}
   - component: {fileID: 6343322589690180348}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerLegBR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1055,7 +1257,7 @@ GameObject:
   - component: {fileID: 7291859090106168160}
   - component: {fileID: 404546182989188888}
   - component: {fileID: 8702922546342584328}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerHeadBase
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1144,7 +1346,7 @@ GameObject:
   - component: {fileID: 6342403012648805787}
   - component: {fileID: 8420537073385899971}
   - component: {fileID: 7592097640502770324}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: FlamethrowerRangeTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1160,7 +1362,7 @@ Transform:
   m_GameObject: {fileID: 8205056374922064436}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.25, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 7.6}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []

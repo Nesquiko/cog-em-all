@@ -6,8 +6,6 @@ using UnityEngine;
 using System.IO;
 using UnityEditor;
 using UnityEngine.Assertions;
-using System;
-using Unity.VisualScripting;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
@@ -207,6 +205,8 @@ public class Level : MonoBehaviour
         }
 
         splineMesh.GenerateMeshAlongSpline();
+        MeshCollider col = GetComponent<MeshCollider>();
+        if (col) col.sharedMesh = GetComponent<MeshFilter>().sharedMesh;
     }
 
     public void SyncSplinesFromScene()
