@@ -1,8 +1,7 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class UIBottomPanel : MonoBehaviour
+public class HUDPanelUI : MonoBehaviour
 {
     [Header("Resources")]
     [SerializeField] private TextMeshProUGUI gearsLabel;
