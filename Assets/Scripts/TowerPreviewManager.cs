@@ -14,11 +14,11 @@ public class TowerPreviewManager : MonoBehaviour
 
     [Header("UI References")]
     [SerializeField] private TMP_Text nameText;
+    [SerializeField] private TMP_Text descriptionText;
     [SerializeField] private TMP_Text damageText;
     [SerializeField] private TMP_Text rangeText;
     [SerializeField] private TMP_Text fireRateText;
     [SerializeField] private TMP_Text costText;
-    [SerializeField] private TMP_Text descriptionText;
 
     private int currentIndex;
     private GameObject currentTower;
@@ -50,15 +50,15 @@ public class TowerPreviewManager : MonoBehaviour
 
     private void UpdateTowerStats(int index)
     {
-        /*TowerData data = TowerData.GetDataFromIndex(index);
+        TowerData data = TowerCatalog.GetTowerDataFromIndex(index);
         if (data == null) return;
 
         if (nameText) nameText.text = data.displayName;
-        if (damageText) damageText.text = data.damage;
-        if (rangeText) rangeText.text = data.range;
-        if (fireRateText) fireRateText.text = data.fireRate;
-        if (costText) costText.text = data.cost;
-        if (descriptionText) descriptionText.text = data.description;*/
+        if (descriptionText) descriptionText.text = data.description;
+        if (damageText) damageText.text = $"{data.damage}";
+        if (rangeText) rangeText.text = $"{data.range}";
+        if (fireRateText) fireRateText.text = $"{data.fireRate}";
+        if (costText) costText.text = $"{data.cost}";
     }
 
     public void NextTower()
