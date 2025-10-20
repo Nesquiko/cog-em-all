@@ -1,37 +1,43 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class UIManager : MonoBehaviour
+public class MenuUIManager : MonoBehaviour
 {
-    [SerializeField] private string gameSceneName = "GameScene";
-    [SerializeField] private GameObject homePanel;
+    [Header("Content Panels")]
     [SerializeField] private GameObject generalSelectionPanel;
+    [SerializeField] private GameObject skillTreePanel;
+    [SerializeField] private GameObject towerWorkshopPanel;
+    [SerializeField] private GameObject levelPanel;
 
-    public void StartGame(int generalIndex)
+    [Header("Buttons")]
+    [SerializeField] private Button generalSelectionButton;
+    [SerializeField] private Button skillTreeButton;
+    [SerializeField] private Button towerWorkshopButton;
+    [SerializeField] private Button levelButton;
+    [SerializeField] private Button startButton;
+
+    private GameObject currentPanel;
+
+    private void Start()
     {
-        PlayerPrefs.SetInt("GeneralSelected", generalIndex);
-
-        SceneManager.LoadScene(gameSceneName);
+        ShowPanel(generalSelectionPanel);
     }
 
-    public void QuitGame()
+    public void ShowPanel(GameObject panelToShow)
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        if (currentPanel == panelToShow) return;
+
+        generalSelectionPanel.SetActive(panelToShow == generalSelectionPanel);
+        skillTreePanel.SetActive(panelToShow == skillTreePanel);
+        towerWorkshopPanel.SetActive(panelToShow == towerWorkshopPanel);
+        levelPanel.SetActive(panelToShow == levelPanel);
+
+        currentPanel = panelToShow;
     }
 
-    public void ShowHome()
+    public void StartLevel()
     {
-        homePanel.SetActive(true);
-        generalSelectionPanel.SetActive(false);
-    }
-
-    public void ShowGeneralSelection()
-    {
-        generalSelectionPanel.SetActive(true);
-        homePanel.SetActive(false);
+        Debug.Log("Starting level!");
     }
 }
