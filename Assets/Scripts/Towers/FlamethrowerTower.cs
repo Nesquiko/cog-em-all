@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class FlamethrowerTower : MonoBehaviour
 {
     [SerializeField] private GameObject flamePrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private GameObject flameCollider;
+    [SerializeField] private GameObject rangeIndicator;
 
     [SerializeField] private float cooldownDuration = 2f;
 
@@ -45,10 +47,12 @@ public class FlamethrowerTower : MonoBehaviour
 
     private void Start()
     {
-        if (flameCollider)
-        {
-            flameCollider.transform.localScale = new Vector3(range, range, range);
-        }
+        Assert.IsNotNull(flameCollider);
+        flameCollider.transform.localScale = new(range, range, range);
+
+        Assert.IsNotNull(rangeIndicator);
+        rangeIndicator.SetActive(false);
+        rangeIndicator.transform.localScale = new(range, rangeIndicator.transform.localScale.y, range);
 
         if (flamePrefab != null)
         {

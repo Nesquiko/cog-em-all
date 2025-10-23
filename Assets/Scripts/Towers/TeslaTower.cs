@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class TeslaTower : MonoBehaviour
@@ -9,6 +10,7 @@ public class TeslaTower : MonoBehaviour
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
     [SerializeField] private CapsuleCollider capsuleCollider;
+    [SerializeField] private GameObject rangeIndicator;
 
     private readonly Dictionary<int, Enemy> enemiesInRange = new();
     private Enemy target;
@@ -21,7 +23,12 @@ public class TeslaTower : MonoBehaviour
 
     private void Start()
     {
+        Assert.IsNotNull(capsuleCollider);
         capsuleCollider.radius = range;
+
+        Assert.IsNotNull(rangeIndicator);
+        rangeIndicator.SetActive(false);
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
     }
 
     private void Update()

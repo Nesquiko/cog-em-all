@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 
 public class TowerPlacementSystem : MonoBehaviour
@@ -7,13 +8,14 @@ public class TowerPlacementSystem : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LayerMask groundMask;
-    [SerializeField] private LayerMask blockingMask;
-    [SerializeField] private LayerMask roadMask;
     [SerializeField] private GameObject buildProgressPrefab;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
     [SerializeField] private Material ghostInvalidMaterial;
+
+    [Header("Placement Settings")]
+    [SerializeField] private TowerPlacementSettings placementSettings;
 
     private GameObject towerPrefab;
     private GameObject ghostInstance;
@@ -32,6 +34,8 @@ public class TowerPlacementSystem : MonoBehaviour
         }
         Instance = this;
         mainCamera = Camera.main;
+
+        Assert.IsNotNull(placementSettings);
     }
 
     private void Update()
@@ -52,7 +56,7 @@ public class TowerPlacementSystem : MonoBehaviour
             if (ghostInstance != null)
             {
                 ghostInstance.transform.position = point;
-                canPlace = IsValidPlacement(point);
+                canPlace = placementSettings.IsValidPlacement(point);
                 ApplyGhostMaterial(canPlace ? ghostValidMaterial : ghostInvalidMaterial);
             }
 
@@ -110,7 +114,7 @@ public class TowerPlacementSystem : MonoBehaviour
         if (!isPlacing || towerPrefab == null) return;
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask) && IsValidPlacement(hit.point))
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask) && placementSettings.IsValidPlacement(hit.point))
         {
             PlaceTower(hit.point);
         }
@@ -118,14 +122,6 @@ public class TowerPlacementSystem : MonoBehaviour
         {
             CancelPlacement();
         }
-    }
-
-    private bool IsValidPlacement(Vector3 point)
-    {
-        float radius = 1.0f;
-        bool overlapsTower = Physics.CheckSphere(point, radius, blockingMask, QueryTriggerInteraction.Ignore); 
-        bool overlapsRoad = Physics.CheckSphere(point, radius, roadMask, QueryTriggerInteraction.Ignore);
-        return !overlapsTower && !overlapsRoad;
     }
 
     private void SetGhostMode(GameObject obj, bool enable)

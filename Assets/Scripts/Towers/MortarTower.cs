@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class MortarTower : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class MortarTower : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private CapsuleCollider outerCollider;
     [SerializeField] private CapsuleCollider innerCollider;
+    [SerializeField] private GameObject outerRangeIndicator;
+    [SerializeField] private GameObject innerRangeIndicator;
 
     [SerializeField] private float fireRate = 0.5f;
     [SerializeField] private float minRange = 20f;
@@ -52,9 +55,21 @@ public class MortarTower : MonoBehaviour
 
     void Start()
     {
+        Assert.IsNotNull(outerCollider);
         outerCollider.radius = maxRange;
+
+        Assert.IsNotNull(innerCollider);
         innerCollider.radius = minRange;
 
+        Assert.IsNotNull(outerRangeIndicator);
+        outerRangeIndicator.SetActive(false);
+        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);
+
+        Assert.IsNotNull(innerRangeIndicator);
+        innerRangeIndicator.SetActive(false);
+        innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
+
+        Assert.IsNotNull(cannonPivot);
         cannonPivotDefaultPosition = cannonPivot.localPosition;
     }
 
