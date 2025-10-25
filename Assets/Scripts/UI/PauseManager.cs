@@ -42,6 +42,8 @@ public class PauseManager : MonoBehaviour
         isPaused = true;
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
+
+        TowerSelectionManager.Instance.DeselectCurrent();
     }
 
     public void Resume()
@@ -49,6 +51,22 @@ public class PauseManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
+    }
+
+    public void TogglePause()
+    {
+        isPaused = !isPaused;
+
+        if (optionsMenu.activeSelf)
+        {
+            optionsMenu.SetActive(false);
+            pauseMenu.SetActive(true);
+        }
+        else
+        {
+            pauseMenu.SetActive(!pauseMenu.activeSelf);
+            Time.timeScale = Time.timeScale == 1f ? 0f : 1f;
+        }
     }
 
     public void ShowOptionsMenu()

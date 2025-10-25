@@ -26,6 +26,7 @@ public class TowerSelectionManager : MonoBehaviour
 
     private void Update()
     {
+        if (TowerControlManager.Instance.InControl) return;
         if (TowerPlacementSystem.Instance.IsPlacing) return;
 
         if (Mouse.current == null) return;
@@ -104,7 +105,7 @@ public class TowerSelectionManager : MonoBehaviour
         currentSelected.Select();
     }
 
-    private void DeselectCurrent()
+    public void DeselectCurrent()
     {
         if (currentSelected == null) return;
 

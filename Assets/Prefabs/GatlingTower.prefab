@@ -400,6 +400,7 @@ MonoBehaviour:
   towerOverlayPrefab: {fileID: 6240000255722624996, guid: b142dfe9b7f1ef9459dba8a8370a903b, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   controlPoint: {fileID: 4400268234209531989}
+  sensitivity: 0.2
   recoilDistance: 0.2
   recoilSpeed: 20
   recoilReturnSpeed: 5
@@ -746,7 +747,7 @@ Transform:
   m_GameObject: {fileID: 8793112563127082653}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 13.5, z: 0}
+  m_LocalPosition: {x: 0, y: 14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -30,6 +30,7 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
 
     [Header("Tower Control Mode")]
     [SerializeField] private Transform controlPoint;
+    [SerializeField] private float sensitivity = 0.01f;
 
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.2f;
@@ -75,6 +76,8 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
 
     private void Update()
     {
+        if (underPlayerControl) return;
+
         fireCooldown -= Time.deltaTime;
 
         if (target == null)
@@ -95,10 +98,7 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
             fireCooldown = 1f / fireRate;
         }
 
-        if (gatlingHead != null)
-        {
-            TowerMechanics.RotateTowardTarget(gatlingHead, target.transform, 10f);
-        }
+        TowerMechanics.RotateTowardTarget(gatlingHead, target.transform, 10f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -144,7 +144,7 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
             recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
         }
 
-            shootFromLeftFirePoint = !shootFromLeftFirePoint;
+        shootFromLeftFirePoint = !shootFromLeftFirePoint;
     }
 
     private IEnumerator RecoilKick(Transform gun, Vector3 defaultLocalPosition)
@@ -216,12 +216,11 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
     {
         underPlayerControl = active;
         fireCooldown = 0f;
+        if (active) target = null;
     }
 
     public void HandlePlayerAim(Vector2 mouseDelta)
     {
-        const float sensitivity = 0.1f;
-
         yaw += mouseDelta.x * sensitivity;
         pitch -= mouseDelta.y * sensitivity;
 
@@ -240,23 +239,46 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
         fireCooldown -= Time.deltaTime;
         if (fireCooldown <= 0f)
         {
-            ShootManual(gatlingHead.forward);
+            ShootManual();
             fireCooldown = 1f / fireRate;
         }
     }
 
-    private void ShootManual(Vector3 direction)
+    private void ShootManual()
     {
+        var gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
         var firepoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
 
-        GameObject bulletGO =
-            Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(direction));
+        Vector3 aimPoint = firepoint.position + firepoint.forward * 100f;
+        GameObject fakeTarget = new("FakeTarget");
+        fakeTarget.transform.position = aimPoint;
+        
+        GameObject bulletGO = Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(firepoint.forward, Vector3.up));
 
         if (bulletGO.TryGetComponent<Bullet>(out var bullet))
         {
             bool isCritical = Random.value < critChance;
             float dmg = bullet.Damage * (isCritical ? critMultiplier : 1f);
-            bullet.Initialize(null, dmg, isCritical);
+            bullet.Initialize(fakeTarget.transform, dmg, isCritical);
         }
+
+        if (controlPoint.TryGetComponent<CameraRecoil>(out var recoil)) recoil.PlayRecoil();
+
+        if (gun == null) return;
+
+        if (shootFromLeftFirePoint)
+        {
+            if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
+            recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
+        }
+        else
+        {
+            if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
+            recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
+        }
+
+        shootFromLeftFirePoint = !shootFromLeftFirePoint;
+
+        Destroy(fakeTarget, 2f);
     }
 }
