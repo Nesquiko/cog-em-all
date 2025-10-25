@@ -1,23 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class GatlingTower : MonoBehaviour
+public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
 {
+    [Header("Stats")]
+    [SerializeField] private float fireRate = 1f;
+    [SerializeField] private float range = 30f;
+    [SerializeField, Range(0f, 1f)] private float critChance = 0.15f;
+    [SerializeField] private float critMultiplier = 2.0f;
+
+    [Header("References")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform gatlingHead;
     [SerializeField] private Transform gatlingGunL;
     [SerializeField] private Transform gatlingGunR;
     [SerializeField] private Transform gatlingFirePointL;
     [SerializeField] private Transform gatlingFirePointR;
-    [SerializeField] private float fireRate = 1f;
-    [SerializeField] private float range = 30f;
     [SerializeField] private CapsuleCollider capsuleCollider;
     [SerializeField] private GameObject rangeIndicator;
+    [SerializeField] private Renderer[] highlightRenderers;
 
+    [Header("UI References")]
+    [SerializeField] private Canvas uiCanvas;
+    [SerializeField] private TowerOverlay towerOverlayPrefab;
+    [SerializeField] private CursorSettings cursorSettings;
+
+    [Header("Tower Control Mode")]
+    [SerializeField] private Transform controlPoint;
+
+    [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.2f;
     [SerializeField] private float recoilSpeed = 20f;
     [SerializeField] private float recoilReturnSpeed = 5f;
@@ -32,6 +46,14 @@ public class GatlingTower : MonoBehaviour
     private Coroutine recoilRoutineR;
 
     private bool shootFromLeftFirePoint = true;
+
+    private TowerOverlay activeTowerOverlay;
+
+    private bool underPlayerControl;
+    private float yaw;
+    private float pitch;
+
+    public Transform GetControlPoint() => controlPoint;
 
     void OnDrawGizmosSelected()
     {
@@ -51,7 +73,7 @@ public class GatlingTower : MonoBehaviour
         if (gatlingGunR != null) gunPositionR = gatlingGunR.localPosition;
     }
 
-    void Update()
+    private void Update()
     {
         fireCooldown -= Time.deltaTime;
 
@@ -102,7 +124,11 @@ public class GatlingTower : MonoBehaviour
 
         if (bulletGO.TryGetComponent<Bullet>(out var bullet))
         {
-            bullet.SetTarget(enemy.transform);
+            bool isCritical = Random.value < critChance;
+            float dmg = bullet.Damage;
+            if (isCritical) dmg *= critMultiplier;
+
+            bullet.Initialize(enemy.transform, dmg, isCritical);
         }
 
         if (gun == null) return;
@@ -148,5 +174,89 @@ public class GatlingTower : MonoBehaviour
     private void OnDestroy()
     {
         TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
+    }
+
+    public void Select()
+    {
+        rangeIndicator.SetActive(true);
+        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
+
+        if (activeTowerOverlay == null)
+        {
+            activeTowerOverlay = Instantiate(towerOverlayPrefab, uiCanvas.transform);
+            activeTowerOverlay.SetTarget(transform);
+        }
+    }
+
+    public void Deselect()
+    {
+        rangeIndicator.SetActive(false);
+        TowerMechanics.ClearHighlight(highlightRenderers);
+
+        if (activeTowerOverlay != null)
+        {
+            Destroy(activeTowerOverlay.gameObject);
+            activeTowerOverlay = null;
+        }
+    }
+
+    public void OnHoverEnter()
+    {
+        Cursor.SetCursor(cursorSettings.hoverCursor, cursorSettings.hotspot, CursorMode.Auto);
+        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.HoverColor);
+    }
+
+    public void OnHoverExit()
+    {
+        Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
+        TowerMechanics.ClearHighlight(highlightRenderers);
+    }
+
+    public void OnPlayerTakeControl(bool active)
+    {
+        underPlayerControl = active;
+        fireCooldown = 0f;
+    }
+
+    public void HandlePlayerAim(Vector2 mouseDelta)
+    {
+        const float sensitivity = 0.1f;
+
+        yaw += mouseDelta.x * sensitivity;
+        pitch -= mouseDelta.y * sensitivity;
+
+        pitch = Mathf.Clamp(pitch, -80f, 80f);
+
+        Quaternion lookRot = Quaternion.Euler(pitch, yaw, 0f);
+
+        gatlingHead.rotation = lookRot;
+
+        if (controlPoint != null && controlPoint.parent != gatlingHead)
+            controlPoint.rotation = lookRot;
+    }
+
+    public void HandlePlayerFire()
+    {
+        fireCooldown -= Time.deltaTime;
+        if (fireCooldown <= 0f)
+        {
+            ShootManual(gatlingHead.forward);
+            fireCooldown = 1f / fireRate;
+        }
+    }
+
+    private void ShootManual(Vector3 direction)
+    {
+        var firepoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
+
+        GameObject bulletGO =
+            Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(direction));
+
+        if (bulletGO.TryGetComponent<Bullet>(out var bullet))
+        {
+            bool isCritical = Random.value < critChance;
+            float dmg = bullet.Damage * (isCritical ? critMultiplier : 1f);
+            bullet.Initialize(null, dmg, isCritical);
+        }
     }
 }

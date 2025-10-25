@@ -5,10 +5,15 @@ using UnityEngine;
 [RequireComponent(typeof(CapsuleCollider))]
 public class TowerV2 : MonoBehaviour
 {
-    [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private Transform firePoint;
+    [Header("Stats")]
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
+    [SerializeField, Range(0f, 1f)] private float critChance = 0.15f;
+    [SerializeField] private float critMultiplier = 2.0f;
+
+    [Header("References")]
+    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Transform firePoint;
     [SerializeField] private CapsuleCollider capsuleCollider;
 
     private readonly Dictionary<int, Enemy> enemiesInRange = new();
@@ -73,7 +78,11 @@ public class TowerV2 : MonoBehaviour
 
         if (bulletGO.TryGetComponent<Bullet>(out var bullet))
         {
-            bullet.SetTarget(enemy.transform);
+            bool isCritical = Random.value < critChance;
+            float dmg = bullet.Damage;
+            if (isCritical) dmg *= critMultiplier;
+
+            bullet.Initialize(enemy.transform, dmg, isCritical);
         }
     }
 

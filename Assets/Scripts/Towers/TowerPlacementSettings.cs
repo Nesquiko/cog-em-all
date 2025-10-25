@@ -6,11 +6,18 @@ using UnityEngine;
 )]
 public class TowerPlacementSettings : ScriptableObject
 {
-    [Header("Placeable Region Bounds")]
-    [SerializeField] private Bounds placeableRegion = new(
-        new(100f, 0, 100f),
-        new(400f, 0, 400f)
-    );
+    [Header("Placeable Region (XZ limits)")]
+    [Tooltip("Minimum X world coordinate allowed for tower placement.")]
+    [SerializeField] private float minX = 100f;
+
+    [Tooltip("Maximum X world coordinate allowed for tower placement.")]
+    [SerializeField] private float maxX = 400f;
+
+    [Tooltip("Minimum Z world coordinate allowed for tower placement.")]
+    [SerializeField] private float minZ = 100f;
+
+    [Tooltip("Maximum Z world coordinate allowed for tower placement.")]
+    [SerializeField] private float maxZ = 400f;
 
     [Header("Placement Settings")]
     [Tooltip("Radius to check for blocking overlaps.")]
@@ -21,20 +28,27 @@ public class TowerPlacementSettings : ScriptableObject
 
     public bool IsValidPlacement(Vector3 point)
     {
-        bool overlaps = false;
+        if (!IsInPlaceableRegion(point))
+            return false;
 
         foreach (var blockingMask in blockingMasks)
         {
-            overlaps = Physics.CheckSphere(
-                point,
-                placementRadius,
-                blockingMask,
-                QueryTriggerInteraction.Ignore
-            );
+            if (Physics.CheckSphere(
+                    point,
+                    placementRadius,
+                    blockingMask,
+                    QueryTriggerInteraction.Ignore))
+            {
+                return false;
+            }
         }
 
-        bool outsideRegion = !placeableRegion.Contains(point);
+        return true;
+    }
 
-        return !overlaps && !outsideRegion;
+    private bool IsInPlaceableRegion(Vector3 point)
+    {
+        return point.x >= minX && point.x <= maxX &&
+               point.z >= minZ && point.z <= maxZ;
     }
 }

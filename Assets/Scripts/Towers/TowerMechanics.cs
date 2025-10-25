@@ -3,8 +3,31 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+public interface ITowerSelectable
+{
+    void Select();
+    void Deselect();
+    void OnHoverEnter();
+    void OnHoverExit();
+}
+
+public interface ITowerControllable
+{
+    Transform GetControlPoint();
+    void OnPlayerTakeControl(bool active);
+    void HandlePlayerAim(Vector2 mouseDelta);
+    void HandlePlayerFire();
+}
+
 public static class TowerMechanics
 {
+    private static readonly int EmissionColorID = Shader.PropertyToID("_EmissionColor");
+    private static Color defaultEmissionColor = Color.black;
+
+    public static readonly Color HoverColor = new(0.6f, 0.7f, 1.0f);
+    public static readonly Color SelectedColor = new(1.0f, 0.85f, 0.3f);
+    private const float HighlightIntensity = 3.0f;
+
     public static Enemy GetClosestEnemy(Vector3 towerPosition, IDictionary<int, Enemy> enemies)
     {
         Enemy closest = null;
@@ -130,6 +153,41 @@ public static class TowerMechanics
             Handles.color = color ?? Color.cyan;
             Vector3 center = new(position.x, 0f, position.z);
             Handles.DrawWireDisc(center, Vector3.up, radius);
+        }
+    }
+
+    public static void ApplyHighlight(Renderer[] renderers, Color color)
+    {
+        if (renderers == null || renderers.Length == 0) return;
+
+        for (int i = 0;  i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+
+            Material material = r.material;
+            if (material.HasProperty(EmissionColorID))
+            {
+                material.globalIlluminationFlags = MaterialGlobalIlluminationFlags.None;
+                material.SetColor(EmissionColorID, color * HighlightIntensity);
+            }
+        }
+    }
+
+    public static void ClearHighlight(Renderer[] renderers)
+    {
+        if (renderers == null || renderers.Length == 0) return;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+
+            Material material = r.material;
+            if (material.HasProperty(EmissionColorID))
+            {
+                material.SetColor(EmissionColorID, defaultEmissionColor);
+            }
         }
     }
 }

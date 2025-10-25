@@ -6,25 +6,30 @@ using UnityEngine;
 
 public class Beam : MonoBehaviour
 {
-    [Header("Base Settings")]
-    [SerializeField] private float damage = 30f;
+    [Header("Stats")]
+    [SerializeField] private float baseDamage = 30f;
     [SerializeField] private float speed = 200f;
-
-    [Header("Advanced Settings")]
     [SerializeField] private float chainRadius = 10f;
     [SerializeField] private int maxChains = 3;
     [SerializeField] private float stayTimeOnHit = 0.05f;
-    [SerializeField] private LineRenderer lineRenderer;
 
+    [Header("References")]
+    [SerializeField] private LineRenderer lineRenderer;
+ 
     private Transform firePoint;
     private Transform initialTarget;
+    private float damage;
+    private bool crit;
+    public float BaseDamage => baseDamage;
 
-    public void Initialize(Transform from, Transform to)
+    public void Initialize(Transform from, Transform to, float dmg, bool isCritical)
     {
         Assert.IsNotNull(from);
         Assert.IsNotNull(to);
         firePoint = from;
         initialTarget = to;
+        damage = dmg;
+        crit = isCritical;
     }
 
     private void Start()
@@ -88,7 +93,7 @@ public class Beam : MonoBehaviour
             }
             if (nextEnemy != null)
             {
-                nextEnemy.TakeDamage(damage);
+                nextEnemy.TakeDamage(damage, crit);
             }
 
             yield return new WaitForSeconds(stayTimeOnHit);

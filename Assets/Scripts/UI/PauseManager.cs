@@ -26,6 +26,12 @@ public class PauseManager : MonoBehaviour
                 return;
             }
 
+            if (TowerControlManager.Instance.InControl)
+            {
+                TowerControlManager.Instance.ReleaseControl();
+                return;
+            }
+
             if (isPaused) Resume();
             else Pause();
         }

@@ -171,6 +171,8 @@ MonoBehaviour:
   jumpHeight: 0.7
   forwardDistance: 0.5
   duration: 0.4
+  damagePopupPrefab: {fileID: 3477818805051262252, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
+  popupHeightOffset: 5
 --- !u!65 &7023257257306693827
 BoxCollider:
   m_ObjectHideFlags: 0

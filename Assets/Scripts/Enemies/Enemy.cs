@@ -21,6 +21,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float forwardDistance = 0.4f;
     [SerializeField] private float duration = 0.4f;
 
+    [SerializeField] private DamagePopup damagePopupPrefab;
+    [SerializeField] private float popupHeightOffset = 10f;
+
     public event Action<Enemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
@@ -44,18 +47,15 @@ public class Enemy : MonoBehaviour
         sphereCollider.radius = attackRange;
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, bool isCritical = false)
     {
         healthPoints -= damage;
-        if (healthBarGO != null)
-        {
-            healthBarGO.SetActive(true);
-        }
+        healthBarGO.SetActive(true);
 
-        if (healthPoints <= 0f)
-        {
-            Die();
-        }
+        Vector3 spawnPosition = transform.position + Vector3.up * popupHeightOffset;
+        DamagePopupManager.Instance.ShowPopup(spawnPosition, damage, isCritical);
+        
+        if (healthPoints <= 0f) Die();
     }
 
     private void Die()

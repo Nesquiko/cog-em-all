@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 800e362b2323c6c41a746e2e7c3f356a, type: 3}
   m_Name: TowerPlacementSettings
   m_EditorClassIdentifier: Assembly-CSharp::TowerPlacementSettings
-  placeableRegion:
-    m_Center: {x: 100, y: 0, z: 100}
-    m_Extent: {x: 400, y: 0, z: 400}
+  minX: 100
+  maxX: 400
+  minZ: 100
+  maxZ: 400
   placementRadius: 1
   blockingMasks:
   - serializedVersion: 2

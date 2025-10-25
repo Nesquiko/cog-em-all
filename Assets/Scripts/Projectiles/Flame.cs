@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.UI.GridLayoutGroup;
 
 public class Flame : MonoBehaviour
 {
@@ -83,9 +82,14 @@ public class Flame : MonoBehaviour
         List<Enemy> enemiesInRange = owner.GetCurrentEnemiesInRange();
         if (enemiesInRange == null || enemiesInRange.Count == 0) return;
 
+        float critChance = owner.CritChance;
+        float critMultiplier = owner.CritMultiplier;
+
         foreach (Enemy enemy in enemiesInRange)
         {
-            enemy.TakeDamage(damagePerPulse);
+            bool isCritical = Random.value < critChance;
+            float damage = isCritical ? damagePerPulse * critMultiplier : damagePerPulse;
+            enemy.TakeDamage(damage, isCritical);
         }
     }
 }

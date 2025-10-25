@@ -4,8 +4,19 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class MortarTower : MonoBehaviour
+public class MortarTower : MonoBehaviour, ITowerSelectable
 {
+    [Header("Stats")]
+    [SerializeField] private float fireRate = 0.5f;
+    [SerializeField] private float minRange = 20f;
+    [SerializeField] private float maxRange = 60f;
+    [SerializeField, Range(0f, 1f)] private float critChance = 0.15f;
+    [SerializeField] private float critMultiplier = 2.0f;
+    [SerializeField] private float rotationSpeed = 5f;
+    [SerializeField] private float launchSpeed = 30f;
+    [SerializeField] private float arcHeight = 15f;
+
+    [Header("References")]
     [SerializeField] private GameObject shellPrefab;
     [SerializeField] private Transform basePivot;
     [SerializeField] private Transform cannonPivot;
@@ -14,15 +25,14 @@ public class MortarTower : MonoBehaviour
     [SerializeField] private CapsuleCollider innerCollider;
     [SerializeField] private GameObject outerRangeIndicator;
     [SerializeField] private GameObject innerRangeIndicator;
+    [SerializeField] private Renderer[] highlightRenderers;
 
-    [SerializeField] private float fireRate = 0.5f;
-    [SerializeField] private float minRange = 20f;
-    [SerializeField] private float maxRange = 60f;
-    [SerializeField] private float rotationSpeed = 5f;
+    [Header("UI References")]
+    [SerializeField] private Canvas uiCanvas;
+    [SerializeField] private TowerOverlay towerOverlayPrefab;
+    [SerializeField] private CursorSettings cursorSettings;
 
-    [SerializeField] private float launchSpeed = 30f;
-    [SerializeField] private float arcHeight = 15f;
-
+    [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.5f;
     [SerializeField] private float recoilSpeed = 20f;
     [SerializeField] private float recoilReturnSpeed = 5f;
@@ -34,6 +44,8 @@ public class MortarTower : MonoBehaviour
 
     private Vector3 cannonPivotDefaultPosition;
     private Coroutine recoilRoutine;
+
+    private TowerOverlay activeTowerOverlay;
 
     private void OnDrawGizmosSelected()
     {
@@ -124,14 +136,17 @@ public class MortarTower : MonoBehaviour
 
     private void Shoot(Enemy enemy)
     {
-        if (shellPrefab == null || firePoint == null || enemy == null) return;
-
         GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
         if (recoilRoutine != null) StopCoroutine(recoilRoutine);
         recoilRoutine = StartCoroutine(RecoilKick());
+        
         if (shellGO.TryGetComponent<Shell>(out var shell))
         {
-            shell.Launch(enemy.transform.position, launchSpeed, arcHeight);
+            bool isCritical = Random.value < critChance;
+            float dmg = shell.BaseDamage;
+            if (isCritical) dmg *= critMultiplier;
+
+            shell.Launch(enemy.transform.position, dmg, isCritical, launchSpeed, arcHeight);
         }
     }
 
@@ -241,5 +256,43 @@ public class MortarTower : MonoBehaviour
     private void OnDestroy()
     {
         TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
+    }
+
+    public void Select()
+    {
+        outerRangeIndicator.SetActive(true);
+        innerRangeIndicator.SetActive(true);
+        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
+    
+        if (activeTowerOverlay == null)
+        {
+            activeTowerOverlay = Instantiate(towerOverlayPrefab, uiCanvas.transform);
+            activeTowerOverlay.SetTarget(transform);
+        }
+    }
+
+    public void Deselect()
+    {
+        outerRangeIndicator.SetActive(false);
+        innerRangeIndicator.SetActive(false);
+        TowerMechanics.ClearHighlight(highlightRenderers);
+
+        if (activeTowerOverlay != null)
+        {
+            Destroy(activeTowerOverlay.gameObject);
+            activeTowerOverlay = null;
+        }
+    }
+
+    public void OnHoverEnter()
+    {
+        Cursor.SetCursor(cursorSettings.hoverCursor, cursorSettings.hotspot, CursorMode.Auto);
+        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.HoverColor);
+    }
+
+    public void OnHoverExit()
+    {
+        Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
+        TowerMechanics.ClearHighlight(highlightRenderers);
     }
 }

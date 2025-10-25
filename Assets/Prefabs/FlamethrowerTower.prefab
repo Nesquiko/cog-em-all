@@ -882,13 +882,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d57ec12595bd38542965ce24585484f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTower
+  range: 50
+  flameAngle: 34
+  cooldownDuration: 2
+  critChance: 0.15
+  critMultiplier: 2
   flamePrefab: {fileID: 252755963940105304, guid: 7beb1e94f42efea478a22fe26fa70c68, type: 3}
   firePoint: {fileID: 7103826429612278080}
   flameCollider: {fileID: 8205056374922064436}
   rangeIndicator: {fileID: 1965079155947363702}
-  cooldownDuration: 2
-  range: 50
-  flameAngle: 34
+  highlightRenderers:
+  - {fileID: 4572404966580389983}
+  - {fileID: 544835138325377813}
+  - {fileID: 978337891355390299}
+  - {fileID: 3343948968567712962}
+  - {fileID: 6343322589690180348}
+  - {fileID: 8702922546342584328}
+  - {fileID: 8185695715039287883}
+  - {fileID: 9200512895891133272}
+  - {fileID: 4069367093509624985}
+  - {fileID: 1266013304927016639}
+  - {fileID: 7297359660430018326}
+  - {fileID: 4178716590797618299}
+  - {fileID: 5399746261442547585}
+  uiCanvas: {fileID: 0}
+  towerOverlayPrefab: {fileID: 6240000255722624996, guid: b142dfe9b7f1ef9459dba8a8370a903b, type: 3}
+  cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
 --- !u!54 &2313671633153293706
 Rigidbody:
   m_ObjectHideFlags: 0

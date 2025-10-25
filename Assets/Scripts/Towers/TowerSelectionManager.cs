@@ -1,18 +1,16 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class TowerSelectionManager : MonoBehaviour
 {
     public static TowerSelectionManager Instance {  get; private set; }
 
-    [Header("Settings")]
-    [SerializeField] private LayerMask towerMask = ~0;
-    [SerializeField] private float rayDistance = 1000f;
-
+    [SerializeField] private LayerMask towerMask;
+    
     private Camera mainCamera;
-    private TowerSelectable currentSelection;
-    private TowerSelectable currentHover;
+    private ITowerSelectable currentSelected;
+    private ITowerSelectable currentHovered;
 
     private void Awake()
     {
@@ -22,58 +20,104 @@ public class TowerSelectionManager : MonoBehaviour
             return;
         }
         Instance = this;
+
         mainCamera = Camera.main;
     }
 
     private void Update()
     {
-        var mouse = Mouse.current;
-        if (mouse == null) return;
+        if (TowerPlacementSystem.Instance.IsPlacing) return;
 
-        if (EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
+        if (Mouse.current == null) return;
 
-        Ray ray = mainCamera.ScreenPointToRay(mouse.position.ReadValue());
-        TowerSelectable hitTower = null;
+        HandleHover();
+        HandleClick();
+    }
 
-        if (Physics.Raycast(ray, out RaycastHit hit, rayDistance, towerMask))
+    private void HandleHover()
+    {
+        Vector2 screenPosition = Mouse.current.position.ReadValue();
+        Ray ray = mainCamera.ScreenPointToRay(screenPosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, towerMask, QueryTriggerInteraction.Ignore))
         {
-            hitTower = hit.collider.GetComponentInParent<TowerSelectable>();
+            ITowerSelectable hovered = hit.collider.GetComponentInParent<ITowerSelectable>();
+            
+            if (hovered != currentHovered)
+            {
+                if (currentHovered != null && currentHovered != currentSelected)
+                {
+                    currentHovered.OnHoverExit();
+                }
+
+                currentHovered = hovered;
+
+                if (currentHovered != null && currentHovered != currentSelected)
+                    currentHovered.OnHoverEnter();
+            }
         }
-
-        if (hitTower != currentHover)
+        else
         {
-            if (currentHover && !currentHover.IsSelected)
-                currentHover.OnHoverExit();
-            if (hitTower && !hitTower.IsSelected)
-                hitTower.OnHoverEnter();
-            currentHover = hitTower;
-        }
+            if (currentHovered != null && currentHovered != currentSelected)
+                currentHovered.OnHoverExit();
 
-        if (mouse.leftButton.wasPressedThisFrame)
-        {
-            if (hitTower)
-                SelectTower(hitTower);
-            else
-                DeselectCurrent();
+            currentHovered = null;
         }
     }
 
-    private void SelectTower(TowerSelectable ts)
+    private void HandleClick()
     {
-        if (currentSelection == ts) return;
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
-        DeselectCurrent();
+        if (Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (currentHovered != null)
+            {
+                if (currentHovered == currentSelected)
+                {
+                    DeselectCurrent();
+                }
+                else
+                {
+                    SelectTower(currentHovered);
+                }
+            }
+            else
+            {
+                DeselectCurrent();
+            }
+        }
 
-        currentSelection = ts;
-        currentSelection.Select();
+        if (Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            DeselectCurrent();
+        }
+    }
+
+    private void SelectTower(ITowerSelectable newTower)
+    {
+        if (currentSelected == newTower) return;
+
+        currentSelected?.Deselect();
+
+        currentSelected = newTower;
+        currentSelected.Select();
     }
 
     private void DeselectCurrent()
     {
-        if (currentSelection)
+        if (currentSelected == null) return;
+
+        currentSelected.Deselect();
+        currentSelected = null;
+    }
+
+    public void ClearHover()
+    {
+        if (currentHovered != null && currentHovered != currentSelected)
         {
-            currentSelection.Deselect();
-            currentSelection = null;
+            currentHovered.OnHoverExit();
+            currentHovered = null;
         }
     }
 }
