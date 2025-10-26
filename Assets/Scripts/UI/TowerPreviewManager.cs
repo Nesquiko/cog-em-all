@@ -50,7 +50,7 @@ public class TowerPreviewManager : MonoBehaviour
 
     private void UpdateTowerStats(int index)
     {
-        TowerData data = TowerCatalog.GetTowerDataFromIndex(index);
+        TowerData data = TowerCatalog.FromIndex(index);
         if (data == null) return;
 
         if (nameText) nameText.text = data.displayName;

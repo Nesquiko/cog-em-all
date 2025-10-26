@@ -400,7 +400,7 @@ MonoBehaviour:
   towerOverlayPrefab: {fileID: 6240000255722624996, guid: b142dfe9b7f1ef9459dba8a8370a903b, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   controlPoint: {fileID: 4400268234209531989}
-  sensitivity: 0.2
+  sensitivity: 0.05
   recoilDistance: 0.2
   recoilSpeed: 20
   recoilReturnSpeed: 5

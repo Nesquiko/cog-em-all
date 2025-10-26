@@ -7,8 +7,11 @@ public class TowerControlManager : MonoBehaviour
 {
     public static TowerControlManager Instance { get; private set; }
 
+    [Header("References")]
     [SerializeField] private GameObject playerControlUI;
     [SerializeField] private GameObject HUD;
+    [SerializeField] private GameObject menuPanel;
+    [SerializeField] private GameObject towerInfoPanel;
     [SerializeField] private float transitionTime = 2.0f;
 
     private Camera mainCamera;
@@ -45,6 +48,7 @@ public class TowerControlManager : MonoBehaviour
     public void TakeControl(ITowerControllable tower)
     {
         TowerSelectionManager.Instance.DeselectCurrent();
+        TowerSelectionManager.Instance.DisableSelection();
 
         if (inControl) return;
 
@@ -55,6 +59,8 @@ public class TowerControlManager : MonoBehaviour
         previousCameraRotation = mainCamera.transform.rotation;
 
         HUD.SetActive(false);
+        menuPanel.SetActive(false);
+        towerInfoPanel.SetActive(false);
         playerControlUI.SetActive(false);
 
         StartCoroutine(MoveCameraToControlPoint());
@@ -72,6 +78,7 @@ public class TowerControlManager : MonoBehaviour
         Cursor.visible = true;
 
         HUD.SetActive(true);
+        menuPanel.SetActive(true);
         TowerSelectionManager.Instance.DeselectCurrent();
 
         mainCamera.transform.SetParent(null);
@@ -159,6 +166,8 @@ public class TowerControlManager : MonoBehaviour
 
             yield return null;
         }
+
+        TowerSelectionManager.Instance.EnableSelection();
 
         mainCamera.transform.SetPositionAndRotation(endPosition, endRotation);
         playerControlUI.SetActive(false);

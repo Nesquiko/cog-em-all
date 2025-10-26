@@ -135,4 +135,6 @@ public class TeslaTower : MonoBehaviour, ITowerSelectable
         Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
         TowerMechanics.ClearHighlight(highlightRenderers);
     }
+
+    public TowerTypes TowerType() => TowerTypes.Tesla;
 }

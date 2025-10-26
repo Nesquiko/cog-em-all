@@ -3,12 +3,21 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+public enum TowerTypes
+{
+    Gatling = 0,
+    Tesla = 1,
+    Mortar = 2,
+    Flamethrower = 3,
+};
+
 public interface ITowerSelectable
 {
     void Select();
     void Deselect();
     void OnHoverEnter();
     void OnHoverExit();
+    TowerTypes TowerType();
 }
 
 public interface ITowerControllable

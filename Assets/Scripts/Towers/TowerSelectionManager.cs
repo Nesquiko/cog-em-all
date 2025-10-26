@@ -7,10 +7,18 @@ public class TowerSelectionManager : MonoBehaviour
     public static TowerSelectionManager Instance {  get; private set; }
 
     [SerializeField] private LayerMask towerMask;
+    [SerializeField] private TowerInfo towerInfoPanel;
     
     private Camera mainCamera;
     private ITowerSelectable currentSelected;
     private ITowerSelectable currentHovered;
+
+    private bool disabled;
+    public bool Disabled => disabled;
+
+    public void DisableSelection() => disabled = true;
+
+    public void EnableSelection() => disabled = false;
 
     private void Awake()
     {
@@ -22,10 +30,13 @@ public class TowerSelectionManager : MonoBehaviour
         Instance = this;
 
         mainCamera = Camera.main;
+        disabled = false;
     }
 
     private void Update()
     {
+        if (disabled) return;
+
         if (TowerControlManager.Instance.InControl) return;
         if (TowerPlacementSystem.Instance.IsPlacing) return;
 
@@ -33,6 +44,8 @@ public class TowerSelectionManager : MonoBehaviour
 
         HandleHover();
         HandleClick();
+
+        UpdateTowerInfoPanel();
     }
 
     private void HandleHover()
@@ -46,23 +59,18 @@ public class TowerSelectionManager : MonoBehaviour
             
             if (hovered != currentHovered)
             {
-                if (currentHovered != null && currentHovered != currentSelected)
-                {
-                    currentHovered.OnHoverExit();
-                }
-
+                currentHovered?.OnHoverExit();
                 currentHovered = hovered;
-
-                if (currentHovered != null && currentHovered != currentSelected)
-                    currentHovered.OnHoverEnter();
+                currentHovered?.OnHoverEnter();
             }
         }
         else
         {
-            if (currentHovered != null && currentHovered != currentSelected)
+            if (currentHovered != null)
+            {
                 currentHovered.OnHoverExit();
-
-            currentHovered = null;
+                currentHovered = null;
+            }
         }
     }
 
@@ -119,6 +127,30 @@ public class TowerSelectionManager : MonoBehaviour
         {
             currentHovered.OnHoverExit();
             currentHovered = null;
+        }
+    }
+
+    private void UpdateTowerInfoPanel()
+    {
+        ITowerSelectable displayTower = currentHovered ?? currentSelected;
+
+        if (displayTower != null)
+        {
+            if (!towerInfoPanel.gameObject.activeSelf)
+            {
+                towerInfoPanel.Show(displayTower);
+            }
+            else
+            {
+                towerInfoPanel.UpdateTowerInfo(displayTower);
+            }
+        }
+        else
+        {
+            if (towerInfoPanel.gameObject.activeSelf)
+            {
+                towerInfoPanel.Hide();
+            }
         }
     }
 }

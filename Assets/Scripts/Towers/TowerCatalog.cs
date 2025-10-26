@@ -8,7 +8,10 @@ public static class TowerCatalog
         15f,
         4f,
         8f,
-        75
+        0.5f,
+        2.0f,
+        75,
+        25
     );
 
     private static readonly TowerData Tesla = new(
@@ -17,7 +20,10 @@ public static class TowerCatalog
         40f,
         6f,
         1.2f,
-        125
+        0.5f,
+        2.0f,
+        125,
+        42
     );
 
     private static readonly TowerData Mortar = new(
@@ -26,7 +32,10 @@ public static class TowerCatalog
         80f,
         7.5f,
         0.6f,
-        200
+        0.5f,
+        2.0f,
+        200,
+        67
     );
 
     private static readonly TowerData Flamethrower = new(
@@ -35,7 +44,10 @@ public static class TowerCatalog
         25f,
         3.5f,
         2.5f,
-        100
+        0.5f,
+        2.0f,
+        100,
+        33
     );
 
     private static readonly TowerData[] Towers =
@@ -52,9 +64,15 @@ public static class TowerCatalog
         2,
     };
 
-    public static TowerData GetTowerDataFromIndex(int index)
+    public static TowerData FromIndex(int index)
     {
         index = Mathf.Clamp(index, 0, Towers.Length - 1);
+        return Towers[index];
+    }
+
+    public static TowerData FromType(TowerTypes type)
+    {
+        int index = Mathf.Clamp((int)type, 0, Towers.Length - 1);
         return Towers[index];
     }
 

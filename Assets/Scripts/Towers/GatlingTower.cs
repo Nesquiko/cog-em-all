@@ -30,7 +30,7 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
 
     [Header("Tower Control Mode")]
     [SerializeField] private Transform controlPoint;
-    [SerializeField] private float sensitivity = 0.01f;
+    [SerializeField] private float sensitivity = 0.75f;
 
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.2f;
@@ -281,4 +281,6 @@ public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
 
         Destroy(fakeTarget, 2f);
     }
+
+    public TowerTypes TowerType() => TowerTypes.Gatling;
 }
