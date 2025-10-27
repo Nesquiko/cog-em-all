@@ -28,27 +28,11 @@ class Spawner : MonoBehaviour
         Assert.IsNotNull(splineContainer);
         Assert.IsTrue(splineContainer.Splines.Count > 0);
 
-        if (!wave.enabled)
-        {
-            Debug.Log($"skipping disabled wave {waveIndex}");
-            yield break;
-        }
-
-        if (wave.prepareTimeSeconds > 0f)
-        {
-            Debug.Log($"wave {waveIndex} preparing for {wave.prepareTimeSeconds:F2}s");
-            yield return new WaitForSeconds(wave.prepareTimeSeconds);
-        }
-
-        Debug.Log($"starting wave {waveIndex}");
-
         for (int g = 0; g < wave.spawnGroups.Count; g++)
         {
             var group = wave.spawnGroups[g];
             yield return RunSpawnGroup(waveIndex, g, group, splineContainer);
         }
-
-        Debug.Log($"wave {waveIndex} complete");
     }
 
     private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group, SplineContainer splineContainer)

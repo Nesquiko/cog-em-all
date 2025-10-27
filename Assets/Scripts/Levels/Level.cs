@@ -10,12 +10,12 @@ using UnityEngine.Assertions;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
 [RequireComponent(typeof(SplineMeshTools.Core.SplineMesh))]
-[RequireComponent(typeof(Spawner))]
+[RequireComponent(typeof(Orchestator))]
 public class Level : MonoBehaviour
 {
 
     [SerializeField]
-    private Spawner spawner;
+    private Orchestator orchestrator;
 
     [Header("Level JSON (relative to Assets/Levels)")]
     [SerializeField]
@@ -54,7 +54,7 @@ public class Level : MonoBehaviour
     private void Start()
     {
         LoadLevelFromFile(levelFileName);
-        runRoutine = StartCoroutine(RunLevel());
+        runRoutine = StartCoroutine(orchestrator.RunLevel(data, splineContainer));
     }
 
     public void StopLevel()
@@ -72,7 +72,7 @@ public class Level : MonoBehaviour
         LoadLevelFromFile(levelFileName);
 
         if (runRoutine != null) StopCoroutine(runRoutine);
-        runRoutine = StartCoroutine(RunLevel());
+        runRoutine = StartCoroutine(orchestrator.RunLevel(data, splineContainer));
     }
 
     private void LoadLevelFromFile(string fileName)
@@ -97,15 +97,6 @@ public class Level : MonoBehaviour
         }
 
         ApplySplinesToScene();
-    }
-
-    private IEnumerator RunLevel()
-    {
-        for (int w = 0; w < data.waves.Count; w++)
-        {
-            var wave = data.waves[w];
-            yield return spawner.RunSpawnWave(wave, w, splineContainer);
-        }
     }
 
     public string ToJson()
@@ -166,7 +157,7 @@ public class Level : MonoBehaviour
 [CustomEditor(typeof(Level))]
 public class LevelEditorInspector : Editor
 {
-    private SerializedProperty spawnerProp;
+    private SerializedProperty orchestratorProp;
     private SerializedProperty levelFileNameProp;
     private Level level;
     private Vector2 scroll;
@@ -175,7 +166,7 @@ public class LevelEditorInspector : Editor
     {
         level = (Level)target;
         levelFileNameProp = serializedObject.FindProperty("levelFileName");
-        spawnerProp = serializedObject.FindProperty("spawner");
+        orchestratorProp = serializedObject.FindProperty("orchestrator");
     }
 
     public override void OnInspectorGUI()
@@ -184,7 +175,7 @@ public class LevelEditorInspector : Editor
         EditorGUILayout.LabelField("Level", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("This inspector lets you edit waves, import/export JSON, and sync splines. ", MessageType.Info);
 
-        EditorGUILayout.PropertyField(spawnerProp, new GUIContent("Enemy spawner"));
+        EditorGUILayout.PropertyField(orchestratorProp, new GUIContent("Level orchestrator"));
 
         GUILayout.Space(5);
         DrawLevelFileField();
