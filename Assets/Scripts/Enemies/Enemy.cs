@@ -24,6 +24,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private float popupHeightOffset = 10f;
 
+    [SerializeField] private int onKillGearsReward = 10;
+    public int OnKillGearsReward => onKillGearsReward;
+
     public event Action<Enemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
@@ -36,7 +39,13 @@ public class Enemy : MonoBehaviour
     private float pathLength;
     private float lateralOffset;
 
-    public void SetSpline(SplineContainer pathContainer, float startT = 0f, float lateralOffset = 0f)
+    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<Enemy> onDeath)
+    {
+        SetSpline(pathContainer, startT, lateralOffset);
+        OnDeath += onDeath;
+    }
+
+    private void SetSpline(SplineContainer pathContainer, float startT, float lateralOffset)
     {
         Assert.IsNotNull(pathContainer);
         path = pathContainer;

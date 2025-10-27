@@ -62,6 +62,7 @@ MonoBehaviour:
   duration: 0.4
   damagePopupPrefab: {fileID: 3477818805051262252, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
   popupHeightOffset: 5
+  onKillGearsReward: 25
 --- !u!65 &5731813046175760494
 BoxCollider:
   m_ObjectHideFlags: 0

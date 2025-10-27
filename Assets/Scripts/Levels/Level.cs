@@ -10,12 +10,12 @@ using UnityEngine.Assertions;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
 [RequireComponent(typeof(SplineMeshTools.Core.SplineMesh))]
-[RequireComponent(typeof(Orchestator))]
+[RequireComponent(typeof(Orchestrator))]
 public class Level : MonoBehaviour
 {
 
     [SerializeField]
-    private Orchestator orchestrator;
+    private Orchestrator orchestrator;
 
     [Header("Level JSON (relative to Assets/Levels)")]
     [SerializeField]
@@ -185,6 +185,10 @@ public class LevelEditorInspector : Editor
 
         GUILayout.Space(10);
         DrawSplineSyncButtons();
+
+        GUILayout.Space(10);
+        EditorGUILayout.LabelField("Player Resources", EditorStyles.boldLabel);
+        DrawPlayerResourcesEditor();
 
         GUILayout.Space(10);
         EditorGUILayout.LabelField("Waves Editor", EditorStyles.boldLabel);
@@ -489,6 +493,40 @@ public class LevelEditorInspector : Editor
             Debug.LogError($"failed to export level: {e.Message}");
             EditorUtility.DisplayDialog("export Error", e.Message, "OK");
         }
+    }
+
+
+    private void DrawPlayerResourcesEditor()
+    {
+        string beforeJson = level.ToJson();
+        SerializableLevel temp = SerializableLevel.FromJson(beforeJson) ?? new SerializableLevel();
+
+        if (temp.playerResources == null)
+            temp.playerResources = new PlayerResources();
+
+        EditorGUILayout.BeginVertical("box");
+
+        int newInitialGears = EditorGUILayout.IntField(
+            new GUIContent("Initial Gears", "Initial number of gears at the start of the level"),
+            temp.playerResources.initialGears
+        );
+
+        if (!Mathf.Approximately(newInitialGears, temp.playerResources.initialGears))
+        {
+            temp.playerResources.initialGears = newInitialGears;
+
+            string afterJson = SerializableLevel.ToJson(temp);
+            if (afterJson != beforeJson)
+            {
+                level.LoadFromJson(afterJson);
+                EditorUtility.SetDirty(level);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
+                    UnityEngine.SceneManagement.SceneManager.GetActiveScene()
+                );
+            }
+        }
+
+        EditorGUILayout.EndVertical();
     }
 }
 #endif

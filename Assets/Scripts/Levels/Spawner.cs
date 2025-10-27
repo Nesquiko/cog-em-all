@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -23,7 +24,7 @@ class Spawner : MonoBehaviour
     }
 
 
-    public IEnumerator RunSpawnWave(Wave wave, int waveIndex, SplineContainer splineContainer)
+    public IEnumerator RunSpawnWave(Wave wave, int waveIndex, SplineContainer splineContainer, Action<Enemy> onEnemyDeath)
     {
         Assert.IsNotNull(splineContainer);
         Assert.IsTrue(splineContainer.Splines.Count > 0);
@@ -31,11 +32,11 @@ class Spawner : MonoBehaviour
         for (int g = 0; g < wave.spawnGroups.Count; g++)
         {
             var group = wave.spawnGroups[g];
-            yield return RunSpawnGroup(waveIndex, g, group, splineContainer);
+            yield return RunSpawnGroup(waveIndex, g, group, splineContainer, onEnemyDeath);
         }
     }
 
-    private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group, SplineContainer splineContainer)
+    private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group, SplineContainer splineContainer, Action<Enemy> onEnemyDeath)
     {
 
         for (int r = 0; r < group.repeat; r++)
@@ -48,9 +49,9 @@ class Spawner : MonoBehaviour
                 for (int i = 0; i < entry.count; i++)
                 {
                     Enemy enemy = Instantiate(prefab);
-                    float startT = Mathf.Clamp01(Random.Range(spawnTimeStaggerRange.x, spawnTimeStaggerRange.y));
-                    float lateralOffset = Random.Range(spawnLateralOffsetRange.x, spawnLateralOffsetRange.y);
-                    enemy.SetSpline(splineContainer, startT, lateralOffset);
+                    float startT = Mathf.Clamp01(UnityEngine.Random.Range(spawnTimeStaggerRange.x, spawnTimeStaggerRange.y));
+                    float lateralOffset = UnityEngine.Random.Range(spawnLateralOffsetRange.x, spawnLateralOffsetRange.y);
+                    enemy.Initialize(splineContainer, startT, lateralOffset, onEnemyDeath);
 
                     // delay spawn of next enemy in this entry, if the spawnRateSeconds is set to something
                     // greater than 0
@@ -70,7 +71,6 @@ class Spawner : MonoBehaviour
             }
         }
 
-        Debug.Log($"wave {waveIndex} group {groupIndex} pause before next wave {group.pauseAfterLastSpawnSeconds:F2}s");
         yield return new WaitForSeconds(group.pauseAfterLastSpawnSeconds);
     }
 
