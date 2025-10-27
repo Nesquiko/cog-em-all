@@ -10,12 +10,12 @@ using UnityEngine.Assertions;
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
 [RequireComponent(typeof(SplineMeshTools.Core.SplineMesh))]
+[RequireComponent(typeof(Spawner))]
 public class Level : MonoBehaviour
 {
 
-    [Header("Enemy catalog Scriptable Object")]
     [SerializeField]
-    private EnemyCatalog enemyCatalog;
+    private Spawner spawner;
 
     [Header("Level JSON (relative to Assets/Levels)")]
     [SerializeField]
@@ -48,10 +48,7 @@ public class Level : MonoBehaviour
 
     private void Awake()
     {
-        if (splineContainer == null)
-        {
-            splineContainer = GetComponent<SplineContainer>();
-        }
+        splineContainer = GetComponent<SplineContainer>();
     }
 
     private void Start()
@@ -107,67 +104,8 @@ public class Level : MonoBehaviour
         for (int w = 0; w < data.waves.Count; w++)
         {
             var wave = data.waves[w];
-            if (!wave.enabled)
-            {
-                Debug.Log($"skipping disabled wave {w}");
-                continue;
-            }
-
-            if (wave.prepareTimeSeconds > 0f)
-            {
-                Debug.Log($"wave {w} preparing for {wave.prepareTimeSeconds:F2}s");
-                yield return new WaitForSeconds(wave.prepareTimeSeconds);
-            }
-
-            Debug.Log($"starting wave {w}");
-
-            for (int g = 0; g < wave.spawnGroups.Count; g++)
-            {
-                var group = wave.spawnGroups[g];
-                yield return RunSpawnGroup(w, g, group);
-            }
-
-            Debug.Log($"wave {w} complete");
+            yield return spawner.RunSpawnWave(wave, w, splineContainer);
         }
-    }
-
-    private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group)
-    {
-        Assert.IsNotNull(splineContainer);
-        Assert.IsTrue(splineContainer.Splines.Count > 0);
-
-        for (int r = 0; r < group.repeat; r++)
-        {
-            for (int p = 0; p < group.pattern.Count; p++)
-            {
-                var entry = group.pattern[p];
-                Enemy prefab = enemyCatalog.Get(entry.enemy);
-
-                for (int i = 0; i < entry.count; i++)
-                {
-                    Enemy enemy = Instantiate(prefab);
-                    enemy.SetSpline(splineContainer);
-
-                    // delay spawn of next enemy in this entry, if the spawnRateSeconds is set to something
-                    // greater than 0
-                    // if spawn is <= 0, enemies are spawned at once
-                    if (entry.spawnRateSeconds > 0f)
-                    {
-                        yield return new WaitForSeconds(entry.spawnRateSeconds);
-                    }
-                }
-            }
-
-
-            // delay spawn of next cycle of pattern
-            if (group.spawnRateSeconds > 0f)
-            {
-                yield return new WaitForSeconds(group.spawnRateSeconds);
-            }
-        }
-
-        Debug.Log($"wave {waveIndex} group {groupIndex} pause before next wave {group.pauseAfterLastSpawnSeconds:F2}s");
-        yield return new WaitForSeconds(group.pauseAfterLastSpawnSeconds);
     }
 
     public string ToJson()
@@ -228,7 +166,7 @@ public class Level : MonoBehaviour
 [CustomEditor(typeof(Level))]
 public class LevelEditorInspector : Editor
 {
-    private SerializedProperty enemyCatalogProp;
+    private SerializedProperty spawnerProp;
     private SerializedProperty levelFileNameProp;
     private Level level;
     private Vector2 scroll;
@@ -237,7 +175,7 @@ public class LevelEditorInspector : Editor
     {
         level = (Level)target;
         levelFileNameProp = serializedObject.FindProperty("levelFileName");
-        enemyCatalogProp = serializedObject.FindProperty("enemyCatalog");
+        spawnerProp = serializedObject.FindProperty("spawner");
     }
 
     public override void OnInspectorGUI()
@@ -246,9 +184,7 @@ public class LevelEditorInspector : Editor
         EditorGUILayout.LabelField("Level", EditorStyles.boldLabel);
         EditorGUILayout.HelpBox("This inspector lets you edit waves, import/export JSON, and sync splines. ", MessageType.Info);
 
-        serializedObject.Update();
-
-        EditorGUILayout.PropertyField(enemyCatalogProp, new GUIContent("Enemy Catalog"));
+        EditorGUILayout.PropertyField(spawnerProp, new GUIContent("Enemy spawner"));
 
         GUILayout.Space(5);
         DrawLevelFileField();

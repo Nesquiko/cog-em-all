@@ -10,8 +10,24 @@ Tower defense inspiration video https://www.youtube.com/watch?v=f6KTtb1r1lg
 
 ## Ideas
 
-- Towers:
-  - Gatling
-  - Tesla
-  - Mortar
-  - Flamethrower
+Skill trees for factions:
+
+### The brass army
+
+stats: increase damage, crit chance, fire rate
+
+gatling gun bleed
+flamethrower burn
+
+### The Valvebound Seraphs
+
+stats: increase range, base health
+
+tesla tower stun
+mortar slow
+base healing
+armor reduction
+
+### Overpressure Collective
+
+tower overrides
