@@ -5,6 +5,8 @@ using UnityEngine;
 [RequireComponent(typeof(CanvasGroup))]
 public class TowerInfo : MonoBehaviour
 {
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
+
     [Header("References")]
     [SerializeField] private TMP_Text towerTitle;
     [SerializeField] private TMP_Text damageText;
@@ -50,7 +52,7 @@ public class TowerInfo : MonoBehaviour
 
     public void UpdateTowerInfo(ITowerSelectable tower)
     {
-        TowerData data = TowerCatalog.FromType(tower.TowerType());
+        TowerData data = towerDataCatalog.Get(tower.TowerType());
 
         towerTitle.text = data.displayName;
         damageText.text = data.damage.ToString();

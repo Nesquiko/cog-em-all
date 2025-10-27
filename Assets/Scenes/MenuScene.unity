@@ -4413,6 +4413,7 @@ MonoBehaviour:
   - {fileID: 8884071559928029575, guid: b53fe72a14d20fd47ace4e7d463df75c, type: 3}
   - {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
   defaultTowerIndex: 0
+  towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   nameText: {fileID: 1755377117}
   descriptionText: {fileID: 2146823046}
   damageText: {fileID: 2070936522}

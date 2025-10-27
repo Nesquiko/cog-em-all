@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86f894db987266396806b6241003138d, type: 3}
+  m_Name: TowerDataCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::TowerDataCatalog
+  towers:
+  - type: 0
+    displayName: Gatling
+    description: A rapid-fire mechanical gun tower that shreds lightly armored enemies.
+    damage: 15
+    range: 4
+    fireRate: 8
+    critChance: 0.5
+    critMultiplier: 2
+    cost: 75
+    sellPrice: 25
+  - type: 1
+    displayName: Tesla
+    description: Unleashes electric beams that can damage multiple targets at once.
+    damage: 40
+    range: 6
+    fireRate: 1.2
+    critChance: 0.5
+    critMultiplier: 2
+    cost: 125
+    sellPrice: 42
+  - type: 2
+    displayName: Mortar
+    description: Launches explosive shells powered by steam pressure, dealing splash
+      damage.
+    damage: 80
+    range: 7.5
+    fireRate: 0.6
+    critChance: 0.5
+    critMultiplier: 2
+    cost: 200
+    sellPrice: 67
+  - type: 3
+    displayName: Flamethrower
+    description: Locks into a position and spews superheated flames into enemies
+      within range, causing burn over time.
+    damage: 80
+    range: 7.5
+    fireRate: 0.6
+    critChance: 0.5
+    critMultiplier: 2
+    cost: 200
+    sellPrice: 67
