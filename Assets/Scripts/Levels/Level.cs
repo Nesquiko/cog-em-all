@@ -26,7 +26,7 @@ public class Level : MonoBehaviour
     private SplineMeshTools.Core.SplineMesh splineMesh;
     private Coroutine runRoutine;
 
-    private void OnValidate()
+    void OnValidate()
     {
         if (splineContainer == null)
         {
@@ -37,13 +37,6 @@ public class Level : MonoBehaviour
         {
             splineMesh = GetComponent<SplineMeshTools.Core.SplineMesh>();
         }
-
-#if UNITY_EDITOR
-        if (!Application.isPlaying)
-        {
-            LoadLevelFromFile(levelFileName);
-        }
-#endif
     }
 
     private void Awake()
