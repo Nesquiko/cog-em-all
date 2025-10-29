@@ -1,37 +1,45 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
 
 public class Enemy : MonoBehaviour
 {
+    [Header("Attack")]
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float attackRate = 1f;
     [SerializeField] private float attackRange = 1f;
-
     [SerializeField] private SphereCollider sphereCollider;
 
+    [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 100f;
     [SerializeField] private float maxHealthPoints = 100f;
     [SerializeField] private GameObject healthBarGO;
 
+    [Header("Attack Animation")]
     [SerializeField] private float jumpHeight = 0.5f;
     [SerializeField] private float forwardDistance = 0.4f;
     [SerializeField] private float duration = 0.4f;
 
+    [Header("UI")]
     [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private float popupHeightOffset = 10f;
 
     public event Action<Enemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
+    public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
+
     private float t = 0f;
 
     private Nexus targetNexus;
     private float attackCooldown;
     private float originalSpeed;
+
+    private readonly Dictionary<EffectType, Coroutine> activeEffects = new();
 
     public void SetSpline(SplineContainer pathContainer, float startT = 0f)
     {
@@ -63,8 +71,6 @@ public class Enemy : MonoBehaviour
         OnDeath?.Invoke(this);
         Destroy(gameObject);
     }
-
-    public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
 
     void Awake()
     {
@@ -169,5 +175,41 @@ public class Enemy : MonoBehaviour
             targetNexus = null;
             speed = originalSpeed;
         }
+    }
+
+    public void ApplyEffect(EnemyStatusEffect effect)
+    {
+        if (activeEffects.ContainsKey(effect.type))
+        {
+            StopCoroutine(activeEffects[effect.type]);
+        }
+
+        Coroutine routine = StartCoroutine(HandleEffect(effect));
+        activeEffects[effect.type] = routine;
+    }
+
+    private IEnumerator HandleEffect(EnemyStatusEffect effect)
+    {
+        float elapsed = 0f;
+
+        switch (effect.type)
+        {
+            case EffectType.Burning:
+            case EffectType.Bleeding:
+                while(elapsed < effect.duration)
+                {
+                    TakeDamage(effect.tickDamage);
+                    yield return new WaitForSeconds(effect.tickInterval);
+                    elapsed += effect.tickInterval;
+                }
+                break;
+            case EffectType.Slowed:
+                speed = originalSpeed * effect.speedMultiplier;
+                yield return new WaitForSeconds(effect.duration);
+                speed = originalSpeed;
+                break;
+        }
+
+        activeEffects.Remove(effect.type);
     }
 }

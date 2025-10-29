@@ -1010,6 +1010,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: FlamethrowerTower
       objectReference: {fileID: 0}
+    - target: {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4793412355603679537, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 113.92396
@@ -2631,6 +2635,10 @@ PrefabInstance:
     - target: {fileID: 8884071559928029575, guid: b53fe72a14d20fd47ace4e7d463df75c, type: 3}
       propertyPath: m_Name
       value: MortarTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 8884071559928029575, guid: b53fe72a14d20fd47ace4e7d463df75c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4489,6 +4497,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GatlingTower
       objectReference: {fileID: 0}
+    - target: {fileID: 3790200311388746545, guid: 082a34f533816ac40af20f94ec2e00e5, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6129781894339087562, guid: 082a34f533816ac40af20f94ec2e00e5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 156.3
@@ -5636,6 +5648,10 @@ PrefabInstance:
     - target: {fileID: 2884996292687604640, guid: a97b98293661524459f05581e973a1b7, type: 3}
       propertyPath: m_Name
       value: TeslaTower
+      objectReference: {fileID: 0}
+    - target: {fileID: 2884996292687604640, guid: a97b98293661524459f05581e973a1b7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4793412355603679537, guid: a97b98293661524459f05581e973a1b7, type: 3}
       propertyPath: m_LocalPosition.x
