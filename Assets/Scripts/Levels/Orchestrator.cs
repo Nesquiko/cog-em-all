@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -8,8 +10,13 @@ using UnityEngine.Splines;
 class Orchestrator : MonoBehaviour
 {
     [SerializeField] private Spawner spawner;
+    private SerializableLevel level;
+    private int wavesSpawned = 0;
+    private int enemiesLive = 0;
 
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+
+    [SerializeField] private Nexus nexus;
 
     [Header("UI")]
     [SerializeField] private WaveCounterInfo waveCounterInfo;
@@ -27,6 +34,22 @@ class Orchestrator : MonoBehaviour
     private void Awake()
     {
         TowerPlacementSystem.Instance.OnPlace += OnPlaceTower;
+        nexus.OnDestroyed += OnNexusDestroyed;
+    }
+
+    private void Update()
+    {
+        Assert.IsNotNull(level);
+        Assert.IsTrue(wavesSpawned <= level.waves.Count);
+        Assert.IsTrue(enemiesLive >= 0, $"enemies live is not greater or equal to 0, {enemiesLive}");
+
+        if (wavesSpawned == level.waves.Count && enemiesLive == 0)
+        {
+            // TODO luky show operation cleared screen
+            Debug.Log("operation cleared");
+            EditorApplication.isPlaying = false;
+            Application.Quit();
+        }
     }
 
     private void OnPlaceTower(TowerTypes type)
@@ -35,9 +58,19 @@ class Orchestrator : MonoBehaviour
         SpendGears(towerData.cost);
     }
 
+
+    private void OnNexusDestroyed(Nexus nexus)
+    {
+        // TODO luky show operation failed screen
+        Debug.Log("operation failed");
+        EditorApplication.isPlaying = false;
+        Application.Quit();
+    }
+
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer)
     {
         Assert.IsNotNull(level);
+        this.level = level;
 
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);
@@ -61,7 +94,8 @@ class Orchestrator : MonoBehaviour
             yield return nextWaveCountdown.StartCountdown(wave.prepareTimeSeconds);
 
             waveCounterInfo.SetCounter(w + 1, level.waves.Count);
-            yield return spawner.RunSpawnWave(wave, w, splineContainer, AddOnKillGears);
+            yield return spawner.RunSpawnWave(wave, w, splineContainer, OnEnemySpawn, OnEnemyKilled);
+            wavesSpawned += 1;
         }
 
         StopCoroutine(gearsRoutine);
@@ -90,9 +124,15 @@ class Orchestrator : MonoBehaviour
         }
     }
 
-    private void AddOnKillGears(Enemy killed)
+    private void OnEnemySpawn(Enemy spawned)
+    {
+        enemiesLive += 1;
+    }
+
+    private void OnEnemyKilled(Enemy killed)
     {
         AddGears(killed.OnKillGearsReward);
+        enemiesLive -= 1;
     }
 
     public void AddGears(int amount)
@@ -112,7 +152,7 @@ class Orchestrator : MonoBehaviour
     private void UpdateTowerButtons()
     {
         (HashSet<TowerTypes> toEnable, HashSet<TowerTypes> toDisable) = towerDataCatalog.AdjustTowers(gears);
-        
+
         foreach (TowerTypes type in toEnable)
         {
             HUDPanelUI.AdjustTowerButton(type, true);

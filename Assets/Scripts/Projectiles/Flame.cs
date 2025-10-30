@@ -34,11 +34,11 @@ public class Flame : MonoBehaviour
         if (isActive) return;
         isActive = true;
 
-        if (meshRenderer != null) 
+        if (meshRenderer != null)
         {
-            meshRenderer.enabled = true;  
+            meshRenderer.enabled = true;
         }
-        
+
         fireRoutine = StartCoroutine(FlameRoutine());
     }
 

@@ -67,28 +67,26 @@ public class Enemy : MonoBehaviour
         sphereCollider.radius = attackRange;
     }
 
-    public void TakeDamage(float damage, bool isCritical = false)
-    {
-        healthPoints -= damage;
-        healthBarGO.SetActive(true);
-
-        Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
-        DamagePopupManager.Instance.ShowPopup(popupSpawnPosition, damage, isCritical);
-
-        if (healthPoints <= 0f) Die();
-    }
-
     public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
     {
+        // if a second bullet, or a flamethrower burn effect try to kill already dead enemy ignore it...
+        // the enemy doesn't have to be DEAD dead, just dead is enough...
+        if (healthPoints <= 0f) { return; }
+
         healthPoints -= damage;
         if (!healthBarGO.activeSelf) healthBarGO.SetActive(true);
 
         Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
         DamagePopupManager.Instance.ShowPopup(popupSpawnPosition, damage, isCritical);
 
-        if (withEffect != null) ApplyEffect(withEffect);
-
-        if (healthPoints <= 0f) Die();
+        if (healthPoints <= 0)
+        {
+            Die();
+        }
+        else if (withEffect != null)
+        {
+            ApplyEffect(withEffect);
+        }
     }
 
     private void Die()
@@ -213,7 +211,7 @@ public class Enemy : MonoBehaviour
         {
             case EffectType.Burning:
             case EffectType.Bleeding:
-                while(elapsed < effect.duration)
+                while (elapsed < effect.duration)
                 {
                     TakeDamage(effect.tickDamage, isCritical: false);
                     yield return new WaitForSeconds(effect.tickInterval);
