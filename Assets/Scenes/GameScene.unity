@@ -4141,7 +4141,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 676245770}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.13882741, z: 0, w: 0.99031657}
+  m_LocalRotation: {x: -0, y: 0.13882743, z: -0, w: 0.9903166}
   m_LocalPosition: {x: 152.8, y: 5, z: 137}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -4160,11 +4160,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7505b2b3d1143c748b98e862f0539ef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraInputSystem
-  moveSpeed: 75
+  moveSpeed: 150
   rotateSpeed: 75
-  mouseDragMoveCoef: 0.5
+  mouseDragMoveCoef: 0.1
   zoomT: 0
-  zoomSpeed: 1.5
+  zoomSpeed: 2.5
   offsetFar: {x: 0, y: 65, z: -170}
   offsetNear: {x: 0, y: 5, z: -10}
   offsetSmoothTime: 0.15
@@ -8568,6 +8568,7 @@ GameObject:
   - component: {fileID: 1714253384}
   - component: {fileID: 1714253386}
   - component: {fileID: 1714253385}
+  - component: {fileID: 1714253387}
   m_Layer: 5
   m_Name: MinimapImage
   m_TagString: Untagged
@@ -8629,6 +8630,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1714253383}
   m_CullTransparentMesh: 1
+--- !u!114 &1714253387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1714253383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dc34c92ad3353f0ca8b753f660a0854, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Minimap
+  cameraInputSystem: {fileID: 676245772}
+  camereMoveTriggerMouseButton: 1
 --- !u!1 &1723720396
 GameObject:
   m_ObjectHideFlags: 0
@@ -10635,10 +10650,10 @@ SceneRoots:
   m_Roots:
   - {fileID: 330585546}
   - {fileID: 876940705}
+  - {fileID: 676245771}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 2051247752}
-  - {fileID: 676245771}
   - {fileID: 1066359653}
   - {fileID: 920153811}
   - {fileID: 999184460}
