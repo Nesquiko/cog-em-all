@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class FlamethrowerTower : MonoBehaviour, ITowerSelectable
+public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
 {
     [Header("Stats")]
     [SerializeField] private float range = 10f;

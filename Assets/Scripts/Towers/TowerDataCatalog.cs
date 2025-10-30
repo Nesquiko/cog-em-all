@@ -7,9 +7,9 @@ using UnityEngine.Assertions;
 public class TowerDataCatalog : ScriptableObject
 {
     [Tooltip("List of towers available in the game.")]
-    public List<TowerData> towers = new List<TowerData>();
+    public List<TowerData> towers = new();
 
-    private Dictionary<TowerTypes, TowerData> catalog = new Dictionary<TowerTypes, TowerData>();
+    private readonly Dictionary<TowerTypes, TowerData> catalog = new Dictionary<TowerTypes, TowerData>();
 
     public int TowerCount => towers?.Count ?? 0;
 
@@ -42,15 +42,35 @@ public class TowerDataCatalog : ScriptableObject
     public TowerData FromIndex(int i)
     {
         Assert.IsTrue(System.Enum.IsDefined(typeof(TowerTypes), i), $"invalid TowerType value: {i}");
-        return Get((TowerTypes)i);
+        return FromType((TowerTypes)i);
     }
 
-    public TowerData Get(TowerTypes type)
+    public TowerData FromType(TowerTypes type)
     {
         Assert.IsNotNull(catalog);
         Assert.IsTrue(catalog.ContainsKey(type));
         var towerData = catalog[type];
         Assert.IsNotNull(towerData);
         return towerData;
+    }
+
+    public (HashSet<TowerTypes>, HashSet<TowerTypes>) AdjustTowers(int gears)
+    {
+        HashSet<TowerTypes> toEnable = new();
+        HashSet<TowerTypes> toDisable = new();
+
+        foreach (TowerData tower in towers)
+        {
+            if (gears >= tower.cost)
+            {
+                toEnable.Add(tower.type);
+            }
+            else
+            {
+                toDisable.Add(tower.type);
+            }
+        }
+
+        return (toEnable, toDisable);
     }
 }

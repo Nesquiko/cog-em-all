@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -23,6 +24,8 @@ public class TowerPlacementSystem : MonoBehaviour
     private Camera mainCamera;
     private bool isPlacing;
     private bool canPlace;
+
+    public event Action<TowerTypes> OnPlace;
 
     public bool IsPlacing => isPlacing;
 
@@ -99,6 +102,9 @@ public class TowerPlacementSystem : MonoBehaviour
         if (towerPrefab == null || !isPlacing) return;
 
         GameObject towerGO = Instantiate(towerPrefab, position, Quaternion.identity);
+
+        ITower tower = towerPrefab.GetComponent<ITower>();
+        OnPlace?.Invoke(tower.TowerType());
 
         if (buildProgressPrefab != null)
         {

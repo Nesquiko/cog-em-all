@@ -857,12 +857,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 171036878}
+  - component: {fileID: 171036884}
   - component: {fileID: 171036880}
   - component: {fileID: 171036879}
   - component: {fileID: 171036882}
   - component: {fileID: 171036881}
   - component: {fileID: 171036883}
-  - component: {fileID: 171036884}
   m_Layer: 5
   m_Name: HUD
   m_TagString: Untagged
@@ -996,6 +996,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HUDPanelUI
   gearsFill: {fileID: 628273602}
   gearsLabel: {fileID: 81108808}
+  gatlingButton: {fileID: 1750247547}
+  teslaButton: {fileID: 206480507}
+  mortarButton: {fileID: 442701289}
+  flamethrowerButton: {fileID: 629411130}
 --- !u!1001 &191064840
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1918,7 +1922,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 6135
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -5246,7 +5250,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 503
+    m_Bits: 2176
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 8400000, guid: 2d51379555c8bf24ab7b4a5a1f186dca, type: 2}
   m_TargetDisplay: 0
@@ -5347,13 +5351,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 920153811}
+  - component: {fileID: 920153819}
   - component: {fileID: 920153810}
   - component: {fileID: 920153815}
   - component: {fileID: 920153814}
   - component: {fileID: 920153817}
   - component: {fileID: 920153813}
   - component: {fileID: 920153816}
-  - component: {fileID: 920153819}
   - component: {fileID: 920153818}
   m_Layer: 7
   m_Name: Level
@@ -6181,9 +6185,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Orchestator
   spawner: {fileID: 920153818}
+  towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   waveCounterInfo: {fileID: 778685442}
   nextWaveCountdown: {fileID: 230261657}
-  hUDPanelUI: {fileID: 171036884}
+  HUDPanelUI: {fileID: 171036884}
   passiveGearsIncome: 5
 --- !u!1 &936990752
 GameObject:

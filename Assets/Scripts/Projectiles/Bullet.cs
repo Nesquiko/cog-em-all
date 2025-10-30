@@ -44,7 +44,7 @@ public class Bullet : MonoBehaviour
     {
         if (other.TryGetComponent<Enemy>(out var enemy))
         {
-            enemy.TakeDamage(damage, crit);
+            enemy.TakeDamage(damage, crit, withEffect: EnemyStatusEffect.Bleed);
             Destroy(gameObject);
         }
     }

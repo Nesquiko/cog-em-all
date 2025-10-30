@@ -21,7 +21,7 @@ MonoBehaviour:
     fireRate: 8
     critChance: 0.5
     critMultiplier: 2
-    cost: 75
+    cost: 500
     sellPrice: 25
   - type: 1
     displayName: Tesla

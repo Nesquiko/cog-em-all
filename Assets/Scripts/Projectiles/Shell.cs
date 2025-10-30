@@ -68,7 +68,7 @@ public class Shell : MonoBehaviour
         {
             if (c.TryGetComponent<Enemy>(out var e) && damaged.Add(e))
             {
-                e.TakeDamage(damage, crit);
+                e.TakeDamage(damage, crit, withEffect: EnemyStatusEffect.Slow);
             }
         }
 

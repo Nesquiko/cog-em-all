@@ -11,16 +11,20 @@ public enum TowerTypes
     Flamethrower = 3,
 };
 
-public interface ITowerSelectable
+public interface ITower
+{
+    TowerTypes TowerType();
+}
+
+public interface ITowerSelectable : ITower
 {
     void Select();
     void Deselect();
     void OnHoverEnter();
     void OnHoverExit();
-    TowerTypes TowerType();
 }
 
-public interface ITowerControllable
+public interface ITowerControllable : ITower
 {
     Transform GetControlPoint();
     void OnPlayerTakeControl(bool active);

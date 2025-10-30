@@ -29,9 +29,9 @@ public class TowerInfo : MonoBehaviour
         canvasGroup.alpha = 0f;
     }
 
-    public void Show(ITowerSelectable tower)
+    public void Show(TowerTypes towerType)
     {
-        UpdateTowerInfo(tower);
+        UpdateTowerInfo(towerType);
 
         if (fadeRoutine != null) StopCoroutine(fadeRoutine);
 
@@ -50,9 +50,9 @@ public class TowerInfo : MonoBehaviour
         isVisible = false;
     }
 
-    public void UpdateTowerInfo(ITowerSelectable tower)
+    public void UpdateTowerInfo(TowerTypes towerType)
     {
-        TowerData data = towerDataCatalog.Get(tower.TowerType());
+        TowerData data = towerDataCatalog.FromType(towerType);
 
         towerTitle.text = data.displayName;
         damageText.text = data.damage.ToString();

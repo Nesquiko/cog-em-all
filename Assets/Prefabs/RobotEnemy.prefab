@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5868993486279689545}
   - component: {fileID: 4477458519478764428}
   - component: {fileID: 4371134478817514559}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -123,7 +123,7 @@ GameObject:
   - component: {fileID: -4034069556018195297}
   - component: {fileID: 3208976702130640261}
   - component: {fileID: 4224230316246767857}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: RobotEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -146,6 +146,7 @@ Transform:
   - {fileID: 2545543155485493891}
   - {fileID: 8529873751875085342}
   - {fileID: 6621476421797511174}
+  - {fileID: 3069828258526618184}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-4034069556018195297
@@ -173,6 +174,7 @@ MonoBehaviour:
   duration: 0.4
   damagePopupPrefab: {fileID: 3477818805051262252, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
   popupHeightOffset: 5
+  onKillGearsReward: 10
 --- !u!65 &3208976702130640261
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -221,6 +223,72 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1001 &2444042303164555336
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1812148564014596359}
+    m_Modifications:
+    - target: {fileID: 542690607591111222, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_Name
+      value: MinimapIndicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 967914056179289800, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: ca23b0372949cbb408e1aedc11ad522c, type: 2}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+--- !u!4 &3069828258526618184 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 824373204335837696, guid: 21adb03e1d16786459c2d7fe56b404c2, type: 3}
+  m_PrefabInstance: {fileID: 2444042303164555336}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5356469085827838022
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -229,6 +297,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1812148564014596359}
     m_Modifications:
+    - target: {fileID: 13822741683887757, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
     - target: {fileID: 2466284593485129823, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
       propertyPath: enemy
       value: 
@@ -236,6 +308,10 @@ PrefabInstance:
     - target: {fileID: 2877667028861716741, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
       propertyPath: m_Name
       value: HealthBar
+      objectReference: {fileID: 0}
+    - target: {fileID: 2877667028861716741, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4338711070166242392, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
       propertyPath: m_LocalPosition.x
@@ -276,6 +352,10 @@ PrefabInstance:
     - target: {fileID: 4338711070166242392, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5364961476474817396, guid: 9a0b84d28440d7052a528934871f4185, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -343,6 +423,10 @@ PrefabInstance:
     - target: {fileID: 4853324481007960335, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
       propertyPath: m_Name
       value: EnemyAttackTrigger
+      objectReference: {fileID: 0}
+    - target: {fileID: 4853324481007960335, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+      propertyPath: m_Layer
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 5224423403621122902, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
       propertyPath: m_Radius

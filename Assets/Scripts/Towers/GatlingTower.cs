@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class GatlingTower : MonoBehaviour, ITowerSelectable, ITowerControllable
+public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerControllable
 {
     [Header("Stats")]
     [SerializeField] private float fireRate = 1f;

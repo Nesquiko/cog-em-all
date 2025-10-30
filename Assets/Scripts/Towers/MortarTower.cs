@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class MortarTower : MonoBehaviour, ITowerSelectable
+public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
 {
     [Header("Stats")]
     [SerializeField] private float fireRate = 0.5f;

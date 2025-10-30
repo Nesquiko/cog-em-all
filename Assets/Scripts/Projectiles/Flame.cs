@@ -89,13 +89,7 @@ public class Flame : MonoBehaviour
         {
             bool isCritical = Random.value < critChance;
             float damage = isCritical ? damagePerPulse * critMultiplier : damagePerPulse;
-            enemy.TakeDamage(damage, isCritical);
-            enemy.ApplyEffect(new EnemyStatusEffect {
-                type = EffectType.Burning,
-                duration = 5f,
-                tickDamage = 5f,
-                tickInterval = 0.5f
-            });
+            enemy.TakeDamage(damage, isCritical, withEffect: EnemyStatusEffect.Burn);
         }
     }
 }

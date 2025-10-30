@@ -138,11 +138,11 @@ public class TowerSelectionManager : MonoBehaviour
         {
             if (!towerInfoPanel.gameObject.activeSelf)
             {
-                towerInfoPanel.Show(displayTower);
+                towerInfoPanel.Show(displayTower.TowerType());
             }
             else
             {
-                towerInfoPanel.UpdateTowerInfo(displayTower);
+                towerInfoPanel.UpdateTowerInfo(displayTower.TowerType());
             }
         }
         else

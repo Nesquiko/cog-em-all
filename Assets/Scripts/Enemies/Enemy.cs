@@ -72,8 +72,21 @@ public class Enemy : MonoBehaviour
         healthPoints -= damage;
         healthBarGO.SetActive(true);
 
-        Vector3 spawnPosition = transform.position + Vector3.up * popupHeightOffset;
-        DamagePopupManager.Instance.ShowPopup(spawnPosition, damage, isCritical);
+        Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
+        DamagePopupManager.Instance.ShowPopup(popupSpawnPosition, damage, isCritical);
+
+        if (healthPoints <= 0f) Die();
+    }
+
+    public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
+    {
+        healthPoints -= damage;
+        if (!healthBarGO.activeSelf) healthBarGO.SetActive(true);
+
+        Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
+        DamagePopupManager.Instance.ShowPopup(popupSpawnPosition, damage, isCritical);
+
+        if (withEffect != null) ApplyEffect(withEffect);
 
         if (healthPoints <= 0f) Die();
     }
@@ -111,8 +124,7 @@ public class Enemy : MonoBehaviour
         Vector3 up = Vector3.up;
         Vector3 right = Vector3.Cross(up, tangent).normalized;
 
-        transform.position = position + right * lateralOffset;
-        transform.rotation = Quaternion.LookRotation(tangent);
+        transform.SetPositionAndRotation(position + right * lateralOffset, Quaternion.LookRotation(tangent));
     }
 
     private void AttackNexus()
@@ -203,7 +215,7 @@ public class Enemy : MonoBehaviour
             case EffectType.Bleeding:
                 while(elapsed < effect.duration)
                 {
-                    TakeDamage(effect.tickDamage);
+                    TakeDamage(effect.tickDamage, isCritical: false);
                     yield return new WaitForSeconds(effect.tickInterval);
                     elapsed += effect.tickInterval;
                 }

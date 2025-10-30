@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class TeslaTower : MonoBehaviour, ITowerSelectable
+public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable
 {
     [Header("Stats")]
     [SerializeField] private float fireRate = 1f;
