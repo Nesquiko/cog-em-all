@@ -28,6 +28,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private float popupHeightOffset = 10f;
 
+    [SerializeField] private int onKillGearsReward = 10;
+    public int OnKillGearsReward => onKillGearsReward;
+
     public event Action<Enemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
@@ -41,13 +44,22 @@ public class Enemy : MonoBehaviour
 
     private readonly Dictionary<EffectType, Coroutine> activeEffects = new();
 
-    public void SetSpline(SplineContainer pathContainer, float startT = 0f)
-    {
-        path = pathContainer;
-        t = Mathf.Clamp01(startT);
+    private float pathLength;
+    private float lateralOffset;
 
-        Assert.IsNotNull(path);
-        transform.position = path.EvaluatePosition(0, t);
+    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<Enemy> onDeath)
+    {
+        SetSpline(pathContainer, startT, lateralOffset);
+        OnDeath += onDeath;
+    }
+
+    private void SetSpline(SplineContainer pathContainer, float startT, float lateralOffset)
+    {
+        Assert.IsNotNull(pathContainer);
+        path = pathContainer;
+        pathLength = path.CalculateLength();
+        t = Mathf.Clamp01(startT);
+        this.lateralOffset = lateralOffset;
     }
 
     public void Start()
@@ -62,7 +74,7 @@ public class Enemy : MonoBehaviour
 
         Vector3 spawnPosition = transform.position + Vector3.up * popupHeightOffset;
         DamagePopupManager.Instance.ShowPopup(spawnPosition, damage, isCritical);
-        
+
         if (healthPoints <= 0f) Die();
     }
 
@@ -92,22 +104,15 @@ public class Enemy : MonoBehaviour
 
     private void FollowPath()
     {
-        Assert.IsNotNull(path);
-
-        float length = path.CalculateLength();
-        if (length <= 0.001f) return;
-
-        t += speed / length * Time.deltaTime;
-        if (t > 1f) t -= 1f;
+        t = Mathf.Repeat(t + speed / pathLength * Time.deltaTime, 1f);
 
         Vector3 position = path.EvaluatePosition(0, t);
         Vector3 tangent = path.EvaluateTangent(0, t);
+        Vector3 up = Vector3.up;
+        Vector3 right = Vector3.Cross(up, tangent).normalized;
 
-        transform.position = new Vector3(position.x, position.y, position.z);
-        if (tangent != Vector3.zero)
-        {
-            transform.rotation = Quaternion.LookRotation(tangent);
-        }
+        transform.position = position + right * lateralOffset;
+        transform.rotation = Quaternion.LookRotation(tangent);
     }
 
     private void AttackNexus()

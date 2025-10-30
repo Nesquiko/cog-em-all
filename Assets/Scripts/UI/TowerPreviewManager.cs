@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Assertions;
 
 public class TowerPreviewManager : MonoBehaviour
 {
@@ -11,6 +12,7 @@ public class TowerPreviewManager : MonoBehaviour
     [Header("Tower Prefabs")]
     [SerializeField] private GameObject[] towerPrefabs;
     [SerializeField] private int defaultTowerIndex = 0;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("UI References")]
     [SerializeField] private TMP_Text nameText;
@@ -50,8 +52,8 @@ public class TowerPreviewManager : MonoBehaviour
 
     private void UpdateTowerStats(int index)
     {
-        TowerData data = TowerCatalog.FromIndex(index);
-        if (data == null) return;
+        TowerData data = towerDataCatalog.FromIndex(index);
+        Assert.IsNotNull(data);
 
         if (nameText) nameText.text = data.displayName;
         if (descriptionText) descriptionText.text = data.description;

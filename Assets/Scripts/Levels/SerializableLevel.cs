@@ -5,6 +5,7 @@ using UnityEngine;
 [System.Serializable]
 public class SerializableLevel
 {
+    public PlayerResources playerResources;
     public List<Wave> waves = new List<Wave>();
     public List<Spline> pathSplines = new List<Spline>();
 
@@ -79,4 +80,14 @@ public class PatternEntry
     /// spawn rate between each enemy in this entry, if set to 0, `count` of enemies will spawn at once
     /// </summary> 
     public float spawnRateSeconds = 0f;
+}
+
+[System.Serializable]
+public class PlayerResources
+{
+
+    /// <summary> 
+    /// intial number of gears at the start of a level
+    /// </summary> 
+    public int initialGears = 0;
 }

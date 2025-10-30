@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class TowerData
 {
+    public TowerTypes type;
     public string displayName;
-    public string description;
+    [TextArea] public string description;
     public float damage;
     public float range;
     public float fireRate;
@@ -12,8 +15,9 @@ public class TowerData
     public int cost;
     public int sellPrice;
 
-    public TowerData(string displayName, string description, float damage, float range, float fireRate, float critChance, float critMultiplier, int cost, int sellPrice)
+    public TowerData(TowerTypes type, string displayName, string description, float damage, float range, float fireRate, float critChance, float critMultiplier, int cost, int sellPrice)
     {
+        this.type = type;
         this.displayName = displayName;
         this.description = description;
         this.damage = damage;

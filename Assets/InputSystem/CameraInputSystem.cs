@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using UnityEngine.Assertions;
+using UnityEngine.EventSystems;
 
 public class CameraInputSystem : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class CameraInputSystem : MonoBehaviour
     [SerializeField] private CinemachineCamera cinemachineCamera;
     private CinemachineFollow cinemachineFollow;
 
-    private void Awake()
+    void Awake()
     {
         cameraInputActions = new CameraInputActions();
         cameraInputActions.Camera.Enable();
@@ -45,6 +46,14 @@ public class CameraInputSystem : MonoBehaviour
         cinemachineFollow.FollowOffset = currentOffset;
     }
 
+    public void MoveCameraInViewableZone(Vector2 to)
+    {
+        Vector3 target = new(to.x, transform.position.y, to.y);
+        target.x = Mathf.Clamp(target.x + mapMinX, mapMinX, mapMaxX);
+        target.z = Mathf.Clamp(target.z + mapMinZ, mapMinZ, mapMaxZ);
+        transform.position = target;
+    }
+
     private void FixedUpdate()
     {
         // Keyboard moving
@@ -52,7 +61,9 @@ public class CameraInputSystem : MonoBehaviour
         var inputMoveVec3 = new Vector3(input.x, 0, input.y);
 
         // Mouse drag moving
-        if (cameraInputActions.Camera.MouseShouldDrag.IsPressed())
+        var isOverUIElement = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
+
+        if (!isOverUIElement && cameraInputActions.Camera.MouseShouldDrag.IsPressed())
         {
             var mouseDelta = cameraInputActions.Camera.MouseDragMovement.ReadValue<Vector2>();
             inputMoveVec3.x = -(mouseDelta.x * mouseDragMoveCoef);
