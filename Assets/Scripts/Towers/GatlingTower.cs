@@ -24,8 +24,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerContr
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private Canvas uiCanvas;
-    [SerializeField] private TowerOverlay towerOverlayPrefab;
+    [SerializeField] private GameObject towerOverlay;
     [SerializeField] private CursorSettings cursorSettings;
 
     [Header("Tower Control Mode")]
@@ -47,8 +46,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerContr
     private Coroutine recoilRoutineR;
 
     private bool shootFromLeftFirePoint = true;
-
-    private TowerOverlay activeTowerOverlay;
 
     private bool underPlayerControl;
     private float yaw;
@@ -179,25 +176,15 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerContr
     public void Select()
     {
         rangeIndicator.SetActive(true);
-        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
-
-        if (activeTowerOverlay == null)
-        {
-            activeTowerOverlay = Instantiate(towerOverlayPrefab, uiCanvas.transform);
-            activeTowerOverlay.SetTarget(transform);
-        }
+        towerOverlay.SetActive(true);
+        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);    
     }
 
     public void Deselect()
     {
         rangeIndicator.SetActive(false);
+        towerOverlay.SetActive(false);
         TowerMechanics.ClearHighlight(highlightRenderers);
-
-        if (activeTowerOverlay != null)
-        {
-            Destroy(activeTowerOverlay.gameObject);
-            activeTowerOverlay = null;
-        }
     }
 
     public void OnHoverEnter()

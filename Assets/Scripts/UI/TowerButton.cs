@@ -13,7 +13,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     private Vector2 pressPosition;
     private bool draggedEnough;
 
-    private bool enabled = false;
+    private bool isEnabled = false;
 
     private void Awake()
     {
@@ -22,13 +22,13 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!enabled) return;
+        if (!isEnabled) return;
         TowerPlacementSystem.Instance.BeginPlacement(towerPrefab);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!enabled) return;   
+        if (!isEnabled) return;   
         pressPosition = Mouse.current.position.ReadValue();
         isPressing = true;
         draggedEnough = false;
@@ -36,7 +36,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!enabled) return;
+        if (!isEnabled) return;
         if (draggedEnough && TowerPlacementSystem.Instance.IsPlacing)
         {
             TowerPlacementSystem.Instance.TryPlaceAtMouse();
@@ -49,7 +49,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 
     private void Update()
     {
-        if (!enabled) return;
+        if (!isEnabled) return;
         if (!isPressing) return;
 
         Vector2 currentPosition = Mouse.current.position.ReadValue();
@@ -68,7 +68,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 
     public void Enable(bool enable)
     {
-        enabled = enable;
+        isEnabled = enable;
         canvasGroup.alpha = enable ? 1f : 0.5f;
     }
 }

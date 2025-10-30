@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(Spawner))]
 class Orchestrator : MonoBehaviour
@@ -18,7 +17,9 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private HUDPanelUI HUDPanelUI;
 
     [Header("Player resources")]
-    [SerializeField] private int passiveGearsIncome = 10;
+    [SerializeField] private int passiveIncome = 10;
+    [SerializeField] private float passiveTick = 5f;
+
     private int gears = 0;
 
     public int Gears => gears;
@@ -37,7 +38,10 @@ class Orchestrator : MonoBehaviour
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer)
     {
         Assert.IsNotNull(level);
+
         gears = level.playerResources.initialGears;
+        HUDPanelUI.UpdateGears(gears);
+        UpdateTowerButtons();
 
         waveCounterInfo.SetCounter(0, level.waves.Count);
 
@@ -65,11 +69,24 @@ class Orchestrator : MonoBehaviour
 
     private IEnumerator PassiveGearsIncomeRoutine()
     {
-        var wait = new WaitForSeconds(1f);
+        float timer = 0f;
+
         while (true)
         {
-            AddGears(passiveGearsIncome);
-            yield return wait;
+            timer += Time.deltaTime;
+
+            float progress = timer / passiveTick;
+            progress = Mathf.Clamp01(progress);
+
+            HUDPanelUI.SetPassiveGearsIncomeProgress(progress);
+
+            if (timer >= passiveTick)
+            {
+                AddGears(passiveIncome);
+                timer = 0f;
+            }
+
+            yield return null;
         }
     }
 

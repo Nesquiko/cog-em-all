@@ -28,8 +28,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private Canvas uiCanvas;
-    [SerializeField] private TowerOverlay towerOverlayPrefab;
+    [SerializeField] private GameObject towerOverlay;
     [SerializeField] private CursorSettings cursorSettings;
 
     [Header("Recoil")]
@@ -44,8 +43,6 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
 
     private Vector3 cannonPivotDefaultPosition;
     private Coroutine recoilRoutine;
-
-    private TowerOverlay activeTowerOverlay;
 
     private void OnDrawGizmosSelected()
     {
@@ -262,26 +259,16 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
     {
         outerRangeIndicator.SetActive(true);
         innerRangeIndicator.SetActive(true);
+        towerOverlay.SetActive(true);
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
-    
-        if (activeTowerOverlay == null)
-        {
-            activeTowerOverlay = Instantiate(towerOverlayPrefab, uiCanvas.transform);
-            activeTowerOverlay.SetTarget(transform);
-        }
     }
 
     public void Deselect()
     {
         outerRangeIndicator.SetActive(false);
         innerRangeIndicator.SetActive(false);
+        towerOverlay.SetActive(false);
         TowerMechanics.ClearHighlight(highlightRenderers);
-
-        if (activeTowerOverlay != null)
-        {
-            Destroy(activeTowerOverlay.gameObject);
-            activeTowerOverlay = null;
-        }
     }
 
     public void OnHoverEnter()

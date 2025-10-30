@@ -11,6 +11,7 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private TowerButton teslaButton;
     [SerializeField] private TowerButton mortarButton;
     [SerializeField] private TowerButton flamethrowerButton;
+    [SerializeField] private Image gearsPassiveFill;
 
     public void UpdateGears(int amount)
     {
@@ -34,5 +35,10 @@ public class HUDPanelUI : MonoBehaviour
                 flamethrowerButton.Enable(enable);
                 break;
         }
+    }
+
+    public void SetPassiveGearsIncomeProgress(float progress)
+    {
+        gearsPassiveFill.fillAmount = progress;
     }
 }
