@@ -6,12 +6,17 @@ using UnityEngine.Assertions;
 [CreateAssetMenu(fileName = "TowerDataCatalog", menuName = "Scriptable Objects/TowerDataCatalog")]
 public class TowerDataCatalog : ScriptableObject
 {
-    [Tooltip("List of towers available in the game.")]
-    public List<TowerData> towers = new();
+    [SerializeField, Tooltip("List of towers available in the game.")]
+    private List<TowerData> towers = new();
 
-    private readonly Dictionary<TowerTypes, TowerData> catalog = new Dictionary<TowerTypes, TowerData>();
+    [SerializeField, Tooltip("List of levels available for each tower.")]
+    private List<int> towerLevels = new();
 
-    public int TowerCount => towers?.Count ?? 0;
+    private readonly Dictionary<TowerTypes, TowerData> catalog = new();
+
+    public int TowerCount => towers.Count;
+
+    public int TowerLevelsCount => towerLevels.Count;
 
     private void OnEnable()
     {

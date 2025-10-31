@@ -55,3 +55,4 @@ MonoBehaviour:
     critMultiplier: 2
     cost: 200
     sellPrice: 67
+  towerLevels: 000000000100000002000000

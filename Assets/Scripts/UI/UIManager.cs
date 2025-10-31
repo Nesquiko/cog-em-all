@@ -35,6 +35,11 @@ public class UIManager : MonoBehaviour
         ShowPanel(loadGamePanel);
     }
 
+    public void HandleBackToHomeClick()
+    {
+        ShowPanel(homePanel);
+    }
+
     public void HandleQuitClick()
     {
         Application.Quit();

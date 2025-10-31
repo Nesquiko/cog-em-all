@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,21 +8,13 @@ public static class SceneLoader
     private static string targetScene;
     private static readonly float minimumLoadingTime = 1.5f;
 
-    public static void LoadScene(string sceneName, bool showLoadingScreen)
+    public static void LoadScene(string sceneName)
     {
         targetScene = sceneName;
-
-        if (showLoadingScreen)
-        {
-            SceneManager.LoadScene("LoadScene");
-        }
-        else
-        {
-            SceneManager.LoadScene(sceneName);
-        }
+        SceneManager.LoadScene("LoadScene");
     }
 
-    public static IEnumerator LoadTargetScene(LoadingScreenUI ui)
+    public static IEnumerator LoadTargetScene(Action<float> onProgress)
     {
         yield return null;
 
@@ -34,13 +27,13 @@ public static class SceneLoader
         while (!async.isDone)
         {
             progress = Mathf.Clamp01(async.progress / 0.9f);
-            ui.SetProgress(progress);
+            onProgress?.Invoke(progress);
 
             timer += Time.deltaTime;
 
             if (async.progress >= 0.9f && timer >= minimumLoadingTime)
             {
-                ui.SetProgress(1f);
+                onProgress?.Invoke(1f);
                 async.allowSceneActivation = true;
             }
 
