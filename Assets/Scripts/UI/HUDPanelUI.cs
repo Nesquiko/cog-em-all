@@ -7,11 +7,45 @@ public class HUDPanelUI : MonoBehaviour
     [Header("References")]
     [SerializeField] private Image gearsFill;
     [SerializeField] private TextMeshProUGUI gearsLabel;
+    [SerializeField] private Image gearsPassiveFill;
+    [SerializeField] private GameObject towerButtonsPanel;
     [SerializeField] private TowerButton gatlingButton;
     [SerializeField] private TowerButton teslaButton;
     [SerializeField] private TowerButton mortarButton;
     [SerializeField] private TowerButton flamethrowerButton;
-    [SerializeField] private Image gearsPassiveFill;
+    [SerializeField] private GameObject placementInfoPanel;
+    [SerializeField] private TextMeshProUGUI placementTowerNameLabel;
+    [SerializeField] private TextMeshProUGUI placementTowerCostLabel;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
+    [SerializeField] private TowerPlacementSystem towerPlacementSystem;
+
+    private void Start()
+    {
+        towerButtonsPanel.SetActive(true);
+        placementInfoPanel.SetActive(false);
+    }
+
+    public void ShowPlacementInfo(TowerTypes towerType)
+    {
+        TowerData towerData = towerDataCatalog.FromType(towerType);
+
+        placementTowerNameLabel.text = towerData.displayName;
+        placementTowerCostLabel.text = $"{towerData.cost} Gears";
+
+        towerButtonsPanel.SetActive(false);
+        placementInfoPanel.SetActive(true);
+    }
+
+    public void HidePlacementInfo()
+    {
+        towerButtonsPanel.SetActive(true);
+        placementInfoPanel.SetActive(false);
+    }
+
+    public void OnCancelPlacement()
+    {
+        towerPlacementSystem.CancelPlacement();
+    }
 
     public void UpdateGears(int amount)
     {

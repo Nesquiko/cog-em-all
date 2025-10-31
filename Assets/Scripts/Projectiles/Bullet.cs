@@ -23,12 +23,12 @@ public class Bullet : MonoBehaviour
         flightDirection = (target.position - transform.position).normalized;
     }
 
-    void Start()
+    private void Start()
     {
         Destroy(gameObject, lifetime);
     }
 
-    void Update()
+    private void Update()
     {
         if (target != null)
         {
@@ -40,7 +40,7 @@ public class Bullet : MonoBehaviour
         transform.Rotate(90f, 0f, 0f);
     }
 
-    void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.TryGetComponent<Enemy>(out var enemy))
         {

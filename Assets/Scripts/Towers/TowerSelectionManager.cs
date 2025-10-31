@@ -4,7 +4,8 @@ using UnityEngine.EventSystems;
 
 public class TowerSelectionManager : MonoBehaviour
 {
-    public static TowerSelectionManager Instance {  get; private set; }
+    [SerializeField] private TowerControlManager towerControlManager;
+    [SerializeField] private TowerPlacementSystem towerPlacementSystem;
 
     [SerializeField] private LayerMask towerMask;
     [SerializeField] private TowerInfo towerInfoPanel;
@@ -20,15 +21,10 @@ public class TowerSelectionManager : MonoBehaviour
 
     public void EnableSelection() => disabled = false;
 
+    public ITowerSelectable CurrentSelected() => currentSelected;
+
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
         mainCamera = Camera.main;
         disabled = false;
     }
@@ -37,8 +33,8 @@ public class TowerSelectionManager : MonoBehaviour
     {
         if (disabled) return;
 
-        if (TowerControlManager.Instance.InControl) return;
-        if (TowerPlacementSystem.Instance.IsPlacing) return;
+        if (towerControlManager.InControl) return;
+        if (towerPlacementSystem.IsPlacing) return;
 
         if (Mouse.current == null) return;
 
@@ -77,6 +73,11 @@ public class TowerSelectionManager : MonoBehaviour
     private void HandleClick()
     {
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+
+        if (Keyboard.current.fKey.wasPressedThisFrame)
+        {
+            DeselectCurrent();
+        }
 
         if (Mouse.current.leftButton.wasPressedThisFrame)
         {

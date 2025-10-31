@@ -24,12 +24,10 @@ public class DamagePopup : MonoBehaviour
     private Color startColor;
     private bool isActive;
     private float initialScale;
-    private Camera mainCamera;
     private float lastDistance = 1f;
 
-    public void Initialize(Camera camera)
+    public void Initialize()
     {
-        mainCamera = camera;
         text = GetComponentInChildren<TextMeshPro>();
         initialScale = transform.localScale.x;
     }

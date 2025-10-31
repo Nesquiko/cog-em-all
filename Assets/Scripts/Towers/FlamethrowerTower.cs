@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
+public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
 {
     [Header("Stats")]
     [SerializeField] private float range = 10f;
@@ -21,7 +21,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private GameObject towerOverlay;
+    [SerializeField] private GameObject towerOverlayPrefab;
+    [SerializeField] private GameObject towerRotationOverlayPrefab;
     [SerializeField] private CursorSettings cursorSettings;
 
     private readonly Dictionary<int, Enemy> enemiesInRange = new();
@@ -32,6 +33,14 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
 
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
+
+    private GameObject towerOverlay;
+    private GameObject towerRotationOverlay;
+
+    private TowerSellManager towerSellManager;
+    private TowerSelectionManager towerSelectionManager;
+
+    private bool underPlayerRotation = false;
 
     private void OnDrawGizmosSelected()
     {
@@ -56,6 +65,22 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
         Handles.DrawLine(position, position + endDirection * radius);
     }
 
+    private void Awake()
+    {
+        Canvas canvas = FindFirstObjectByType<Canvas>();
+
+        towerOverlay = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlay.GetComponent<TowerOverlay>().SetTarget(transform);
+        towerOverlay.SetActive(false);
+
+        towerRotationOverlay = Instantiate(towerRotationOverlayPrefab, canvas.transform, true);
+        towerRotationOverlay.GetComponent<TowerRotationOverlay>().SetTarget(transform);
+        towerRotationOverlay.SetActive(false);
+
+        towerSellManager = FindFirstObjectByType<TowerSellManager>();
+        towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
+    }
+
     private void Start()
     {
         Assert.IsNotNull(flameCollider);
@@ -78,10 +103,20 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
 
     private void Update()
     {
+        if (underPlayerRotation) return;
+
         if (!isCoolingDown && enemiesInRange.Count > 0 && activeFlame != null)
         {
             Shoot();
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (activeFlame != null)
+        {
+            activeFlame.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
+        }   
     }
 
     private void Shoot()
@@ -147,14 +182,17 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
     public void Select()
     {
         rangeIndicator.SetActive(true);
-        towerOverlay.SetActive(true);
+        towerOverlay.GetComponent<TowerOverlay>().Show();
+        towerRotationOverlay.GetComponent<TowerRotationOverlay>().Hide();
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
     }
 
     public void Deselect()
     {
         rangeIndicator.SetActive(false);
-        towerOverlay.SetActive(false);
+        towerOverlay.GetComponent<TowerOverlay>().Hide();
+        towerRotationOverlay.GetComponent<TowerRotationOverlay>().Hide();
+        EndManualRotation();
         TowerMechanics.ClearHighlight(highlightRenderers);
     }
 
@@ -168,6 +206,58 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable
     {
         Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
         TowerMechanics.ClearHighlight(highlightRenderers);
+    }
+
+    public void ShowTowerOverlay()
+    {
+        EndManualRotation();
+        towerOverlay.GetComponent<TowerOverlay>().Show();
+        towerRotationOverlay.GetComponent<TowerRotationOverlay>().Hide();
+    }
+
+    public void ShowTowerRotationOverlay()
+    {
+        BeginManualRotation();
+        towerRotationOverlay.GetComponent<TowerRotationOverlay>().Show();
+        towerOverlay.GetComponent<TowerOverlay>().Hide();
+    }
+
+    public void BeginManualRotation()
+    {
+        underPlayerRotation = true;
+
+        if (activeFlame != null && activeFlame.gameObject.activeSelf)
+        {
+            activeFlame.StopFlame();
+            activeFlame.gameObject.SetActive(false);
+            StopAllCoroutines();
+            isCoolingDown = false;
+        }
+    }
+
+    public void EndManualRotation()
+    {
+        underPlayerRotation = false;
+    }
+
+    public void SellAndDestroy()
+    {
+        towerSelectionManager.DeselectCurrent();
+        rangeIndicator.SetActive(false);
+        if (activeFlame != null)
+        {
+            activeFlame.StopFlame();
+            activeFlame.gameObject.SetActive(false);
+        }
+
+        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
+        enemiesInRange.Clear();
+
+        towerSellManager.RequestSell(this);
+
+        Destroy(towerOverlay);
+        Destroy(towerRotationOverlay);
+        Destroy(gameObject);
     }
 
     public TowerTypes TowerType() => TowerTypes.Flamethrower;

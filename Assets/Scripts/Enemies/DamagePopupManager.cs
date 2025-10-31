@@ -4,8 +4,6 @@ using UnityEngine.Pool;
 
 public class DamagePopupManager : MonoBehaviour
 {
-    public static DamagePopupManager Instance { get; private set; }
-
     [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private int prewarmCount = 50;
     [SerializeField] private int distanceUpdateEveryFrames = 5;
@@ -17,13 +15,6 @@ public class DamagePopupManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-
         mainCamera = Camera.main;
 
         pool = new(
@@ -45,7 +36,7 @@ public class DamagePopupManager : MonoBehaviour
     private DamagePopup CreatePopup()
     {
         var p = Instantiate(damagePopupPrefab, transform);
-        p.Initialize(mainCamera);
+        p.Initialize();
         return p;
     }
 

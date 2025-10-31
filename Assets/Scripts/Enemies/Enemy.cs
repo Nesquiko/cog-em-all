@@ -47,6 +47,16 @@ public class Enemy : MonoBehaviour
     private float pathLength;
     private float lateralOffset;
 
+    private DamagePopupManager damagePopupManager;
+
+    private void Awake()
+    {
+        damagePopupManager = FindFirstObjectByType<DamagePopupManager>();
+
+        healthPoints = maxHealthPoints;
+        originalSpeed = speed;
+    }
+
     public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<Enemy> onDeath)
     {
         SetSpline(pathContainer, startT, lateralOffset);
@@ -77,7 +87,7 @@ public class Enemy : MonoBehaviour
         if (!healthBarGO.activeSelf) healthBarGO.SetActive(true);
 
         Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
-        DamagePopupManager.Instance.ShowPopup(popupSpawnPosition, damage, isCritical);
+        damagePopupManager.ShowPopup(popupSpawnPosition, damage, isCritical);
 
         if (healthPoints <= 0)
         {
@@ -93,12 +103,6 @@ public class Enemy : MonoBehaviour
     {
         OnDeath?.Invoke(this);
         Destroy(gameObject);
-    }
-
-    void Awake()
-    {
-        healthPoints = maxHealthPoints;
-        originalSpeed = speed;
     }
 
     private void Update()

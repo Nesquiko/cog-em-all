@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -17,6 +16,8 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [SerializeField] private Nexus nexus;
+    [SerializeField] private TowerPlacementSystem towerPlacementSystem;
+    [SerializeField] private TowerSellManager towerSellManager;
 
     [Header("UI")]
     [SerializeField] private WaveCounterInfo waveCounterInfo;
@@ -33,7 +34,8 @@ class Orchestrator : MonoBehaviour
 
     private void Awake()
     {
-        TowerPlacementSystem.Instance.OnPlace += OnPlaceTower;
+        towerPlacementSystem.OnPlace += OnPlaceTower;
+        towerSellManager.OnSellTower += OnSellTower;
         nexus.OnDestroyed += OnNexusDestroyed;
     }
 
@@ -58,6 +60,11 @@ class Orchestrator : MonoBehaviour
         SpendGears(towerData.cost);
     }
 
+    private void OnSellTower(TowerTypes type)
+    {
+        TowerData towerData = towerDataCatalog.FromType(type);
+        AddGears(towerData.sellPrice);
+    }
 
     private void OnNexusDestroyed(Nexus nexus)
     {
@@ -162,5 +169,13 @@ class Orchestrator : MonoBehaviour
         {
             HUDPanelUI.AdjustTowerButton(type, false);
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (towerPlacementSystem != null)
+            towerPlacementSystem.OnPlace -= OnPlaceTower;
+        if (towerSellManager != null)
+            towerSellManager.OnSellTower -= OnSellTower;
     }
 }

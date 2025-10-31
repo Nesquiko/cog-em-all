@@ -5,13 +5,14 @@ using UnityEngine.InputSystem;
 
 public class TowerPlacementSystem : MonoBehaviour
 {
-    public static TowerPlacementSystem Instance { get; private set; }
-
     [Header("References")]
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private LayerMask blockingMask;
     [SerializeField] private LayerMask roadMask;
     [SerializeField] private GameObject buildProgressPrefab;
+    [SerializeField] private HUDPanelUI HUDPanelUI;
+    [SerializeField] private TowerSelectionManager towerSelectionManager;
+    [SerializeField] private PauseManager pauseManager;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
@@ -31,20 +32,16 @@ public class TowerPlacementSystem : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
         mainCamera = Camera.main;
     }
 
     private void Update()
     {
+        if (pauseManager.Paused) return;
+
         if (!isPlacing) return;
 
-        if (Mouse.current.rightButton.wasPressedThisFrame)
+        if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             CancelPlacement();
             return;
@@ -82,13 +79,17 @@ public class TowerPlacementSystem : MonoBehaviour
 
     public void BeginPlacement(GameObject prefab)
     {
-        TowerSelectionManager.Instance.ClearHover();
+        towerSelectionManager.ClearHover();
 
         CancelPlacement();
 
         towerPrefab = prefab;
         isPlacing = true;
         ghostInstance = Instantiate(prefab);
+        TowerTypes towerType = ghostInstance.GetComponent<ITower>().TowerType();
+
+        HUDPanelUI.ShowPlacementInfo(towerType);
+
         int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
         ghostInstance.layer = ghostLayer;
         foreach (Transform t in ghostInstance.GetComponentsInChildren<Transform>(true))
@@ -116,12 +117,14 @@ public class TowerPlacementSystem : MonoBehaviour
         CancelPlacement();
     }
 
-    private void CancelPlacement()
+    public void CancelPlacement()
     {
         isPlacing = false;
         towerPrefab = null;
         if (ghostInstance != null) Destroy(ghostInstance);
         ghostInstance = null;
+
+        HUDPanelUI.HidePlacementInfo();
     }
 
     public void TryPlaceAtMouse()

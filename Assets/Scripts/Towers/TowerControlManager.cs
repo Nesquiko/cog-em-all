@@ -5,13 +5,13 @@ using UnityEngine.InputSystem;
 
 public class TowerControlManager : MonoBehaviour
 {
-    public static TowerControlManager Instance { get; private set; }
-
     [Header("References")]
     [SerializeField] private GameObject playerControlUI;
     [SerializeField] private GameObject HUD;
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private GameObject towerInfoPanel;
+    [SerializeField] private TowerSelectionManager towerSelectionManager;
+    [SerializeField] private PauseManager pauseManager;
     [SerializeField] private float transitionTime = 2.0f;
 
     private Camera mainCamera;
@@ -31,12 +31,6 @@ public class TowerControlManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
         mainCamera = Camera.main;
         brain = mainCamera.GetComponent<CinemachineBrain>();
         playerControlUI.SetActive(false);
@@ -47,8 +41,8 @@ public class TowerControlManager : MonoBehaviour
 
     public void TakeControl(ITowerControllable tower)
     {
-        TowerSelectionManager.Instance.DeselectCurrent();
-        TowerSelectionManager.Instance.DisableSelection();
+        towerSelectionManager.DeselectCurrent();
+        towerSelectionManager.DisableSelection();
 
         if (inControl) return;
 
@@ -62,6 +56,9 @@ public class TowerControlManager : MonoBehaviour
         menuPanel.SetActive(false);
         towerInfoPanel.SetActive(false);
         playerControlUI.SetActive(false);
+
+        tower.OnPlayerTakeControl(true);
+        controlPoint = tower.GetControlPoint();
 
         StartCoroutine(MoveCameraToControlPoint());
     }
@@ -79,7 +76,7 @@ public class TowerControlManager : MonoBehaviour
 
         HUD.SetActive(true);
         menuPanel.SetActive(true);
-        TowerSelectionManager.Instance.DeselectCurrent();
+        towerSelectionManager.DeselectCurrent();
 
         mainCamera.transform.SetParent(null);
         StartCoroutine(ReturnCamera());
@@ -87,9 +84,11 @@ public class TowerControlManager : MonoBehaviour
 
     private void Update()
     {
+        if (pauseManager.Paused) return;
+
         if (!inControl) return;
 
-        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+        if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             ReleaseControl();
             return;
@@ -137,8 +136,6 @@ public class TowerControlManager : MonoBehaviour
         Cursor.visible = false;
 
         playerControlCanvasGroup.blocksRaycasts = true;
-
-        currentTower.OnPlayerTakeControl(true);
         inControl = true;
     }
 
@@ -167,7 +164,7 @@ public class TowerControlManager : MonoBehaviour
             yield return null;
         }
 
-        TowerSelectionManager.Instance.EnableSelection();
+        towerSelectionManager.EnableSelection();
 
         mainCamera.transform.SetPositionAndRotation(endPosition, endRotation);
         playerControlUI.SetActive(false);

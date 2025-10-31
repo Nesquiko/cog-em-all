@@ -9,9 +9,12 @@ public class BuildProgress : MonoBehaviour
     private Vector3 startScale;
     private bool done;
 
+    private bool initialized = false;
+
     public void Initialize(GameObject targetTower)
     {
         towerObject = targetTower;
+        initialized = true;
     }
 
     private void Start()
@@ -21,9 +24,15 @@ public class BuildProgress : MonoBehaviour
         DisableTowerBehaviours();
     }
 
-    void Update()
+    private void Update()
     {
         if (done) return;
+
+        if (initialized && towerObject == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
         timer += Time.deltaTime;
         float progress = Mathf.Clamp01(timer / buildTime);

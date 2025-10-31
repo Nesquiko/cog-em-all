@@ -7,28 +7,36 @@ public class PauseManager : MonoBehaviour
     [Header("Menu References")]
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
+    [SerializeField] private GameObject confirmation;
+
+    [Header("References")]
+    [SerializeField] private TowerSelectionManager towerSelectionManager;
+
+    private ConfirmationDialog confirmationDialog;
 
     private bool isPaused = false;
+
+    public bool Paused => isPaused;
+
+    private void Awake()
+    {
+        confirmationDialog = confirmation.GetComponent<ConfirmationDialog>();
+    }
 
     private void Start()
     {
         pauseMenu.SetActive(false);
         optionsMenu.SetActive(false);
+        confirmation.SetActive(false);
     }
 
     private void Update()
     {
         if (Keyboard.current.escapeKey.wasPressedThisFrame)
         {
-            if (optionsMenu.activeSelf)
+            if (optionsMenu.activeSelf || confirmation.activeSelf)
             {
                 ShowPauseMenu();
-                return;
-            }
-
-            if (TowerControlManager.Instance.InControl)
-            {
-                TowerControlManager.Instance.ReleaseControl();
                 return;
             }
 
@@ -43,7 +51,7 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0f;
         pauseMenu.SetActive(true);
 
-        TowerSelectionManager.Instance.DeselectCurrent();
+        towerSelectionManager.DeselectCurrent();
     }
 
     public void Resume()
@@ -51,40 +59,43 @@ public class PauseManager : MonoBehaviour
         isPaused = false;
         Time.timeScale = 1f;
         pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        confirmation.SetActive(false);
     }
 
     public void TogglePause()
     {
-        isPaused = !isPaused;
-
-        if (optionsMenu.activeSelf)
-        {
-            optionsMenu.SetActive(false);
-            pauseMenu.SetActive(true);
-        }
-        else
-        {
-            pauseMenu.SetActive(!pauseMenu.activeSelf);
-            Time.timeScale = Time.timeScale == 1f ? 0f : 1f;
-        }
+        if (isPaused) Resume();
+        else Pause();
     }
 
     public void ShowOptionsMenu()
     {
         pauseMenu.SetActive(false);
+        confirmation.SetActive(false);
         optionsMenu.SetActive(true);
     }
 
     public void ShowPauseMenu()
     {
         optionsMenu.SetActive(false);
+        confirmation.SetActive(false);
         pauseMenu.SetActive(true);
     }
 
     public void RestartOperation()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        confirmationDialog.Initialize(
+            "Are you sure? All progress will be lost.",
+            "Restart",
+            () => {
+                Time.timeScale = 1f;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+        );
+        confirmation.SetActive(true);
     }
 
     public void ReturnToMainMenu()
@@ -95,8 +106,18 @@ public class PauseManager : MonoBehaviour
 
     public void QuitGame()
     {
-        Time.timeScale = 1f;
-        Application.Quit();
+        pauseMenu.SetActive(false);
+        optionsMenu.SetActive(false);
+        confirmationDialog.Initialize(
+            "Are you sure? All progress will be lost.",
+            "Quit Game",
+            () =>
+            {
+                Time.timeScale = 1f;
+                Application.Quit();
+            }
+        );
+        confirmation.SetActive(true);
     }
 
     public void ToggleShowDamageDealt(bool value)

@@ -1,10 +1,20 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerOverlay : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private Button takeControlButton;
+    [SerializeField] private Button upgradeTowerButton;
+    [SerializeField] private Button sellTowerButton;
+    [SerializeField] private Button rotateTowerButton;
+
     private Camera mainCamera;
     private RectTransform rectTransform;
     private Transform target;
+
+    private TowerControlManager towerControlManager;
+    private TowerSellManager towerSellManager;
 
     public void SetTarget(Transform t)
     {
@@ -16,13 +26,19 @@ public class TowerOverlay : MonoBehaviour
     {
         rectTransform = GetComponent<RectTransform>();
         mainCamera = Camera.main;
+        towerControlManager = FindFirstObjectByType<TowerControlManager>();
+        towerSellManager = FindFirstObjectByType<TowerSellManager>();
+
+        takeControlButton.onClick.AddListener(OnTakeControlClicked);
+        //upgradeTowerButton.onClick.AddListener(OnUpgradeTowerClicked);
+        sellTowerButton.onClick.AddListener(OnSellTowerClicked);
+        rotateTowerButton.onClick.AddListener(OnRotateTowerClicked);
     }
 
     private void LateUpdate()
     {
         if (target == null)
         {
-            gameObject.SetActive(false);
             return;
         }
         Vector3 targetPosition = target.position;
@@ -31,16 +47,43 @@ public class TowerOverlay : MonoBehaviour
     
         if (screenPosition.z < 0)
         {
-            gameObject.SetActive(false);
             return;
         }
 
         rectTransform.position = screenPosition;
     }
 
-    public void OnTakeControlClicked()
+    private void OnTakeControlClicked()
     {
         if (target.TryGetComponent<ITowerControllable>(out var tower))
-            TowerControlManager.Instance.TakeControl(tower);
+            towerControlManager.TakeControl(tower);
+    }
+
+    /*private void OnUpgradeTowerClicked()
+    {
+
+    }*/
+
+    private void OnSellTowerClicked()
+    {
+        if (target.TryGetComponent<ITowerSellable>(out var tower))
+        {
+            tower.SellAndDestroy();
+        }
+    }
+
+    private void OnRotateTowerClicked()
+    {
+        if (target.TryGetComponent<FlamethrowerTower>(out var tower))
+            tower.ShowTowerRotationOverlay();
+    }
+
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+    public void Hide()
+    {
+        gameObject.SetActive(false);
     }
 }

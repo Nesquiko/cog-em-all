@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(CanvasGroup))]
 public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
 {
+    [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private GameObject towerPrefab;
     [SerializeField] private float dragThreshold = 10f;
 
@@ -23,7 +24,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     public void OnPointerClick(PointerEventData eventData)
     {
         if (!isEnabled) return;
-        TowerPlacementSystem.Instance.BeginPlacement(towerPrefab);
+        towerPlacementSystem.BeginPlacement(towerPrefab);
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -37,9 +38,9 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     public void OnPointerUp(PointerEventData eventData)
     {
         if (!isEnabled) return;
-        if (draggedEnough && TowerPlacementSystem.Instance.IsPlacing)
+        if (draggedEnough && towerPlacementSystem.IsPlacing)
         {
-            TowerPlacementSystem.Instance.TryPlaceAtMouse();
+            towerPlacementSystem.TryPlaceAtMouse();
         }
 
         isPressing = false;
@@ -62,7 +63,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
             canvasGroup.blocksRaycasts = false;
             canvasGroup.alpha = 0.7f;
 
-            TowerPlacementSystem.Instance.BeginPlacement(towerPrefab);
+            towerPlacementSystem.BeginPlacement(towerPrefab);
         }
     }
 

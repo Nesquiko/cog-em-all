@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
+public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
 {
     [Header("Stats")]
     [SerializeField] private float fireRate = 0.5f;
@@ -28,7 +28,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private GameObject towerOverlay;
+    [SerializeField] private GameObject towerOverlayPrefab;
     [SerializeField] private CursorSettings cursorSettings;
 
     [Header("Recoil")]
@@ -43,6 +43,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
 
     private Vector3 cannonPivotDefaultPosition;
     private Coroutine recoilRoutine;
+
+    private GameObject towerOverlay;
+
+    private TowerSellManager towerSellManager;
 
     private void OnDrawGizmosSelected()
     {
@@ -62,7 +66,17 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
         Handles.DrawWireDisc(transform.position, Vector3.up, minRange);
     }
 
-    void Start()
+    private void Awake()
+    {
+        Canvas canvas = FindFirstObjectByType<Canvas>();
+        towerOverlay = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlay.GetComponent<TowerOverlay>().SetTarget(transform);
+        towerOverlay.SetActive(false);
+
+        towerSellManager = FindFirstObjectByType<TowerSellManager>();
+    }
+
+    private void Start()
     {
         Assert.IsNotNull(outerCollider);
         outerCollider.radius = maxRange;
@@ -82,7 +96,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
         cannonPivotDefaultPosition = cannonPivot.localPosition;
     }
 
-    void Update()
+    private void Update()
     {
         if (target == null || !IsEnemyValid(target.transform.position))
         {
@@ -281,6 +295,14 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable
     {
         Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
         TowerMechanics.ClearHighlight(highlightRenderers);
+    }
+
+    public void SellAndDestroy()
+    {
+        towerSellManager.RequestSell(this);
+
+        Destroy(towerOverlay);
+        Destroy(gameObject);
     }
 
     public TowerTypes TowerType() => TowerTypes.Mortar;

@@ -32,6 +32,11 @@ public interface ITowerControllable : ITower
     void HandlePlayerFire();
 }
 
+public interface ITowerSellable : ITower
+{
+    void SellAndDestroy();
+}
+
 public static class TowerMechanics
 {
     private static readonly int EmissionColorID = Shader.PropertyToID("_EmissionColor");

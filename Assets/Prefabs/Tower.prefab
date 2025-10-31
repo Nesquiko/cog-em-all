@@ -40,7 +40,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4793412355603679537}
-  - component: {fileID: 8026727741132302050}
   - component: {fileID: 9001280457267446294}
   - component: {fileID: 2313671633153293706}
   m_Layer: 0
@@ -67,23 +66,6 @@ Transform:
   - {fileID: 3293714217340556054}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8026727741132302050
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2884996292687604640}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f69f4784a75715955b9ab0a474e169cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TowerV2
-  bulletPrefab: {fileID: 8737179034312321847, guid: 6c48efdf8227d8043acb3c2834df7dba, type: 3}
-  firePoint: {fileID: 7103826429612278080}
-  fireRate: 1
-  range: 30
-  capsuleCollider: {fileID: 9001280457267446294}
 --- !u!136 &9001280457267446294
 CapsuleCollider:
   m_ObjectHideFlags: 0

@@ -18,6 +18,12 @@ public class ScaleOnHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         targetScale = originalScale;
     }
 
+    private void OnEnable()
+    {
+        rectTransform.localScale = originalScale;
+        targetScale = originalScale;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         targetScale = originalScale * hoverScale;

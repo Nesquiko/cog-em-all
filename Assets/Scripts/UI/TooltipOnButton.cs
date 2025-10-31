@@ -16,6 +16,21 @@ public class TooltipOnButton : MonoBehaviour, IPointerEnterHandler, IPointerExit
         tooltip.alpha = 0f;
     }
 
+    private void OnEnable()
+    {
+        StopAllCoroutines();
+        if (tooltip)
+        {
+            tooltip.alpha = 0f;
+            tooltip.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (fadeRoutine != null) StopCoroutine(fadeRoutine);
