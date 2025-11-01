@@ -10,10 +10,12 @@ public class Nexus : MonoBehaviour
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
 
     public event Action<Nexus> OnDestroyed;
+    public event Action<Nexus> OnHealthChanged;
 
     private void Awake()
     {
         healthPoints = maxHealthPoints;
+        OnHealthChanged?.Invoke(this);
     }
 
     public void TakeDamage(float damage)
@@ -23,6 +25,8 @@ public class Nexus : MonoBehaviour
         {
             healthBarGO.SetActive(true);
         }
+
+        OnHealthChanged?.Invoke(this);
 
         if (healthPoints <= 0f)
         {

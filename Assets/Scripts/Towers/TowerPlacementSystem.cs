@@ -63,7 +63,7 @@ public class TowerPlacementSystem : MonoBehaviour
                 ApplyGhostMaterial(canPlace ? ghostValidMaterial : ghostInvalidMaterial);
             }
 
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+            if (!Mouse.current.leftButton.isPressed && EventSystem.current.IsPointerOverGameObject()) return;
 
             if (Mouse.current.leftButton.wasPressedThisFrame && canPlace)
             {

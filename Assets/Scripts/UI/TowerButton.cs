@@ -16,6 +16,8 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 
     private bool isEnabled = false;
 
+    public bool IsDragging => draggedEnough && isPressing;
+
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();

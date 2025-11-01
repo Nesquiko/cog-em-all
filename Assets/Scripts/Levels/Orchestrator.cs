@@ -23,6 +23,7 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private WaveCounterInfo waveCounterInfo;
     [SerializeField] private NextWaveCountdownInfo nextWaveCountdown;
     [SerializeField] private HUDPanelUI HUDPanelUI;
+    [SerializeField] private MenuPanelUI menuPanelUI;
 
     [Header("Player resources")]
     [SerializeField] private int passiveIncome = 10;
@@ -36,6 +37,7 @@ class Orchestrator : MonoBehaviour
     {
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
+        nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
     }
 
@@ -72,6 +74,11 @@ class Orchestrator : MonoBehaviour
         Debug.Log("operation failed");
         EditorApplication.isPlaying = false;
         Application.Quit();
+    }
+
+    private void OnNexusHealthChange(Nexus nexus)
+    {
+        menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized);
     }
 
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer)
