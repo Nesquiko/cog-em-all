@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -13,7 +16,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private float critMultiplier = 2.0f;
 
     [Header("References")]
-    [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private Bullet bulletPrefab;
     [SerializeField] private Transform gatlingHead;
     [SerializeField] private Transform gatlingGunL;
     [SerializeField] private Transform gatlingGunR;
@@ -50,6 +53,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private bool underPlayerControl;
     private float yaw;
     private float pitch;
+
+    private Func<float, float> CalculateBaseBulletDamage;
 
     private GameObject towerOverlay;
 
@@ -129,18 +134,16 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     void Shoot(Enemy enemy)
     {
+
         Transform gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
-        GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        Bullet bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
 
-        if (bulletGO.TryGetComponent<Bullet>(out var bullet))
-        {
-            bool isCritical = Random.value < critChance;
-            float dmg = bullet.Damage;
-            if (isCritical) dmg *= critMultiplier;
+        bool isCritical = UnityEngine.Random.value < critChance;
+        float dmg = CalculateBaseBulletDamage?.Invoke(bullet.Damage) ?? bullet.Damage;
+        if (isCritical) dmg *= critMultiplier;
 
-            bullet.Initialize(enemy.transform, dmg, isCritical);
-        }
+        bullet.Initialize(enemy.transform, dmg, isCritical);
 
         if (gun == null) return;
 
@@ -191,7 +194,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         rangeIndicator.SetActive(true);
         towerOverlay.SetActive(true);
-        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);    
+        TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
     }
 
     public void Deselect()
@@ -264,15 +267,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         Vector3 aimPoint = firepoint.position + firepoint.forward * 100f;
         GameObject fakeTarget = new();
         fakeTarget.transform.position = aimPoint;
-        
-        GameObject bulletGO = Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(firepoint.forward, Vector3.up));
 
-        if (bulletGO.TryGetComponent<Bullet>(out var bullet))
-        {
-            bool isCritical = Random.value < critChance;
-            float dmg = bullet.Damage * (isCritical ? critMultiplier : 1f);
-            bullet.Initialize(fakeTarget.transform, dmg, isCritical);
-        }
+        Bullet bullet = Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(firepoint.forward, Vector3.up));
+
+        bool isCritical = UnityEngine.Random.value < critChance;
+        float baseBulletDmg = CalculateBaseBulletDamage?.Invoke(bullet.Damage) ?? bullet.Damage;
+        float dmg = baseBulletDmg * (isCritical ? critMultiplier : 1f);
+        bullet.Initialize(fakeTarget.transform, dmg, isCritical);
 
         if (controlPoint.TryGetComponent<CameraRecoil>(out var recoil)) recoil.PlayRecoil();
 
@@ -303,4 +304,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     }
 
     public TowerTypes TowerType() => TowerTypes.Gatling;
+
+    public void SetDamageCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateBaseBulletDamage = f;
+    }
 }

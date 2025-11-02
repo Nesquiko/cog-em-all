@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,7 @@ using UnityEngine;
 public class Flame : MonoBehaviour
 {
     [SerializeField] private float damagePerPulse = 20f;
+    public float DamagePerPulse => damagePerPulse;
     [SerializeField] private float pulseInterval = 0.25f;
     [SerializeField] private float fireDuration = 3f;
 
@@ -29,7 +31,7 @@ public class Flame : MonoBehaviour
         owner = tower;
     }
 
-    public void StartFlame()
+    public void StartFlame(Func<float, float> CalculateBaseFlameDamagePerPulse)
     {
         if (isActive) return;
         isActive = true;
@@ -39,7 +41,7 @@ public class Flame : MonoBehaviour
             meshRenderer.enabled = true;
         }
 
-        fireRoutine = StartCoroutine(FlameRoutine());
+        fireRoutine = StartCoroutine(FlameRoutine(CalculateBaseFlameDamagePerPulse));
     }
 
     public void StopFlame()
@@ -52,7 +54,7 @@ public class Flame : MonoBehaviour
         }
     }
 
-    private IEnumerator FlameRoutine()
+    private IEnumerator FlameRoutine(Func<float, float> CalculateBaseFlameDamagePerPulse)
     {
         float duration = 0f;
         float tickTimer = 0f;
@@ -64,7 +66,7 @@ public class Flame : MonoBehaviour
 
             if (tickTimer >= pulseInterval)
             {
-                DealDamage();
+                DealDamage(CalculateBaseFlameDamagePerPulse?.Invoke(damagePerPulse) ?? damagePerPulse);
                 tickTimer = 0f;
             }
 
@@ -75,7 +77,7 @@ public class Flame : MonoBehaviour
         isActive = false;
     }
 
-    private void DealDamage()
+    private void DealDamage(float baseDamagePerPulse)
     {
         if (owner == null) return;
 
@@ -87,8 +89,8 @@ public class Flame : MonoBehaviour
 
         foreach (Enemy enemy in enemiesInRange)
         {
-            bool isCritical = Random.value < critChance;
-            float damage = isCritical ? damagePerPulse * critMultiplier : damagePerPulse;
+            bool isCritical = UnityEngine.Random.value < critChance;
+            float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
             enemy.TakeDamage(damage, isCritical, withEffect: EnemyStatusEffect.Burn);
         }
     }

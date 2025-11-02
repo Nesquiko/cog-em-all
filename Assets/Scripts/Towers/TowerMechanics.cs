@@ -11,9 +11,18 @@ public enum TowerTypes
     Flamethrower = 3,
 };
 
+public enum TowerAttribute
+{
+    Damage,
+    FireRate,
+    Range,
+}
+
 public interface ITower
 {
     TowerTypes TowerType();
+
+    void SetDamageCalculation(Func<float, float> f);
 }
 
 public interface ITowerSelectable : ITower
@@ -178,7 +187,7 @@ public static class TowerMechanics
     {
         if (renderers == null || renderers.Length == 0) return;
 
-        for (int i = 0;  i < renderers.Length; i++)
+        for (int i = 0; i < renderers.Length; i++)
         {
             Renderer r = renderers[i];
             if (r == null) continue;

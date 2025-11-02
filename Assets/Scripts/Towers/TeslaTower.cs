@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -12,7 +13,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float critMultiplier = 2.0f;
 
     [Header("References")]
-    [SerializeField] private GameObject beamPrefab;
+    [SerializeField] private Beam beamPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private CapsuleCollider capsuleCollider;
     [SerializeField] private GameObject rangeIndicator;
@@ -29,6 +30,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private GameObject towerOverlay;
 
     private TowerSellManager towerSellManager;
+
+    private Func<float, float> CalculateBaseBeamDamage;
 
     void OnDrawGizmosSelected()
     {
@@ -58,7 +61,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private void Update()
     {
         fireCooldown -= Time.deltaTime;
-        
+
         if (target == null)
         {
             target = TowerMechanics.GetClosestEnemy(transform.position, enemiesInRange);
@@ -95,15 +98,12 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private void Shoot(Enemy enemy)
     {
-        GameObject beamGO = Instantiate(beamPrefab, firePoint.position, Quaternion.identity);
+        Beam beam = Instantiate(beamPrefab, firePoint.position, Quaternion.identity);
 
-        if (beamGO.TryGetComponent<Beam>(out var beam))
-        {
-            bool isCritical = Random.value < critChance;
-            float damage = beam.BaseDamage;
-            if (isCritical) damage *= critMultiplier;
-            beam.Initialize(firePoint, enemy.transform, damage, isCritical);
-        }
+        bool isCritical = UnityEngine.Random.value < critChance;
+        float damage = CalculateBaseBeamDamage?.Invoke(beam.BaseDamage) ?? beam.BaseDamage;
+        if (isCritical) damage *= critMultiplier;
+        beam.Initialize(firePoint, enemy.transform, damage, isCritical);
     }
 
     private void OnDestroy()
@@ -146,4 +146,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     }
 
     public TowerTypes TowerType() => TowerTypes.Tesla;
+
+    public void SetDamageCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateBaseBeamDamage = f;
+    }
 }

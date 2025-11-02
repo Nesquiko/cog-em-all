@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -39,6 +40,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private TowerSellManager towerSellManager;
     private TowerSelectionManager towerSelectionManager;
+
+    private Func<float, float> CalculateBaseFlameDamagePerPulse;
 
     private bool underPlayerRotation = false;
 
@@ -90,15 +93,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         rangeIndicator.SetActive(false);
         rangeIndicator.transform.localScale = new(range, rangeIndicator.transform.localScale.y, range);
 
-        if (flamePrefab != null)
-        {
-            Vector3 flamePosition = new(firePoint.position.x, 0f, firePoint.position.z);
-            GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
-            activeFlame = flame.GetComponent<Flame>();
-            activeFlame.SetOwner(this);
-            activeFlame.SetRange(range);
-            flame.SetActive(false);
-        }
+        Vector3 flamePosition = new(firePoint.position.x, 0f, firePoint.position.z);
+        GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
+        activeFlame = flame.GetComponent<Flame>();
+        activeFlame.SetOwner(this);
+        activeFlame.SetRange(range);
+        flame.SetActive(false);
     }
 
     private void Update()
@@ -116,7 +116,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         if (activeFlame != null)
         {
             activeFlame.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
-        }   
+        }
     }
 
     private void Shoot()
@@ -126,7 +126,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.gameObject.SetActive(true);
         activeFlame.SetOwner(this);
         activeFlame.SetRange(range);
-        activeFlame.StartFlame();
+        activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
         StartCoroutine(CooldownRoutine(activeFlame.FireDuration));
     }
@@ -176,7 +176,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private void OnDestroy()
     {
-        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath); 
+        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
     }
 
     public void Select()
@@ -261,4 +261,10 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     }
 
     public TowerTypes TowerType() => TowerTypes.Flamethrower;
+
+    public void SetDamageCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateBaseFlameDamagePerPulse = f;
+    }
 }

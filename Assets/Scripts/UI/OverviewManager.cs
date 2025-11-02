@@ -25,6 +25,8 @@ public class OverviewManager : MonoBehaviour
     [SerializeField] private GameObject enemiesPanel;
     [SerializeField] private GameObject enemyEntryPrefab;
 
+    [SerializeField] private OperationModifiers operationModifiers;
+
     private void Start()
     {
         DisplayFaction();
@@ -70,6 +72,7 @@ public class OverviewManager : MonoBehaviour
 
     public void StartOperation()
     {
+        // TODO use the operationModifiers.LoadModifications to load skill tree effects and other buffs/debuffs
         SceneLoader.LoadScene("GameScene");
     }
 }

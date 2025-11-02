@@ -26,7 +26,7 @@ public class TowerPlacementSystem : MonoBehaviour
     private bool isPlacing;
     private bool canPlace;
 
-    public event Action<TowerTypes> OnPlace;
+    public event Action<ITower> OnPlace;
 
     public bool IsPlacing => isPlacing;
 
@@ -104,8 +104,8 @@ public class TowerPlacementSystem : MonoBehaviour
 
         GameObject towerGO = Instantiate(towerPrefab, position, Quaternion.identity);
 
-        ITower tower = towerPrefab.GetComponent<ITower>();
-        OnPlace?.Invoke(tower.TowerType());
+        ITower tower = towerGO.GetComponent<ITower>();
+        OnPlace?.Invoke(tower);
 
         if (buildProgressPrefab != null)
         {

@@ -31,7 +31,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (!isEnabled) return;   
+        if (!isEnabled) return;
         pressPosition = Mouse.current.position.ReadValue();
         isPressing = true;
         draggedEnough = false;

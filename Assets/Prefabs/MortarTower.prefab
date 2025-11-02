@@ -864,7 +864,7 @@ MonoBehaviour:
   rotationSpeed: 5
   launchSpeed: 30
   arcHeight: 20
-  shellPrefab: {fileID: 1174702483455924470, guid: fb7ff1d451ada2648b8328c05680e2b3, type: 3}
+  shellPrefab: {fileID: 3067141058156183110, guid: fb7ff1d451ada2648b8328c05680e2b3, type: 3}
   basePivot: {fileID: 813306345649447482}
   cannonPivot: {fileID: 1699519997319527913}
   firePoint: {fileID: 5024660489982930112}

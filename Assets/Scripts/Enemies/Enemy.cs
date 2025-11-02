@@ -7,6 +7,9 @@ using UnityEngine.Splines;
 
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] private EnemyType type;
+    public EnemyType Type => type;
+
     [Header("Attack")]
     [SerializeField] private float attackDamage = 10f;
     [SerializeField] private float attackRate = 1f;
@@ -16,6 +19,7 @@ public class Enemy : MonoBehaviour
     [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 100f;
+    public float Speed => speed;
     [SerializeField] private float maxHealthPoints = 100f;
     [SerializeField] private GameObject healthBarGO;
 
@@ -97,6 +101,11 @@ public class Enemy : MonoBehaviour
         {
             ApplyEffect(withEffect);
         }
+    }
+
+    public void SetSpeed(float speed)
+    {
+        this.speed = speed;
     }
 
     private void Die()

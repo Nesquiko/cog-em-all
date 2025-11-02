@@ -1,11 +1,9 @@
 // Insipiration taken from https://www.youtube.com/watch?v=YJk66V-jnsU
 using UnityEngine.Splines;
 using System.Collections.Generic;
-using System.Collections;
 using UnityEngine;
 using System.IO;
 using UnityEditor;
-using UnityEngine.Assertions;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
@@ -360,7 +358,7 @@ public class LevelEditorInspector : Editor
 
                 if (GUILayout.Button("Add Entry"))
                 {
-                    group.pattern.Add(new PatternEntry { enemy = EnemyType.Robot, count = 1, spawnRateSeconds = 0f });
+                    group.pattern.Add(new PatternEntry { enemy = EnemyType.Bandit, count = 1, spawnRateSeconds = 0f });
                 }
 
                 int removeEntryAt = -1;

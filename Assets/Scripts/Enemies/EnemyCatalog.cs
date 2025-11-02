@@ -5,9 +5,15 @@ using UnityEngine.Assertions;
 
 public enum EnemyType
 {
-    Robot,
-    Heavy,
-    Fast
+    Bandit,
+    Dreadnought,
+    Bomber
+}
+
+public enum EnemyAttributes
+{
+    MovementSpeed,
+    Health
 }
 
 [CreateAssetMenu(fileName = "EnemyCatalog", menuName = "Scriptable Objects/EnemyCatalog")]

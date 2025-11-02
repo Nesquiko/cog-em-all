@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -8,6 +9,8 @@ using UnityEngine.Splines;
 [RequireComponent(typeof(Spawner))]
 class Orchestrator : MonoBehaviour
 {
+    [SerializeField] private OperationModifiers operationModifiers;
+
     [SerializeField] private Spawner spawner;
     private SerializableLevel level;
     private int wavesSpawned = 0;
@@ -33,6 +36,8 @@ class Orchestrator : MonoBehaviour
 
     public int Gears => gears;
 
+    private TowerMods towerMods = new();
+
     private void Awake()
     {
         towerPlacementSystem.OnPlace += OnPlaceTower;
@@ -56,9 +61,10 @@ class Orchestrator : MonoBehaviour
         }
     }
 
-    private void OnPlaceTower(TowerTypes type)
+    private void OnPlaceTower(ITower tower)
     {
-        TowerData towerData = towerDataCatalog.FromType(type);
+        tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
+        TowerData towerData = towerDataCatalog.FromType(tower.TowerType());
         SpendGears(towerData.cost);
     }
 
@@ -86,13 +92,18 @@ class Orchestrator : MonoBehaviour
         Assert.IsNotNull(level);
         this.level = level;
 
+        var (faction, modifiers) = operationModifiers.ReadModifiers();
+        var economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
+        var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
+        towerMods = ModifiersCalculator.CalculateTowerMods(modifiers);
+
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
 
         waveCounterInfo.SetCounter(0, level.waves.Count);
 
-        var gearsRoutine = StartCoroutine(PassiveGearsIncomeRoutine());
+        var gearsRoutine = StartCoroutine(PassiveGearsIncomeRoutine(economyMods));
 
         for (int w = 0; w < level.waves.Count; w++)
         {
@@ -108,14 +119,14 @@ class Orchestrator : MonoBehaviour
             yield return nextWaveCountdown.StartCountdown(wave.prepareTimeSeconds);
 
             waveCounterInfo.SetCounter(w + 1, level.waves.Count);
-            yield return spawner.RunSpawnWave(wave, w, splineContainer, OnEnemySpawn, OnEnemyKilled);
+            yield return spawner.RunSpawnWave(wave, w, splineContainer, (enemy) => OnEnemySpawn(enemy, enemyMods), (enemy) => OnEnemyKilled(enemy, enemyMods));
             wavesSpawned += 1;
         }
 
         StopCoroutine(gearsRoutine);
     }
 
-    private IEnumerator PassiveGearsIncomeRoutine()
+    private IEnumerator PassiveGearsIncomeRoutine(EconomyMods economyMods)
     {
         float timer = 0f;
 
@@ -123,14 +134,14 @@ class Orchestrator : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            float progress = timer / passiveTick;
+            float progress = timer / economyMods.passiveGearsTick;
             progress = Mathf.Clamp01(progress);
 
             HUDPanelUI.SetPassiveGearsIncomeProgress(progress);
 
-            if (timer >= passiveTick)
+            if (timer >= economyMods.passiveGearsTick)
             {
-                AddGears(passiveIncome);
+                AddGears(Mathf.FloorToInt(economyMods.passiveGearsAmount));
                 timer = 0f;
             }
 
@@ -138,14 +149,16 @@ class Orchestrator : MonoBehaviour
         }
     }
 
-    private void OnEnemySpawn(Enemy spawned)
+    private void OnEnemySpawn(Enemy spawned, EnemyMods enemyMods)
     {
+        spawned.SetSpeed(enemyMods.CalculateEnemyMovementSpeed(spawned, spawned.Speed));
         enemiesLive += 1;
     }
 
-    private void OnEnemyKilled(Enemy killed)
+    private void OnEnemyKilled(Enemy killed, EnemyMods enemyMods)
     {
-        AddGears(killed.OnKillGearsReward);
+        int reward = enemyMods.CalculateEnemyReward(killed.OnKillGearsReward);
+        AddGears(reward);
         enemiesLive -= 1;
     }
 

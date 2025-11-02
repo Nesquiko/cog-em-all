@@ -383,7 +383,7 @@ MonoBehaviour:
   range: 50
   critChance: 0.15
   critMultiplier: 2
-  bulletPrefab: {fileID: 8737179034312321847, guid: 6c48efdf8227d8043acb3c2834df7dba, type: 3}
+  bulletPrefab: {fileID: 4919173337037029902, guid: 6c48efdf8227d8043acb3c2834df7dba, type: 3}
   gatlingHead: {fileID: 2443205329762934196}
   gatlingGunL: {fileID: 8932205475444249273}
   gatlingGunR: {fileID: 1416282752194367062}
@@ -397,7 +397,6 @@ MonoBehaviour:
   - {fileID: 4568953282612465923}
   - {fileID: 771448314938048345}
   towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
-  canvasTransform: {fileID: 0}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   controlPoint: {fileID: 4400268234209531989}
   sensitivity: 0.05

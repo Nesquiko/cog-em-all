@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -17,7 +18,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private float arcHeight = 15f;
 
     [Header("References")]
-    [SerializeField] private GameObject shellPrefab;
+    [SerializeField] private Shell shellPrefab;
     [SerializeField] private Transform basePivot;
     [SerializeField] private Transform cannonPivot;
     [SerializeField] private Transform firePoint;
@@ -40,6 +41,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private readonly HashSet<int> tooClose = new();
     private Enemy target;
     private float fireCooldown;
+    private Func<float, float> CalculateBaseShellDamage;
 
     private Vector3 cannonPivotDefaultPosition;
     private Coroutine recoilRoutine;
@@ -147,18 +149,15 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Shoot(Enemy enemy)
     {
-        GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
+        Shell shell = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
         if (recoilRoutine != null) StopCoroutine(recoilRoutine);
         recoilRoutine = StartCoroutine(RecoilKick());
-        
-        if (shellGO.TryGetComponent<Shell>(out var shell))
-        {
-            bool isCritical = Random.value < critChance;
-            float dmg = shell.BaseDamage;
-            if (isCritical) dmg *= critMultiplier;
 
-            shell.Launch(enemy.transform.position, dmg, isCritical, launchSpeed, arcHeight);
-        }
+        bool isCritical = UnityEngine.Random.value < critChance;
+        float dmg = CalculateBaseShellDamage?.Invoke(shell.BaseDamage) ?? shell.BaseDamage;
+        if (isCritical) dmg *= critMultiplier;
+
+        shell.Launch(enemy.transform.position, dmg, isCritical, launchSpeed, arcHeight);
     }
 
     private bool IsEnemyValid(Vector3 enemyPosition)
@@ -252,7 +251,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
             cannonPivot.localPosition = Vector3.Lerp(start, back, t);
             yield return null;
         }
-        
+
         t = 0f;
         while (t < 1f)
         {
@@ -306,4 +305,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     }
 
     public TowerTypes TowerType() => TowerTypes.Mortar;
+
+    public void SetDamageCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateBaseShellDamage = f;
+    }
 }

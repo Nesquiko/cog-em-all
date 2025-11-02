@@ -84,7 +84,7 @@ MonoBehaviour:
   range: 50
   critChance: 0.15
   critMultiplier: 2
-  beamPrefab: {fileID: 7145407031557086552, guid: a51bdf214f7354c4b82598c4328c147d, type: 3}
+  beamPrefab: {fileID: 1579386060454324153, guid: a51bdf214f7354c4b82598c4328c147d, type: 3}
   firePoint: {fileID: 7103826429612278080}
   capsuleCollider: {fileID: 3990786803379089488}
   rangeIndicator: {fileID: 3500572412449382009}
