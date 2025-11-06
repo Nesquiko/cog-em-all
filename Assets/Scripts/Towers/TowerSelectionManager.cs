@@ -120,6 +120,8 @@ public class TowerSelectionManager : MonoBehaviour
 
         currentSelected.Deselect();
         currentSelected = null;
+
+        UpdateTowerInfoPanel();
     }
 
     public void ClearHover()
@@ -129,6 +131,8 @@ public class TowerSelectionManager : MonoBehaviour
             currentHovered.OnHoverExit();
             currentHovered = null;
         }
+
+        UpdateTowerInfoPanel();
     }
 
     private void UpdateTowerInfoPanel()

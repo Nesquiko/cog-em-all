@@ -21,8 +21,6 @@ public class TowerRotationOverlay : MonoBehaviour
     public void SetTarget(Transform t)
     {
         target = t;
-        gameObject.SetActive(true);
-        active = true;
     }
 
     private void Awake()
@@ -33,6 +31,11 @@ public class TowerRotationOverlay : MonoBehaviour
 
         rotateLeftButton.OnHold += RotateLeft;
         rotateRightButton.OnHold += RotateRight;
+    }
+
+    private void Start()
+    {
+        Hide();
     }
 
     private void LateUpdate()

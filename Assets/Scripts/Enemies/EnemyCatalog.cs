@@ -27,7 +27,7 @@ public class EnemyCatalog : ScriptableObject
     }
 
     [SerializeField]
-    private List<Entry> entries = new List<Entry>();
+    private List<Entry> entries = new();
 
     private Dictionary<EnemyType, Enemy> catalog;
 

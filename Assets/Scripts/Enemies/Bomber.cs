@@ -5,23 +5,21 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
 
-public class Enemy : MonoBehaviour
+public class Bomber : MonoBehaviour, IEnemy
 {
-    [SerializeField] private EnemyType type;
-    public EnemyType Type => type;
+    public EnemyType Type => EnemyType.Bomber;
 
     [Header("Attack")]
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackRate = 1f;
+    [SerializeField] private float attackDamage = 100f;
     [SerializeField] private float attackRange = 1f;
     [SerializeField] private SphereCollider sphereCollider;
 
     [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
-    [SerializeField] private float speed = 100f;
+    [SerializeField] private float speed = 25f;
     public float Speed => speed;
     [SerializeField] private float maxHealthPoints = 100f;
-    [SerializeField] private GameObject healthBarGO;
+    [SerializeField] private GameObject healthBar;
 
     [Header("Attack Animation")]
     [SerializeField] private float jumpHeight = 0.5f;
@@ -29,13 +27,13 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float duration = 0.4f;
 
     [Header("UI")]
-    [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private float popupHeightOffset = 10f;
 
     [SerializeField] private int onKillGearsReward = 10;
+
     public int OnKillGearsReward => onKillGearsReward;
 
-    public event Action<Enemy> OnDeath;
+    public event Action<IEnemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
@@ -43,8 +41,9 @@ public class Enemy : MonoBehaviour
     private float t = 0f;
 
     private Nexus targetNexus;
-    private float attackCooldown;
     private float originalSpeed;
+
+    private bool hasAttacked = false;
 
     private readonly Dictionary<EffectType, Coroutine> activeEffects = new();
 
@@ -61,7 +60,7 @@ public class Enemy : MonoBehaviour
         originalSpeed = speed;
     }
 
-    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<Enemy> onDeath)
+    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<IEnemy> onDeath)
     {
         SetSpline(pathContainer, startT, lateralOffset);
         OnDeath += onDeath;
@@ -83,12 +82,10 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
     {
-        // if a second bullet, or a flamethrower burn effect try to kill already dead enemy ignore it...
-        // the enemy doesn't have to be DEAD dead, just dead is enough...
         if (healthPoints <= 0f) { return; }
 
         healthPoints -= damage;
-        if (!healthBarGO.activeSelf) healthBarGO.SetActive(true);
+        if (!healthBar.activeSelf) healthBar.SetActive(true);
 
         Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
         damagePopupManager.ShowPopup(popupSpawnPosition, damage, isCritical);
@@ -103,13 +100,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void SetSpeed(float speed)
-    {
-        this.speed = speed;
-    }
-
     private void Die()
     {
+        Debug.Log("dying right now");
+
         OnDeath?.Invoke(this);
         Destroy(gameObject);
     }
@@ -140,16 +134,12 @@ public class Enemy : MonoBehaviour
 
     private void AttackNexus()
     {
-        if (targetNexus == null) return;
+        if (hasAttacked || targetNexus == null) return;
 
         transform.LookAt(targetNexus.transform, Vector3.up);
 
-        attackCooldown -= Time.deltaTime;
-        if (attackCooldown <= 0f)
-        {
-            StartCoroutine(AttackAnimation(targetNexus.transform));
-            attackCooldown = attackRate;
-        }
+        hasAttacked = true;
+        StartCoroutine(AttackAnimation(targetNexus.transform));
     }
 
     private IEnumerator AttackAnimation(Transform target)
@@ -171,28 +161,22 @@ public class Enemy : MonoBehaviour
             yield return null;
         }
 
-        bool hasDealtDamage = false;
-        for (float t = 0f; t < half; t += Time.deltaTime)
-        {
-            float normalized = t / half;
-            transform.position = Vector3.Lerp(apexPosition, startPosition, normalized);
+        Explode(target);
 
-            if (!hasDealtDamage && normalized > 0.3f)
-            {
-                targetNexus.TakeDamage(attackDamage);
-                hasDealtDamage = true;
-            }
+        yield return new WaitForSeconds(0.1f);
 
-            yield return null;
-        }
+        Die();
+    }
 
-        transform.position = startPosition;
+    private void Explode(Transform target)
+    {
+        if (target == null) return;
+        targetNexus.TakeDamage(attackDamage);
     }
 
     public void EnterAttackRange(Nexus nexus)
     {
         targetNexus = nexus;
-        attackCooldown = 0f;
         speed = 0f;
     }
 
@@ -231,6 +215,7 @@ public class Enemy : MonoBehaviour
                     elapsed += effect.tickInterval;
                 }
                 break;
+            case EffectType.Accelerated:
             case EffectType.Slowed:
                 speed = originalSpeed * effect.speedMultiplier;
                 yield return new WaitForSeconds(effect.duration);

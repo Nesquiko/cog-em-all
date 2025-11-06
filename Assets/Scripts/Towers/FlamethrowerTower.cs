@@ -73,12 +73,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Canvas canvas = FindFirstObjectByType<Canvas>();
 
         towerOverlay = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlay.GetComponent<TowerOverlay>().Hide();
         towerOverlay.GetComponent<TowerOverlay>().SetTarget(transform);
-        towerOverlay.SetActive(false);
 
         towerRotationOverlay = Instantiate(towerRotationOverlayPrefab, canvas.transform, true);
+        towerRotationOverlay.GetComponent<TowerRotationOverlay>().Hide();
         towerRotationOverlay.GetComponent<TowerRotationOverlay>().SetTarget(transform);
-        towerRotationOverlay.SetActive(false);
 
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();

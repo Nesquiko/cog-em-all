@@ -1194,9 +1194,9 @@ RectTransform:
   - {fileID: 153546179}
   m_Father: {fileID: 1676674980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 410.625, y: -75}
   m_SizeDelta: {x: 200, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &206480505
@@ -1252,6 +1252,7 @@ MonoBehaviour:
   towerPlacementSystem: {fileID: 640320644}
   towerPrefab: {fileID: 2884996292687604640, guid: a97b98293661524459f05581e973a1b7, type: 3}
   dragThreshold: 10
+  towerSelectionManager: {fileID: 1378101563}
 --- !u!225 &206480508
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -3354,9 +3355,9 @@ RectTransform:
   - {fileID: 358513991}
   m_Father: {fileID: 1676674980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 689.375, y: -75}
   m_SizeDelta: {x: 200, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &442701287
@@ -3412,6 +3413,7 @@ MonoBehaviour:
   towerPlacementSystem: {fileID: 640320644}
   towerPrefab: {fileID: 8884071559928029575, guid: b53fe72a14d20fd47ace4e7d463df75c, type: 3}
   dragThreshold: 10
+  towerSelectionManager: {fileID: 1378101563}
 --- !u!225 &442701290
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -4407,9 +4409,9 @@ RectTransform:
   - {fileID: 1475909064}
   m_Father: {fileID: 1676674980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 968.125, y: -75}
   m_SizeDelta: {x: 200, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &629411128
@@ -4465,6 +4467,7 @@ MonoBehaviour:
   towerPlacementSystem: {fileID: 640320644}
   towerPrefab: {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
   dragThreshold: 10
+  towerSelectionManager: {fileID: 1378101563}
 --- !u!225 &629411131
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -10121,9 +10124,9 @@ RectTransform:
   - {fileID: 1788628213}
   m_Father: {fileID: 1676674980}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 131.875, y: -75}
   m_SizeDelta: {x: 200, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1750247545
@@ -10179,6 +10182,7 @@ MonoBehaviour:
   towerPlacementSystem: {fileID: 640320644}
   towerPrefab: {fileID: 3790200311388746545, guid: 082a34f533816ac40af20f94ec2e00e5, type: 3}
   dragThreshold: 10
+  towerSelectionManager: {fileID: 1378101563}
 --- !u!225 &1750247548
 CanvasGroup:
   m_ObjectHideFlags: 0

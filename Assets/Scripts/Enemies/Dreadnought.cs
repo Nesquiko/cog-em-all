@@ -5,23 +5,22 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
 
-public class Enemy : MonoBehaviour
+public class Dreadnought : MonoBehaviour, IEnemy
 {
-    [SerializeField] private EnemyType type;
-    public EnemyType Type => type;
+    public EnemyType Type => EnemyType.Dreadnought;
 
     [Header("Attack")]
-    [SerializeField] private float attackDamage = 10f;
-    [SerializeField] private float attackRate = 1f;
-    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private float attackDamage = 50f;
+    [SerializeField] private float attackRate = 3f;
+    [SerializeField] private float attackRange = 2f;
     [SerializeField] private SphereCollider sphereCollider;
 
     [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
-    [SerializeField] private float speed = 100f;
+    [SerializeField] private float speed = 10f;
     public float Speed => speed;
-    [SerializeField] private float maxHealthPoints = 100f;
-    [SerializeField] private GameObject healthBarGO;
+    [SerializeField] private float maxHealthPoints = 500f;
+    [SerializeField] private GameObject healthBar;
 
     [Header("Attack Animation")]
     [SerializeField] private float jumpHeight = 0.5f;
@@ -29,13 +28,18 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float duration = 0.4f;
 
     [Header("UI")]
-    [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private float popupHeightOffset = 10f;
 
+    [Header("Shield")]
+    [SerializeField, Range(0.01f, 0.3f)] private float shieldHealthFraction = 0.1f;
+    [SerializeField] private float shieldCooldown = 10f;
+    [SerializeField] private GameObject shield;
+
     [SerializeField] private int onKillGearsReward = 10;
+
     public int OnKillGearsReward => onKillGearsReward;
 
-    public event Action<Enemy> OnDeath;
+    public event Action<IEnemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
@@ -51,6 +55,10 @@ public class Enemy : MonoBehaviour
     private float pathLength;
     private float lateralOffset;
 
+    private float shieldHealthPoints;
+    private float nextShieldTimer;
+    private bool shieldActive;
+
     private DamagePopupManager damagePopupManager;
 
     private void Awake()
@@ -59,12 +67,18 @@ public class Enemy : MonoBehaviour
 
         healthPoints = maxHealthPoints;
         originalSpeed = speed;
+        sphereCollider.radius = attackRange;
     }
 
-    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<Enemy> onDeath)
+    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<IEnemy> onDeath)
     {
         SetSpline(pathContainer, startT, lateralOffset);
         OnDeath += onDeath;
+    }
+
+    private void Start()
+    {
+        ActivateShield();
     }
 
     private void SetSpline(SplineContainer pathContainer, float startT, float lateralOffset)
@@ -76,19 +90,36 @@ public class Enemy : MonoBehaviour
         this.lateralOffset = lateralOffset;
     }
 
-    private void Start()
+    private void ActivateShield()
     {
-        sphereCollider.radius = attackRange;
+        shieldHealthPoints = maxHealthPoints * shieldHealthFraction;
+        shieldActive = true;
+        shield.SetActive(true);
+    }
+
+    private void BreakShield()
+    {
+        shieldActive = false;
+        nextShieldTimer = 0f;
+        shield.SetActive(false);
     }
 
     public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
     {
-        // if a second bullet, or a flamethrower burn effect try to kill already dead enemy ignore it...
-        // the enemy doesn't have to be DEAD dead, just dead is enough...
         if (healthPoints <= 0f) { return; }
 
+        if (shieldActive)
+        {
+            shieldHealthPoints -= damage;
+            if (shieldHealthPoints <= 0f)
+            {
+                BreakShield();
+            }
+            return;
+        }
+
         healthPoints -= damage;
-        if (!healthBarGO.activeSelf) healthBarGO.SetActive(true);
+        if (!healthBar.activeSelf) healthBar.SetActive(true);
 
         Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
         damagePopupManager.ShowPopup(popupSpawnPosition, damage, isCritical);
@@ -103,11 +134,6 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void SetSpeed(float speed)
-    {
-        this.speed = speed;
-    }
-
     private void Die()
     {
         OnDeath?.Invoke(this);
@@ -116,6 +142,16 @@ public class Enemy : MonoBehaviour
 
     private void Update()
     {
+        if (!shieldActive)
+        {
+            nextShieldTimer += Time.deltaTime;
+            if (nextShieldTimer >= shieldCooldown)
+            {
+                ActivateShield();
+                nextShieldTimer = 0f;
+            }
+        }
+
         if (targetNexus == null)
         {
             FollowPath();

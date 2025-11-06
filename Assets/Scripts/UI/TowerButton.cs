@@ -8,6 +8,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private GameObject towerPrefab;
     [SerializeField] private float dragThreshold = 10f;
+    [SerializeField] private TowerSelectionManager towerSelectionManager;
 
     private CanvasGroup canvasGroup;
     private bool isPressing;
@@ -15,8 +16,6 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
     private bool draggedEnough;
 
     private bool isEnabled = false;
-
-    public bool IsDragging => draggedEnough && isPressing;
 
     private void Awake()
     {
@@ -35,6 +34,8 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
         pressPosition = Mouse.current.position.ReadValue();
         isPressing = true;
         draggedEnough = false;
+
+        towerSelectionManager.DisableSelection();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -48,6 +49,8 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler, IPointerDownHand
         isPressing = false;
         canvasGroup.blocksRaycasts = true;
         canvasGroup.alpha = 1;
+
+        towerSelectionManager.EnableSelection();
     }
 
     private void Update()

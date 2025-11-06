@@ -19,7 +19,6 @@ public class TowerOverlay : MonoBehaviour
     public void SetTarget(Transform t)
     {
         target = t;
-        gameObject.SetActive(true);
     }
 
     private void Awake()
@@ -33,6 +32,11 @@ public class TowerOverlay : MonoBehaviour
         //upgradeTowerButton.onClick.AddListener(OnUpgradeTowerClicked);
         sellTowerButton.onClick.AddListener(OnSellTowerClicked);
         rotateTowerButton.onClick.AddListener(OnRotateTowerClicked);
+    }
+
+    private void Start()
+    {
+        Hide();
     }
 
     private void LateUpdate()
