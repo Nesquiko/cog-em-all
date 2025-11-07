@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -21,16 +20,23 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private Nexus nexus;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private TowerSellManager towerSellManager;
+    [SerializeField] private TowerSelectionManager towerSelectionManager;
+    [SerializeField] private CameraShakeSystem cameraShakeSystem;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private CinemachineBrain brain;
 
     [Header("UI")]
     [SerializeField] private WaveCounterInfo waveCounterInfo;
     [SerializeField] private NextWaveCountdownInfo nextWaveCountdown;
     [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private MenuPanelUI menuPanelUI;
+    [SerializeField] private OperationResultUI operationResultUI;
 
     [Header("Player resources")]
     [SerializeField] private int passiveIncome = 10;
     [SerializeField] private float passiveTick = 5f;
+
+    private OperationStatistics operationStatistics;
 
     private int gears = 0;
 
@@ -44,6 +50,9 @@ class Orchestrator : MonoBehaviour
         towerSellManager.OnSellTower += OnSellTower;
         nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
+
+        mainCamera = Camera.main;
+        brain = mainCamera.GetComponent<CinemachineBrain>();
     }
 
     private void Update()
@@ -54,10 +63,7 @@ class Orchestrator : MonoBehaviour
 
         if (wavesSpawned == level.waves.Count && enemiesLive == 0)
         {
-            // TODO luky show operation cleared screen
-            Debug.Log("operation cleared");
-            EditorApplication.isPlaying = false;
-            Application.Quit();
+            OperationEnd(cleared: true);
         }
     }
 
@@ -76,10 +82,7 @@ class Orchestrator : MonoBehaviour
 
     private void OnNexusDestroyed(Nexus nexus)
     {
-        // TODO luky show operation failed screen
-        Debug.Log("operation failed");
-        EditorApplication.isPlaying = false;
-        Application.Quit();
+        OperationEnd(cleared: false);
     }
 
     private void OnNexusHealthChange(Nexus nexus)
@@ -189,6 +192,41 @@ class Orchestrator : MonoBehaviour
         {
             HUDPanelUI.AdjustTowerButton(type, false);
         }
+    }
+
+    private void OperationEnd(bool cleared)
+    {
+        brain.enabled = false;
+
+        StartCoroutine(LerpTimeScale(5f));
+
+        if (!cleared) cameraShakeSystem.Shake(3f, 10f);
+
+        towerSelectionManager.DisableSelection();
+        operationStatistics = cleared ? OperationStatistics.CreateDummyCleared() : OperationStatistics.CreateDummyFailed();
+        operationResultUI.Initialize(operationStatistics);
+
+        HUDPanelUI.gameObject.SetActive(false);
+        menuPanelUI.gameObject.SetActive(false);
+        waveCounterInfo.gameObject.SetActive(false);
+        nextWaveCountdown.gameObject.SetActive(false);
+
+        operationResultUI.gameObject.SetActive(true);
+    }
+
+    private IEnumerator LerpTimeScale(float duration)
+    {
+        float start = Time.timeScale;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            Time.timeScale = Mathf.Lerp(start, 0f, elapsed / duration);
+            yield return null;
+        }
+
+        Time.timeScale = 0f;
     }
 
     private void OnDestroy()

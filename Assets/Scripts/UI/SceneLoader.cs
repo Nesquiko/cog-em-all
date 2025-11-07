@@ -40,4 +40,10 @@ public static class SceneLoader
             yield return null;
         }
     }
+
+    public static void ReloadCurrentScene()
+    {
+        string currentScene = SceneManager.GetActiveScene().name;
+        LoadScene(currentScene);
+    }
 }

@@ -1,10 +1,17 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Nexus : MonoBehaviour
 {
     [SerializeField] private float maxHealthPoints = 1_000_000f;
     [SerializeField] private GameObject healthBarGO;
+    [SerializeField] private GameObject nexusModel;
+
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem nexusExplosion;
+
+    private bool isDying;
 
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
@@ -20,6 +27,8 @@ public class Nexus : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
+        if (isDying) return;
+
         healthPoints -= damage;
         if (healthBarGO != null)
         {
@@ -30,10 +39,27 @@ public class Nexus : MonoBehaviour
 
         if (healthPoints <= 0f)
         {
-            healthPoints = 0;
-            OnDestroyed?.Invoke(this);
-            Destroy(gameObject);
+            StartCoroutine(Die());
         }
+    }
+
+    private IEnumerator Die()
+    {
+        if (isDying) yield break;
+        isDying = true;
+
+        healthPoints = 0;
+        OnDestroyed?.Invoke(this);
+
+        nexusExplosion.Play(withChildren: true);
+
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        Destroy(nexusModel);
+
+        yield return new WaitForSecondsRealtime(2.1f);
+
+        Destroy(gameObject);
     }
 
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
