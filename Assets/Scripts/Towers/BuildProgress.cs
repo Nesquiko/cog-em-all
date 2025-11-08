@@ -4,16 +4,19 @@ public class BuildProgress : MonoBehaviour
 {
     [SerializeField] private float buildTime = 1f;
 
-    private GameObject towerObject;
+    private GameObject buildObject;
     private float timer;
     private Vector3 startScale;
     private bool done;
 
     private bool initialized = false;
 
-    public void Initialize(GameObject targetTower)
+    private bool disableBehaviors;
+
+    public void Initialize(GameObject targetObject, bool disableObjectBehaviors)
     {
-        towerObject = targetTower;
+        buildObject = targetObject;
+        disableBehaviors = disableObjectBehaviors;
         initialized = true;
     }
 
@@ -21,14 +24,15 @@ public class BuildProgress : MonoBehaviour
     {
         startScale = transform.localScale;
         transform.localScale = Vector3.zero;
-        DisableTowerBehaviours();
+        if (disableBehaviors)
+            DisableObjectBehaviours();
     }
 
     private void Update()
     {
         if (done) return;
 
-        if (initialized && towerObject == null)
+        if (initialized && buildObject == null)
         {
             Destroy(gameObject);
             return;
@@ -41,23 +45,24 @@ public class BuildProgress : MonoBehaviour
 
         if (progress >= 1f)
         {
-            EnableTowerBehaviours();
+            if (disableBehaviors)
+                EnableObjectBehaviours();
             done = true;
             Destroy(gameObject);
         }
     }
 
-    private void DisableTowerBehaviours()
+    private void DisableObjectBehaviours()
     {
-        foreach (var component in towerObject.GetComponentsInChildren<MonoBehaviour>())
+        foreach (var component in buildObject.GetComponentsInChildren<MonoBehaviour>())
         {
             component.enabled = false;
         }
     }
 
-    private void EnableTowerBehaviours()
+    private void EnableObjectBehaviours()
     {
-        foreach (var component in towerObject.GetComponentsInChildren<MonoBehaviour>())
+        foreach (var component in buildObject.GetComponentsInChildren<MonoBehaviour>())
         {
             component.enabled = true;
         }

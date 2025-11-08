@@ -1,32 +1,32 @@
 using UnityEngine;
 
-public class NexusHealthBar : MonoBehaviour
+public class HealthBar : MonoBehaviour
 {
     [SerializeField] private Transform fill;
     [SerializeField] private Camera cam;
 
-    private Nexus nexus;
+    private IDamageable damageable;
     private Vector3 initialScale;
 
     void Start()
     {
         if (cam == null) cam = Camera.main;
         if (fill != null) initialScale = fill.localScale;
-        if (nexus == null) nexus = GetComponentInParent<Nexus>();
+        damageable ??= GetComponentInParent<IDamageable>();
 
         gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (nexus == null) return;
+        if (damageable == null) return;
 
         if (cam != null)
         {
             transform.LookAt(transform.position + cam.transform.forward);
         }
 
-        float hpFraction = Mathf.Clamp01(nexus.HealthPointsNormalized);
+        float hpFraction = Mathf.Clamp01(damageable.HealthPointsNormalized);
         fill.localScale = new Vector3(
             initialScale.x,
             initialScale.y * hpFraction,

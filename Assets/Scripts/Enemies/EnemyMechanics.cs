@@ -8,6 +8,7 @@ public class EnemyStatusEffect
     public float tickDamage;
     public float tickInterval = 1f;
     public float speedMultiplier = 1f;
+    public bool persistent = false;
 
     public EnemyStatusEffect() { }
 
@@ -16,7 +17,8 @@ public class EnemyStatusEffect
         float duration,
         float tickDamage,
         float tickInterval = 1f,
-        float speedMultiplier = 1f
+        float speedMultiplier = 1f,
+        bool persistent = false
     )
     {
         this.type = type;
@@ -24,11 +26,12 @@ public class EnemyStatusEffect
         this.tickDamage = tickDamage;
         this.tickInterval = tickInterval;
         this.speedMultiplier = speedMultiplier;
+        this.persistent = persistent;
     }
 
     public static EnemyStatusEffect Burn =>
         new(
-            EffectType.Burning,
+            type: EffectType.Burning,
             duration: 5f,
             tickDamage: 5f,
             tickInterval: 0.5f
@@ -36,19 +39,29 @@ public class EnemyStatusEffect
 
     public static EnemyStatusEffect Bleed =>
         new(
-            EffectType.Bleeding,
+            type: EffectType.Bleeding,
             duration: 4f,
             tickDamage: 2.5f,
             tickInterval: 0.5f
         );
 
-    public static EnemyStatusEffect Slow =>
-        new(
-            EffectType.Slowed,
+    public static EnemyStatusEffect Slow => new(
+            type: EffectType.Slowed,
             duration: 3f,
             tickDamage: 0f,
             tickInterval: 0f,
             speedMultiplier: 0.5f
+        );
+
+    public static EnemyStatusEffect Oiled(
+        float speedMultiplier
+    ) => new(
+            type: EffectType.Oiled,
+            duration: 0f,
+            tickDamage: 0f,
+            tickInterval: 0f,
+            speedMultiplier: speedMultiplier,
+            persistent: true
         );
 }
 
@@ -56,5 +69,6 @@ public enum EffectType
 {
     Burning,
     Bleeding,
-    Slowed
+    Slowed,
+    Oiled,
 }

@@ -502,6 +502,37 @@ Transform:
   - {fileID: 2167063830166501234}
   m_Father: {fileID: 813306345649447482}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5347498694982243444
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6705421868211201135}
+  m_Layer: 8
+  m_Name: MortarControlPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6705421868211201135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5347498694982243444}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.17364816, y: 0, z: 0, w: 0.9848078}
+  m_LocalPosition: {x: 0, y: 30, z: -30}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 352041422836785006}
+  m_LocalEulerAnglesHint: {x: 20, y: 0, z: 0}
 --- !u!1 &5690236029491338636
 GameObject:
   m_ObjectHideFlags: 0
@@ -842,6 +873,7 @@ Transform:
   - {fileID: 1601318743041153875}
   - {fileID: 2250383745640310578}
   - {fileID: 745565968438956816}
+  - {fileID: 6705421868211201135}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4435376755774137479
@@ -879,6 +911,15 @@ MonoBehaviour:
   - {fileID: 3554226702230824119}
   towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+  controlPoint: {fileID: 6705421868211201135}
+  sensitivity: 0.75
+  cameraRotateSpeed: 50
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
+  maxAimDistance: 150
+  aimMarkerPrefab: {fileID: 4305582875491972556, guid: 294d49aa2cda9e046a2388c3ac112055, type: 3}
+  trajectoryColor: {r: 0, g: 0.5882353, b: 1, a: 0.34509805}
   recoilDistance: 0.5
   recoilSpeed: 20
   recoilReturnSpeed: 5

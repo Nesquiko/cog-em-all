@@ -13,6 +13,7 @@ public class TowerPlacementSystem : MonoBehaviour
     [SerializeField] private GameObject buildProgressPrefab;
     [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
+    [SerializeField] private SkillPlacementSystem wallPlacementSystem;
     [SerializeField] private PauseManager pauseManager;
     [SerializeField] private GameObject[] towerPrefabs;
 
@@ -68,7 +69,7 @@ public class TowerPlacementSystem : MonoBehaviour
             }
         }
 
-            if (Keyboard.current.fKey.wasPressedThisFrame)
+        if (Keyboard.current.fKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             CancelPlacement();
             return;
@@ -110,6 +111,7 @@ public class TowerPlacementSystem : MonoBehaviour
 
     public void BeginPlacement(GameObject prefab, int hotkeyIndex = -1)
     {
+        wallPlacementSystem.CancelPlacement();
         CancelPlacement();
 
         towerSelectionManager.DisableSelection();
@@ -140,12 +142,9 @@ public class TowerPlacementSystem : MonoBehaviour
         ITower tower = towerGO.GetComponent<ITower>();
         OnPlace?.Invoke(tower);
 
-        if (buildProgressPrefab != null)
-        {
-            var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
-            var progress = circle.GetComponent<BuildProgress>();
-            progress.Initialize(towerGO);
-        }
+        var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
+        var progress = circle.GetComponent<BuildProgress>();
+        progress.Initialize(towerGO, disableObjectBehaviors: true);
 
         CancelPlacement();
 
@@ -168,21 +167,6 @@ public class TowerPlacementSystem : MonoBehaviour
         ghostInstance = null;
 
         HUDPanelUI.HidePlacementInfo();
-    }
-
-    public void TryPlaceAtMouse()
-    {
-        if (!isPlacing) return;
-
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask) && placementSettings.IsValidPlacement(hit.point))
-        {
-            PlaceTower(hit.point);
-        }
-        else
-        {
-            CancelPlacement();
-        }
     }
 
     private int GetPressedTowerHotkey()

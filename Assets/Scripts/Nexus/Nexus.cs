@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class Nexus : MonoBehaviour
+public class Nexus : MonoBehaviour, IDamageable
 {
     [SerializeField] private float maxHealthPoints = 1_000_000f;
-    [SerializeField] private GameObject healthBarGO;
+    [SerializeField] private GameObject nexusHealthBar;
     [SerializeField] private GameObject nexusModel;
 
     [Header("VFX")]
@@ -15,6 +15,8 @@ public class Nexus : MonoBehaviour
 
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
+
+    public bool IsDestroyed => isDying || healthPoints <= 0f;
 
     public event Action<Nexus> OnDestroyed;
     public event Action<Nexus> OnHealthChanged;
@@ -30,9 +32,9 @@ public class Nexus : MonoBehaviour
         if (isDying) return;
 
         healthPoints -= damage;
-        if (healthBarGO != null)
+        if (nexusHealthBar != null)
         {
-            healthBarGO.SetActive(true);
+            nexusHealthBar.SetActive(true);
         }
 
         OnHealthChanged?.Invoke(this);
@@ -56,6 +58,7 @@ public class Nexus : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.1f);
 
         Destroy(nexusModel);
+        Destroy(nexusHealthBar);
 
         yield return new WaitForSecondsRealtime(2.1f);
 
