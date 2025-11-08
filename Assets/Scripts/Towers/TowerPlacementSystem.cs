@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,6 +14,7 @@ public class TowerPlacementSystem : MonoBehaviour
     [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
     [SerializeField] private PauseManager pauseManager;
+    [SerializeField] private GameObject[] towerPrefabs;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
@@ -25,6 +27,8 @@ public class TowerPlacementSystem : MonoBehaviour
     private Camera mainCamera;
     private bool isPlacing;
     private bool canPlace;
+
+    private int currentHotkeyIndex = -1;
 
     public event Action<ITower> OnPlace;
 
@@ -39,9 +43,32 @@ public class TowerPlacementSystem : MonoBehaviour
     {
         if (pauseManager.Paused) return;
 
-        if (!isPlacing) return;
+        int hotkeyPressed = GetPressedTowerHotkey();
 
-        if (Keyboard.current.fKey.wasPressedThisFrame)
+        if (!isPlacing)
+        {
+            if (hotkeyPressed != -1)
+            {
+                BeginPlacement(towerPrefabs[hotkeyPressed], hotkeyPressed);
+            }
+            return;
+        }
+
+        if (hotkeyPressed != -1)
+        {
+            if (hotkeyPressed == currentHotkeyIndex)
+            {
+                CancelPlacement();
+                return;
+            }
+            else
+            {
+                BeginPlacement(towerPrefabs[hotkeyPressed], hotkeyPressed);
+                return;
+            }
+        }
+
+            if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             CancelPlacement();
             return;
@@ -63,7 +90,11 @@ public class TowerPlacementSystem : MonoBehaviour
                 ApplyGhostMaterial(canPlace ? ghostValidMaterial : ghostInvalidMaterial);
             }
 
-            if (!Mouse.current.leftButton.isPressed && EventSystem.current.IsPointerOverGameObject()) return;
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                ApplyGhostMaterial(ghostInvalidMaterial);
+                return;
+            }
 
             if (Mouse.current.leftButton.wasPressedThisFrame && canPlace)
             {
@@ -77,14 +108,16 @@ public class TowerPlacementSystem : MonoBehaviour
         }
     }
 
-    public void BeginPlacement(GameObject prefab)
+    public void BeginPlacement(GameObject prefab, int hotkeyIndex = -1)
     {
-        towerSelectionManager.ClearHover();
-
         CancelPlacement();
+
+        towerSelectionManager.DisableSelection();
 
         towerPrefab = prefab;
         isPlacing = true;
+        currentHotkeyIndex = hotkeyIndex;
+
         ghostInstance = Instantiate(prefab);
         TowerTypes towerType = ghostInstance.GetComponent<ITower>().TowerType();
 
@@ -115,12 +148,22 @@ public class TowerPlacementSystem : MonoBehaviour
         }
 
         CancelPlacement();
+
+        StartCoroutine(EnableSelectionNextFrame());
+    }
+
+    private IEnumerator EnableSelectionNextFrame()
+    {
+        yield return null;
+        towerSelectionManager.EnableSelection();
     }
 
     public void CancelPlacement()
     {
         isPlacing = false;
         towerPrefab = null;
+        currentHotkeyIndex = -1;
+
         if (ghostInstance != null) Destroy(ghostInstance);
         ghostInstance = null;
 
@@ -129,7 +172,7 @@ public class TowerPlacementSystem : MonoBehaviour
 
     public void TryPlaceAtMouse()
     {
-        if (!isPlacing || towerPrefab == null) return;
+        if (!isPlacing) return;
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask) && placementSettings.IsValidPlacement(hit.point))
@@ -140,6 +183,15 @@ public class TowerPlacementSystem : MonoBehaviour
         {
             CancelPlacement();
         }
+    }
+
+    private int GetPressedTowerHotkey()
+    {
+        if (Keyboard.current.digit1Key.wasPressedThisFrame) return 0;
+        if (Keyboard.current.digit2Key.wasPressedThisFrame) return 1;
+        if (Keyboard.current.digit3Key.wasPressedThisFrame) return 2;
+        if (Keyboard.current.digit4Key.wasPressedThisFrame) return 3;
+        return -1;
     }
 
     private void SetGhostMode(GameObject obj, bool enable)

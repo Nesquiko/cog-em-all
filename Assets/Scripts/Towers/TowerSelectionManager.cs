@@ -19,6 +19,7 @@ public class TowerSelectionManager : MonoBehaviour
 
     public void DisableSelection()
     {
+        ClearHover();
         DeselectCurrent();
         disabled = true;
     }
