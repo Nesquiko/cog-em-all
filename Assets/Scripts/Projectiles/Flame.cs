@@ -16,8 +16,11 @@ public class Flame : MonoBehaviour
     private bool isActive;
     private float range = 50f;
 
+    private readonly HashSet<OilSpill> oilsInRange = new();
+
     private FlamethrowerTower owner;
 
+    public bool IsActive => isActive;
     public float FireDuration => fireDuration;
 
     public void SetRange(float flameRange)
@@ -42,6 +45,9 @@ public class Flame : MonoBehaviour
         }
 
         fireRoutine = StartCoroutine(FlameRoutine(CalculateBaseFlameDamagePerPulse));
+
+        foreach (var oil in oilsInRange)
+            if (oil != null) oil.Ignite();
     }
 
     public void StopFlame()
@@ -52,6 +58,9 @@ public class Flame : MonoBehaviour
         {
             StopCoroutine(fireRoutine);
         }
+
+        foreach (var oil in oilsInRange)
+            if (oil != null) oil.Extinguish();
     }
 
     private IEnumerator FlameRoutine(Func<float, float> CalculateBaseFlameDamagePerPulse)
@@ -93,5 +102,26 @@ public class Flame : MonoBehaviour
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
             enemy.TakeDamage(damage, isCritical, withEffect: EnemyStatusEffect.Burn);
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent<OilSpillTrigger>(out var oilTrigger)) return;
+        OilSpill oil = oilTrigger.GetComponentInParent<OilSpill>();
+        if (oil == null) return;
+        oilsInRange.Add(oil);
+
+        if (isActive)
+            oil.Ignite();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.TryGetComponent<OilSpillTrigger>(out var oilTrigger)) return;
+        OilSpill oil = oilTrigger.GetComponentInParent<OilSpill>();
+        oilsInRange.Remove(oil);
+
+        if (isActive && oil != null)
+            oil.Extinguish();
     }
 }

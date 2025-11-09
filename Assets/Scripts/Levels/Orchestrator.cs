@@ -16,14 +16,16 @@ class Orchestrator : MonoBehaviour
     private int enemiesLive = 0;
 
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+    [SerializeField] private SkillDataCatalog skillDataCatalog;
 
     [SerializeField] private Nexus nexus;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
+    [SerializeField] private SkillPlacementSystem skillPlacementSystem;
     [SerializeField] private TowerSellManager towerSellManager;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
-    [SerializeField] private CameraShakeSystem cameraShakeSystem;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private CinemachineBrain brain;
+    [SerializeField] private CameraShakeSystem cameraShakeSystem;
 
     [Header("UI")]
     [SerializeField] private WaveCounterInfo waveCounterInfo;
@@ -48,6 +50,7 @@ class Orchestrator : MonoBehaviour
     {
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
+        skillPlacementSystem.OnUseSkill += OnUseSkill;
         nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
 
@@ -80,6 +83,12 @@ class Orchestrator : MonoBehaviour
         AddGears(towerData.sellPrice);
     }
 
+    private void OnUseSkill(ISkill skill)
+    {
+        SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
+        SpendGears(skillData.cost);
+    }
+
     private void OnNexusDestroyed(Nexus nexus)
     {
         OperationEnd(cleared: false);
@@ -87,7 +96,7 @@ class Orchestrator : MonoBehaviour
 
     private void OnNexusHealthChange(Nexus nexus)
     {
-        menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized);
+        menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized());
     }
 
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer)
@@ -103,6 +112,7 @@ class Orchestrator : MonoBehaviour
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
+        UpdateSkillButtons();
 
         waveCounterInfo.SetCounter(0, level.waves.Count);
 
@@ -117,7 +127,7 @@ class Orchestrator : MonoBehaviour
                 yield break;
             }
 
-            Assert.IsTrue(wave.prepareTimeSeconds != 0f, "Give a player some time to preapre...");
+            Assert.IsTrue(wave.prepareTimeSeconds != 0f, "Give a player some time to prepare...");
 
             yield return nextWaveCountdown.StartCountdown(wave.prepareTimeSeconds);
 
@@ -170,6 +180,7 @@ class Orchestrator : MonoBehaviour
         gears += amount;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
+        UpdateSkillButtons();
     }
 
     public void SpendGears(int amount)
@@ -177,6 +188,7 @@ class Orchestrator : MonoBehaviour
         gears -= amount;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
+        UpdateSkillButtons();
     }
 
     private void UpdateTowerButtons()
@@ -194,13 +206,28 @@ class Orchestrator : MonoBehaviour
         }
     }
 
+    private void UpdateSkillButtons()
+    {
+        (HashSet<SkillTypes> toEnable, HashSet<SkillTypes> toDisable) = skillDataCatalog.AdjustSkills(gears);
+
+        foreach (SkillTypes type in toEnable)
+        {
+            HUDPanelUI.AdjustSkillButton(type, true);
+        }
+
+        foreach (SkillTypes type in toDisable)
+        {
+            HUDPanelUI.AdjustSkillButton(type, false);
+        }
+    }
+
     private void OperationEnd(bool cleared)
     {
         brain.enabled = false;
 
         StartCoroutine(LerpTimeScale(5f));
 
-        if (!cleared) cameraShakeSystem.Shake(3f, 10f);
+        if (!cleared) cameraShakeSystem.Shake(duration: 0.5f, amplitude: 2f, frequency: 2f);
 
         towerSelectionManager.DisableSelection();
         operationStatistics = cleared ? OperationStatistics.CreateDummyCleared() : OperationStatistics.CreateDummyFailed();

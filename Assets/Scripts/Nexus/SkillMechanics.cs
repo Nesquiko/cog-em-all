@@ -7,9 +7,13 @@ public enum SkillTypes
     Mine = 2,
 }
 
-public interface ISkillPlaceable
+public interface ISkill
+{
+    SkillTypes SkillType();
+}
+
+public interface ISkillPlaceable : ISkill
 {
     void Initialize();
-    SkillTypes SkillType { get; }
-    Quaternion PlacementRotationOffset { get; }
+    Quaternion PlacementRotationOffset();
 }

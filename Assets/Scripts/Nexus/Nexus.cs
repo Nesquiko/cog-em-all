@@ -10,13 +10,16 @@ public class Nexus : MonoBehaviour, IDamageable
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem nexusExplosion;
+    [SerializeField] private NexusVignette nexusVignette;
 
     private bool isDying;
 
     private float healthPoints;
-    public float HealthPointsNormalized => healthPoints / maxHealthPoints;
+    public float HealthPointsNormalized() => healthPoints / maxHealthPoints;
 
-    public bool IsDestroyed => isDying || healthPoints <= 0f;
+    public bool IsDestroyed() => isDying || healthPoints <= 0f;
+
+    public Transform Transform() => transform;
 
     public event Action<Nexus> OnDestroyed;
     public event Action<Nexus> OnHealthChanged;
@@ -25,6 +28,8 @@ public class Nexus : MonoBehaviour, IDamageable
     {
         healthPoints = maxHealthPoints;
         OnHealthChanged?.Invoke(this);
+
+        nexusVignette.Initialize(this);
     }
 
     public void TakeDamage(float damage)

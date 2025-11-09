@@ -6,8 +6,9 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
 {
     [SerializeField] private SkillTypes skillType = SkillTypes.Wall;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
-    public SkillTypes SkillType => skillType;
-    public Quaternion PlacementRotationOffset => placementRotationOffset;
+    public SkillTypes SkillType() => skillType;
+    public Quaternion PlacementRotationOffset() => placementRotationOffset;
+    public Transform Transform() => transform;
 
     [SerializeField] private float maxHealthPoints = 500f;
     [SerializeField] private GameObject wallHealthBar;
@@ -23,9 +24,9 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
     private bool isDying;
 
     private float healthPoints;
-    public float HealthPointsNormalized => healthPoints / maxHealthPoints;
+    public float HealthPointsNormalized() => healthPoints / maxHealthPoints;
 
-    public bool IsDestroyed => isDying || healthPoints <= 0f;
+    public bool IsDestroyed() => isDying || healthPoints <= 0f;
 
     public event Action<Wall> OnDestroyed;
     public event Action<Wall> OnHealthChanged;
@@ -68,14 +69,14 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
         healthPoints = 0;
         OnDestroyed?.Invoke(this);
 
-        wallExplosion.Play(withChildren: true);
+        // wallExplosion.Play(withChildren: true);  // walls can explode after destruction (skill tree item?)
 
-        yield return new WaitForSecondsRealtime(0.1f);
+        yield return new WaitForSeconds(0.1f);
 
         Destroy(wallModel);
         Destroy(wallHealthBar);
 
-        yield return new WaitForSecondsRealtime(2.1f);
+        yield return new WaitForSeconds(2.1f);
 
         Destroy(gameObject);
     }

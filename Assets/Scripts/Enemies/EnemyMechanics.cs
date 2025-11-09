@@ -1,4 +1,14 @@
 using System;
+using UnityEngine;
+
+public enum EffectType
+{
+    Burning,
+    Bleeding,
+    Slowed,
+    Oiled,
+    OilBurned,
+}
 
 [Serializable]
 public class EnemyStatusEffect
@@ -29,7 +39,7 @@ public class EnemyStatusEffect
         this.persistent = persistent;
     }
 
-    public static EnemyStatusEffect Burn =>
+    public static EnemyStatusEffect Burn => 
         new(
             type: EffectType.Burning,
             duration: 5f,
@@ -57,18 +67,21 @@ public class EnemyStatusEffect
         float speedMultiplier
     ) => new(
             type: EffectType.Oiled,
-            duration: 0f,
+            duration: Mathf.Infinity,
             tickDamage: 0f,
             tickInterval: 0f,
             speedMultiplier: speedMultiplier,
             persistent: true
         );
-}
 
-public enum EffectType
-{
-    Burning,
-    Bleeding,
-    Slowed,
-    Oiled,
+    public static EnemyStatusEffect OilBurn(
+        float tickDamage = 5f,
+        float tickInterval = 0.5f
+    ) => new(
+            type: EffectType.OilBurned,
+            duration: Mathf.Infinity,
+            tickDamage: tickDamage,
+            tickInterval: tickInterval,
+            persistent: true
+        );
 }

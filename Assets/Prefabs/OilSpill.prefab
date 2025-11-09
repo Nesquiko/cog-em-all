@@ -99,6 +99,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8838881777354935926}
   - component: {fileID: 5181005084667846081}
+  - component: {fileID: 3396888909515684771}
   m_Layer: 0
   m_Name: OilSpill
   m_TagString: Untagged
@@ -140,8 +141,37 @@ MonoBehaviour:
   placementRotationOffset: {x: 0, y: 0.70710677, z: 0, w: 0.70710677}
   duration: 10
   slowMultiplier: 0.4
+  flameTickDamage: 6
+  flameTickInterval: 0.5
   minimapIndicator: {fileID: 5018526965374483371}
   minimapIndicatorScale: {x: 45, y: 0.01, z: 7}
+--- !u!54 &3396888909515684771
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3639713596541949016}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &7162373706232886015
 GameObject:
   m_ObjectHideFlags: 0

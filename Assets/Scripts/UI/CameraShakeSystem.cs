@@ -1,40 +1,40 @@
-using UnityEngine;
 using System.Collections;
+using UnityEngine;
+using Unity.Cinemachine;
 
 public class CameraShakeSystem : MonoBehaviour
 {
-    private Vector3 originalPosition;
-    private Coroutine currentShakeRoutine;
+    [Header("References")]
+    [SerializeField] private CinemachineCamera virtualCamera;
+    [SerializeField] private CinemachineBasicMultiChannelPerlin perlin;
 
-    private void Awake()
+    [Header("Defaults")]
+    [SerializeField] private float defaultFrequency = 2f;
+
+    private Coroutine shakeRoutine;
+
+    public void Shake(float duration, float amplitude, float frequency = -1f)
     {
-        originalPosition = transform.localPosition;
+        if (shakeRoutine != null)
+            StopCoroutine(shakeRoutine);
+
+        shakeRoutine = StartCoroutine(ShakeRoutine(duration, amplitude, frequency > 0f ? frequency : defaultFrequency));
     }
 
-    public void Shake(float duration, float magnitude)
+    private IEnumerator ShakeRoutine(float duration, float amplitude, float frequency)
     {
-        if (currentShakeRoutine != null)
-        {
-            StopCoroutine(currentShakeRoutine);
-            transform.localPosition = originalPosition;
-        }
+        perlin.AmplitudeGain = amplitude;
+        perlin.FrequencyGain = frequency;
 
-        currentShakeRoutine = StartCoroutine(ShakeRoutine(duration, magnitude));
-    }
-
-    private IEnumerator ShakeRoutine(float duration, float magnitude)
-    {
         float elapsed = 0f;
         while (elapsed < duration)
         {
             elapsed += Time.unscaledDeltaTime;
-            float x = Random.Range(-1f, 1f) * magnitude;
-            float y = Random.Range(-1f, 1f) * magnitude;
-            transform.localPosition = originalPosition + new Vector3(x, y, 0);
             yield return null;
         }
 
-        transform.localPosition = originalPosition;
-        currentShakeRoutine = null;
+        perlin.AmplitudeGain = 0f;
+        perlin.FrequencyGain = 0f;
+        shakeRoutine = null;
     }
 }

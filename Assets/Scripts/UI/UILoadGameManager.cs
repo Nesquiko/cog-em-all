@@ -3,13 +3,19 @@ using UnityEngine;
 public class UILoadGameManager : MonoBehaviour
 {
     [SerializeField] private GameObject loadGamePanel;
-    [SerializeField] private GameObject menuPanel;
+    [SerializeField] private GameObject homePanel;
 
-    public void HandleLoadGameClick(int gameID)
+    public void HandleLoadSelectedGameClick(int gameID)
     {
         loadGamePanel.SetActive(false);
-        menuPanel.SetActive(true);
+        SceneLoader.LoadScene("MenuScene");
 
         // TODO: LoadGameData(gameID);
+    }
+
+    public void HandleBackToHomeClick()
+    {
+        loadGamePanel.SetActive(false);
+        homePanel.SetActive(true);
     }
 }

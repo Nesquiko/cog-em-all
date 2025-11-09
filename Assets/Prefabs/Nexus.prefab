@@ -496,9 +496,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Nexus
   maxHealthPoints: 1000
-  healthBarGO: {fileID: 8881895888070689336}
+  nexusHealthBar: {fileID: 8881895888070689336}
   nexusModel: {fileID: 7939329576195289905}
   nexusExplosion: {fileID: 989197229885688957}
+  nexusVignette: {fileID: 0}
 --- !u!65 &8190396389264763879
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -6,16 +6,22 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
 {
     [SerializeField] private SkillTypes skillType = SkillTypes.OilSpill;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 90f, 0f);
-    public SkillTypes SkillType => skillType;
-    public Quaternion PlacementRotationOffset => placementRotationOffset;
+    public SkillTypes SkillType() => skillType;
+    public Quaternion PlacementRotationOffset() => placementRotationOffset;
 
+    [Header("Oil Settings")]
     [SerializeField] private float duration = 10f;
     [SerializeField] private float slowMultiplier = 0.4f;
+
+    [Header("Ignite Settings")]
+    [SerializeField] private float flameTickDamage = 6f;
+    [SerializeField] private float flameTickInterval = 0.5f;
 
     [SerializeField] private GameObject minimapIndicator;
     [SerializeField] private Vector3 minimapIndicatorScale;
 
-    private readonly Dictionary<int, Enemy> enemiesInRange = new(); 
+    private readonly Dictionary<int, Enemy> enemiesInRange = new();
+    private bool burning;
 
     public void Initialize()
     {
@@ -38,6 +44,30 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
         Destroy(gameObject);
     }
 
+    public void Ignite()
+    {
+        if (burning) return;
+        burning = true;
+
+        foreach (var e in enemiesInRange.Values)
+        {
+            if (e == null) continue;
+            e.ApplyEffect(EnemyStatusEffect.OilBurn(flameTickDamage, flameTickInterval));
+        }
+    }
+
+    public void Extinguish()
+    {
+        if (!burning) return;
+        burning = false;
+
+        foreach (var e in enemiesInRange.Values)
+        {
+            if (e == null) continue;
+            e.RemoveEffect(EffectType.OilBurned);
+        }
+    }
+
     public void RegisterInRange(Enemy e)
     {
         int id = e.gameObject.GetInstanceID();
@@ -45,6 +75,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
         enemiesInRange.Add(id, e);
 
         e.ApplyEffect(EnemyStatusEffect.Oiled(slowMultiplier));
+        if (burning) e.ApplyEffect(EnemyStatusEffect.OilBurn(flameTickDamage, flameTickInterval));
     }
 
     public void UnregisterOutOfRange(Enemy e)
@@ -54,5 +85,6 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
         enemiesInRange.Remove(id);
 
         e.RemoveEffect(EffectType.Oiled);
+        e.RemoveEffect(EffectType.OilBurned);
     }
 }

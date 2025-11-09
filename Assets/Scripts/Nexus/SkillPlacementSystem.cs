@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,6 +11,7 @@ public class SkillPlacementSystem : MonoBehaviour
     [SerializeField] private SplineContainer road;
     [SerializeField] private PauseManager pauseManager;
     [SerializeField] private GameObject buildProgressPrefab;
+    [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     
@@ -28,7 +30,7 @@ public class SkillPlacementSystem : MonoBehaviour
 
     private int currentHotkeyIndex = -1;
 
-    //public event Action<ISkill> OnUseSkill;
+    public event Action<ISkill> OnUseSkill;
 
     public bool IsPlacing => isPlacing;
 
@@ -82,7 +84,7 @@ public class SkillPlacementSystem : MonoBehaviour
         Quaternion rotation = Quaternion.LookRotation(tangent, Vector3.up);
 
         if (skillPrefab.TryGetComponent<ISkillPlaceable>(out var skillInfo))
-            rotation *= skillInfo.PlacementRotationOffset;
+            rotation *= skillInfo.PlacementRotationOffset();
 
         if (ghostInstance != null)
         {
@@ -144,9 +146,9 @@ public class SkillPlacementSystem : MonoBehaviour
         currentHotkeyIndex = hotkeyIndex;
 
         ghostInstance = Instantiate(skillPrefab);
-        // SkillTypes skillType = ghostInstance.GetComponent<ISkill>().SkillType();
+        SkillTypes skillType = ghostInstance.GetComponent<ISkill>().SkillType();
 
-        // HUDPanelUI.ShowSkillInfo(skillType);
+        HUDPanelUI.ShowPlacementInfo(skillType);
 
         int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
         ghostInstance.layer = ghostLayer;
@@ -164,7 +166,7 @@ public class SkillPlacementSystem : MonoBehaviour
         if (skillGO.TryGetComponent<ISkillPlaceable>(out var skill))
             skill.Initialize();
 
-        // OnUseSkill?.Invoke(skill);
+        OnUseSkill?.Invoke(skill);
 
         var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
         var progress = circle.GetComponent<BuildProgress>();
@@ -190,7 +192,7 @@ public class SkillPlacementSystem : MonoBehaviour
         if (ghostInstance != null) Destroy(ghostInstance);
         ghostInstance = null;
 
-        // HUDPanelUI.HidePlacementInfo();
+        HUDPanelUI.HidePlacementInfo();
     }
 
     private int GetPressedSkillHotkey()

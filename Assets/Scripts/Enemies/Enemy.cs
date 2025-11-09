@@ -140,14 +140,14 @@ public class Enemy : MonoBehaviour
 
     private void AttackTarget()
     {
-        if (target == null || target.IsDestroyed)
+        if (target == null || target.IsDestroyed())
         {
             target = null;
             speed = originalSpeed;
             return;
         }
 
-        transform.LookAt(target.transform, Vector3.up);
+        transform.LookAt(target.Transform(), Vector3.up);
 
         attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0f)
@@ -160,7 +160,7 @@ public class Enemy : MonoBehaviour
     private IEnumerator AttackAnimation(IDamageable damageableTarget)
     {
         Vector3 startPosition = transform.position;
-        Vector3 targetPosition = damageableTarget.transform.position;
+        Vector3 targetPosition = damageableTarget.Transform().position;
 
         Vector3 direction = (targetPosition - startPosition);
         direction.y = 0f;
@@ -212,7 +212,7 @@ public class Enemy : MonoBehaviour
 
     public void ApplyEffect(EnemyStatusEffect effect)
     {
-        if (activeEffects.ContainsKey(effect.type))
+        if (activeEffects.ContainsKey(effect.type) && activeEffects[effect.type] != null)
             StopCoroutine(activeEffects[effect.type]);
 
         if (effect.persistent)
@@ -234,6 +234,13 @@ public class Enemy : MonoBehaviour
                 if (!activeEffects.ContainsKey(effect.type))
                     activeEffects[effect.type] = null;
                 break;
+            case EffectType.OilBurned:
+                if (!activeEffects.ContainsKey(effect.type))
+                {
+                    Coroutine routine = StartCoroutine(IndefiniteBurn(effect));
+                    activeEffects[effect.type] = routine;
+                }
+                break;
         }
     }
 
@@ -251,6 +258,8 @@ public class Enemy : MonoBehaviour
         {
             case EffectType.Oiled:
                 speed = originalSpeed;
+                break;
+            case EffectType.OilBurned:
                 break;
         }
     }
@@ -278,5 +287,14 @@ public class Enemy : MonoBehaviour
         }
 
         activeEffects.Remove(effect.type);
+    }
+
+    private IEnumerator IndefiniteBurn(EnemyStatusEffect effect)
+    {
+        while (true)
+        {
+            TakeDamage(effect.tickDamage, isCritical: false);
+            yield return new WaitForSeconds(effect.tickInterval);
+        }
     }
 }

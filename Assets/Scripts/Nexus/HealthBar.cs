@@ -26,7 +26,7 @@ public class HealthBar : MonoBehaviour
             transform.LookAt(transform.position + cam.transform.forward);
         }
 
-        float hpFraction = Mathf.Clamp01(damageable.HealthPointsNormalized);
+        float hpFraction = Mathf.Clamp01(damageable.HealthPointsNormalized());
         fill.localScale = new Vector3(
             initialScale.x,
             initialScale.y * hpFraction,
