@@ -30,6 +30,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private GameObject towerOverlay;
 
     private TowerSellManager towerSellManager;
+    private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseBeamDamage;
 
@@ -46,6 +47,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         towerOverlay.SetActive(false);
 
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
+        towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
     }
 
     private void Start()
@@ -139,7 +141,11 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public void SellAndDestroy()
     {
+        towerSelectionManager.DisableSelection();
+
         towerSellManager.RequestSell(this);
+
+        towerSelectionManager.EnableSelection();
 
         Destroy(towerOverlay);
         Destroy(gameObject);

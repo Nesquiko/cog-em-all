@@ -4,37 +4,47 @@ using Unity.Cinemachine;
 
 public class CameraShakeSystem : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private CinemachineCamera virtualCamera;
-    [SerializeField] private CinemachineBasicMultiChannelPerlin perlin;
-
-    [Header("Defaults")]
+    [Header("Impulse Settings")]
+    [SerializeField] private float defaultDuration = 0.5f;
+    [SerializeField] private float defaultAmplitude = 2f;
     [SerializeField] private float defaultFrequency = 2f;
 
-    private Coroutine shakeRoutine;
+    private CinemachineImpulseDefinition impulseDef;
 
-    public void Shake(float duration, float amplitude, float frequency = -1f)
+    private void Awake()
     {
-        if (shakeRoutine != null)
-            StopCoroutine(shakeRoutine);
-
-        shakeRoutine = StartCoroutine(ShakeRoutine(duration, amplitude, frequency > 0f ? frequency : defaultFrequency));
+        impulseDef = new CinemachineImpulseDefinition
+        {
+            ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Explosion,
+            ImpulseDuration =       defaultDuration,
+            AmplitudeGain =         defaultAmplitude,
+            FrequencyGain =         defaultFrequency,
+            DissipationDistance =   500f,
+            ImpactRadius =          500f,
+            ImpulseType =           CinemachineImpulseDefinition.ImpulseTypes.Legacy
+        };
     }
 
-    private IEnumerator ShakeRoutine(float duration, float amplitude, float frequency)
+    private void Start()
     {
-        perlin.AmplitudeGain = amplitude;
-        perlin.FrequencyGain = frequency;
+        Debug.Log("Shaking camera via Cinemachine impulse");
+        Shake(defaultDuration, defaultAmplitude, defaultFrequency);
+    }
 
-        float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            elapsed += Time.unscaledDeltaTime;
-            yield return null;
-        }
+    public void Shake(float duration, float amplitude, float frequency)
+    {
+        GameObject temporaryImpulseSource = new("TemporaryImpulseSource");
+        var source = temporaryImpulseSource.AddComponent<CinemachineImpulseSource>();
 
-        perlin.AmplitudeGain = 0f;
-        perlin.FrequencyGain = 0f;
-        shakeRoutine = null;
+        impulseDef.ImpulseDuration = duration;
+        impulseDef.AmplitudeGain = amplitude;
+        impulseDef.FrequencyGain = frequency;
+
+        source.ImpulseDefinition = impulseDef;
+
+        const float scalar = 1f;
+        impulseDef.CreateEvent(Vector3.zero, Vector3.down * scalar);
+
+        Destroy(temporaryImpulseSource, duration + 0.25f);
     }
 }

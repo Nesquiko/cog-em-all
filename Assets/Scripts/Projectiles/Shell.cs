@@ -1,11 +1,19 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Shell : MonoBehaviour
 {
-    [SerializeField] private float splashRadius = 5f;
+    [SerializeField] private float splashRadius = 10f;
     [SerializeField] private float baseDamage = 120f;
     [SerializeField] private float lifetime = 5f;
+
+    [SerializeField] private MeshRenderer meshRenderer;
+    [SerializeField] private SphereCollider sphereCollider;
+
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem shellExplosionVFX;
+    [SerializeField] private float shellVFXScaleFactor = 3f;
 
     private Vector3 start;
     private Vector3 target;
@@ -23,6 +31,15 @@ public class Shell : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, splashRadius);
+    }
+
+    private void Awake()
+    {
+        shellExplosionVFX.transform.localScale = new(
+            splashRadius / shellVFXScaleFactor,
+            splashRadius / shellVFXScaleFactor,
+            splashRadius / shellVFXScaleFactor
+        );
     }
 
     public void Launch(Vector3 targetPos, float dmg, bool isCritical, float launchSpeed, float arc)
@@ -55,12 +72,20 @@ public class Shell : MonoBehaviour
     
         if (t >= 1f)
         {
-            Explode();
+            StartCoroutine(Explode());
         }
     }
 
-    private void Explode()
+    private IEnumerator Explode()
     {
+        launched = false;
+
+        meshRenderer.enabled = false;
+        sphereCollider.enabled = false;
+
+        shellExplosionVFX.transform.parent = null;
+        shellExplosionVFX.Play();
+
         Collider[] hits = Physics.OverlapSphere(transform.position, splashRadius);
         HashSet<Enemy> damaged = new();
 
@@ -72,6 +97,9 @@ public class Shell : MonoBehaviour
             }
         }
 
+        float vfxLife = shellExplosionVFX.main.duration + shellExplosionVFX.main.startLifetime.constantMax;
+        Destroy(shellExplosionVFX.gameObject, vfxLife);
         Destroy(gameObject);
+        yield break;
     }
 }

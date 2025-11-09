@@ -346,9 +346,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1601318743041153875}
+  - component: {fileID: 7537824560513544212}
+  - component: {fileID: 3748361372079268133}
   m_Layer: 8
   m_Name: MortarModel
-  m_TagString: Untagged
+  m_TagString: TowerModel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -369,6 +371,50 @@ Transform:
   - {fileID: 813306345649447482}
   m_Father: {fileID: 352041422836785006}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &7537824560513544212
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2747210973633533730}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3, y: 11.1, z: 3}
+  m_Center: {x: 0, y: 5.55, z: 0}
+--- !u!136 &3748361372079268133
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2747210973633533730}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3.5
+  m_Height: 9
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2959101345878191752
 GameObject:
   m_ObjectHideFlags: 0
@@ -911,15 +957,6 @@ MonoBehaviour:
   - {fileID: 3554226702230824119}
   towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
-  controlPoint: {fileID: 6705421868211201135}
-  sensitivity: 0.75
-  cameraRotateSpeed: 50
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
-  maxAimDistance: 150
-  aimMarkerPrefab: {fileID: 4305582875491972556, guid: 294d49aa2cda9e046a2388c3ac112055, type: 3}
-  trajectoryColor: {r: 0, g: 0.5882353, b: 1, a: 0.34509805}
   recoilDistance: 0.5
   recoilSpeed: 20
   recoilReturnSpeed: 5

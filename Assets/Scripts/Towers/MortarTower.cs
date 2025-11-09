@@ -49,6 +49,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private GameObject towerOverlay;
 
     private TowerSellManager towerSellManager;
+    private TowerSelectionManager towerSelectionManager;
 
     private void OnDrawGizmosSelected()
     {
@@ -76,6 +77,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         towerOverlay.SetActive(false);
 
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
+        towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
     }
 
     private void Start()
@@ -298,7 +300,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public void SellAndDestroy()
     {
+        towerSelectionManager.DisableSelection();
+
         towerSellManager.RequestSell(this);
+
+        towerSelectionManager.EnableSelection();
 
         Destroy(towerOverlay);
         Destroy(gameObject);

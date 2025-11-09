@@ -47,5 +47,16 @@ public class Bullet : MonoBehaviour
             enemy.TakeDamage(damage, crit, withEffect: EnemyStatusEffect.Bleed);
             Destroy(gameObject);
         }
+
+        if (other.TryGetComponent<TerrainCollider>(out _))
+        {
+            Destroy(gameObject);
+        }
+
+        if (other.CompareTag("TowerModel"))
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 }

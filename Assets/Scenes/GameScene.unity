@@ -6810,53 +6810,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 605416048}
   m_CullTransparentMesh: 1
---- !u!1 &625370700
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 625370702}
-  - component: {fileID: 625370701}
-  m_Layer: 0
-  m_Name: CameraShakeSystem
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &625370701
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625370700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f7aa285bfe096748a5a3696ffb756e5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraShakeSystem
-  virtualCamera: {fileID: 2051247751}
-  perlin: {fileID: 2051247756}
-  defaultFrequency: 2
---- !u!4 &625370702
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625370700}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1011.05066, y: 449.6935, z: 39.92882}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &628273599
 GameObject:
   m_ObjectHideFlags: 0
@@ -10151,7 +10104,7 @@ MonoBehaviour:
   towerSelectionManager: {fileID: 1378101563}
   mainCamera: {fileID: 330585545}
   brain: {fileID: 330585549}
-  cameraShakeSystem: {fileID: 625370701}
+  cameraShakeSystem: {fileID: 0}
   waveCounterInfo: {fileID: 778685442}
   nextWaveCountdown: {fileID: 230261657}
   HUDPanelUI: {fileID: 171036884}
@@ -20104,7 +20057,6 @@ GameObject:
   - component: {fileID: 2051247751}
   - component: {fileID: 2051247754}
   - component: {fileID: 2051247755}
-  - component: {fileID: 2051247756}
   m_Layer: 0
   m_Name: CinemachineCamera
   m_TagString: Untagged
@@ -20202,23 +20154,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineHardLookAt
   LookAtOffset: {x: 0, y: 0, z: 0}
---- !u!114 &2051247756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2051247750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
-  NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
-  PivotOffset: {x: 0, y: 0, z: 0}
-  AmplitudeGain: 0
-  FrequencyGain: 0
-  m_NoiseOffsets: {x: -909.53064, y: -477.69702, z: -120.34976}
 --- !u!1 &2057288750
 GameObject:
   m_ObjectHideFlags: 0
@@ -20984,4 +20919,3 @@ SceneRoots:
   - {fileID: 5364891}
   - {fileID: 1356852808}
   - {fileID: 2036624460}
-  - {fileID: 625370702}

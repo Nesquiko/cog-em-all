@@ -96,8 +96,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Vector3 flamePosition = new(firePoint.position.x, 0f, firePoint.position.z);
         GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
         activeFlame = flame.GetComponent<Flame>();
-        activeFlame.SetOwner(this);
-        activeFlame.SetRange(range);
+        activeFlame.Initialize(this, range);
         flame.SetActive(false);
     }
 
@@ -124,8 +123,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         if (isCoolingDown || activeFlame == null) return;
 
         activeFlame.gameObject.SetActive(true);
-        activeFlame.SetOwner(this);
-        activeFlame.SetRange(range);
+        activeFlame.Initialize(this, range);
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
         StartCoroutine(CooldownRoutine(activeFlame.FireDuration));
@@ -242,18 +240,20 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public void SellAndDestroy()
     {
-        towerSelectionManager.DeselectCurrent();
-        rangeIndicator.SetActive(false);
+        towerSelectionManager.DisableSelection();
+
         if (activeFlame != null)
         {
             activeFlame.StopFlame();
-            activeFlame.gameObject.SetActive(false);
+            Destroy(activeFlame.gameObject);
         }
 
         TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
         enemiesInRange.Clear();
 
         towerSellManager.RequestSell(this);
+
+        towerSelectionManager.EnableSelection();
 
         Destroy(towerOverlay);
         Destroy(towerRotationOverlay);

@@ -15,6 +15,7 @@ public class Beam : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private LayerMask enemyMask;
  
     private Transform firePoint;
     private Transform initialTarget;
@@ -128,22 +129,28 @@ public class Beam : MonoBehaviour
         return chain;
     }
 
-    private Enemy FindClosestEnemy(Vector3 pos, List<Enemy> exclude)
+    private Enemy FindClosestEnemy(Vector3 origin, List<Enemy> exclude)
     {
-        Enemy[] allEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-        Enemy closest = null;
-        float minDist = Mathf.Infinity;
+        Collider[] hits = Physics.OverlapSphere(origin, chainRadius, enemyMask, QueryTriggerInteraction.Ignore);
 
-        foreach (Enemy e in allEnemies)
+        Enemy closest = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (Collider hit in hits)
         {
+            if (hit == null) continue;
+
+            if (!hit.TryGetComponent<Enemy>(out var e)) continue;
             if (exclude.Contains(e)) continue;
-            float dist = Vector3.Distance(pos, e.transform.position);
-            if (dist < minDist && dist <= chainRadius)
+
+            float distance = Vector3.Distance(origin, e.transform.position);
+            if (distance < minDistance)
             {
-                minDist = dist;
+                minDistance = distance;
                 closest = e;
             }
         }
+
         return closest;
     }
 }

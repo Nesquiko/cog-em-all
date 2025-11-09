@@ -16,6 +16,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [Header("References")]
     [SerializeField] private Bullet bulletPrefab;
     [SerializeField] private Transform gatlingHead;
+    [SerializeField] private GameObject gatlingSeat;
     [SerializeField] private Transform gatlingGunL;
     [SerializeField] private Transform gatlingGunR;
     [SerializeField] private Transform gatlingFirePointL;
@@ -37,6 +38,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private float recoilSpeed = 20f;
     [SerializeField] private float recoilReturnSpeed = 5f;
 
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem muzzleFlashL;
+    [SerializeField] private ParticleSystem muzzleFlashR;
+
     private readonly Dictionary<int, Enemy> enemiesInRange = new();
     private Enemy target;
     private float fireCooldown = 0f;
@@ -57,10 +62,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private GameObject towerOverlay;
 
     private TowerSellManager towerSellManager;
+    private TowerSelectionManager towerSelectionManager;
 
     public Transform GetControlPoint() => controlPoint;
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, range);
     }
@@ -73,6 +79,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         towerOverlay.SetActive(false);
 
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
+        towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
     }
 
     private void Start()
@@ -120,7 +127,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         TowerMechanics.HandleTriggerEnter(other, enemiesInRange, HandleEnemyDeath);
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         TowerMechanics.HandleTriggerExit(other, enemiesInRange, HandleEnemyDeath, target, out target);
     }
@@ -130,9 +137,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    void Shoot(Enemy enemy)
+    private void Shoot(Enemy enemy)
     {
-
         Transform gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
         Bullet bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
@@ -149,11 +155,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         {
             if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
             recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
+            muzzleFlashL.Play();
         }
         else
         {
             if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
             recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
+            muzzleFlashR.Play();
         }
 
         shootFromLeftFirePoint = !shootFromLeftFirePoint;
@@ -221,6 +229,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         if (active)
         {
+            StartCoroutine(FadeGatlingSeat(fadeOut: true, delayBefore: 1f));
+
             target = null;
 
             Vector3 euler = gatlingHead.rotation.eulerAngles;
@@ -230,6 +240,44 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
             if (controlPoint != null)
                 controlPoint.rotation = gatlingHead.rotation;
         }
+        else
+        {
+            StartCoroutine(FadeGatlingSeat(fadeOut: false, delayBefore: 0f));
+        }
+    }
+
+    private IEnumerator FadeGatlingSeat(bool fadeOut, float delayBefore = 0f)
+    {
+        if (delayBefore > 0f)
+            yield return new WaitForSeconds(delayBefore);
+
+        float startAlpha = fadeOut ? 1f : 0f;
+        float endAlpha = fadeOut ? 0f : 1f;
+        float duration = fadeOut ? 0.8f : 0.6f;
+
+        var renderer = gatlingSeat.GetComponent<Renderer>();
+        Color c = renderer.material.color;
+        c.a = startAlpha;
+        renderer.material.color = c;
+
+        if (!fadeOut)
+            gatlingSeat.SetActive(true);
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, endAlpha, t / duration);
+            c.a = alpha;
+            renderer.material.color = c;
+            yield return null;
+        }
+
+        c.a = endAlpha;
+        renderer.material.color = c;
+
+        if (fadeOut)
+            gatlingSeat.SetActive(false);
     }
 
     public void HandlePlayerAim(Vector2 mouseDelta)
@@ -281,11 +329,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         {
             if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
             recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
+            muzzleFlashL.Play();
         }
         else
         {
             if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
             recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
+            muzzleFlashR.Play();
         }
 
         shootFromLeftFirePoint = !shootFromLeftFirePoint;
@@ -295,7 +345,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public void SellAndDestroy()
     {
+        towerSelectionManager.DisableSelection();
+
         towerSellManager.RequestSell(this);
+
+        towerSelectionManager.EnableSelection();
 
         Destroy(towerOverlay);
         Destroy(gameObject);

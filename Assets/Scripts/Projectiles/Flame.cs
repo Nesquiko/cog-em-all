@@ -10,7 +10,10 @@ public class Flame : MonoBehaviour
     [SerializeField] private float pulseInterval = 0.25f;
     [SerializeField] private float fireDuration = 3f;
 
-    [SerializeField] private MeshRenderer meshRenderer;
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem flameVFX;
+    [SerializeField] private float burnDelay = 0.5f;
+    [SerializeField] private float flameVFXScaleFactor = 7f;
 
     private Coroutine fireRoutine;
     private bool isActive;
@@ -23,15 +26,14 @@ public class Flame : MonoBehaviour
     public bool IsActive => isActive;
     public float FireDuration => fireDuration;
 
-    public void SetRange(float flameRange)
+    public void Initialize(FlamethrowerTower ownerTower, float flameRange)
     {
+        owner = ownerTower;
         range = flameRange;
-        transform.localScale = new Vector3(range, range, range);
-    }
-
-    public void SetOwner(FlamethrowerTower tower)
-    {
-        owner = tower;
+        transform.localScale = new(range, range, range);
+        flameVFX.transform.localScale = new(range / flameVFXScaleFactor, range / flameVFXScaleFactor, range / flameVFXScaleFactor);
+        var main = flameVFX.main;
+        main.duration = Mathf.Max(0f, fireDuration - 1f);
     }
 
     public void StartFlame(Func<float, float> CalculateBaseFlameDamagePerPulse)
@@ -39,10 +41,7 @@ public class Flame : MonoBehaviour
         if (isActive) return;
         isActive = true;
 
-        if (meshRenderer != null)
-        {
-            meshRenderer.enabled = true;
-        }
+        flameVFX.Play();
 
         fireRoutine = StartCoroutine(FlameRoutine(CalculateBaseFlameDamagePerPulse));
 
@@ -59,16 +58,21 @@ public class Flame : MonoBehaviour
             StopCoroutine(fireRoutine);
         }
 
+        flameVFX.Stop(withChildren: true, stopBehavior: ParticleSystemStopBehavior.StopEmittingAndClear);
+
         foreach (var oil in oilsInRange)
             if (oil != null) oil.Extinguish();
     }
 
     private IEnumerator FlameRoutine(Func<float, float> CalculateBaseFlameDamagePerPulse)
     {
+        yield return new WaitForSeconds(burnDelay);
+
         float duration = 0f;
         float tickTimer = 0f;
 
-        while (duration < fireDuration)
+        var runTime = fireDuration - burnDelay;
+        while (duration < runTime)
         {
             duration += Time.deltaTime;
             tickTimer += Time.deltaTime;
@@ -82,7 +86,6 @@ public class Flame : MonoBehaviour
             yield return null;
         }
 
-        if (meshRenderer != null) meshRenderer.enabled = false;
         isActive = false;
     }
 

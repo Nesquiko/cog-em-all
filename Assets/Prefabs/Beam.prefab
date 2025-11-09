@@ -52,6 +52,9 @@ MonoBehaviour:
   maxChains: 3
   stayTimeOnHit: 0.05
   lineRenderer: {fileID: 704088555992295267}
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 4096
 --- !u!120 &704088555992295267
 LineRenderer:
   serializedVersion: 2
