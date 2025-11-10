@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UI;
 
 public class TowerRotationOverlay : MonoBehaviour
 {
@@ -13,16 +11,16 @@ public class TowerRotationOverlay : MonoBehaviour
 
     private Camera mainCamera;
     private RectTransform rectTransform;
-    private Transform target;
+    private GameObject towerGO;
+    private ITower tower;
     private bool active;
 
     private TowerSelectionManager towerSelectionManager;
 
-    public void SetTarget(Transform t)
+    public void Initialize(GameObject t)
     {
-        target = t;
-        gameObject.SetActive(true);
-        active = true;
+        towerGO = t;
+        tower = towerGO.GetComponent<ITower>();
     }
 
     private void Awake()
@@ -37,11 +35,11 @@ public class TowerRotationOverlay : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!active || target == null)
+        if (!active || towerGO == null)
         {
             return;
         }
-        Vector3 targetPosition = target.position;
+        Vector3 targetPosition = towerGO.transform.position;
         targetPosition.y += 7f;
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(targetPosition);
 
@@ -58,8 +56,8 @@ public class TowerRotationOverlay : MonoBehaviour
 
     private void Rotate(int direction)
     {
-        if (!target) return;
-        target.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime, Space.World);
+        if (!towerGO) return;
+        towerGO.transform.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime, Space.World);
     }
 
     private void RotateLeft() => Rotate(-1);
@@ -70,7 +68,7 @@ public class TowerRotationOverlay : MonoBehaviour
     {
         active = false;
 
-        if (target.TryGetComponent<FlamethrowerTower>(out var tower))
+        if (towerGO.TryGetComponent<FlamethrowerTower>(out var tower))
             tower.EndManualRotation();
 
         towerSelectionManager.EnableSelection();

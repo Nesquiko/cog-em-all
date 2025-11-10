@@ -5,7 +5,6 @@ using UnityEngine;
 public class Shell : MonoBehaviour
 {
     [SerializeField] private float splashRadius = 10f;
-    [SerializeField] private float baseDamage = 120f;
     [SerializeField] private float lifetime = 5f;
 
     [SerializeField] private MeshRenderer meshRenderer;
@@ -17,15 +16,12 @@ public class Shell : MonoBehaviour
 
     private Vector3 start;
     private Vector3 target;
-    private float speed;
     private float damage;
     private bool crit;
     private float arcHeight;
     private float travelDuration;
     private float elapsed;
     private bool launched;
-
-    public float BaseDamage => baseDamage;
 
     private void OnDrawGizmosSelected()
     {
@@ -42,19 +38,16 @@ public class Shell : MonoBehaviour
         );
     }
 
-    public void Launch(Vector3 targetPos, float dmg, bool isCritical, float launchSpeed, float arc)
+    public void Launch(Vector3 targetPos, float dmg, bool isCritical, float arc)
     {
         start = transform.position;
         target = targetPos + Vector3.up * 0.5f;
-        speed = launchSpeed;
         arcHeight = arc;
         launched = true;
         damage = dmg;
         crit = isCritical;
 
-        float distance = Vector3.Distance(start, target);
         travelDuration = Mathf.Clamp(1.5f, 0.8f, 2.5f);
-        speed = distance / travelDuration;
 
         Destroy(gameObject, lifetime);
     }

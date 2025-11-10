@@ -7,7 +7,6 @@ using UnityEngine;
 public class Beam : MonoBehaviour
 {
     [Header("Stats")]
-    [SerializeField] private float baseDamage = 30f;
     [SerializeField] private float speed = 200f;
     [SerializeField] private float chainRadius = 10f;
     [SerializeField] private int maxChains = 3;
@@ -21,7 +20,6 @@ public class Beam : MonoBehaviour
     private Transform initialTarget;
     private float damage;
     private bool crit;
-    public float BaseDamage => baseDamage;
 
     public void Initialize(Transform from, Transform to, float dmg, bool isCritical)
     {
@@ -35,7 +33,7 @@ public class Beam : MonoBehaviour
 
     private void Start()
     {
-        if (lineRenderer == null || firePoint == null || initialTarget == null)
+        if (initialTarget == null)
         {
             Destroy(gameObject);
             return;

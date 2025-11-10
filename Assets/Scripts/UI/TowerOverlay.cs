@@ -1,25 +1,44 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 public class TowerOverlay : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Button takeControlButton;
-    [SerializeField] private Button upgradeTowerButton;
-    [SerializeField] private Button sellTowerButton;
-    [SerializeField] private Button rotateTowerButton;
+    [SerializeField] private GameObject upgradeButton;
+    [SerializeField] private GameObject takeControlButton;
+    [SerializeField] private GameObject rotateButton;
+
+    private CanvasGroup upgradeCanvasGroup;
+    private ScaleOnHover upgradeScaleOnHover;
+    private CursorPointer upgradeCursorPointer;
+    private TooltipOnButton upgradeTooltipOnButton;
+
+    private CanvasGroup takeControlCanvasGroup;
+    private ScaleOnHover takeControlScaleOnHover;
+    private CursorPointer takeControlCursorPointer;
+    private TooltipOnButton takeControlTooltipOnButton;
+
+    private CanvasGroup rotateCanvasGroup;
+    private ScaleOnHover rotateScaleOnHover;
+    private CursorPointer rotateCursorPointer;
+    private TooltipOnButton rotateTooltipOnButton;
 
     private Camera mainCamera;
     private RectTransform rectTransform;
-    private Transform target;
+    private GameObject towerGO;
+    private ITower tower;
 
     private TowerControlManager towerControlManager;
     private TowerSellManager towerSellManager;
+    private TowerUpgradeManager towerUpgradeManager;
 
-    public void SetTarget(Transform t)
+    public void Initialize(GameObject t)
     {
-        target = t;
-        gameObject.SetActive(true);
+        towerGO = t;
+        tower = towerGO.GetComponent<ITower>();
+    }
+
+    public void Start()
+    {
+        AdjustOverlayButtons();
     }
 
     private void Awake()
@@ -28,20 +47,55 @@ public class TowerOverlay : MonoBehaviour
         mainCamera = Camera.main;
         towerControlManager = FindFirstObjectByType<TowerControlManager>();
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
+        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
 
-        takeControlButton.onClick.AddListener(OnTakeControlClicked);
-        //upgradeTowerButton.onClick.AddListener(OnUpgradeTowerClicked);
-        sellTowerButton.onClick.AddListener(OnSellTowerClicked);
-        rotateTowerButton.onClick.AddListener(OnRotateTowerClicked);
+        upgradeCanvasGroup = upgradeButton.GetComponent<CanvasGroup>();
+        upgradeScaleOnHover = upgradeButton.GetComponent<ScaleOnHover>();
+        upgradeCursorPointer = upgradeButton.GetComponent<CursorPointer>();
+        upgradeTooltipOnButton = upgradeButton.GetComponent<TooltipOnButton>();
+
+        takeControlCanvasGroup = takeControlButton.GetComponent<CanvasGroup>();
+        takeControlScaleOnHover = takeControlButton.GetComponent<ScaleOnHover>();
+        takeControlCursorPointer = takeControlButton.GetComponent<CursorPointer>();
+        takeControlTooltipOnButton = takeControlButton.GetComponent<TooltipOnButton>();
+
+        rotateCanvasGroup = rotateButton.GetComponent<CanvasGroup>();
+        rotateScaleOnHover = rotateButton.GetComponent<ScaleOnHover>();
+        rotateCursorPointer = rotateButton.GetComponent<CursorPointer>();
+        rotateTooltipOnButton = rotateButton.GetComponent<TooltipOnButton>();
+    }
+
+    private void AdjustOverlayButtons()
+    {
+        if (!towerGO.TryGetComponent<ITowerUpgradeable>(out var towerUpgradeable) || !towerUpgradeable.CanUpgrade())
+        {
+            upgradeCanvasGroup.alpha = 0.5f;
+            upgradeScaleOnHover.enabled = false;
+            upgradeCursorPointer.enabled = false;
+            upgradeTooltipOnButton.enabled = false;
+        }
+
+        if (!towerGO.TryGetComponent<ITowerControllable>(out _))
+        {
+            takeControlCanvasGroup.alpha = 0.5f;
+            takeControlScaleOnHover.enabled = false;
+            takeControlCursorPointer.enabled = false;
+            takeControlTooltipOnButton.enabled = false;
+        }
+
+        if (!towerGO.TryGetComponent<ITowerRotateable>(out _))
+        {
+            rotateCanvasGroup.alpha = 0.5f;
+            rotateScaleOnHover.enabled = false;
+            rotateCursorPointer.enabled = false;
+            rotateTooltipOnButton.enabled = false;
+        }
     }
 
     private void LateUpdate()
     {
-        if (target == null)
-        {
-            return;
-        }
-        Vector3 targetPosition = target.position;
+        if (tower == null) return;
+        Vector3 targetPosition = towerGO.transform.position;
         targetPosition.y += 7f;
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(targetPosition);
     
@@ -53,29 +107,30 @@ public class TowerOverlay : MonoBehaviour
         rectTransform.position = screenPosition;
     }
 
-    private void OnTakeControlClicked()
+    public void OnTakeControlClicked()
     {
-        if (target.TryGetComponent<ITowerControllable>(out var tower))
-            towerControlManager.TakeControl(tower);
+        if (!towerGO.TryGetComponent<ITowerControllable>(out var tower)) return;
+        towerControlManager.TakeControl(tower);
     }
 
-    /*private void OnUpgradeTowerClicked()
+    public void OnUpgradeTowerClicked()
     {
+        if (!towerGO.TryGetComponent<ITowerUpgradeable>(out var tower)) return;
+        towerUpgradeManager.RequestUpgrade(tower);
 
-    }*/
-
-    private void OnSellTowerClicked()
-    {
-        if (target.TryGetComponent<ITowerSellable>(out var tower))
-        {
-            tower.SellAndDestroy();
-        }
+        AdjustOverlayButtons();
     }
 
-    private void OnRotateTowerClicked()
+    public void OnSellTowerClicked()
     {
-        if (target.TryGetComponent<FlamethrowerTower>(out var tower))
-            tower.ShowTowerRotationOverlay();
+        if (!towerGO.TryGetComponent<ITowerSellable>(out var tower)) return;
+        towerSellManager.RequestSell(tower);
+    }
+
+    public void OnRotateTowerClicked()
+    {
+        if (!towerGO.TryGetComponent<ITowerRotateable>(out var tower)) return;
+        tower.ShowTowerRotationOverlay();
     }
 
     public void Show()

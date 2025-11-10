@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class Flame : MonoBehaviour
 {
-    [SerializeField] private float damagePerPulse = 20f;
-    public float DamagePerPulse => damagePerPulse;
     [SerializeField] private float pulseInterval = 0.25f;
     [SerializeField] private float fireDuration = 3f;
 
@@ -34,6 +32,13 @@ public class Flame : MonoBehaviour
         flameVFX.transform.localScale = new(range / flameVFXScaleFactor, range / flameVFXScaleFactor, range / flameVFXScaleFactor);
         var main = flameVFX.main;
         main.duration = Mathf.Max(0f, fireDuration - 1f);
+    }
+
+    public void UpdateRange(float newRange)
+    {
+        range = newRange;
+        transform.localScale = new(newRange, newRange, newRange);
+        flameVFX.transform.localScale = new(newRange / flameVFXScaleFactor, newRange / flameVFXScaleFactor, newRange / flameVFXScaleFactor);
     }
 
     public void StartFlame(Func<float, float> CalculateBaseFlameDamagePerPulse)
@@ -79,7 +84,7 @@ public class Flame : MonoBehaviour
 
             if (tickTimer >= pulseInterval)
             {
-                DealDamage(CalculateBaseFlameDamagePerPulse?.Invoke(damagePerPulse) ?? damagePerPulse);
+                DealDamage(CalculateBaseFlameDamagePerPulse?.Invoke(owner.DamagePerPulse) ?? owner.DamagePerPulse);
                 tickTimer = 0f;
             }
 

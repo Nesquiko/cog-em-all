@@ -46,6 +46,18 @@ public interface ITowerSellable : ITower
     void SellAndDestroy();
 }
 
+public interface ITowerUpgradeable : ITower
+{
+    int CurrentLevel();
+    bool CanUpgrade();
+    void ApplyUpgrade(TowerUpgradeData data);
+}
+
+public interface ITowerRotateable : ITower
+{
+    void ShowTowerRotationOverlay();
+}
+
 public static class TowerMechanics
 {
     private static readonly int EmissionColorID = Shader.PropertyToID("_EmissionColor");

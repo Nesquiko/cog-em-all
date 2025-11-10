@@ -7,8 +7,7 @@ public class TowerSellManager : MonoBehaviour
 
     public void RequestSell(ITowerSellable tower)
     {
-        if (tower == null) return;
-
+        tower.SellAndDestroy();
         OnSellTower.Invoke(tower.TowerType());
     }
 }

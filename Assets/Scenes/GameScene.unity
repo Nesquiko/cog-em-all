@@ -1269,6 +1269,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 122712060}
   m_CullTransparentMesh: 1
+--- !u!1 &151259058
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 151259060}
+  - component: {fileID: 151259059}
+  m_Layer: 0
+  m_Name: TowerUpgradeManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &151259059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151259058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4e2b4ea14263124bac9ee6fb1e5c6a8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerUpgradeManager
+  allUpgradeData:
+  - {fileID: 11400000, guid: 8f78525f959b4a94db6b3e6202dba984, type: 2}
+--- !u!4 &151259060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 151259058}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 147.8527, y: -0.00001, z: 157.9802}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &153546178
 GameObject:
   m_ObjectHideFlags: 0
@@ -10101,10 +10147,10 @@ MonoBehaviour:
   towerPlacementSystem: {fileID: 640320644}
   skillPlacementSystem: {fileID: 2036624459}
   towerSellManager: {fileID: 1356852809}
+  towerUpgradeManager: {fileID: 151259059}
   towerSelectionManager: {fileID: 1378101563}
   mainCamera: {fileID: 330585545}
   brain: {fileID: 330585549}
-  cameraShakeSystem: {fileID: 0}
   waveCounterInfo: {fileID: 778685442}
   nextWaveCountdown: {fileID: 230261657}
   HUDPanelUI: {fileID: 171036884}
@@ -20915,7 +20961,8 @@ SceneRoots:
   - {fileID: 2589818}
   - {fileID: 605004492}
   - {fileID: 640320643}
+  - {fileID: 2036624460}
   - {fileID: 1378101562}
   - {fileID: 5364891}
   - {fileID: 1356852808}
-  - {fileID: 2036624460}
+  - {fileID: 151259060}

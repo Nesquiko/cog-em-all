@@ -22,10 +22,10 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private SkillPlacementSystem skillPlacementSystem;
     [SerializeField] private TowerSellManager towerSellManager;
+    [SerializeField] private TowerUpgradeManager towerUpgradeManager;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private CinemachineBrain brain;
-    [SerializeField] private CameraShakeSystem cameraShakeSystem;
 
     [Header("UI")]
     [SerializeField] private WaveCounterInfo waveCounterInfo;
@@ -50,6 +50,7 @@ class Orchestrator : MonoBehaviour
     {
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
+        towerUpgradeManager.OnUpgradeTower += OnUpgradeTower;
         skillPlacementSystem.OnUseSkill += OnUseSkill;
         nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
@@ -81,6 +82,11 @@ class Orchestrator : MonoBehaviour
     {
         TowerData towerData = towerDataCatalog.FromType(type);
         AddGears(towerData.sellPrice);
+    }
+
+    private void OnUpgradeTower(int upgradeCost)
+    {
+        SpendGears(upgradeCost);
     }
 
     private void OnUseSkill(ISkill skill)
@@ -226,8 +232,6 @@ class Orchestrator : MonoBehaviour
         brain.enabled = false;
 
         StartCoroutine(LerpTimeScale(5f));
-
-        if (!cleared) cameraShakeSystem.Shake(duration: 0.5f, amplitude: 2f, frequency: 2f);
 
         towerSelectionManager.DisableSelection();
         operationStatistics = cleared ? OperationStatistics.CreateDummyCleared() : OperationStatistics.CreateDummyFailed();

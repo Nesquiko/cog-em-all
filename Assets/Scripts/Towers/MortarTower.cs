@@ -5,9 +5,10 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
+public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable
 {
     [Header("Stats")]
+    [SerializeField] private float shellDamage = 120f;
     [SerializeField] private float fireRate = 0.5f;
     [SerializeField] private float minRange = 20f;
     [SerializeField] private float maxRange = 60f;
@@ -18,7 +19,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private float arcHeight = 15f;
 
     [Header("References")]
-    [SerializeField] private Shell shellPrefab;
+    [SerializeField] private GameObject shellPrefab;
     [SerializeField] private Transform basePivot;
     [SerializeField] private Transform cannonPivot;
     [SerializeField] private Transform firePoint;
@@ -32,24 +33,38 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private GameObject towerOverlayPrefab;
     [SerializeField] private CursorSettings cursorSettings;
 
+    [Header("Upgrades")]
+    [SerializeField] private int currentLevel = 1;
+
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.5f;
     [SerializeField] private float recoilSpeed = 20f;
     [SerializeField] private float recoilReturnSpeed = 5f;
 
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem upgradeVFX;
+
     private readonly Dictionary<int, Enemy> enemiesInRange = new();
     private readonly HashSet<int> tooClose = new();
     private Enemy target;
     private float fireCooldown;
-    private Func<float, float> CalculateBaseShellDamage;
 
     private Vector3 cannonPivotDefaultPosition;
     private Coroutine recoilRoutine;
 
-    private GameObject towerOverlay;
+    private GameObject towerOverlayGO;
+    private TowerOverlay towerOverlay;
 
-    private TowerSellManager towerSellManager;
     private TowerSelectionManager towerSelectionManager;
+    private TowerUpgradeManager towerUpgradeManager;
+
+    private Func<float, float> CalculateBaseShellDamage;
+
+    public TowerTypes TowerType() => TowerTypes.Mortar;
+
+    public int CurrentLevel() => currentLevel;
+
+    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
 
     private void OnDrawGizmosSelected()
     {
@@ -72,12 +87,13 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private void Awake()
     {
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlay = Instantiate(towerOverlayPrefab, canvas.transform, true);
-        towerOverlay.GetComponent<TowerOverlay>().SetTarget(transform);
-        towerOverlay.SetActive(false);
+        towerOverlayGO = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
+        towerOverlay.Initialize(gameObject);
+        towerOverlay.Hide();
 
-        towerSellManager = FindFirstObjectByType<TowerSellManager>();
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
+        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -151,15 +167,16 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Shoot(Enemy enemy)
     {
-        Shell shell = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
+        GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
+        Shell shell = shellGO.GetComponent<Shell>();
         if (recoilRoutine != null) StopCoroutine(recoilRoutine);
         recoilRoutine = StartCoroutine(RecoilKick());
 
         bool isCritical = UnityEngine.Random.value < critChance;
-        float dmg = CalculateBaseShellDamage?.Invoke(shell.BaseDamage) ?? shell.BaseDamage;
+        float dmg = CalculateBaseShellDamage?.Invoke(shellDamage) ?? shellDamage;
         if (isCritical) dmg *= critMultiplier;
 
-        shell.Launch(enemy.transform.position, dmg, isCritical, launchSpeed, arcHeight);
+        shell.Launch(enemy.transform.position, dmg, isCritical, arcHeight);
     }
 
     private bool IsEnemyValid(Vector3 enemyPosition)
@@ -265,16 +282,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         cannonPivot.localPosition = cannonPivotDefaultPosition;
     }
 
-    private void OnDestroy()
-    {
-        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
-    }
-
     public void Select()
     {
         outerRangeIndicator.SetActive(true);
         innerRangeIndicator.SetActive(true);
-        towerOverlay.SetActive(true);
+        towerOverlay.Show();
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
     }
 
@@ -282,7 +294,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     {
         outerRangeIndicator.SetActive(false);
         innerRangeIndicator.SetActive(false);
-        towerOverlay.SetActive(false);
+        towerOverlay.Hide();
         TowerMechanics.ClearHighlight(highlightRenderers);
     }
 
@@ -295,26 +307,56 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     public void OnHoverExit()
     {
         Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
-        TowerMechanics.ClearHighlight(highlightRenderers);
+        if (towerSelectionManager.CurrentSelected() == (ITower)this)
+        {
+            TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
+        }
+        else
+        {
+            TowerMechanics.ClearHighlight(highlightRenderers);
+        }
     }
 
     public void SellAndDestroy()
     {
-        towerSelectionManager.DisableSelection();
+        towerSelectionManager.DeselectCurrent();
 
-        towerSellManager.RequestSell(this);
-
-        towerSelectionManager.EnableSelection();
-
-        Destroy(towerOverlay);
+        Destroy(towerOverlayGO);
         Destroy(gameObject);
     }
 
-    public TowerTypes TowerType() => TowerTypes.Mortar;
+    public void ApplyUpgrade(TowerUpgradeData data)
+    {
+        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
+        // the comments below are a by-product of this
+
+        upgradeVFX.Play();
+
+        towerSelectionManager.DeselectCurrent();
+
+        currentLevel = data.level;
+
+        shellDamage = data.damage;
+        fireRate = data.fireRate;
+        maxRange = data.range;
+        critChance = data.critChance;
+        critMultiplier = data.critMultiplier;
+
+        outerCollider.radius = data.range;
+        // innerCollider.radius = data.range;
+        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);
+        // innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
+    }
 
     public void SetDamageCalculation(Func<float, float> f)
     {
         Assert.IsNotNull(f);
         CalculateBaseShellDamage = f;
+    }
+
+    private void OnDestroy()
+    {
+        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
+        enemiesInRange.Clear();
     }
 }
