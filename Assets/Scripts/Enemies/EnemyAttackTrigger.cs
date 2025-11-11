@@ -12,15 +12,15 @@ public class EnemyAttackTrigger : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent<Nexus>(out var nexus)) return;
+        if (!other.TryGetComponent<IDamageable>(out var damageable)) return;
 
-        owner.EnterAttackRange(nexus);
+        owner.EnterAttackRange(damageable);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!other.TryGetComponent<Nexus>(out var nexus)) return;
+        if (!other.TryGetComponent<IDamageable>(out var damageable)) return;
 
-        owner.ExitAttackRange(nexus);
+        owner.ExitAttackRange(damageable);
     }
 }

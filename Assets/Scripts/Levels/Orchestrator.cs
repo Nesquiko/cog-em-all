@@ -1,7 +1,6 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -17,20 +16,29 @@ class Orchestrator : MonoBehaviour
     private int enemiesLive = 0;
 
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+    [SerializeField] private SkillDataCatalog skillDataCatalog;
 
     [SerializeField] private Nexus nexus;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
+    [SerializeField] private SkillPlacementSystem skillPlacementSystem;
     [SerializeField] private TowerSellManager towerSellManager;
+    [SerializeField] private TowerUpgradeManager towerUpgradeManager;
+    [SerializeField] private TowerSelectionManager towerSelectionManager;
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private CinemachineBrain brain;
 
     [Header("UI")]
     [SerializeField] private WaveCounterInfo waveCounterInfo;
     [SerializeField] private NextWaveCountdownInfo nextWaveCountdown;
     [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private MenuPanelUI menuPanelUI;
+    [SerializeField] private OperationResultUI operationResultUI;
 
     [Header("Player resources")]
     [SerializeField] private int passiveIncome = 10;
     [SerializeField] private float passiveTick = 5f;
+
+    private OperationStatistics operationStatistics;
 
     private int gears = 0;
 
@@ -42,8 +50,13 @@ class Orchestrator : MonoBehaviour
     {
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
+        towerUpgradeManager.OnUpgradeTower += OnUpgradeTower;
+        skillPlacementSystem.OnUseSkill += OnUseSkill;
         nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
+
+        mainCamera = Camera.main;
+        brain = mainCamera.GetComponent<CinemachineBrain>();
     }
 
     private void Update()
@@ -54,10 +67,7 @@ class Orchestrator : MonoBehaviour
 
         if (wavesSpawned == level.waves.Count && enemiesLive == 0)
         {
-            // TODO luky show operation cleared screen
-            Debug.Log("operation cleared");
-            EditorApplication.isPlaying = false;
-            Application.Quit();
+            OperationEnd(cleared: true);
         }
     }
 
@@ -74,17 +84,25 @@ class Orchestrator : MonoBehaviour
         AddGears(towerData.sellPrice);
     }
 
+    private void OnUpgradeTower(int upgradeCost)
+    {
+        SpendGears(upgradeCost);
+    }
+
+    private void OnUseSkill(ISkill skill)
+    {
+        SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
+        SpendGears(skillData.cost);
+    }
+
     private void OnNexusDestroyed(Nexus nexus)
     {
-        // TODO luky show operation failed screen
-        Debug.Log("operation failed");
-        EditorApplication.isPlaying = false;
-        Application.Quit();
+        OperationEnd(cleared: false);
     }
 
     private void OnNexusHealthChange(Nexus nexus)
     {
-        menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized);
+        menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized());
     }
 
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer)
@@ -100,6 +118,7 @@ class Orchestrator : MonoBehaviour
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
+        UpdateSkillButtons();
 
         waveCounterInfo.SetCounter(0, level.waves.Count);
 
@@ -114,7 +133,7 @@ class Orchestrator : MonoBehaviour
                 yield break;
             }
 
-            Assert.IsTrue(wave.prepareTimeSeconds != 0f, "Give a player some time to preapre...");
+            Assert.IsTrue(wave.prepareTimeSeconds != 0f, "Give a player some time to prepare...");
 
             yield return nextWaveCountdown.StartCountdown(wave.prepareTimeSeconds);
 
@@ -167,6 +186,7 @@ class Orchestrator : MonoBehaviour
         gears += amount;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
+        UpdateSkillButtons();
     }
 
     public void SpendGears(int amount)
@@ -174,6 +194,7 @@ class Orchestrator : MonoBehaviour
         gears -= amount;
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
+        UpdateSkillButtons();
     }
 
     private void UpdateTowerButtons()
@@ -189,6 +210,54 @@ class Orchestrator : MonoBehaviour
         {
             HUDPanelUI.AdjustTowerButton(type, false);
         }
+    }
+
+    private void UpdateSkillButtons()
+    {
+        (HashSet<SkillTypes> toEnable, HashSet<SkillTypes> toDisable) = skillDataCatalog.AdjustSkills(gears);
+
+        foreach (SkillTypes type in toEnable)
+        {
+            HUDPanelUI.AdjustSkillButton(type, true);
+        }
+
+        foreach (SkillTypes type in toDisable)
+        {
+            HUDPanelUI.AdjustSkillButton(type, false);
+        }
+    }
+
+    private void OperationEnd(bool cleared)
+    {
+        brain.enabled = false;
+
+        StartCoroutine(LerpTimeScale(5f));
+
+        towerSelectionManager.DisableSelection();
+        operationStatistics = cleared ? OperationStatistics.CreateDummyCleared() : OperationStatistics.CreateDummyFailed();
+        operationResultUI.Initialize(operationStatistics);
+
+        HUDPanelUI.gameObject.SetActive(false);
+        menuPanelUI.gameObject.SetActive(false);
+        waveCounterInfo.gameObject.SetActive(false);
+        nextWaveCountdown.gameObject.SetActive(false);
+
+        operationResultUI.gameObject.SetActive(true);
+    }
+
+    private IEnumerator LerpTimeScale(float duration)
+    {
+        float start = Time.timeScale;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            Time.timeScale = Mathf.Lerp(start, 0f, elapsed / duration);
+            yield return null;
+        }
+
+        Time.timeScale = 0f;
     }
 
     private void OnDestroy()

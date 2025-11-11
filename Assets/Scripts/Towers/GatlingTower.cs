@@ -1,23 +1,23 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerControllable
+public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable, ITowerControllable
 {
     [Header("Stats")]
+    [SerializeField] private float bulletDamage = 50f;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
     [SerializeField, Range(0f, 1f)] private float critChance = 0.15f;
     [SerializeField] private float critMultiplier = 2.0f;
 
     [Header("References")]
-    [SerializeField] private Bullet bulletPrefab;
+    [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private Transform gatlingHead;
+    [SerializeField] private GameObject gatlingSeat;
     [SerializeField] private Transform gatlingGunL;
     [SerializeField] private Transform gatlingGunR;
     [SerializeField] private Transform gatlingFirePointL;
@@ -34,10 +34,18 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private Transform controlPoint;
     [SerializeField] private float sensitivity = 0.75f;
 
+    [Header("Upgrades")]
+    [SerializeField] private int currentLevel = 1;
+
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.2f;
     [SerializeField] private float recoilSpeed = 20f;
     [SerializeField] private float recoilReturnSpeed = 5f;
+
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem muzzleFlashL;
+    [SerializeField] private ParticleSystem muzzleFlashR;
+    [SerializeField] private ParticleSystem upgradeVFX;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private IEnemy target;
@@ -54,15 +62,23 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private float yaw;
     private float pitch;
 
+    private GameObject towerOverlayGO;
+    private TowerOverlay towerOverlay;
+
+    private TowerSelectionManager towerSelectionManager;
+    private TowerUpgradeManager towerUpgradeManager;
+
     private Func<float, float> CalculateBaseBulletDamage;
 
-    private GameObject towerOverlay;
+    public TowerTypes TowerType() => TowerTypes.Gatling;
 
-    private TowerSellManager towerSellManager;
+    public int CurrentLevel() => currentLevel;
+
+    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
 
     public Transform GetControlPoint() => controlPoint;
 
-    void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, range);
     }
@@ -70,11 +86,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private void Awake()
     {
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlay = Instantiate(towerOverlayPrefab, canvas.transform, true);
-        towerOverlay.GetComponent<TowerOverlay>().SetTarget(transform);
-        towerOverlay.SetActive(false);
+        towerOverlayGO = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
+        towerOverlay.Initialize(gameObject);
+        towerOverlay.Hide();
 
-        towerSellManager = FindFirstObjectByType<TowerSellManager>();
+        towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
+        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -122,7 +140,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         TowerMechanics.HandleTriggerEnter(other, enemiesInRange, HandleEnemyDeath);
     }
 
-    void OnTriggerExit(Collider other)
+    private void OnTriggerExit(Collider other)
     {
         TowerMechanics.HandleTriggerExit(other, enemiesInRange, HandleEnemyDeath, target, out target);
     }
@@ -132,18 +150,26 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    void Shoot(IEnemy enemy)
+    private void Shoot(IEnemy enemy)
     {
-
-        Transform gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
-        Bullet bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
 
         bool isCritical = UnityEngine.Random.value < critChance;
-        float dmg = CalculateBaseBulletDamage?.Invoke(bullet.Damage) ?? bullet.Damage;
+        float dmg = CalculateBaseBulletDamage?.Invoke(bulletDamage) ?? bulletDamage;
         if (isCritical) dmg *= critMultiplier;
 
         bullet.Initialize(enemy.Transform, dmg, isCritical);
+
+        HandleRecoil();
+
+        shootFromLeftFirePoint = !shootFromLeftFirePoint;
+    }
+
+    private void HandleRecoil()
+    {
+        Transform gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
 
         if (gun == null) return;
 
@@ -151,14 +177,14 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         {
             if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
             recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
+            muzzleFlashL.Play();
         }
         else
         {
             if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
             recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
+            muzzleFlashR.Play();
         }
-
-        shootFromLeftFirePoint = !shootFromLeftFirePoint;
     }
 
     private IEnumerator RecoilKick(Transform gun, Vector3 defaultLocalPosition)
@@ -185,22 +211,17 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         gun.localPosition = defaultLocalPosition;
     }
 
-    private void OnDestroy()
-    {
-        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
-    }
-
     public void Select()
     {
         rangeIndicator.SetActive(true);
-        towerOverlay.SetActive(true);
+        towerOverlay.Show();
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
     }
 
     public void Deselect()
     {
         rangeIndicator.SetActive(false);
-        towerOverlay.SetActive(false);
+        towerOverlay.Hide();
         TowerMechanics.ClearHighlight(highlightRenderers);
     }
 
@@ -213,7 +234,14 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public void OnHoverExit()
     {
         Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
-        TowerMechanics.ClearHighlight(highlightRenderers);
+        if (towerSelectionManager.CurrentSelected() == (ITower)this)
+        {
+            TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
+        }
+        else
+        {
+            TowerMechanics.ClearHighlight(highlightRenderers);
+        }
     }
 
     public void OnPlayerTakeControl(bool active)
@@ -223,6 +251,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         if (active)
         {
+            StartCoroutine(FadeGatlingSeat(fadeOut: true, delayBefore: 1f));
+
             target = null;
 
             Vector3 euler = gatlingHead.rotation.eulerAngles;
@@ -232,6 +262,44 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
             if (controlPoint != null)
                 controlPoint.rotation = gatlingHead.rotation;
         }
+        else
+        {
+            StartCoroutine(FadeGatlingSeat(fadeOut: false, delayBefore: 0f));
+        }
+    }
+
+    private IEnumerator FadeGatlingSeat(bool fadeOut, float delayBefore = 0f)
+    {
+        if (delayBefore > 0f)
+            yield return new WaitForSeconds(delayBefore);
+
+        float startAlpha = fadeOut ? 1f : 0f;
+        float endAlpha = fadeOut ? 0f : 1f;
+        float duration = fadeOut ? 0.8f : 0.6f;
+
+        var renderer = gatlingSeat.GetComponent<Renderer>();
+        Color c = renderer.material.color;
+        c.a = startAlpha;
+        renderer.material.color = c;
+
+        if (!fadeOut)
+            gatlingSeat.SetActive(true);
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, endAlpha, t / duration);
+            c.a = alpha;
+            renderer.material.color = c;
+            yield return null;
+        }
+
+        c.a = endAlpha;
+        renderer.material.color = c;
+
+        if (fadeOut)
+            gatlingSeat.SetActive(false);
     }
 
     public void HandlePlayerAim(Vector2 mouseDelta)
@@ -268,10 +336,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         GameObject fakeTarget = new();
         fakeTarget.transform.position = aimPoint;
 
-        Bullet bullet = Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(firepoint.forward, Vector3.up));
+        GameObject bulletGO = Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(firepoint.forward, Vector3.up));
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
 
         bool isCritical = UnityEngine.Random.value < critChance;
-        float baseBulletDmg = CalculateBaseBulletDamage?.Invoke(bullet.Damage) ?? bullet.Damage;
+        float baseBulletDmg = CalculateBaseBulletDamage?.Invoke(bulletDamage) ?? bulletDamage;
         float dmg = baseBulletDmg * (isCritical ? critMultiplier : 1f);
         bullet.Initialize(fakeTarget.transform, dmg, isCritical);
 
@@ -283,11 +352,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         {
             if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
             recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
+            muzzleFlashL.Play();
         }
         else
         {
             if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
             recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
+            muzzleFlashR.Play();
         }
 
         shootFromLeftFirePoint = !shootFromLeftFirePoint;
@@ -297,17 +368,41 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public void SellAndDestroy()
     {
-        towerSellManager.RequestSell(this);
+        towerSelectionManager.DeselectCurrent();
 
-        Destroy(towerOverlay);
+        Destroy(towerOverlayGO);
         Destroy(gameObject);
     }
 
-    public TowerTypes TowerType() => TowerTypes.Gatling;
+    public void ApplyUpgrade(TowerUpgradeData data)
+    {
+        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
+
+        upgradeVFX.Play();
+
+        towerSelectionManager.DeselectCurrent();
+
+        currentLevel = data.level;
+
+        bulletDamage = data.damage;
+        fireRate = data.fireRate;
+        range = data.range;
+        critChance = data.critChance;
+        critMultiplier = data.critMultiplier;
+
+        capsuleCollider.radius = data.range;
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+    }
 
     public void SetDamageCalculation(Func<float, float> f)
     {
         Assert.IsNotNull(f);
         CalculateBaseBulletDamage = f;
+    }
+
+    private void OnDestroy()
+    {
+        TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
+        enemiesInRange.Clear();
     }
 }

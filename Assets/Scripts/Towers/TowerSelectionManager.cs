@@ -17,7 +17,12 @@ public class TowerSelectionManager : MonoBehaviour
     private bool disabled;
     public bool Disabled => disabled;
 
-    public void DisableSelection() => disabled = true;
+    public void DisableSelection()
+    {
+        ClearHover();
+        DeselectCurrent();
+        disabled = true;
+    }
 
     public void EnableSelection() => disabled = false;
 

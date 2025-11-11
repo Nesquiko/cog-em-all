@@ -5,30 +5,40 @@ using UnityEngine;
 
 public class Flame : MonoBehaviour
 {
-    [SerializeField] private float damagePerPulse = 20f;
-    public float DamagePerPulse => damagePerPulse;
     [SerializeField] private float pulseInterval = 0.25f;
     [SerializeField] private float fireDuration = 3f;
 
-    [SerializeField] private MeshRenderer meshRenderer;
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem flameVFX;
+    [SerializeField] private float burnDelay = 0.5f;
+    [SerializeField] private float flameVFXScaleFactor = 7f;
 
     private Coroutine fireRoutine;
     private bool isActive;
     private float range = 50f;
 
+    private readonly HashSet<OilSpill> oilsInRange = new();
+
     private FlamethrowerTower owner;
 
+    public bool IsActive => isActive;
     public float FireDuration => fireDuration;
 
-    public void SetRange(float flameRange)
+    public void Initialize(FlamethrowerTower ownerTower, float flameRange)
     {
+        owner = ownerTower;
         range = flameRange;
-        transform.localScale = new Vector3(range, range, range);
+        transform.localScale = new(range, range, range);
+        flameVFX.transform.localScale = new(range / flameVFXScaleFactor, range / flameVFXScaleFactor, range / flameVFXScaleFactor);
+        var main = flameVFX.main;
+        main.duration = Mathf.Max(0f, fireDuration - 1f);
     }
 
-    public void SetOwner(FlamethrowerTower tower)
+    public void UpdateRange(float newRange)
     {
-        owner = tower;
+        range = newRange;
+        transform.localScale = new(newRange, newRange, newRange);
+        flameVFX.transform.localScale = new(newRange / flameVFXScaleFactor, newRange / flameVFXScaleFactor, newRange / flameVFXScaleFactor);
     }
 
     public void StartFlame(Func<float, float> CalculateBaseFlameDamagePerPulse)
@@ -36,12 +46,12 @@ public class Flame : MonoBehaviour
         if (isActive) return;
         isActive = true;
 
-        if (meshRenderer != null)
-        {
-            meshRenderer.enabled = true;
-        }
+        flameVFX.Play();
 
         fireRoutine = StartCoroutine(FlameRoutine(CalculateBaseFlameDamagePerPulse));
+
+        foreach (var oil in oilsInRange)
+            if (oil != null) oil.Ignite();
     }
 
     public void StopFlame()
@@ -52,28 +62,35 @@ public class Flame : MonoBehaviour
         {
             StopCoroutine(fireRoutine);
         }
+
+        flameVFX.Stop(withChildren: true, stopBehavior: ParticleSystemStopBehavior.StopEmittingAndClear);
+
+        foreach (var oil in oilsInRange)
+            if (oil != null) oil.Extinguish();
     }
 
     private IEnumerator FlameRoutine(Func<float, float> CalculateBaseFlameDamagePerPulse)
     {
+        yield return new WaitForSeconds(burnDelay);
+
         float duration = 0f;
         float tickTimer = 0f;
 
-        while (duration < fireDuration)
+        var runTime = fireDuration - burnDelay;
+        while (duration < runTime)
         {
             duration += Time.deltaTime;
             tickTimer += Time.deltaTime;
 
             if (tickTimer >= pulseInterval)
             {
-                DealDamage(CalculateBaseFlameDamagePerPulse?.Invoke(damagePerPulse) ?? damagePerPulse);
+                DealDamage(CalculateBaseFlameDamagePerPulse?.Invoke(owner.DamagePerPulse) ?? owner.DamagePerPulse);
                 tickTimer = 0f;
             }
 
             yield return null;
         }
 
-        if (meshRenderer != null) meshRenderer.enabled = false;
         isActive = false;
     }
 
@@ -93,5 +110,26 @@ public class Flame : MonoBehaviour
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
             enemy.TakeDamage(damage, isCritical, effect: EnemyStatusEffect.Burn);
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!other.TryGetComponent<OilSpillTrigger>(out var oilTrigger)) return;
+        OilSpill oil = oilTrigger.GetComponentInParent<OilSpill>();
+        if (oil == null) return;
+        oilsInRange.Add(oil);
+
+        if (isActive)
+            oil.Ignite();
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.TryGetComponent<OilSpillTrigger>(out var oilTrigger)) return;
+        OilSpill oil = oilTrigger.GetComponentInParent<OilSpill>();
+        oilsInRange.Remove(oil);
+
+        if (isActive && oil != null)
+            oil.Extinguish();
     }
 }

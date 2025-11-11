@@ -42,7 +42,9 @@ public enum EffectType
     Burning,
     Bleeding,
     Slowed,
-    Accelerated
+    Accelerated,
+    Oiled,
+    OilBurned,
 }
 
 [Serializable]
@@ -53,6 +55,7 @@ public class EnemyStatusEffect
     public float tickDamage;
     public float tickInterval = 1f;
     public float speedMultiplier = 1f;
+    public bool persistent = false;
 
     public EnemyStatusEffect() { }
 
@@ -61,7 +64,8 @@ public class EnemyStatusEffect
         float duration,
         float tickDamage,
         float tickInterval = 1f,
-        float speedMultiplier = 1f
+        float speedMultiplier = 1f,
+        bool persistent = false
     )
     {
         this.type = type;
@@ -69,9 +73,10 @@ public class EnemyStatusEffect
         this.tickDamage = tickDamage;
         this.tickInterval = tickInterval;
         this.speedMultiplier = speedMultiplier;
+        this.persistent = persistent;
     }
 
-    public static EnemyStatusEffect Burn =>
+    public static EnemyStatusEffect Burn => 
         new(
             type: EffectType.Burning,
             duration: 5f,
@@ -87,8 +92,7 @@ public class EnemyStatusEffect
             tickInterval: 0.5f
         );
 
-    public static EnemyStatusEffect Slow =>
-        new(
+    public static EnemyStatusEffect Slow => new(
             type: EffectType.Slowed,
             duration: 3f,
             tickDamage: 0f,
@@ -270,4 +274,26 @@ public static class EnemyMechanics
     }
 
     #endregion
+
+    public static EnemyStatusEffect Oiled(
+        float speedMultiplier
+    ) => new(
+            type: EffectType.Oiled,
+            duration: Mathf.Infinity,
+            tickDamage: 0f,
+            tickInterval: 0f,
+            speedMultiplier: speedMultiplier,
+            persistent: true
+        );
+
+    public static EnemyStatusEffect OilBurn(
+        float tickDamage = 5f,
+        float tickInterval = 0.5f
+    ) => new(
+            type: EffectType.OilBurned,
+            duration: Mathf.Infinity,
+            tickDamage: tickDamage,
+            tickInterval: tickInterval,
+            persistent: true
+        );
 }

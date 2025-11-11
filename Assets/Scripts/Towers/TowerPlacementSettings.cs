@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(
@@ -25,6 +26,11 @@ public class TowerPlacementSettings : ScriptableObject
 
     [Tooltip("Layers that block tower placement.")]
     [SerializeField] private LayerMask[] blockingMasks;
+
+    public float MinX => minX;
+    public float MaxX => maxX;
+    public float MinZ => minZ;
+    public float MaxZ => maxZ;
 
     public bool IsValidPlacement(Vector3 point)
     {

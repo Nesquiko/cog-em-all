@@ -53,7 +53,7 @@ public class Bandit : MonoBehaviour, IEnemy
 
     private float t = 0f;
 
-    private Nexus targetNexus;
+    private IDamageable target;
     private float attackCooldown;
     private float originalSpeed;
 
@@ -127,13 +127,13 @@ public class Bandit : MonoBehaviour, IEnemy
 
     private void Update()
     {
-        if (targetNexus == null)
+        if (target == null)
         {
             FollowPath();
         }
         else
         {
-            AttackNexus();
+            AttackTarget();
         }
     }
 
@@ -175,24 +175,29 @@ public class Bandit : MonoBehaviour, IEnemy
         transform.SetPositionAndRotation(position + right * lateralOffset, Quaternion.LookRotation(tangent));
     }
 
-    private void AttackNexus()
+    private void AttackTarget()
     {
-        if (targetNexus == null) return;
+        if (target == null || target.IsDestroyed())
+        {
+            target = null;
+            speed = originalSpeed;
+            return;
+        }
 
-        transform.LookAt(targetNexus.transform, Vector3.up);
+        transform.LookAt(target.Transform(), Vector3.up);
 
         attackCooldown -= Time.deltaTime;
         if (attackCooldown <= 0f)
         {
-            StartCoroutine(AttackAnimation(targetNexus.transform));
+            StartCoroutine(AttackAnimation(target));
             attackCooldown = attackRate;
         }
     }
 
-    private IEnumerator AttackAnimation(Transform target)
+    private IEnumerator AttackAnimation(IDamageable damageableTarget)
     {
         Vector3 startPosition = transform.position;
-        Vector3 targetPosition = target.position;
+        Vector3 targetPosition = damageableTarget.Transform().position;
 
         Vector3 direction = (targetPosition - startPosition);
         direction.y = 0f;
@@ -216,7 +221,7 @@ public class Bandit : MonoBehaviour, IEnemy
 
             if (!hasDealtDamage && normalized > 0.3f)
             {
-                targetNexus.TakeDamage(attackDamage);
+                damageableTarget.TakeDamage(attackDamage);
                 hasDealtDamage = true;
             }
 
@@ -226,31 +231,74 @@ public class Bandit : MonoBehaviour, IEnemy
         transform.position = startPosition;
     }
 
-    public void EnterAttackRange(Nexus nexus)
+    public void EnterAttackRange(IDamageable damageable)
     {
-        targetNexus = nexus;
+        target = damageable;
         attackCooldown = 0f;
         speed = 0f;
     }
 
-    public void ExitAttackRange(Nexus nexus)
+    public void ExitAttackRange(IDamageable damageable)
     {
-        if (targetNexus == nexus)
+        if (target == damageable)
         {
-            targetNexus = null;
+            target = null;
             speed = originalSpeed;
         }
     }
 
     public void ApplyEffect(EnemyStatusEffect effect)
     {
-        if (activeEffects.ContainsKey(effect.type))
-        {
+        if (activeEffects.ContainsKey(effect.type) && activeEffects[effect.type] != null)
             StopCoroutine(activeEffects[effect.type]);
+
+        if (effect.persistent)
+        {
+            ApplyPersistentEffect(effect);
+            return;
         }
 
         Coroutine routine = StartCoroutine(HandleEffect(effect));
         activeEffects[effect.type] = routine;
+    }
+
+    private void ApplyPersistentEffect(EnemyStatusEffect effect)
+    {
+        switch (effect.type)
+        {
+            case EffectType.Oiled:
+                speed = originalSpeed * effect.speedMultiplier;
+                if (!activeEffects.ContainsKey(effect.type))
+                    activeEffects[effect.type] = null;
+                break;
+            case EffectType.OilBurned:
+                if (!activeEffects.ContainsKey(effect.type))
+                {
+                    Coroutine routine = StartCoroutine(IndefiniteBurn(effect));
+                    activeEffects[effect.type] = routine;
+                }
+                break;
+        }
+    }
+
+    public void RemoveEffect(EffectType type)
+    {
+        if (!activeEffects.ContainsKey(type)) return;
+
+        var routine = activeEffects[type];
+        if (routine !=  null)
+            StopCoroutine(routine);
+        
+        activeEffects.Remove(type);
+
+        switch (type)
+        {
+            case EffectType.Oiled:
+                speed = originalSpeed;
+                break;
+            case EffectType.OilBurned:
+                break;
+        }
     }
 
     private IEnumerator HandleEffect(EnemyStatusEffect effect)
@@ -276,5 +324,14 @@ public class Bandit : MonoBehaviour, IEnemy
         }
 
         activeEffects.Remove(effect.type);
+    }
+
+    private IEnumerator IndefiniteBurn(EnemyStatusEffect effect)
+    {
+        while (true)
+        {
+            TakeDamage(effect.tickDamage, isCritical: false);
+            yield return new WaitForSeconds(effect.tickInterval);
+        }
     }
 }

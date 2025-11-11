@@ -4,15 +4,12 @@ using UnityEngine.Assertions;
 public class Bullet : MonoBehaviour
 {
     [SerializeField] private float speed = 10f;
-    [SerializeField] private float baseDamage = 50f;
     [SerializeField] private float lifetime = 3f;
 
     private Transform target;
     private Vector3 flightDirection;
     private float damage;
     private bool crit;
-
-    public float Damage => baseDamage;
 
     public void Initialize(Transform enemyTarget, float dmg, bool isCrit)
     {
@@ -46,6 +43,17 @@ public class Bullet : MonoBehaviour
         {
             enemy.TakeDamage(damage, crit, effect: EnemyStatusEffect.Bleed);
             Destroy(gameObject);
+        }
+
+        if (other.TryGetComponent<TerrainCollider>(out _))
+        {
+            Destroy(gameObject);
+        }
+
+        if (other.CompareTag("TowerModel"))
+        {
+            Destroy(gameObject);
+            return;
         }
     }
 }

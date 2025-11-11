@@ -36,8 +36,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -85, y: -85}
-  m_SizeDelta: {x: 275, y: 75}
+  m_AnchoredPosition: {x: -65, y: -65}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1673840499009828521
 CanvasRenderer:
@@ -125,8 +125,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 85, y: 85}
-  m_SizeDelta: {x: 275, y: 75}
+  m_AnchoredPosition: {x: 65, y: 65}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1322815442676919080
 CanvasRenderer:
@@ -213,7 +213,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 275, y: 75}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7693839359979299905
 CanvasRenderer:
@@ -270,8 +270,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -366,10 +366,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5660c42c48f9cc4e8fce793799eab0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TowerOverlay
-  takeControlButton: {fileID: 3626668919970644340}
-  upgradeTowerButton: {fileID: 3995850262870801799}
-  sellTowerButton: {fileID: 5447084707089864727}
-  rotateTowerButton: {fileID: 4555048363137887254}
+  upgradeButton: {fileID: 7841570531722994723}
+  takeControlButton: {fileID: 2599508280393797645}
+  rotateButton: {fileID: 5307897964657186360}
 --- !u!1 &2599508280393797645
 GameObject:
   m_ObjectHideFlags: 0
@@ -385,6 +384,7 @@ GameObject:
   - component: {fileID: 3945741006914640296}
   - component: {fileID: 4498135637223804607}
   - component: {fileID: 8235341201185274536}
+  - component: {fileID: 4624464158319431271}
   m_Layer: 5
   m_Name: TakeControlButton
   m_TagString: Untagged
@@ -494,7 +494,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7947169340419535841}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 802042780974893541}
+        m_TargetAssemblyTypeName: TowerOverlay, Assembly-CSharp
+        m_MethodName: OnTakeControlClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &3945741006914640296
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -537,6 +549,18 @@ MonoBehaviour:
   tooltip: {fileID: 3287917161935843754}
   hoverDelay: 0.5
   fadeDuration: 0.15
+--- !u!225 &4624464158319431271
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2599508280393797645}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3071373400361410436
 GameObject:
   m_ObjectHideFlags: 0
@@ -572,7 +596,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 275, y: 75}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2182562154234432805
 CanvasRenderer:
@@ -629,8 +653,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -763,6 +787,7 @@ GameObject:
   - component: {fileID: 6842129039386823066}
   - component: {fileID: 4379424498034660463}
   - component: {fileID: 3903796549434470753}
+  - component: {fileID: 1049822420197824614}
   m_Layer: 5
   m_Name: SellTowerButton
   m_TagString: Untagged
@@ -872,7 +897,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1939768587848182169}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 802042780974893541}
+        m_TargetAssemblyTypeName: TowerOverlay, Assembly-CSharp
+        m_MethodName: OnSellTowerClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &6842129039386823066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -915,6 +952,18 @@ MonoBehaviour:
   tooltip: {fileID: 1624722437257326676}
   hoverDelay: 0.5
   fadeDuration: 0.15
+--- !u!225 &1049822420197824614
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3918634935582339162}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &4233865306515142763
 GameObject:
   m_ObjectHideFlags: 0
@@ -1005,6 +1054,7 @@ GameObject:
   - component: {fileID: 9182377189059926857}
   - component: {fileID: 4209864518583899262}
   - component: {fileID: 256163861357267911}
+  - component: {fileID: 8375827067345779022}
   m_Layer: 5
   m_Name: RotateTowerButton
   m_TagString: Untagged
@@ -1114,7 +1164,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2559165967742932143}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 802042780974893541}
+        m_TargetAssemblyTypeName: TowerOverlay, Assembly-CSharp
+        m_MethodName: OnRotateTowerClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &9182377189059926857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1157,6 +1219,18 @@ MonoBehaviour:
   tooltip: {fileID: 1557352003836489345}
   hoverDelay: 0.5
   fadeDuration: 0.15
+--- !u!225 &8375827067345779022
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5307897964657186360}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5407522445011043437
 GameObject:
   m_ObjectHideFlags: 0
@@ -1192,7 +1266,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 275, y: 75}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7062156709356219773
 CanvasRenderer:
@@ -1249,8 +1323,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1329,8 +1403,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -165, y: 165}
-  m_SizeDelta: {x: 275, y: 75}
+  m_AnchoredPosition: {x: -110, y: 110}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &205757976355204237
 CanvasRenderer:
@@ -1417,7 +1491,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 275, y: 75}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7350951676683749392
 CanvasRenderer:
@@ -1474,8 +1548,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1608,6 +1682,7 @@ GameObject:
   - component: {fileID: 2206328523694206951}
   - component: {fileID: 2577658943851719613}
   - component: {fileID: 1578957815813938345}
+  - component: {fileID: 5736173766669006433}
   m_Layer: 5
   m_Name: UpgradeTowerButton
   m_TagString: Untagged
@@ -1717,7 +1792,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 8522599120129330752}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 802042780974893541}
+        m_TargetAssemblyTypeName: TowerOverlay, Assembly-CSharp
+        m_MethodName: OnUpgradeTowerClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2206328523694206951
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1760,6 +1847,18 @@ MonoBehaviour:
   tooltip: {fileID: 3612426546404618080}
   hoverDelay: 0.5
   fadeDuration: 0.15
+--- !u!225 &5736173766669006433
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7841570531722994723}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8935496319294589265
 GameObject:
   m_ObjectHideFlags: 0
@@ -1871,8 +1970,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -45}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 165, y: -165}
-  m_SizeDelta: {x: 275, y: 75}
+  m_AnchoredPosition: {x: 110, y: -110}
+  m_SizeDelta: {x: 150, y: 40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9068897901536384896
 CanvasRenderer:

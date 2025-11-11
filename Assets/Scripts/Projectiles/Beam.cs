@@ -7,7 +7,6 @@ using UnityEngine;
 public class Beam : MonoBehaviour
 {
     [Header("Stats")]
-    [SerializeField] private float baseDamage = 30f;
     [SerializeField] private float speed = 200f;
     [SerializeField] private float chainRadius = 10f;
     [SerializeField] private int maxChains = 3;
@@ -15,12 +14,12 @@ public class Beam : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LineRenderer lineRenderer;
+    [SerializeField] private LayerMask enemyMask;
 
     private Transform firePoint;
     private Transform initialTarget;
     private float damage;
     private bool crit;
-    public float BaseDamage => baseDamage;
 
     public void Initialize(Transform from, Transform to, float dmg, bool isCritical)
     {
@@ -34,7 +33,7 @@ public class Beam : MonoBehaviour
 
     private void Start()
     {
-        if (lineRenderer == null || firePoint == null || initialTarget == null)
+        if (initialTarget == null)
         {
             Destroy(gameObject);
             return;
@@ -126,24 +125,28 @@ public class Beam : MonoBehaviour
         return chain;
     }
 
-    private IEnemy FindClosestEnemy(Vector3 pos, List<IEnemy> exclude)
+    private IEnemy FindClosestEnemy(Vector3 origin, List<IEnemy> exclude)
     {
-        var allBehaviours = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
-        IEnemy closest = null;
-        float minDist = Mathf.Infinity;
+        Collider[] hits = Physics.OverlapSphere(origin, chainRadius, enemyMask, QueryTriggerInteraction.Ignore);
 
-        foreach (var b in allBehaviours)
+        IEnemy closest = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (Collider hit in hits)
         {
-            if (b is not IEnemy e) continue;
+            if (hit == null) continue;
+
+            if (!hit.TryGetComponent<IEnemy>(out var e)) continue;
             if (exclude.Contains(e)) continue;
 
-            float dist = Vector3.Distance(pos, e.Transform.position);
-            if (dist < minDist && dist <= chainRadius)
+            float distance = Vector3.Distance(origin, e.Transform.position);
+            if (distance < minDistance)
             {
-                minDist = dist;
+                minDistance = distance;
                 closest = e;
             }
         }
+
         return closest;
     }
 }

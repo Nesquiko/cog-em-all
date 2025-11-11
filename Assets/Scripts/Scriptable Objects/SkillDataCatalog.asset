@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37bd6230614721c439e6f4fcc18523a2, type: 3}
+  m_Name: SkillDataCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::SkillDataCatalog
+  skills:
+  - type: 0
+    displayName: Wall
+    description: Place a barrier that temporarily stops enemies until it is destroyed.
+    cost: 100
+  - type: 1
+    displayName: Oil Spill
+    description: Spill ignitable oil on the road to slow enemies.
+    cost: 150
+  - type: 2
+    displayName: Mine
+    description: Place a mine that triggers after contact and a short delay and deals
+      AoE damage.
+    cost: 200

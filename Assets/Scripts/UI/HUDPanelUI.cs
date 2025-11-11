@@ -13,11 +13,16 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private TowerButton teslaButton;
     [SerializeField] private TowerButton mortarButton;
     [SerializeField] private TowerButton flamethrowerButton;
+    [SerializeField] private SkillButton wallButton;
+    [SerializeField] private SkillButton oilSpillButton;
+    [SerializeField] private SkillButton mineButton;
     [SerializeField] private GameObject placementInfoPanel;
-    [SerializeField] private TextMeshProUGUI placementTowerNameLabel;
-    [SerializeField] private TextMeshProUGUI placementTowerCostLabel;
+    [SerializeField] private TextMeshProUGUI placementObjectNameLabel;
+    [SerializeField] private TextMeshProUGUI placementObjectCostLabel;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+    [SerializeField] private SkillDataCatalog skillDataCatalog;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
+    [SerializeField] private SkillPlacementSystem skillPlacementSystem;
 
     private void Start()
     {
@@ -29,8 +34,19 @@ public class HUDPanelUI : MonoBehaviour
     {
         TowerData towerData = towerDataCatalog.FromType(towerType);
 
-        placementTowerNameLabel.text = towerData.displayName;
-        placementTowerCostLabel.text = $"{towerData.cost} Gears";
+        placementObjectNameLabel.text = towerData.displayName;
+        placementObjectCostLabel.text = $"{towerData.cost} Gears";
+
+        towerButtonsPanel.SetActive(false);
+        placementInfoPanel.SetActive(true);
+    }
+
+    public void ShowPlacementInfo(SkillTypes skillType)
+    {
+        SkillData skillData = skillDataCatalog.FromType(skillType);
+
+        placementObjectNameLabel.text = skillData.displayName;
+        placementObjectCostLabel.text = $"{skillData.cost} Gears";
 
         towerButtonsPanel.SetActive(false);
         placementInfoPanel.SetActive(true);
@@ -45,6 +61,7 @@ public class HUDPanelUI : MonoBehaviour
     public void OnCancelPlacement()
     {
         towerPlacementSystem.CancelPlacement();
+        skillPlacementSystem.CancelPlacement();
     }
 
     public void UpdateGears(int amount)
@@ -67,6 +84,22 @@ public class HUDPanelUI : MonoBehaviour
                 break;
             case TowerTypes.Flamethrower:
                 flamethrowerButton.Enable(enable);
+                break;
+        }
+    }
+
+    public void AdjustSkillButton(SkillTypes type, bool enable)
+    {
+        switch (type)
+        {
+            case SkillTypes.Wall:
+                wallButton.Enable(enable);
+                break;
+            case SkillTypes.OilSpill:
+                oilSpillButton.Enable(enable);
+                break;
+            case SkillTypes.Mine:
+                mineButton.Enable(enable);
                 break;
         }
     }
