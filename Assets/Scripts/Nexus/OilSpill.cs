@@ -20,7 +20,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
     [SerializeField] private GameObject minimapIndicator;
     [SerializeField] private Vector3 minimapIndicatorScale;
 
-    private readonly Dictionary<int, Enemy> enemiesInRange = new();
+    private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private bool burning;
 
     public void Initialize()
@@ -68,9 +68,9 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
         }
     }
 
-    public void RegisterInRange(Enemy e)
+    public void RegisterInRange(IEnemy e)
     {
-        int id = e.gameObject.GetInstanceID();
+        int id = e.GetInstanceID();
         if (enemiesInRange.ContainsKey(id)) return;
         enemiesInRange.Add(id, e);
 
@@ -78,9 +78,9 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
         if (burning) e.ApplyEffect(EnemyStatusEffect.OilBurn(flameTickDamage, flameTickInterval));
     }
 
-    public void UnregisterOutOfRange(Enemy e)
+    public void UnregisterOutOfRange(IEnemy e)
     {
-        int id = e.gameObject.GetInstanceID();
+        int id = e.GetInstanceID();
         if (!enemiesInRange.ContainsKey(id)) return;
         enemiesInRange.Remove(id);
 

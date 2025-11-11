@@ -47,8 +47,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private ParticleSystem muzzleFlashR;
     [SerializeField] private ParticleSystem upgradeVFX;
 
-    private readonly Dictionary<int, Enemy> enemiesInRange = new();
-    private Enemy target;
+    private readonly Dictionary<int, IEnemy> enemiesInRange = new();
+    private IEnemy target;
     private float fireCooldown = 0f;
 
     private Vector3 gunPositionL;
@@ -132,7 +132,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
             fireCooldown = 1f / fireRate;
         }
 
-        TowerMechanics.RotateTowardTarget(gatlingHead, target.transform, 10f);
+        TowerMechanics.RotateTowardTarget(gatlingHead, target.Transform, 10f);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -145,12 +145,12 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         TowerMechanics.HandleTriggerExit(other, enemiesInRange, HandleEnemyDeath, target, out target);
     }
 
-    private void HandleEnemyDeath(Enemy deadEnemy)
+    private void HandleEnemyDeath(IEnemy deadEnemy)
     {
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    private void Shoot(Enemy enemy)
+    private void Shoot(IEnemy enemy)
     {
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
         GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
@@ -160,7 +160,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         float dmg = CalculateBaseBulletDamage?.Invoke(bulletDamage) ?? bulletDamage;
         if (isCritical) dmg *= critMultiplier;
 
-        bullet.Initialize(enemy.transform, dmg, isCritical);
+        bullet.Initialize(enemy.Transform, dmg, isCritical);
 
         HandleRecoil();
 

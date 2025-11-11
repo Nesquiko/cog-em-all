@@ -135,7 +135,7 @@ public class TowerPlacementSystem : MonoBehaviour
 
     private void PlaceTower(Vector3 position)
     {
-        if (towerPrefab == null || !isPlacing) return;
+        if (!isPlacing) return;
 
         GameObject towerGO = Instantiate(towerPrefab, position, Quaternion.identity);
 
@@ -167,6 +167,14 @@ public class TowerPlacementSystem : MonoBehaviour
         ghostInstance = null;
 
         HUDPanelUI.HidePlacementInfo();
+
+        StartCoroutine(ReenableSelectionNextFrame());
+    }
+
+    private IEnumerator ReenableSelectionNextFrame()
+    {
+        yield return null;
+        towerSelectionManager.EnableSelection();
     }
 
     private int GetPressedTowerHotkey()

@@ -98,7 +98,7 @@ public class TowerOverlay : MonoBehaviour
         Vector3 targetPosition = towerGO.transform.position;
         targetPosition.y += 7f;
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(targetPosition);
-    
+
         if (screenPosition.z < 0)
         {
             return;

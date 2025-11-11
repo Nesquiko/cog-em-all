@@ -44,9 +44,9 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
 
-    private readonly Dictionary<int, Enemy> enemiesInRange = new();
+    private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private readonly HashSet<int> tooClose = new();
-    private Enemy target;
+    private IEnemy target;
     private float fireCooldown;
 
     private Vector3 cannonPivotDefaultPosition;
@@ -118,54 +118,54 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Update()
     {
-        if (target == null || !IsEnemyValid(target.transform.position))
+        if (target == null || !IsEnemyValid(target.Transform.position))
         {
             target = GetValidTarget();
             if (target == null) return;
         }
 
-        RotateTowardTarget(target.transform);
+        RotateTowardTarget(target.Transform);
 
         fireCooldown -= Time.deltaTime;
-        if (fireCooldown <= 0f && IsAimedAtTarget(target.transform))
+        if (fireCooldown <= 0f && IsAimedAtTarget(target.Transform))
         {
             Shoot(target);
             fireCooldown = 1f / fireRate;
         }
     }
 
-    public void RegisterInRange(Enemy e)
+    public void RegisterInRange(IEnemy e)
     {
-        int id = e.gameObject.GetInstanceID();
+        int id = e.GetInstanceID();
         if (enemiesInRange.ContainsKey(id)) return;
         enemiesInRange.Add(id, e);
         e.OnDeath += HandleEnemyDeath;
     }
 
-    public void UnregisterOutOfRange(Enemy e)
+    public void UnregisterOutOfRange(IEnemy e)
     {
-        int id = e.gameObject.GetInstanceID();
+        int id = e.GetInstanceID();
         enemiesInRange.Remove(id);
         tooClose.Remove(id);
         e.OnDeath -= HandleEnemyDeath;
     }
 
-    public void RegisterTooClose(Enemy e)
+    public void RegisterTooClose(IEnemy e)
     {
-        tooClose.Add(e.gameObject.GetInstanceID());
+        tooClose.Add(e.GetInstanceID());
     }
 
-    public void UnregisterTooClose(Enemy e)
+    public void UnregisterTooClose(IEnemy e)
     {
-        tooClose.Remove(e.gameObject.GetInstanceID());
+        tooClose.Remove(e.GetInstanceID());
     }
 
-    private void HandleEnemyDeath(Enemy deadEnemy)
+    private void HandleEnemyDeath(IEnemy deadEnemy)
     {
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    private void Shoot(Enemy enemy)
+    private void Shoot(IEnemy enemy)
     {
         GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
         Shell shell = shellGO.GetComponent<Shell>();
@@ -176,7 +176,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         float dmg = CalculateBaseShellDamage?.Invoke(shellDamage) ?? shellDamage;
         if (isCritical) dmg *= critMultiplier;
 
-        shell.Launch(enemy.transform.position, dmg, isCritical, arcHeight);
+        shell.Launch(enemy.Transform.position, dmg, isCritical, arcHeight);
     }
 
     private bool IsEnemyValid(Vector3 enemyPosition)
@@ -185,16 +185,16 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         return distance >= minRange && distance <= maxRange;
     }
 
-    private Enemy GetValidTarget()
+    private IEnemy GetValidTarget()
     {
-        Enemy best = null;
+        IEnemy best = null;
         float bestDistance = Mathf.Infinity;
 
         foreach (var (id, enemy) in enemiesInRange)
         {
             if (tooClose.Contains(id)) continue;
 
-            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            float distance = Vector3.Distance(transform.position, enemy.Transform.position);
             if (distance < bestDistance)
             {
                 bestDistance = distance;

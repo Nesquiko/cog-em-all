@@ -39,9 +39,9 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<Enemy>(out var enemy))
+        if (other.TryGetComponent<IEnemy>(out var enemy))
         {
-            enemy.TakeDamage(damage, crit, withEffect: EnemyStatusEffect.Bleed);
+            enemy.TakeDamage(damage, crit, effect: EnemyStatusEffect.Bleed);
             Destroy(gameObject);
         }
 

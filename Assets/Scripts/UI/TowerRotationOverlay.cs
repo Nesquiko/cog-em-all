@@ -33,6 +33,11 @@ public class TowerRotationOverlay : MonoBehaviour
         rotateRightButton.OnHold += RotateRight;
     }
 
+    private void Start()
+    {
+        Hide();
+    }
+
     private void LateUpdate()
     {
         if (!active || towerGO == null)

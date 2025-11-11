@@ -7,7 +7,7 @@ public class MortarRangeTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent<Enemy>(out var e)) return;
+        if (!other.TryGetComponent<IEnemy>(out var e)) return;
 
         if (isInnerZone)
             owner.RegisterTooClose(e);
@@ -17,7 +17,7 @@ public class MortarRangeTrigger : MonoBehaviour
 
     void OnTriggerExit(Collider other)
     {
-        if (!other.TryGetComponent<Enemy>(out var e)) return;
+        if (!other.TryGetComponent<IEnemy>(out var e)) return;
 
         if (isInnerZone)
             owner.UnregisterTooClose(e);

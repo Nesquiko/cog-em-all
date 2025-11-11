@@ -33,8 +33,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
 
-    private readonly Dictionary<int, Enemy> enemiesInRange = new();
-    private Enemy target;
+    private readonly Dictionary<int, IEnemy> enemiesInRange = new();
+    private IEnemy target;
 
     private bool underPlayerRotation = false;
     private bool isCoolingDown = false;
@@ -147,10 +147,10 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         StartCoroutine(CooldownRoutine(activeFlame.FireDuration));
     }
 
-    public List<Enemy> GetCurrentEnemiesInRange()
+    public List<IEnemy> GetCurrentEnemiesInRange()
     {
-        List<Enemy> currentEnemies = new();
-        foreach (Enemy enemy in enemiesInRange.Values)
+        List<IEnemy> currentEnemies = new();
+        foreach (var enemy in enemiesInRange.Values)
         {
             if (enemy == null) continue;
             currentEnemies.Add(enemy);
@@ -170,22 +170,22 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         isCoolingDown = false;
     }
 
-    public void RegisterInRange(Enemy e)
+    public void RegisterInRange(IEnemy e)
     {
-        int id = e.gameObject.GetInstanceID();
+        int id = e.GetInstanceID();
         if (enemiesInRange.ContainsKey(id)) return;
         enemiesInRange.Add(id, e);
         e.OnDeath += HandleEnemyDeath;
     }
 
-    public void UnregisterOutOfRange(Enemy e)
+    public void UnregisterOutOfRange(IEnemy e)
     {
-        int id = e.gameObject.GetInstanceID();
+        int id = e.GetInstanceID();
         enemiesInRange.Remove(id);
         e.OnDeath -= HandleEnemyDeath;
     }
 
-    private void HandleEnemyDeath(Enemy deadEnemy)
+    private void HandleEnemyDeath(IEnemy deadEnemy)
     {
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }

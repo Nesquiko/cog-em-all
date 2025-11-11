@@ -5,23 +5,28 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
 
-public class Enemy : MonoBehaviour
+public class Bandit : MonoBehaviour, IEnemy
 {
-    [SerializeField] private EnemyType type;
-    public EnemyType Type => type;
+    public EnemyType Type => EnemyType.Bandit;
 
     [Header("Attack")]
-    [SerializeField] private float attackDamage = 10f;
+    [SerializeField] private float attackDamage = 20f;
     [SerializeField] private float attackRate = 1f;
-    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private float attackRange = 2f;
     [SerializeField] private SphereCollider sphereCollider;
 
     [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
-    [SerializeField] private float speed = 100f;
-    public float Speed => speed;
+    [SerializeField] private float speed = 20f;
+    public float Speed
+    {
+        get => speed;
+        set => speed = value;
+    }
+
+    public Transform Transform => transform;
     [SerializeField] private float maxHealthPoints = 100f;
-    [SerializeField] private GameObject healthBarGO;
+    [SerializeField] private GameObject healthBar;
 
     [Header("Attack Animation")]
     [SerializeField] private float jumpHeight = 0.5f;
@@ -29,13 +34,19 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float duration = 0.4f;
 
     [Header("UI")]
-    [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private float popupHeightOffset = 10f;
 
     [SerializeField] private int onKillGearsReward = 10;
+
+    [Header("Leadership")]
+    [SerializeField, Range(0f, 1f)] private float leaderChance = 0.1f;
+    [SerializeField, Range(5f, 25f)] private float battlecryRange = 15f;
+    [SerializeField] private float battlecryDuration = 3f;
+    [SerializeField] private float battlecryCooldown = 10f;
+
     public int OnKillGearsReward => onKillGearsReward;
 
-    public event Action<Enemy> OnDeath;
+    public event Action<IEnemy> OnDeath;
     private float healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
@@ -53,15 +64,19 @@ public class Enemy : MonoBehaviour
 
     private DamagePopupManager damagePopupManager;
 
+    private bool isLeader;
+
     private void Awake()
     {
         damagePopupManager = FindFirstObjectByType<DamagePopupManager>();
 
         healthPoints = maxHealthPoints;
         originalSpeed = speed;
+
+        isLeader = UnityEngine.Random.value <= leaderChance;
     }
 
-    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<Enemy> onDeath)
+    public void Initialize(SplineContainer pathContainer, float startT, float lateralOffset, Action<IEnemy> onDeath)
     {
         SetSpline(pathContainer, startT, lateralOffset);
         OnDeath += onDeath;
@@ -76,19 +91,20 @@ public class Enemy : MonoBehaviour
         this.lateralOffset = lateralOffset;
     }
 
-    public void Start()
+    private void Start()
     {
-        sphereCollider.radius = attackRange;
+        if (isLeader)
+        {
+            StartCoroutine(Leadership());
+        }
     }
 
     public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
     {
-        // if a second bullet, or a flamethrower burn effect try to kill already dead enemy ignore it...
-        // the enemy doesn't have to be DEAD dead, just dead is enough...
         if (healthPoints <= 0f) { return; }
 
         healthPoints -= damage;
-        if (!healthBarGO.activeSelf) healthBarGO.SetActive(true);
+        if (!healthBar.activeSelf) healthBar.SetActive(true);
 
         Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
         damagePopupManager.ShowPopup(popupSpawnPosition, damage, isCritical);
@@ -101,11 +117,6 @@ public class Enemy : MonoBehaviour
         {
             ApplyEffect(withEffect);
         }
-    }
-
-    public void SetSpeed(float speed)
-    {
-        this.speed = speed;
     }
 
     private void Die()
@@ -123,6 +134,32 @@ public class Enemy : MonoBehaviour
         else
         {
             AttackTarget();
+        }
+    }
+
+    private IEnumerator Leadership()
+    {
+        while (healthPoints > 0)
+        {
+            yield return new WaitForSeconds(battlecryDuration + battlecryCooldown);
+            Battlecry();
+        }
+    }
+
+    private void Battlecry()
+    {
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position,
+            battlecryRange,
+            LayerMask.GetMask("Enemies")
+        );
+
+        foreach (Collider hit in hits)
+        {
+            if (hit.TryGetComponent<Bandit>(out var ally))
+            {
+                ally.ApplyEffect(EnemyStatusEffect.Accelerate(battlecryDuration));
+            }
         }
     }
 
@@ -249,9 +286,9 @@ public class Enemy : MonoBehaviour
         if (!activeEffects.ContainsKey(type)) return;
 
         var routine = activeEffects[type];
-        if (routine !=  null)
+        if (routine != null)
             StopCoroutine(routine);
-        
+
         activeEffects.Remove(type);
 
         switch (type)
