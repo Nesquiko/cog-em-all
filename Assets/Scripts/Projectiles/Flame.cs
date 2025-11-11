@@ -81,17 +81,17 @@ public class Flame : MonoBehaviour
     {
         if (owner == null) return;
 
-        List<Enemy> enemiesInRange = owner.GetCurrentEnemiesInRange();
+        var enemiesInRange = owner.GetCurrentEnemiesInRange();
         if (enemiesInRange == null || enemiesInRange.Count == 0) return;
 
         float critChance = owner.CritChance;
         float critMultiplier = owner.CritMultiplier;
 
-        foreach (Enemy enemy in enemiesInRange)
+        foreach (var enemy in enemiesInRange)
         {
             bool isCritical = UnityEngine.Random.value < critChance;
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
-            enemy.TakeDamage(damage, isCritical, withEffect: EnemyStatusEffect.Burn);
+            enemy.TakeDamage(damage, isCritical, effect: EnemyStatusEffect.Burn);
         }
     }
 }

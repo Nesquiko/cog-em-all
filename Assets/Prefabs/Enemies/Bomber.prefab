@@ -120,7 +120,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1812148564014596359}
-  - component: {fileID: 6197286844221314195}
   - component: {fileID: 4046338385926235126}
   - component: {fileID: 7023257257306693827}
   - component: {fileID: 3847010007015475350}
@@ -150,33 +149,6 @@ Transform:
   - {fileID: 4736537434916082509}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6197286844221314195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1262293100744859469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dbd758e3a299074e8c2cb18d0c5ad3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  type: 0
-  attackDamage: 10
-  attackRate: 1
-  attackRange: 1
-  sphereCollider: {fileID: 4718485936862218545}
-  path: {fileID: 0}
-  speed: 25
-  maxHealthPoints: 100
-  healthBarGO: {fileID: 537620982127759364}
-  jumpHeight: 0.5
-  forwardDistance: 0.4
-  duration: 0.4
-  damagePopupPrefab: {fileID: 3477818805051262252, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-  popupHeightOffset: 10
-  onKillGearsReward: 10
 --- !u!114 &4046338385926235126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,7 +156,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1262293100744859469}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a2ee740f4c0002548997b98c1c99a5f0, type: 3}
   m_Name: 
@@ -194,7 +166,7 @@ MonoBehaviour:
   sphereCollider: {fileID: 4718485936862218545}
   path: {fileID: 0}
   speed: 25
-  maxHealthPoints: 100
+  maxHealthPoints: 50
   healthBar: {fileID: 537620982127759364}
   jumpHeight: 0.5
   forwardDistance: 0.4
@@ -309,6 +281,14 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 1.2
       objectReference: {fileID: 0}
+    - target: {fileID: 6504268954571296645, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+      propertyPath: owner
+      value: 
+      objectReference: {fileID: 4046338385926235126}
+    - target: {fileID: 6504268954571296645, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+      propertyPath: ownerGO
+      value: 
+      objectReference: {fileID: 1262293100744859469}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

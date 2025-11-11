@@ -19,9 +19,9 @@ public struct EconomyMods
 public struct EnemyMods
 {
     public readonly Func<int, int> CalculateEnemyReward;
-    public readonly Func<Enemy, float, float> CalculateEnemyMovementSpeed;
+    public readonly Func<IEnemy, float, float> CalculateEnemyMovementSpeed;
 
-    public EnemyMods(Func<int, int> enemyRewardCalculation, Func<Enemy, float, float> enemySpeedCalculation)
+    public EnemyMods(Func<int, int> enemyRewardCalculation, Func<IEnemy, float, float> enemySpeedCalculation)
     {
         CalculateEnemyReward = enemyRewardCalculation;
         CalculateEnemyMovementSpeed = enemySpeedCalculation;
@@ -82,7 +82,7 @@ public static class ModifiersCalculator
     {
 
         var enemyRewardPipeline = new List<Func<int, int>>();
-        var enemySpeedPipeline = new List<Func<Enemy, float, float>>();
+        var enemySpeedPipeline = new List<Func<IEnemy, float, float>>();
 
         foreach (var m in modifiers)
         {
@@ -119,7 +119,7 @@ public static class ModifiersCalculator
 
         if (enemyRewardPipeline.Count == 0) rewardPipeline = reward => reward;
 
-        Func<Enemy, float, float> speedPipeline = (enemy, baseSpeed) =>
+        Func<IEnemy, float, float> speedPipeline = (enemy, baseSpeed) =>
         {
             float acc = baseSpeed;
             for (int i = 0; i < enemySpeedPipeline.Count; i++)

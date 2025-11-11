@@ -18,7 +18,14 @@ public class Dreadnought : MonoBehaviour, IEnemy
     [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 10f;
-    public float Speed => speed;
+    public float Speed
+    {
+        get => speed;
+        set => speed = value;
+    }
+
+    public Transform Transform => transform;
+
     [SerializeField] private float maxHealthPoints = 500f;
     [SerializeField] private GameObject healthBar;
 
@@ -94,14 +101,14 @@ public class Dreadnought : MonoBehaviour, IEnemy
     {
         shieldHealthPoints = maxHealthPoints * shieldHealthFraction;
         shieldActive = true;
-        shield.SetActive(true);
+        // shield.SetActive(true);
     }
 
     private void BreakShield()
     {
         shieldActive = false;
         nextShieldTimer = 0f;
-        shield.SetActive(false);
+        // shield.SetActive(false);
     }
 
     public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)

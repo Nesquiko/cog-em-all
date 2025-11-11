@@ -149,13 +149,13 @@ class Orchestrator : MonoBehaviour
         }
     }
 
-    private void OnEnemySpawn(Enemy spawned, EnemyMods enemyMods)
+    private void OnEnemySpawn(IEnemy spawned, EnemyMods enemyMods)
     {
-        spawned.SetSpeed(enemyMods.CalculateEnemyMovementSpeed(spawned, spawned.Speed));
+        spawned.Speed = enemyMods.CalculateEnemyMovementSpeed(spawned, spawned.Speed);
         enemiesLive += 1;
     }
 
-    private void OnEnemyKilled(Enemy killed, EnemyMods enemyMods)
+    private void OnEnemyKilled(IEnemy killed, EnemyMods enemyMods)
     {
         int reward = enemyMods.CalculateEnemyReward(killed.OnKillGearsReward);
         AddGears(reward);

@@ -17,7 +17,14 @@ public class Bomber : MonoBehaviour, IEnemy
     [Header("Movement & Path")]
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 25f;
-    public float Speed => speed;
+    public float Speed
+    {
+        get => speed;
+        set => speed = value;
+    }
+
+    public Transform Transform => transform;
+
     [SerializeField] private float maxHealthPoints = 100f;
     [SerializeField] private GameObject healthBar;
 

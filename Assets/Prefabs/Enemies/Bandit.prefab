@@ -120,7 +120,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1812148564014596359}
-  - component: {fileID: -4034069556018195297}
   - component: {fileID: 5990062324861547421}
   - component: {fileID: 3208976702130640261}
   - component: {fileID: 4224230316246767857}
@@ -150,33 +149,6 @@ Transform:
   - {fileID: 3069828258526618184}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &-4034069556018195297
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1262293100744859469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dbd758e3a299074e8c2cb18d0c5ad3f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Enemy
-  type: 0
-  attackDamage: 10
-  attackRate: 1
-  attackRange: 1.5
-  sphereCollider: {fileID: 3906246663465091158}
-  path: {fileID: 0}
-  speed: 20
-  maxHealthPoints: 100
-  healthBarGO: {fileID: 7270807829786815415}
-  jumpHeight: 1
-  forwardDistance: 0.3
-  duration: 0.4
-  damagePopupPrefab: {fileID: 3477818805051262252, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-  popupHeightOffset: 5
-  onKillGearsReward: 10
 --- !u!114 &5990062324861547421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,21 +161,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b76822c2f6818bc48ba516914a20e46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bandit
-  attackDamage: 20
+  attackDamage: 10
   attackRate: 1
-  attackRange: 2
+  attackRange: 1.5
   sphereCollider: {fileID: 3906246663465091158}
   path: {fileID: 0}
   speed: 20
   maxHealthPoints: 100
   healthBar: {fileID: 7270807829786815415}
-  jumpHeight: 0.5
-  forwardDistance: 0.4
+  jumpHeight: 1
+  forwardDistance: 0.3
   duration: 0.4
-  popupHeightOffset: 10
+  popupHeightOffset: 5
   onKillGearsReward: 10
   leaderChance: 0.1
   battlecryRange: 15
+  battlecryDuration: 3
   battlecryCooldown: 10
 --- !u!65 &3208976702130640261
 BoxCollider:
@@ -453,7 +426,11 @@ PrefabInstance:
     - target: {fileID: 6504268954571296645, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
       propertyPath: owner
       value: 
-      objectReference: {fileID: -4034069556018195297}
+      objectReference: {fileID: 5990062324861547421}
+    - target: {fileID: 6504268954571296645, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+      propertyPath: ownerGO
+      value: 
+      objectReference: {fileID: 1262293100744859469}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

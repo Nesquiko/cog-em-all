@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyHealthBar : MonoBehaviour
 {
-    [SerializeField] private Enemy enemy;
+    [SerializeField] private IEnemy enemy;
     [SerializeField] private Transform fill;
     [SerializeField] private Camera cam;
 

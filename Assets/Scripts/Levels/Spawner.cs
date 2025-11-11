@@ -7,15 +7,14 @@ using UnityEngine.Splines;
 class Spawner : MonoBehaviour
 {
 
-    [Header("Enemy catalog Scriptable Object")]
-    [SerializeField]
-    private EnemyCatalog enemyCatalog;
+    [Header("Enemy prefabs")]
+    [SerializeField] private Bomber bomberPrefab;
+    [SerializeField] private Bandit banditPrefab;
+    [SerializeField] private Dreadnought dreadnoughtPrefab;
 
     [Header("Enemy spawn settings")]
-    [SerializeField]
-    public Vector2 spawnTimeStaggerRange = new(0f, .005f);
-    [SerializeField]
-    public Vector2 spawnLateralOffsetRange = new(-5f, 5f);
+    [SerializeField] public Vector2 spawnTimeStaggerRange = new(0f, .005f);
+    [SerializeField] public Vector2 spawnLateralOffsetRange = new(-5f, 5f);
 
     void Awake()
     {
@@ -24,7 +23,7 @@ class Spawner : MonoBehaviour
     }
 
 
-    public IEnumerator RunSpawnWave(Wave wave, int waveIndex, SplineContainer splineContainer, Action<Enemy> onEnemySpawn, Action<Enemy> onEnemyDeath)
+    public IEnumerator RunSpawnWave(Wave wave, int waveIndex, SplineContainer splineContainer, Action<IEnemy> onEnemySpawn, Action<IEnemy> onEnemyDeath)
     {
         Assert.IsNotNull(splineContainer);
         Assert.IsTrue(splineContainer.Splines.Count > 0);
@@ -36,7 +35,7 @@ class Spawner : MonoBehaviour
         }
     }
 
-    private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group, SplineContainer splineContainer, Action<Enemy> onEnemySpawn, Action<Enemy> onEnemyDeath)
+    private IEnumerator RunSpawnGroup(int waveIndex, int groupIndex, SpawnGroup group, SplineContainer splineContainer, Action<IEnemy> onEnemySpawn, Action<IEnemy> onEnemyDeath)
     {
 
         for (int r = 0; r < group.repeat; r++)
@@ -44,11 +43,10 @@ class Spawner : MonoBehaviour
             for (int p = 0; p < group.pattern.Count; p++)
             {
                 var entry = group.pattern[p];
-                Enemy prefab = enemyCatalog.Get(entry.enemy);
 
                 for (int i = 0; i < entry.count; i++)
                 {
-                    Enemy enemy = Instantiate(prefab);
+                    var enemy = SpawnEnemy(entry.enemy);
                     onEnemySpawn.Invoke(enemy);
                     float startT = Mathf.Clamp01(UnityEngine.Random.Range(spawnTimeStaggerRange.x, spawnTimeStaggerRange.y));
                     float lateralOffset = UnityEngine.Random.Range(spawnLateralOffsetRange.x, spawnLateralOffsetRange.y);
@@ -73,6 +71,21 @@ class Spawner : MonoBehaviour
         }
 
         yield return new WaitForSeconds(group.pauseAfterLastSpawnSeconds);
+    }
+
+    private IEnemy SpawnEnemy(EnemyType enemyType)
+    {
+        return enemyType switch
+        {
+            EnemyType.Bandit => Instantiate(banditPrefab),
+            EnemyType.Bomber => Instantiate(bomberPrefab),
+            EnemyType.Dreadnought => Instantiate(dreadnoughtPrefab),
+            _ => throw new ArgumentOutOfRangeException(
+                       nameof(enemyType),
+                       enemyType,
+                       "Unhandled enemy type"
+                   )
+        };
     }
 
 }

@@ -52,7 +52,7 @@ public class Shell : MonoBehaviour
         Vector3 horizontal = Vector3.Lerp(start, target, t);
         float height = Mathf.Sin(t * Mathf.PI) * arcHeight;
         transform.position = new Vector3(horizontal.x, horizontal.y + height, horizontal.z);
-    
+
         if (t >= 1f)
         {
             Explode();
@@ -62,13 +62,13 @@ public class Shell : MonoBehaviour
     private void Explode()
     {
         Collider[] hits = Physics.OverlapSphere(transform.position, splashRadius);
-        HashSet<Enemy> damaged = new();
+        HashSet<IEnemy> damaged = new();
 
         foreach (Collider c in hits)
         {
-            if (c.TryGetComponent<Enemy>(out var e) && damaged.Add(e))
+            if (c.TryGetComponent<IEnemy>(out var e) && damaged.Add(e))
             {
-                e.TakeDamage(damage, crit, withEffect: EnemyStatusEffect.Slow);
+                e.TakeDamage(damage, crit, effect: EnemyStatusEffect.Slow);
             }
         }
 

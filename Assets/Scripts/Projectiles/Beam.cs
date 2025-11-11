@@ -15,7 +15,7 @@ public class Beam : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private LineRenderer lineRenderer;
- 
+
     private Transform firePoint;
     private Transform initialTarget;
     private float damage;
@@ -45,7 +45,7 @@ public class Beam : MonoBehaviour
 
     private IEnumerator ChainRoutine()
     {
-        List<Enemy> chainTargets = BuildChain(initialTarget, maxChains - 1)
+        List<IEnemy> chainTargets = BuildChain(initialTarget, maxChains - 1)
             .Where(e => e != null)
             .ToList();
 
@@ -65,19 +65,17 @@ public class Beam : MonoBehaviour
 
         for (int i = 0; i < chainTargets.Count; i++)
         {
-            Enemy nextEnemy = chainTargets[i];
-            if (nextEnemy == null) continue;
+            var nextEnemy = chainTargets[i];
+            if (nextEnemy.Equals(null) || nextEnemy.Transform.Equals(null)) continue;
 
-            if (nextEnemy.Equals(null) || nextEnemy.gameObject == null) break;
-
-            Vector3 targetPos = nextEnemy.transform.position;
+            var targetPos = nextEnemy.Transform.position;
 
             float t = 0f;
             float distance = Vector3.Distance(currentPos, targetPos);
 
             while (t < 1f)
             {
-                if (nextEnemy == null || nextEnemy.gameObject == null)
+                if (nextEnemy == null)
                 {
                     Destroy(gameObject);
                     yield break;
@@ -105,20 +103,20 @@ public class Beam : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private List<Enemy> BuildChain(Transform startTransform, int maxAdditional)
+    private List<IEnemy> BuildChain(Transform startTransform, int maxAdditional)
     {
-        List<Enemy> chain = new();
-        if (startTransform.TryGetComponent<Enemy>(out var first))
+        List<IEnemy> chain = new();
+        if (startTransform.TryGetComponent<IEnemy>(out var first))
         {
             chain.Add(first);
         }
         else return chain;
 
-        Enemy current = first;
+        var current = first;
 
         for (int i = 0; i < maxAdditional; i++)
         {
-            Enemy next = FindClosestEnemy(current.transform.position, chain);
+            var next = FindClosestEnemy(current.Transform.position, chain);
             if (next == null) break;
 
             chain.Add(next);
@@ -128,16 +126,18 @@ public class Beam : MonoBehaviour
         return chain;
     }
 
-    private Enemy FindClosestEnemy(Vector3 pos, List<Enemy> exclude)
+    private IEnemy FindClosestEnemy(Vector3 pos, List<IEnemy> exclude)
     {
-        Enemy[] allEnemies = FindObjectsByType<Enemy>(FindObjectsSortMode.None);
-        Enemy closest = null;
+        var allBehaviours = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None);
+        IEnemy closest = null;
         float minDist = Mathf.Infinity;
 
-        foreach (Enemy e in allEnemies)
+        foreach (var b in allBehaviours)
         {
+            if (b is not IEnemy e) continue;
             if (exclude.Contains(e)) continue;
-            float dist = Vector3.Distance(pos, e.transform.position);
+
+            float dist = Vector3.Distance(pos, e.Transform.position);
             if (dist < minDist && dist <= chainRadius)
             {
                 minDist = dist;

@@ -55,16 +55,16 @@ public static class TowerMechanics
     public static readonly Color SelectedColor = new(1.0f, 0.85f, 0.3f);
     private const float HighlightIntensity = 3.0f;
 
-    public static Enemy GetClosestEnemy(Vector3 towerPosition, IDictionary<int, Enemy> enemies)
+    public static IEnemy GetClosestEnemy(Vector3 towerPosition, IDictionary<int, IEnemy> enemies)
     {
-        Enemy closest = null;
+        IEnemy closest = null;
         float minDist = Mathf.Infinity;
 
-        foreach (Enemy e in enemies.Values)
+        foreach (var e in enemies.Values)
         {
             if (e == null) continue;
 
-            float dist = Vector3.Distance(towerPosition, e.transform.position);
+            float dist = Vector3.Distance(towerPosition, e.Transform.position);
             if (dist < minDist)
             {
                 minDist = dist;
@@ -75,10 +75,10 @@ public static class TowerMechanics
         return closest;
     }
 
-    public static bool IsEnemyInRange(Vector3 towerPosition, Enemy enemy, float range)
+    public static bool IsEnemyInRange(Vector3 towerPosition, IEnemy enemy, float range)
     {
         if (enemy == null) return false;
-        float distance = Vector3.Distance(towerPosition, enemy.transform.position);
+        float distance = Vector3.Distance(towerPosition, enemy.Transform.position);
         return distance <= range;
     }
 
@@ -98,24 +98,24 @@ public static class TowerMechanics
         );
     }
 
-    public static void HandleTriggerEnter(Collider other, IDictionary<int, Enemy> enemies, Action<Enemy> deathAction)
+    public static void HandleTriggerEnter(Collider other, IDictionary<int, IEnemy> enemies, Action<IEnemy> deathAction)
     {
-        if (!other.TryGetComponent<Enemy>(out var enemy)) return;
+        if (!other.TryGetComponent<IEnemy>(out var enemy)) return;
 
-        int id = enemy.gameObject.GetInstanceID();
+        int id = enemy.GetInstanceID();
         if (enemies.ContainsKey(id)) return;
 
         enemies.Add(id, enemy);
         enemy.OnDeath += deathAction;
     }
 
-    public static bool HandleTriggerExit(Collider other, IDictionary<int, Enemy> enemies, Action<Enemy> deathAction, Enemy currentTarget, out Enemy newTarget)
+    public static bool HandleTriggerExit(Collider other, IDictionary<int, IEnemy> enemies, Action<IEnemy> deathAction, IEnemy currentTarget, out IEnemy newTarget)
     {
         newTarget = currentTarget;
 
-        if (!other.TryGetComponent<Enemy>(out var enemy)) return false;
+        if (!other.TryGetComponent<IEnemy>(out var enemy)) return false;
 
-        int id = enemy.gameObject.GetInstanceID();
+        int id = enemy.GetInstanceID();
         if (enemies.ContainsKey(id))
         {
             enemies.Remove(id);
@@ -131,11 +131,11 @@ public static class TowerMechanics
         return false;
     }
 
-    public static Enemy HandleEnemyRemoval(Enemy deadEnemy, IDictionary<int, Enemy> enemies, Enemy currentTarget)
+    public static IEnemy HandleEnemyRemoval(IEnemy deadEnemy, IDictionary<int, IEnemy> enemies, IEnemy currentTarget)
     {
         if (deadEnemy == null) return currentTarget;
 
-        int id = deadEnemy.gameObject.GetInstanceID();
+        int id = deadEnemy.GetInstanceID();
         if (enemies.ContainsKey(id))
         {
             enemies.Remove(id);
@@ -146,7 +146,7 @@ public static class TowerMechanics
         return currentTarget;
     }
 
-    public static void UnsubscribeAll(IDictionary<int, Enemy> enemies, Action<Enemy> deathAction)
+    public static void UnsubscribeAll(IDictionary<int, IEnemy> enemies, Action<IEnemy> deathAction)
     {
         if (enemies == null || enemies.Count == 0) return;
 

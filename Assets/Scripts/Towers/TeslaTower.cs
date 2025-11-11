@@ -23,8 +23,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private GameObject towerOverlayPrefab;
     [SerializeField] private CursorSettings cursorSettings;
 
-    private readonly Dictionary<int, Enemy> enemiesInRange = new();
-    private Enemy target;
+    private readonly Dictionary<int, IEnemy> enemiesInRange = new();
+    private IEnemy target;
     private float fireCooldown = 0f;
 
     private GameObject towerOverlay;
@@ -91,19 +91,19 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         TowerMechanics.HandleTriggerExit(other, enemiesInRange, HandleEnemyDeath, target, out target);
     }
 
-    private void HandleEnemyDeath(Enemy deadEnemy)
+    private void HandleEnemyDeath(IEnemy deadEnemy)
     {
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    private void Shoot(Enemy enemy)
+    private void Shoot(IEnemy enemy)
     {
         Beam beam = Instantiate(beamPrefab, firePoint.position, Quaternion.identity);
 
         bool isCritical = UnityEngine.Random.value < critChance;
         float damage = CalculateBaseBeamDamage?.Invoke(beam.BaseDamage) ?? beam.BaseDamage;
         if (isCritical) damage *= critMultiplier;
-        beam.Initialize(firePoint, enemy.transform, damage, isCritical);
+        beam.Initialize(firePoint, enemy.Transform, damage, isCritical);
     }
 
     private void OnDestroy()

@@ -2,7 +2,13 @@ using UnityEngine;
 
 public class EnemyAttackTrigger : MonoBehaviour
 {
-    public Enemy owner;
+    [SerializeField] private GameObject ownerGO;
+    private IEnemy owner;
+
+    void Awake()
+    {
+        owner = ownerGO.GetComponent<IEnemy>();
+    }
 
     private void OnTriggerEnter(Collider other)
     {

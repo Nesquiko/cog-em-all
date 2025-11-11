@@ -5,12 +5,28 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
+public enum EnemyType
+{
+    Bandit = 0,
+    Dreadnought = 1,
+    Bomber = 2,
+}
+
+public enum EnemyAttributes
+{
+    MovementSpeed = 0,
+    Health = 1
+}
+
 public interface IEnemy
 {
     EnemyType Type { get; }
     int OnKillGearsReward { get; }
     float HealthPointsNormalized { get; }
-    float Speed { get; }
+    float Speed { get; set; }
+
+    Transform Transform { get; }
 
     event Action<IEnemy> OnDeath;
 
@@ -95,7 +111,7 @@ public static class EnemyMechanics
     #region Movement
 
     public static void FollowPath(
-        Transform enemy, 
+        Transform enemy,
         SplineContainer path,
         ref float t,
         float pathLength,
@@ -186,10 +202,10 @@ public static class EnemyMechanics
         {
             refRoutine = enemy.StartCoroutine(
                 AttackAnimation(
-                    enemy, 
-                    targetNexus, 
+                    enemy,
+                    targetNexus,
                     attackDamage,
-                    jumpHeight, 
+                    jumpHeight,
                     forwardDistance,
                     animationDuration)
             );
