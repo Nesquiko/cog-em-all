@@ -44,7 +44,7 @@ public class Mine : MonoBehaviour, ISkillPlaceable
     private void OnTriggerEnter(Collider other)
     {
         if (!armed || triggered) return;
-        if (!other.TryGetComponent<Enemy>(out var enemy)) return;
+        if (!other.TryGetComponent<IEnemy>(out var enemy)) return;
 
         triggered = true;
         StartCoroutine(TriggerExplosion());
@@ -81,7 +81,7 @@ public class Mine : MonoBehaviour, ISkillPlaceable
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius, enemyMask, QueryTriggerInteraction.Collide);
         foreach (var hit in hits)
         {
-            if (hit.TryGetComponent<Enemy>(out var e))
+            if (hit.TryGetComponent<IEnemy>(out var e))
                 e.TakeDamage(explosionDamage);
         }
 

@@ -47,7 +47,7 @@ public class Bomber : MonoBehaviour, IEnemy
 
     private float t = 0f;
 
-    private Nexus targetNexus;
+    private IDamageable target;
     private float originalSpeed;
 
     private bool hasAttacked = false;
@@ -117,7 +117,7 @@ public class Bomber : MonoBehaviour, IEnemy
 
     private void Update()
     {
-        if (targetNexus == null)
+        if (target == null)
         {
             FollowPath();
         }
@@ -141,12 +141,12 @@ public class Bomber : MonoBehaviour, IEnemy
 
     private void AttackNexus()
     {
-        if (hasAttacked || targetNexus == null) return;
+        if (hasAttacked || target == null) return;
 
-        transform.LookAt(targetNexus.transform, Vector3.up);
+        transform.LookAt(target.Transform(), Vector3.up);
 
         hasAttacked = true;
-        StartCoroutine(AttackAnimation(targetNexus.transform));
+        StartCoroutine(AttackAnimation(target.Transform()));
     }
 
     private IEnumerator AttackAnimation(Transform target)
@@ -178,33 +178,77 @@ public class Bomber : MonoBehaviour, IEnemy
     private void Explode(Transform target)
     {
         if (target == null) return;
-        targetNexus.TakeDamage(attackDamage);
+        this.target.TakeDamage(attackDamage);
     }
 
-    public void EnterAttackRange(Nexus nexus)
+
+    public void EnterAttackRange(IDamageable damageable)
     {
-        targetNexus = nexus;
+        target = damageable;
         speed = 0f;
     }
 
-    public void ExitAttackRange(Nexus nexus)
+    public void ExitAttackRange(IDamageable damageable)
     {
-        if (targetNexus == nexus)
+        if (target == damageable)
         {
-            targetNexus = null;
+            target = null;
             speed = originalSpeed;
         }
     }
 
     public void ApplyEffect(EnemyStatusEffect effect)
     {
-        if (activeEffects.ContainsKey(effect.type))
-        {
+        if (activeEffects.ContainsKey(effect.type) && activeEffects[effect.type] != null)
             StopCoroutine(activeEffects[effect.type]);
+
+        if (effect.persistent)
+        {
+            ApplyPersistentEffect(effect);
+            return;
         }
 
         Coroutine routine = StartCoroutine(HandleEffect(effect));
         activeEffects[effect.type] = routine;
+    }
+
+    private void ApplyPersistentEffect(EnemyStatusEffect effect)
+    {
+        switch (effect.type)
+        {
+            case EffectType.Oiled:
+                speed = originalSpeed * effect.speedMultiplier;
+                if (!activeEffects.ContainsKey(effect.type))
+                    activeEffects[effect.type] = null;
+                break;
+            case EffectType.OilBurned:
+                if (!activeEffects.ContainsKey(effect.type))
+                {
+                    Coroutine routine = StartCoroutine(IndefiniteBurn(effect));
+                    activeEffects[effect.type] = routine;
+                }
+                break;
+        }
+    }
+
+    public void RemoveEffect(EffectType type)
+    {
+        if (!activeEffects.ContainsKey(type)) return;
+
+        var routine = activeEffects[type];
+        if (routine != null)
+            StopCoroutine(routine);
+
+        activeEffects.Remove(type);
+
+        switch (type)
+        {
+            case EffectType.Oiled:
+                speed = originalSpeed;
+                break;
+            case EffectType.OilBurned:
+                break;
+        }
     }
 
     private IEnumerator HandleEffect(EnemyStatusEffect effect)
@@ -231,5 +275,14 @@ public class Bomber : MonoBehaviour, IEnemy
         }
 
         activeEffects.Remove(effect.type);
+    }
+
+    private IEnumerator IndefiniteBurn(EnemyStatusEffect effect)
+    {
+        while (true)
+        {
+            TakeDamage(effect.tickDamage, isCritical: false);
+            yield return new WaitForSeconds(effect.tickInterval);
+        }
     }
 }

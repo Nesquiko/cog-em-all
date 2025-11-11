@@ -6,13 +6,13 @@ public class OilSpillTrigger : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        if (!other.TryGetComponent<Enemy>(out var e)) return;
+        if (!other.TryGetComponent<IEnemy>(out var e)) return;
         owner.RegisterInRange(e);
     }
 
     public void OnTriggerExit(Collider other)
     {
-        if (!other.TryGetComponent<Enemy>(out var e)) return;
+        if (!other.TryGetComponent<IEnemy>(out var e)) return;
         owner.UnregisterOutOfRange(e);
     }
 }

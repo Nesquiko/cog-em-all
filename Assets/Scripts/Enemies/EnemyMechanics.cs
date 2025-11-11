@@ -32,9 +32,11 @@ public interface IEnemy
 
     void Initialize(SplineContainer path, float startT, float lateralOffset, Action<IEnemy> onDeath);
     void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect effect = null);
-    void EnterAttackRange(Nexus nexus);
-    void ExitAttackRange(Nexus nexus);
+    void EnterAttackRange(IDamageable damageable);
+    void ExitAttackRange(IDamageable damageable);
     int GetInstanceID();
+    void ApplyEffect(EnemyStatusEffect effect);
+    void RemoveEffect(EffectType type);
 }
 
 public enum EffectType
@@ -76,7 +78,7 @@ public class EnemyStatusEffect
         this.persistent = persistent;
     }
 
-    public static EnemyStatusEffect Burn => 
+    public static EnemyStatusEffect Burn =>
         new(
             type: EffectType.Burning,
             duration: 5f,
@@ -107,6 +109,28 @@ public class EnemyStatusEffect
             tickDamage: 0f,
             tickInterval: 0f,
             speedMultiplier: 1.20f
+        );
+
+    public static EnemyStatusEffect Oiled(
+   float speedMultiplier
+) => new(
+       type: EffectType.Oiled,
+       duration: Mathf.Infinity,
+       tickDamage: 0f,
+       tickInterval: 0f,
+       speedMultiplier: speedMultiplier,
+       persistent: true
+   );
+
+    public static EnemyStatusEffect OilBurn(
+        float tickDamage = 5f,
+        float tickInterval = 0.5f
+    ) => new(
+            type: EffectType.OilBurned,
+            duration: Mathf.Infinity,
+            tickDamage: tickDamage,
+            tickInterval: tickInterval,
+            persistent: true
         );
 }
 

@@ -286,9 +286,9 @@ public class Bandit : MonoBehaviour, IEnemy
         if (!activeEffects.ContainsKey(type)) return;
 
         var routine = activeEffects[type];
-        if (routine !=  null)
+        if (routine != null)
             StopCoroutine(routine);
-        
+
         activeEffects.Remove(type);
 
         switch (type)
