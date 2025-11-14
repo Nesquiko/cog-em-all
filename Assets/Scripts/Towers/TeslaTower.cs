@@ -26,6 +26,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -38,7 +39,6 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private TowerOverlay towerOverlay;
 
     private TowerSelectionManager towerSelectionManager;
-    private TowerUpgradeManager towerUpgradeManager;
 
     private Func<float, float> CalculateBaseBeamDamage;
 
@@ -46,7 +46,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public int CurrentLevel() => currentLevel;
 
-    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
     void OnDrawGizmosSelected()
     {
@@ -62,7 +62,6 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         towerOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
-        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -165,7 +164,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerUpgradeData data)
+    public void ApplyUpgrade(TowerDataBase data)
     {
         // TODO: upgrade has to receive tower-specific data + make sure every stat update works
 
@@ -173,7 +172,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
         towerSelectionManager.DeselectCurrent();
 
-        currentLevel = data.level;
+        /*currentLevel = data.level;
 
         beamDamage = data.damage;
         fireRate = data.fireRate;
@@ -181,7 +180,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);*/
     }
 
     public void SetDamageCalculation(Func<float, float> f)

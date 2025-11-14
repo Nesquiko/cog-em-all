@@ -50,7 +50,7 @@ public interface ITowerUpgradeable : ITower
 {
     int CurrentLevel();
     bool CanUpgrade();
-    void ApplyUpgrade(TowerUpgradeData data);
+    void ApplyUpgrade(TowerDataBase data);
 }
 
 public interface ITowerRotateable : ITower

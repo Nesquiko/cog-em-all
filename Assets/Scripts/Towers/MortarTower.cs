@@ -35,6 +35,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.5f;
@@ -56,7 +57,6 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private TowerOverlay towerOverlay;
 
     private TowerSelectionManager towerSelectionManager;
-    private TowerUpgradeManager towerUpgradeManager;
 
     private Func<float, float> CalculateBaseShellDamage;
 
@@ -64,7 +64,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public int CurrentLevel() => currentLevel;
 
-    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
     private void OnDrawGizmosSelected()
     {
@@ -93,7 +93,6 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         towerOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
-        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -325,7 +324,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerUpgradeData data)
+    public void ApplyUpgrade(TowerDataBase data)
     {
         // TODO: upgrade has to receive tower-specific data + make sure every stat update works
         // the comments below are a by-product of this
@@ -334,7 +333,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
         towerSelectionManager.DeselectCurrent();
 
-        currentLevel = data.level;
+        /*currentLevel = data.level;
 
         shellDamage = data.damage;
         fireRate = data.fireRate;
@@ -344,7 +343,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
         outerCollider.radius = data.range;
         // innerCollider.radius = data.range;
-        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);
+        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);*/
         // innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
     }
 

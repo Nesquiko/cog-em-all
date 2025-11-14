@@ -32,13 +32,14 @@ public class HUDPanelUI : MonoBehaviour
 
     public void ShowPlacementInfo(TowerTypes towerType)
     {
-        TowerData towerData = towerDataCatalog.FromType(towerType);
+        TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(towerType);
 
-        placementObjectNameLabel.text = towerData.displayName;
+        //TODO kili
+        /*placementObjectNameLabel.text = towerData.displayName;
         placementObjectCostLabel.text = $"{towerData.cost} Gears";
 
         towerButtonsPanel.SetActive(false);
-        placementInfoPanel.SetActive(true);
+        placementInfoPanel.SetActive(true);*/
     }
 
     public void ShowPlacementInfo(SkillTypes skillType)

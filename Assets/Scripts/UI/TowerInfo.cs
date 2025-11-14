@@ -52,14 +52,14 @@ public class TowerInfo : MonoBehaviour
 
     public void UpdateTowerInfo(TowerTypes towerType)
     {
-        TowerData data = towerDataCatalog.FromType(towerType);
-
-        towerTitle.text = data.displayName;
+        TowerData<TowerDataBase> data = towerDataCatalog.FromType(towerType);
+        //TODO kili
+        /*towerTitle.text = data.displayName;
         damageText.text = data.damage.ToString();
         rangeText.text = data.range.ToString();
         fireRateText.text = data.fireRate.ToString();
         critChanceText.text = $"{data.critChance}%";
-        sellPriceText.text = data.sellPrice.ToString();
+        sellPriceText.text = data.sellPrice.ToString();*/
     }
 
     private IEnumerator FadeCanvas(float targetAlpha, bool disableOnEnd = false)

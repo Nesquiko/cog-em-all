@@ -29,6 +29,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -51,7 +52,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private TowerRotationOverlay towerRotationOverlay;
 
     private TowerSelectionManager towerSelectionManager;
-    private TowerUpgradeManager towerUpgradeManager;
 
     private Func<float, float> CalculateBaseFlameDamagePerPulse;
 
@@ -59,7 +59,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public int CurrentLevel() => currentLevel;
 
-    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
     private void OnDrawGizmosSelected()
     {
@@ -99,7 +99,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         towerRotationOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
-        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -273,7 +272,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerUpgradeData data)
+    public void ApplyUpgrade(TowerDataBase data)
     {
         // TODO: upgrade has to receive tower-specific data + make sure every stat update works
 
@@ -281,7 +280,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         towerSelectionManager.DeselectCurrent();
 
-        currentLevel = data.level;
+        /*currentLevel = data.level;
 
         flameDamagePerPulse = data.damage;
         range = data.range;
@@ -289,7 +288,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         critMultiplier = data.critMultiplier;
 
         activeFlame.UpdateRange(data.range);
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);*/
     }
 
     public void SetDamageCalculation(Func<float, float> f)

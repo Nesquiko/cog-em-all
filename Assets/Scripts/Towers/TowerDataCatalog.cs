@@ -1,62 +1,120 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 
-[CreateAssetMenu(fileName = "TowerDataCatalog", menuName = "Scriptable Objects/TowerDataCatalog")]
+[CreateAssetMenu(fileName = "TowerDataCatalog", menuName = "Scriptable Objects/Tower Data Catalog")]
 public class TowerDataCatalog : ScriptableObject
 {
-    [SerializeField, Tooltip("List of towers available in the game.")]
-    private List<TowerData> towers = new();
+    [SerializeReference, Tooltip("All towers and their per-level data.")]
+    private List<TowerData<TowerDataBase>> towers;
 
-    [SerializeField, Tooltip("List of levels available for each tower.")]
-    private List<int> towerLevels = new();
+    private readonly Dictionary<TowerTypes, TowerData<TowerDataBase>> catalog = new();
 
-    private readonly Dictionary<TowerTypes, TowerData> catalog = new();
+    public Action<int> OnUpgradeTower;
 
-    public int TowerCount => towers.Count;
+    public Dictionary<TowerTypes, TowerData<TowerDataBase>> Catalog => catalog;
+    public int TowersCount => towers.Count;
+    public int TowerLevelsCount => 3;
 
-    public int TowerLevelsCount => towerLevels.Count;
+    private void OnEnable() => RebuildCatalog();
 
-    private void OnEnable()
-    {
-        RebuildCatalog();
-    }
-
-    private void OnValidate()
-    {
-        RebuildCatalog();
-    }
+    private void OnValidate() => RebuildCatalog();
 
     private void RebuildCatalog()
     {
         catalog.Clear();
-
-        foreach (var t in towers)
+        foreach (var towerData in towers)
         {
-            if (catalog.ContainsKey(t.type))
+            if (towerData == null)
+                continue;
+
+            if (catalog.ContainsKey(towerData.TowerType))
             {
-                Debug.LogWarning($"duplicate TowerType detected: {t.type}");
+                Debug.LogWarning($"Duplicate TowerType {towerData.TowerType} detected in catalog, ignoring duplicate.");
                 continue;
             }
 
-            catalog[t.type] = t;
+            catalog.Add(towerData.TowerType, towerData);
         }
     }
 
-    public TowerData FromIndex(int i)
+    public TowerData<TowerDataBase> FromIndex(int index)
     {
-        Assert.IsTrue(System.Enum.IsDefined(typeof(TowerTypes), i), $"invalid TowerType value: {i}");
-        return FromType((TowerTypes)i);
+        Assert.IsTrue(index >= 0 && index < towers.Count, $"Invalid tower index: {index}");
+        var towerData = towers[index];
+        Assert.IsNotNull(towerData, $"Tower data missing at index: {index}");
+        return towerData;
     }
 
-    public TowerData FromType(TowerTypes type)
+    public TData FromIndexAndLevel<TData>(int index, int level) where TData : TowerDataBase
     {
-        Assert.IsNotNull(catalog);
-        Assert.IsTrue(catalog.ContainsKey(type));
+        return FromIndexAndLevel(index, level) as TData;
+    }
+
+    public TowerDataBase FromIndexAndLevel(int index, int level)
+    {
+        Assert.IsTrue(index >= 0 && index < towers.Count, $"Invalid tower index: {index}");
+        var towerData = towers[index];
+        Assert.IsNotNull(towerData, $"Tower data missing at index: {index}");
+        var levelData = towerData.GetDataForLevel(level);
+        return levelData;
+    }
+
+    public TowerData<TowerDataBase> FromType(TowerTypes type)
+    {
+        Assert.IsTrue(catalog.ContainsKey(type), $"Type not defined in catalog: ${type}");
         var towerData = catalog[type];
-        Assert.IsNotNull(towerData);
+        Assert.IsNotNull(towerData, $"No tower data found for type: {type}");
         return towerData;
+    }
+
+    public TowerDataBase FromTypeAndLevel(TowerTypes type, int level)
+    {
+        Assert.IsTrue(catalog.ContainsKey(type), $"Type not defined in catalog: ${type}");
+        var towerData = catalog[type];
+        Assert.IsNotNull(towerData, $"No tower level data found for type: {type}");
+        var levelData = towerData.GetDataForLevel(level);
+        return levelData;
+    }
+
+    public TData FromTypeAndLevel<TData>(TowerTypes type, int level) where TData : TowerDataBase
+    {
+        return FromTypeAndLevel(type, level) as TData;
+    }
+
+    public bool CanUpgrade(TowerTypes type, int currentLevel)
+    {
+        if (!catalog.TryGetValue(type, out var data)) return false;
+        return data.CanUpgrade(currentLevel);
+    }
+
+    public int GetMaxLevel(TowerTypes type)
+    {
+        Assert.IsTrue(catalog.ContainsKey(type), $"Type not defined in catalog: ${type}");
+        var towerData = catalog[type];
+        return towerData.PerLevelStats.Count;
+    }
+
+    public bool RequestUpgrade(ITowerUpgradeable tower)
+    {
+        Assert.IsNotNull(tower, "Invalid tower reference.");
+
+        TowerTypes type = tower.TowerType();
+        int currentLevel = tower.CurrentLevel();
+
+        if (!CanUpgrade(type, currentLevel)) return false;
+
+        int nextLevel = currentLevel + 1;
+        TowerDataBase nextLevelData = FromTypeAndLevel(type, nextLevel);
+        Assert.IsNotNull(nextLevelData, $"Upgrade data missing for {type} level {nextLevel}.");
+
+        tower.ApplyUpgrade(nextLevelData);
+
+        OnUpgradeTower?.Invoke(nextLevelData.Cost);
+
+        return true;
     }
 
     public (HashSet<TowerTypes>, HashSet<TowerTypes>) AdjustTowers(int gears)
@@ -64,16 +122,18 @@ public class TowerDataCatalog : ScriptableObject
         HashSet<TowerTypes> toEnable = new();
         HashSet<TowerTypes> toDisable = new();
 
-        foreach (TowerData tower in towers)
+        Assert.IsNotNull(towers);
+
+        foreach (var tower in towers)
         {
-            if (gears >= tower.cost)
-            {
-                toEnable.Add(tower.type);
-            }
+            Assert.IsNotNull(tower);
+            var baseData = tower.GetDataForLevel(1);
+            Assert.IsNotNull(baseData);
+
+            if (gears >= baseData.Cost)
+                toEnable.Add(tower.TowerType);
             else
-            {
-                toDisable.Add(tower.type);
-            }
+                toDisable.Add(tower.TowerType);
         }
 
         return (toEnable, toDisable);

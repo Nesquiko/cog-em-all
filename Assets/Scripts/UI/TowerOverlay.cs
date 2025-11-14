@@ -6,6 +6,8 @@ public class TowerOverlay : MonoBehaviour
     [SerializeField] private GameObject takeControlButton;
     [SerializeField] private GameObject rotateButton;
 
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
+
     private CanvasGroup upgradeCanvasGroup;
     private ScaleOnHover upgradeScaleOnHover;
     private CursorPointer upgradeCursorPointer;
@@ -28,7 +30,6 @@ public class TowerOverlay : MonoBehaviour
 
     private TowerControlManager towerControlManager;
     private TowerSellManager towerSellManager;
-    private TowerUpgradeManager towerUpgradeManager;
 
     public void Initialize(GameObject t)
     {
@@ -47,7 +48,6 @@ public class TowerOverlay : MonoBehaviour
         mainCamera = Camera.main;
         towerControlManager = FindFirstObjectByType<TowerControlManager>();
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
-        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
 
         upgradeCanvasGroup = upgradeButton.GetComponent<CanvasGroup>();
         upgradeScaleOnHover = upgradeButton.GetComponent<ScaleOnHover>();
@@ -116,7 +116,7 @@ public class TowerOverlay : MonoBehaviour
     public void OnUpgradeTowerClicked()
     {
         if (!towerGO.TryGetComponent<ITowerUpgradeable>(out var tower)) return;
-        towerUpgradeManager.RequestUpgrade(tower);
+        towerDataCatalog.RequestUpgrade(tower);
 
         AdjustOverlayButtons();
     }

@@ -36,6 +36,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.2f;
@@ -66,7 +67,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private TowerOverlay towerOverlay;
 
     private TowerSelectionManager towerSelectionManager;
-    private TowerUpgradeManager towerUpgradeManager;
 
     private Func<float, float> CalculateBaseBulletDamage;
 
@@ -74,7 +74,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public int CurrentLevel() => currentLevel;
 
-    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
     public Transform GetControlPoint() => controlPoint;
 
@@ -92,7 +92,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         towerOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
-        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -374,7 +373,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerUpgradeData data)
+    public void ApplyUpgrade(TowerDataBase data)
     {
         // TODO: upgrade has to receive tower-specific data + make sure every stat update works
 
@@ -382,7 +381,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         towerSelectionManager.DeselectCurrent();
 
-        currentLevel = data.level;
+        /*currentLevel = data.level;
 
         bulletDamage = data.damage;
         fireRate = data.fireRate;
@@ -391,7 +390,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         critMultiplier = data.critMultiplier;
 
         capsuleCollider.radius = data.range;
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);*/
     }
 
     public void SetDamageCalculation(Func<float, float> f)

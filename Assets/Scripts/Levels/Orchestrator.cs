@@ -22,7 +22,6 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private SkillPlacementSystem skillPlacementSystem;
     [SerializeField] private TowerSellManager towerSellManager;
-    [SerializeField] private TowerUpgradeManager towerUpgradeManager;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private CinemachineBrain brain;
@@ -50,7 +49,7 @@ class Orchestrator : MonoBehaviour
     {
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
-        towerUpgradeManager.OnUpgradeTower += OnUpgradeTower;
+        towerDataCatalog.OnUpgradeTower += OnUpgradeTower;
         skillPlacementSystem.OnUseSkill += OnUseSkill;
         nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
@@ -74,14 +73,16 @@ class Orchestrator : MonoBehaviour
     private void OnPlaceTower(ITower tower)
     {
         tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
-        TowerData towerData = towerDataCatalog.FromType(tower.TowerType());
-        SpendGears(towerData.cost);
+        TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(tower.TowerType());
+        //TODO kili
+        //SpendGears(towerData.cost);
     }
 
     private void OnSellTower(TowerTypes type)
     {
-        TowerData towerData = towerDataCatalog.FromType(type);
-        AddGears(towerData.sellPrice);
+        TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(type);
+        //TODO kili
+        //AddGears(towerData.sellPrice);
     }
 
     private void OnUpgradeTower(int upgradeCost)
