@@ -96,6 +96,7 @@ MonoBehaviour:
   towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   currentLevel: 1
+  towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   upgradeVFX: {fileID: 36816324828968498}
 --- !u!136 &3990786803379089488
 CapsuleCollider:

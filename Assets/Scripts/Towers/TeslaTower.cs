@@ -4,10 +4,14 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable
+public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
 {
     [Header("Stats")]
     [SerializeField] private float beamDamage = 30f;
+    [SerializeField] private float beamSpeed = 1000;
+    [SerializeField] private float beamChainRadius = 10f;
+    [SerializeField] private int beamMaxChains = 3;
+    [SerializeField] private float beamStayTimeOnHit = 0.05f;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
     [SerializeField, Range(0f, 1f)] private float critChance = 0.15f;
@@ -41,6 +45,11 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseBeamDamage;
+
+    public float BeamSpeed => beamSpeed;
+    public float BeamChainRadius => beamChainRadius;
+    public int BeamMaxChains => beamMaxChains;
+    public float BeamStayTimeOnHit => beamStayTimeOnHit;
 
     public TowerTypes TowerType() => TowerTypes.Tesla;
 
@@ -120,7 +129,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         bool isCritical = UnityEngine.Random.value < critChance;
         float damage = CalculateBaseBeamDamage?.Invoke(beamDamage) ?? beamDamage;
         if (isCritical) damage *= critMultiplier;
-        beam.Initialize(firePoint, enemy.Transform, damage, isCritical);
+        beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
     }
 
     public void Select()
@@ -164,23 +173,27 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase data)
+    public void ApplyUpgrade(TowerDataBase baseData)
     {
-        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
+        if (baseData is not TeslaTowerData data) return;
 
         upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 
-        /*currentLevel = data.level;
+        currentLevel = data.Level;
 
-        beamDamage = data.damage;
+        beamDamage = data.beamDamage;
+        beamSpeed = data.beamSpeed;
+        beamChainRadius = data.beamChainRadius;
+        beamMaxChains = data.beamMaxChains;
+        beamStayTimeOnHit = data.beamStayTimeOnHit;
         fireRate = data.fireRate;
         range = data.range;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);*/
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
     }
 
     public void SetDamageCalculation(Func<float, float> f)

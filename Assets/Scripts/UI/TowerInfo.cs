@@ -9,11 +9,7 @@ public class TowerInfo : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private TMP_Text towerTitle;
-    [SerializeField] private TMP_Text damageText;
-    [SerializeField] private TMP_Text rangeText;
-    [SerializeField] private TMP_Text fireRateText;
-    [SerializeField] private TMP_Text critChanceText;
-    [SerializeField] private TMP_Text sellPriceText;
+    [SerializeField] private TMP_Text descriptionText;
 
     [Header("Animation")]
     [SerializeField, Range(0.05f, 1f)] private float fadeDuration = 0.15f;
@@ -53,13 +49,8 @@ public class TowerInfo : MonoBehaviour
     public void UpdateTowerInfo(TowerTypes towerType)
     {
         TowerData<TowerDataBase> data = towerDataCatalog.FromType(towerType);
-        //TODO kili
-        /*towerTitle.text = data.displayName;
-        damageText.text = data.damage.ToString();
-        rangeText.text = data.range.ToString();
-        fireRateText.text = data.fireRate.ToString();
-        critChanceText.text = $"{data.critChance}%";
-        sellPriceText.text = data.sellPrice.ToString();*/
+        towerTitle.text = data.DisplayName;
+        descriptionText.text = data.Description;
     }
 
     private IEnumerator FadeCanvas(float targetAlpha, bool disableOnEnd = false)

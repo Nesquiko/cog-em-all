@@ -3,17 +3,16 @@ using UnityEngine.Assertions;
 
 public class Bullet : MonoBehaviour
 {
-    [SerializeField] private float speed = 10f;
-    [SerializeField] private float lifetime = 3f;
-
+    private GatlingTower owner;
     private Transform target;
     private Vector3 flightDirection;
     private float damage;
     private bool crit;
 
-    public void Initialize(Transform enemyTarget, float dmg, bool isCrit)
+    public void Initialize(GatlingTower ownerTower, Transform enemyTarget, float dmg, bool isCrit)
     {
         Assert.IsNotNull(enemyTarget);
+        owner = ownerTower;
         target = enemyTarget;
         damage = dmg;
         crit = isCrit;
@@ -22,7 +21,7 @@ public class Bullet : MonoBehaviour
 
     private void Start()
     {
-        Destroy(gameObject, lifetime);
+        Destroy(gameObject, owner.BulletLifetime);
     }
 
     private void Update()
@@ -32,7 +31,7 @@ public class Bullet : MonoBehaviour
             flightDirection = (target.position - transform.position).normalized;
         }
 
-        transform.position += speed * Time.deltaTime * flightDirection;
+        transform.position += owner.BulletSpeed * Time.deltaTime * flightDirection;
         transform.rotation = Quaternion.LookRotation(flightDirection);
         transform.Rotate(90f, 0f, 0f);
     }

@@ -7,6 +7,7 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
     [SerializeField] private SkillTypes skillType = SkillTypes.Wall;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
     public SkillTypes SkillType() => skillType;
+    public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
     public Transform Transform() => transform;
 

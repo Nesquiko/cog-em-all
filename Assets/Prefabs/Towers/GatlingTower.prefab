@@ -406,6 +406,7 @@ MonoBehaviour:
   controlPoint: {fileID: 4400268234209531989}
   sensitivity: 0.05
   currentLevel: 1
+  towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   recoilDistance: 0.2
   recoilSpeed: 20
   recoilReturnSpeed: 5

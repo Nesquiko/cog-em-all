@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable, ITowerControllable
+public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerControllable
 {
     [Header("Stats")]
     [SerializeField] private float bulletDamage = 50f;
+    [SerializeField] private float bulletSpeed = 100f;
+    [SerializeField] private float bulletLifetime = 3f;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
     [SerializeField, Range(0f, 1f)] private float critChance = 0.15f;
@@ -69,6 +71,9 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseBulletDamage;
+
+    public float BulletLifetime => bulletLifetime;
+    public float BulletSpeed => bulletSpeed;
 
     public TowerTypes TowerType() => TowerTypes.Gatling;
 
@@ -159,7 +164,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         float dmg = CalculateBaseBulletDamage?.Invoke(bulletDamage) ?? bulletDamage;
         if (isCritical) dmg *= critMultiplier;
 
-        bullet.Initialize(enemy.Transform, dmg, isCritical);
+        bullet.Initialize(this, enemy.Transform, dmg, isCritical);
 
         HandleRecoil();
 
@@ -341,7 +346,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bool isCritical = UnityEngine.Random.value < critChance;
         float baseBulletDmg = CalculateBaseBulletDamage?.Invoke(bulletDamage) ?? bulletDamage;
         float dmg = baseBulletDmg * (isCritical ? critMultiplier : 1f);
-        bullet.Initialize(fakeTarget.transform, dmg, isCritical);
+        bullet.Initialize(this, fakeTarget.transform, dmg, isCritical);
 
         if (controlPoint.TryGetComponent<CameraRecoil>(out var recoil)) recoil.PlayRecoil();
 
@@ -373,24 +378,26 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase data)
+    public void ApplyUpgrade(TowerDataBase baseData)
     {
-        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
+        if (baseData is not GatlingTowerData data) return;
 
         upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 
-        /*currentLevel = data.level;
+        currentLevel = data.Level;
 
-        bulletDamage = data.damage;
+        bulletDamage = data.bulletDamage;
+        bulletSpeed = data.bulletSpeed;
+        bulletLifetime = data.bulletLifetime;
         fireRate = data.fireRate;
         range = data.range;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
         capsuleCollider.radius = data.range;
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);*/
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
     }
 
     public void SetDamageCalculation(Func<float, float> f)

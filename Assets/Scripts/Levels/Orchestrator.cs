@@ -73,16 +73,14 @@ class Orchestrator : MonoBehaviour
     private void OnPlaceTower(ITower tower)
     {
         tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
-        TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(tower.TowerType());
-        //TODO kili
-        //SpendGears(towerData.cost);
+        TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
+        SpendGears(towerData.Cost);
     }
 
-    private void OnSellTower(TowerTypes type)
+    private void OnSellTower(ITower tower)
     {
-        TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(type);
-        //TODO kili
-        //AddGears(towerData.sellPrice);
+        TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
+        AddGears(towerData.SellPrice);
     }
 
     private void OnUpgradeTower(int upgradeCost)
@@ -93,6 +91,7 @@ class Orchestrator : MonoBehaviour
     private void OnUseSkill(ISkill skill)
     {
         SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
+        HUDPanelUI.StartSkillCooldown(skill);
         SpendGears(skillData.cost);
     }
 

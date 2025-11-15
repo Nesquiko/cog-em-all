@@ -1,4 +1,6 @@
+using System.Collections;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,13 +35,13 @@ public class HUDPanelUI : MonoBehaviour
     public void ShowPlacementInfo(TowerTypes towerType)
     {
         TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(towerType);
+        TowerDataBase level1Data = towerDataCatalog.FromTypeAndLevel(towerType, 1);
 
-        //TODO kili
-        /*placementObjectNameLabel.text = towerData.displayName;
-        placementObjectCostLabel.text = $"{towerData.cost} Gears";
+        placementObjectNameLabel.text = towerData.DisplayName;
+        placementObjectCostLabel.text = $"{level1Data.Cost} Gears";
 
         towerButtonsPanel.SetActive(false);
-        placementInfoPanel.SetActive(true);*/
+        placementInfoPanel.SetActive(true);
     }
 
     public void ShowPlacementInfo(SkillTypes skillType)
@@ -87,6 +89,41 @@ public class HUDPanelUI : MonoBehaviour
                 flamethrowerButton.Enable(enable);
                 break;
         }
+    }
+
+    public void StartSkillCooldown(ISkill skill)
+    {
+        switch (skill.SkillType())
+        {
+            case SkillTypes.Wall:
+                StartCoroutine(RunSkillCooldown(wallButton, skill.GetCooldown()));
+                break;
+            case SkillTypes.OilSpill:
+                StartCoroutine(RunSkillCooldown(oilSpillButton, skill.GetCooldown()));
+                break;
+            case SkillTypes.Mine:
+                StartCoroutine(RunSkillCooldown(mineButton, skill.GetCooldown()));
+                break;
+        }
+    }
+
+    private IEnumerator RunSkillCooldown(SkillButton button, float duration)
+    {
+        Debug.Log("RunSkillCooldown");
+
+        button.SetCoolingDown(true);
+
+        float t = 0f;
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+            button.UpdateCooldownVisual(t / duration);
+            yield return null;
+        }
+
+        button.UpdateCooldownVisual(1f);
+        button.SetCoolingDown(false);
+        button.PlayPulse();
     }
 
     public void AdjustSkillButton(SkillTypes type, bool enable)

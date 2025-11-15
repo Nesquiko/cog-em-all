@@ -5,10 +5,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable
+public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
 {
     [Header("Stats")]
     [SerializeField] private float shellDamage = 120f;
+    [SerializeField] private float shellSplashRadius = 10f;
+    [SerializeField] private float shellLifetime = 5f;
     [SerializeField] private float fireRate = 0.5f;
     [SerializeField] private float minRange = 20f;
     [SerializeField] private float maxRange = 60f;
@@ -59,6 +61,9 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseShellDamage;
+
+    public float ShellSplashRadius => shellSplashRadius;
+    public float ShellLifetime => shellLifetime;
 
     public TowerTypes TowerType() => TowerTypes.Mortar;
 
@@ -168,6 +173,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     {
         GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
         Shell shell = shellGO.GetComponent<Shell>();
+        shell.Initialize(this);
         if (recoilRoutine != null) StopCoroutine(recoilRoutine);
         recoilRoutine = StartCoroutine(RecoilKick());
 
@@ -324,27 +330,32 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase data)
+    public void ApplyUpgrade(TowerDataBase baseData)
     {
-        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
-        // the comments below are a by-product of this
+        if (baseData is not MortarTowerData data) return;
 
         upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 
-        /*currentLevel = data.level;
+        currentLevel = data.Level;
 
-        shellDamage = data.damage;
+        shellDamage = data.shellDamage;
+        shellSplashRadius = data.shellSplashRadius;
+        shellLifetime = data.shellLifetime;
         fireRate = data.fireRate;
-        maxRange = data.range;
+        minRange = data.minRange;
+        maxRange = data.maxRange;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
+        rotationSpeed = data.rotationSpeed;
+        launchSpeed = data.launchSpeed;
+        arcHeight = data.arcHeight;
 
-        outerCollider.radius = data.range;
-        // innerCollider.radius = data.range;
-        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);*/
-        // innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
+        innerCollider.radius = data.minRange;
+        outerCollider.radius = data.maxRange;
+        innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
+        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);
     }
 
     public void SetDamageCalculation(Func<float, float> f)

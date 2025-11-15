@@ -16,43 +16,30 @@ MonoBehaviour:
   - type: 0
     displayName: Gatling
     description: A rapid-fire mechanical gun tower that shreds lightly armored enemies.
-    damage: 15
-    range: 4
-    fireRate: 8
-    critChance: 0.5
-    critMultiplier: 2
-    cost: 500
-    sellPrice: 25
+    perLevelStats:
+    - {fileID: 11400000, guid: a846e0a598037ad478391a63c695f5ac, type: 2}
+    - {fileID: 11400000, guid: c4af1395729103145b2d8dd24870131a, type: 2}
+    - {fileID: 11400000, guid: 8006bb93e51406843a9a19ae45dea7b0, type: 2}
   - type: 1
     displayName: Tesla
-    description: Unleashes electric beams that can damage multiple targets at once.
-    damage: 40
-    range: 6
-    fireRate: 1.2
-    critChance: 0.5
-    critMultiplier: 2
-    cost: 125
-    sellPrice: 42
+    description: Unleashes electric beams that can chain to multiple targets at once.
+    perLevelStats:
+    - {fileID: 11400000, guid: 36fc1f3008f37f64ab22158116dbced4, type: 2}
+    - {fileID: 11400000, guid: 38b9bdafa9e4ad043b65d27b3ab12fa7, type: 2}
+    - {fileID: 11400000, guid: 1d5a5b7b7376dec43a1f609930c06d55, type: 2}
   - type: 2
     displayName: Mortar
     description: Launches explosive shells powered by steam pressure, dealing splash
       damage.
-    damage: 80
-    range: 7.5
-    fireRate: 0.6
-    critChance: 0.5
-    critMultiplier: 2
-    cost: 200
-    sellPrice: 67
+    perLevelStats:
+    - {fileID: 11400000, guid: 2c5a878e0f8598b4fb90b2586946d989, type: 2}
+    - {fileID: 11400000, guid: 0d5ff0ed96cc02e4ba4545c47dd0198a, type: 2}
+    - {fileID: 11400000, guid: 0da4baacd6a019342aaaa60557e81204, type: 2}
   - type: 3
     displayName: Flamethrower
     description: Locks into a position and spews superheated flames into enemies
       within range, causing burn over time.
-    damage: 80
-    range: 7.5
-    fireRate: 0.6
-    critChance: 0.5
-    critMultiplier: 2
-    cost: 200
-    sellPrice: 67
-  towerLevels: 000000000100000002000000
+    perLevelStats:
+    - {fileID: 11400000, guid: e007e7c5ea5906c4ba5a0e3b4d0a53c4, type: 2}
+    - {fileID: 11400000, guid: b222a8e1ae9abd34fa9d8fa136874f36, type: 2}
+    - {fileID: 11400000, guid: 46ba6d0c9580a71449ffd559d6d467d9, type: 2}

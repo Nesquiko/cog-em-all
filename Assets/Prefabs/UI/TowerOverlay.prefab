@@ -369,6 +369,7 @@ MonoBehaviour:
   upgradeButton: {fileID: 7841570531722994723}
   takeControlButton: {fileID: 2599508280393797645}
   rotateButton: {fileID: 5307897964657186360}
+  towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
 --- !u!1 &2599508280393797645
 GameObject:
   m_ObjectHideFlags: 0

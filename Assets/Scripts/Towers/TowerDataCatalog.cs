@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 [CreateAssetMenu(fileName = "TowerDataCatalog", menuName = "Scriptable Objects/Tower Data Catalog")]
 public class TowerDataCatalog : ScriptableObject
 {
-    [SerializeReference, Tooltip("All towers and their per-level data.")]
+    [SerializeField, Tooltip("All towers and their per-level data.")]
     private List<TowerData<TowerDataBase>> towers;
 
     private readonly Dictionary<TowerTypes, TowerData<TowerDataBase>> catalog = new();
@@ -64,7 +64,7 @@ public class TowerDataCatalog : ScriptableObject
 
     public TowerData<TowerDataBase> FromType(TowerTypes type)
     {
-        Assert.IsTrue(catalog.ContainsKey(type), $"Type not defined in catalog: ${type}");
+        Assert.IsTrue(catalog.ContainsKey(type), $"Type not defined in catalog: {type}");
         var towerData = catalog[type];
         Assert.IsNotNull(towerData, $"No tower data found for type: {type}");
         return towerData;
@@ -97,7 +97,7 @@ public class TowerDataCatalog : ScriptableObject
         return towerData.PerLevelStats.Count;
     }
 
-    public bool RequestUpgrade(ITowerUpgradeable tower)
+    public bool RequestUpgrade(ITower tower)
     {
         Assert.IsNotNull(tower, "Invalid tower reference.");
 

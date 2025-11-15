@@ -7,6 +7,7 @@ public class Mine : MonoBehaviour, ISkillPlaceable
     [SerializeField] private SkillTypes skillType = SkillTypes.Mine;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
     public SkillTypes SkillType() => skillType;
+    public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
 
     [Header("Settings")]

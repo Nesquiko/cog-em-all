@@ -21,7 +21,8 @@ public enum TowerAttribute
 public interface ITower
 {
     TowerTypes TowerType();
-
+    int CurrentLevel();
+    void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
 }
 
@@ -44,13 +45,6 @@ public interface ITowerControllable : ITower
 public interface ITowerSellable : ITower
 {
     void SellAndDestroy();
-}
-
-public interface ITowerUpgradeable : ITower
-{
-    int CurrentLevel();
-    bool CanUpgrade();
-    void ApplyUpgrade(TowerDataBase data);
 }
 
 public interface ITowerRotateable : ITower

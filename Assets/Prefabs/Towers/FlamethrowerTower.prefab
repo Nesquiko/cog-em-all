@@ -911,6 +911,7 @@ MonoBehaviour:
   towerRotationOverlayPrefab: {fileID: 1850511929951099344, guid: ec045bdaeac92144b9aadf17124af12b, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   currentLevel: 1
+  towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   upgradeVFX: {fileID: 5128920428582193292}
 --- !u!54 &2313671633153293706
 Rigidbody:

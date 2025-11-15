@@ -67,7 +67,7 @@ public class TowerOverlay : MonoBehaviour
 
     private void AdjustOverlayButtons()
     {
-        if (!towerGO.TryGetComponent<ITowerUpgradeable>(out var towerUpgradeable) || !towerUpgradeable.CanUpgrade())
+        if (!towerGO.TryGetComponent<ITower>(out var tower) || !towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel()))
         {
             upgradeCanvasGroup.alpha = 0.5f;
             upgradeScaleOnHover.enabled = false;
@@ -90,6 +90,10 @@ public class TowerOverlay : MonoBehaviour
             rotateCursorPointer.enabled = false;
             rotateTooltipOnButton.enabled = false;
         }
+
+        Debug.Log($"type: {tower.TowerType()}");
+        Debug.Log($"can upgrade: {towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel())}");
+        Debug.Log($"max level: {towerDataCatalog.GetMaxLevel(tower.TowerType())}");
     }
 
     private void LateUpdate()
@@ -115,7 +119,7 @@ public class TowerOverlay : MonoBehaviour
 
     public void OnUpgradeTowerClicked()
     {
-        if (!towerGO.TryGetComponent<ITowerUpgradeable>(out var tower)) return;
+        if (!towerGO.TryGetComponent<ITower>(out var tower)) return;
         towerDataCatalog.RequestUpgrade(tower);
 
         AdjustOverlayButtons();

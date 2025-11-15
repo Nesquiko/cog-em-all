@@ -55,11 +55,11 @@ public class TowerPreviewManager : MonoBehaviour
 
     private void UpdateTowerStats(int index, int level)
     {
-        TowerDataBase towerData = towerDataCatalog.FromIndexAndLevel(index, level);
-        //TODO kili
-        /*if (nameText) nameText.text = towerData;
-        if (descriptionText) descriptionText.text = data.description;
-        if (damageText) damageText.text = $"{data.damage}";
+        TowerData<TowerDataBase> towerData = towerDataCatalog.FromIndex(index);
+        // TODO update with level somehow
+        if (nameText) nameText.text = towerData.DisplayName;
+        if (descriptionText) descriptionText.text = towerData.Description;
+        /*if (damageText) damageText.text = $"{data.damage}";
         if (rangeText) rangeText.text = $"{data.range}";
         if (fireRateText) fireRateText.text = $"{data.fireRate}";
         if (costText) costText.text = $"{data.cost}";*/

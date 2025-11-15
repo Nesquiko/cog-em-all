@@ -5,10 +5,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable, ITowerRotateable
+public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable
 {
     [Header("Stats")]
     [SerializeField] private float flameDamagePerPulse = 20f;
+    [SerializeField] private float flamePulseInterval = 0.25f;
+    [SerializeField] private float flameDuration = 3f;
     [SerializeField] private float range = 10f;
     [SerializeField] private float flameAngle = 60f;
     [SerializeField] private float cooldownDuration = 2f;
@@ -42,6 +44,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private Flame activeFlame;
 
     public float DamagePerPulse => flameDamagePerPulse;
+    public float FlamePulseInterval => flamePulseInterval;
+    public float FlameDuration => flameDuration;
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
 
@@ -143,7 +147,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.Initialize(this, range);
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
-        StartCoroutine(CooldownRoutine(activeFlame.FireDuration));
+        StartCoroutine(CooldownRoutine(flameDuration));
     }
 
     public List<IEnemy> GetCurrentEnemiesInRange()
@@ -272,23 +276,27 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase data)
+    public void ApplyUpgrade(TowerDataBase baseData)
     {
-        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
+        if (baseData is not FlamethrowerTowerData data) return;
 
         upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 
-        /*currentLevel = data.level;
+        currentLevel = data.Level;
 
-        flameDamagePerPulse = data.damage;
+        flameDamagePerPulse = data.flameDamagePerPulse;
+        flamePulseInterval = data.flamePulseInterval;
+        flameDuration = data.flameDuration;
         range = data.range;
+        flameAngle = data.flameAngle;
+        cooldownDuration = data.cooldownDuration;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
         activeFlame.UpdateRange(data.range);
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);*/
+        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
     }
 
     public void SetDamageCalculation(Func<float, float> f)

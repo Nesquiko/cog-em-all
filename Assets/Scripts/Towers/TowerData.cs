@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public abstract class TowerDataBase : ScriptableObject
 {
@@ -36,7 +35,7 @@ public class TeslaTowerData : TowerDataBase
     public float beamDamage;
     public float beamSpeed;
     public float beamChainRadius;
-    public float beamMaxChains;
+    public int beamMaxChains;
     public float beamStayTimeOnHit;
 
     [Header("Tesla Tower Stats")]

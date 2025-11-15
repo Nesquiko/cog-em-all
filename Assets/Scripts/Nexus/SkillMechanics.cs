@@ -10,6 +10,7 @@ public enum SkillTypes
 public interface ISkill
 {
     SkillTypes SkillType();
+    float GetCooldown();
 }
 
 public interface ISkillPlaceable : ISkill

@@ -7,6 +7,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
     [SerializeField] private SkillTypes skillType = SkillTypes.OilSpill;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 90f, 0f);
     public SkillTypes SkillType() => skillType;
+    public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
 
     [Header("Oil Settings")]

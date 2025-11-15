@@ -12,30 +12,20 @@ public class TowerRotationOverlay : MonoBehaviour
     private Camera mainCamera;
     private RectTransform rectTransform;
     private GameObject towerGO;
-    private ITower tower;
     private bool active;
-
-    private TowerSelectionManager towerSelectionManager;
 
     public void Initialize(GameObject t)
     {
         towerGO = t;
-        tower = towerGO.GetComponent<ITower>();
     }
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         mainCamera = Camera.main;
-        towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
 
         rotateLeftButton.OnHold += RotateLeft;
         rotateRightButton.OnHold += RotateRight;
-    }
-
-    private void Start()
-    {
-        Hide();
     }
 
     private void LateUpdate()
@@ -68,17 +58,6 @@ public class TowerRotationOverlay : MonoBehaviour
     private void RotateLeft() => Rotate(-1);
 
     private void RotateRight() => Rotate(1);
-
-    private void OnCancelRotation()
-    {
-        active = false;
-
-        if (towerGO.TryGetComponent<FlamethrowerTower>(out var tower))
-            tower.EndManualRotation();
-
-        towerSelectionManager.EnableSelection();
-        gameObject.SetActive(false);
-    }
 
     public void Show()
     {
