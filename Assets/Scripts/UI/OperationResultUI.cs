@@ -71,8 +71,8 @@ public class OperationResultUI : MonoBehaviour
     {
         for (int i = 0; i < towerKills.Length; i++)
         {
-            TowerData towerData = towerDataCatalog.FromIndex(i);
-            towerKills[i].text = $"{towerData.displayName}:   {towerKillsValues[i]}";
+            TowerData<TowerDataBase> towerData = towerDataCatalog.FromIndex(i);
+            towerKills[i].text = $"{towerData.DisplayName}:   {towerKillsValues[i]}";
         }
     }
 

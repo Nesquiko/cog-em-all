@@ -112,7 +112,7 @@ public class TowerPlacementSystem : MonoBehaviour
     public void BeginPlacement(GameObject prefab, int hotkeyIndex = -1)
     {
         wallPlacementSystem.CancelPlacement();
-        CancelPlacement();
+        CancelPlacement(enableSelectionAfter: false);
 
         towerSelectionManager.DisableSelection();
 
@@ -148,16 +148,10 @@ public class TowerPlacementSystem : MonoBehaviour
 
         CancelPlacement();
 
-        StartCoroutine(EnableSelectionNextFrame());
+        StartCoroutine(ReenableSelectionNextFrame());
     }
 
-    private IEnumerator EnableSelectionNextFrame()
-    {
-        yield return null;
-        towerSelectionManager.EnableSelection();
-    }
-
-    public void CancelPlacement()
+    public void CancelPlacement(bool enableSelectionAfter = true)
     {
         isPlacing = false;
         towerPrefab = null;
@@ -168,11 +162,16 @@ public class TowerPlacementSystem : MonoBehaviour
 
         HUDPanelUI.HidePlacementInfo();
 
-        StartCoroutine(ReenableSelectionNextFrame());
+        if (enableSelectionAfter)
+            StartCoroutine(ReenableSelectionNextFrame());
     }
 
     private IEnumerator ReenableSelectionNextFrame()
     {
+        yield return null;
+        yield return null;
+        yield return null;
+        yield return null;
         yield return null;
         towerSelectionManager.EnableSelection();
     }

@@ -58,6 +58,7 @@ public class EnemyStatusEffect
     public float tickInterval = 1f;
     public float speedMultiplier = 1f;
     public bool persistent = false;
+    public bool negative = true;
 
     public EnemyStatusEffect() { }
 
@@ -67,7 +68,8 @@ public class EnemyStatusEffect
         float tickDamage,
         float tickInterval = 1f,
         float speedMultiplier = 1f,
-        bool persistent = false
+        bool persistent = false,
+        bool negative = true
     )
     {
         this.type = type;
@@ -76,6 +78,23 @@ public class EnemyStatusEffect
         this.tickInterval = tickInterval;
         this.speedMultiplier = speedMultiplier;
         this.persistent = persistent;
+        this.negative = negative;
+    }
+
+    public static bool IsNegative(EffectType type)
+    {
+        switch (type)
+        {
+            case EffectType.Accelerated:
+                return false;
+            case EffectType.Burning:
+            case EffectType.Bleeding:
+            case EffectType.Slowed:
+            case EffectType.Oiled:
+            case EffectType.OilBurned:
+            default:
+                return true;
+        }
     }
 
     public static EnemyStatusEffect Burn =>
@@ -83,7 +102,9 @@ public class EnemyStatusEffect
             type: EffectType.Burning,
             duration: 5f,
             tickDamage: 5f,
-            tickInterval: 0.5f
+            tickInterval: 0.5f,
+            persistent: false,
+            negative: true
         );
 
     public static EnemyStatusEffect Bleed =>
@@ -91,7 +112,9 @@ public class EnemyStatusEffect
             type: EffectType.Bleeding,
             duration: 4f,
             tickDamage: 2.5f,
-            tickInterval: 0.5f
+            tickInterval: 0.5f,
+            persistent: false,
+            negative: true
         );
 
     public static EnemyStatusEffect Slow => new(
@@ -99,7 +122,9 @@ public class EnemyStatusEffect
             duration: 3f,
             tickDamage: 0f,
             tickInterval: 0f,
-            speedMultiplier: 0.5f
+            speedMultiplier: 0.5f,
+            persistent: false,
+            negative: true
         );
 
     public static EnemyStatusEffect Accelerate(float duration) =>
@@ -108,7 +133,9 @@ public class EnemyStatusEffect
             duration: duration,
             tickDamage: 0f,
             tickInterval: 0f,
-            speedMultiplier: 1.20f
+            speedMultiplier: 1.20f,
+            persistent: false,
+            negative: false
         );
 
     public static EnemyStatusEffect Oiled(
@@ -119,7 +146,8 @@ public class EnemyStatusEffect
        tickDamage: 0f,
        tickInterval: 0f,
        speedMultiplier: speedMultiplier,
-       persistent: true
+       persistent: true,
+       negative: true
    );
 
     public static EnemyStatusEffect OilBurn(
@@ -130,7 +158,8 @@ public class EnemyStatusEffect
             duration: Mathf.Infinity,
             tickDamage: tickDamage,
             tickInterval: tickInterval,
-            persistent: true
+            persistent: true,
+            negative: true
         );
 }
 
@@ -298,26 +327,4 @@ public static class EnemyMechanics
     }
 
     #endregion
-
-    public static EnemyStatusEffect Oiled(
-        float speedMultiplier
-    ) => new(
-            type: EffectType.Oiled,
-            duration: Mathf.Infinity,
-            tickDamage: 0f,
-            tickInterval: 0f,
-            speedMultiplier: speedMultiplier,
-            persistent: true
-        );
-
-    public static EnemyStatusEffect OilBurn(
-        float tickDamage = 5f,
-        float tickInterval = 0.5f
-    ) => new(
-            type: EffectType.OilBurned,
-            duration: Mathf.Infinity,
-            tickDamage: tickDamage,
-            tickInterval: tickInterval,
-            persistent: true
-        );
 }

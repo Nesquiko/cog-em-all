@@ -7,6 +7,7 @@ public class DamagePopupManager : MonoBehaviour
     [SerializeField] private DamagePopup damagePopupPrefab;
     [SerializeField] private int prewarmCount = 50;
     [SerializeField] private int distanceUpdateEveryFrames = 5;
+    [SerializeField] private float popupHeightOffset = 10f;
 
     private ObjectPool<DamagePopup> pool;
     private readonly List<DamagePopup> activePopups = new();
@@ -57,6 +58,8 @@ public class DamagePopupManager : MonoBehaviour
 
     public void ShowPopup(Vector3 worldPosition, float damage, bool isCritical = false)
     {
+        if (PlayerPrefs.GetInt("ShowDamageDealt") == 0) return;
+        worldPosition += Vector3.up * popupHeightOffset;
         var popup = pool.Get();
         popup.Activate(worldPosition, damage, isCritical);
         activePopups.Add(popup);

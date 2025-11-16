@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseManager : MonoBehaviour
 {
@@ -8,8 +9,8 @@ public class PauseManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject optionsMenu;
     [SerializeField] private GameObject confirmation;
+    [SerializeField] private Toggle damageDealtCheckbox;
 
-    [Header("References")]
     [SerializeField] private TowerSelectionManager towerSelectionManager;
 
     private ConfirmationDialog confirmationDialog;
@@ -21,10 +22,9 @@ public class PauseManager : MonoBehaviour
     private void Awake()
     {
         confirmationDialog = confirmation.GetComponent<ConfirmationDialog>();
-    }
 
-    private void Start()
-    {
+        damageDealtCheckbox.isOn = PlayerPrefs.GetInt("ShowDamageDealt") == 1;
+
         pauseMenu.SetActive(false);
         optionsMenu.SetActive(false);
         confirmation.SetActive(false);
@@ -122,6 +122,6 @@ public class PauseManager : MonoBehaviour
 
     public void ToggleShowDamageDealt(bool value)
     {
-        Debug.Log($"Toggling damage dealt to: {value}");
+        PlayerPrefs.SetInt("ShowDamageDealt", value ? 1 : 0);
     }
 }

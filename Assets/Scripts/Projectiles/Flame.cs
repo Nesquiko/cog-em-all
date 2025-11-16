@@ -5,9 +5,6 @@ using UnityEngine;
 
 public class Flame : MonoBehaviour
 {
-    [SerializeField] private float pulseInterval = 0.25f;
-    [SerializeField] private float fireDuration = 3f;
-
     [Header("VFX")]
     [SerializeField] private ParticleSystem flameVFX;
     [SerializeField] private float burnDelay = 0.5f;
@@ -22,7 +19,6 @@ public class Flame : MonoBehaviour
     private FlamethrowerTower owner;
 
     public bool IsActive => isActive;
-    public float FireDuration => fireDuration;
 
     public void Initialize(FlamethrowerTower ownerTower, float flameRange)
     {
@@ -31,7 +27,7 @@ public class Flame : MonoBehaviour
         transform.localScale = new(range, range, range);
         flameVFX.transform.localScale = new(range / flameVFXScaleFactor, range / flameVFXScaleFactor, range / flameVFXScaleFactor);
         var main = flameVFX.main;
-        main.duration = Mathf.Max(0f, fireDuration - 1f);
+        main.duration = Mathf.Max(0f, owner.FlameDuration - 1f);
     }
 
     public void UpdateRange(float newRange)
@@ -76,13 +72,13 @@ public class Flame : MonoBehaviour
         float duration = 0f;
         float tickTimer = 0f;
 
-        var runTime = fireDuration - burnDelay;
+        var runTime = owner.FlameDuration - burnDelay;
         while (duration < runTime)
         {
             duration += Time.deltaTime;
             tickTimer += Time.deltaTime;
 
-            if (tickTimer >= pulseInterval)
+            if (tickTimer >= owner.FlamePulseInterval)
             {
                 DealDamage(CalculateBaseFlameDamagePerPulse?.Invoke(owner.DamagePerPulse) ?? owner.DamagePerPulse);
                 tickTimer = 0f;

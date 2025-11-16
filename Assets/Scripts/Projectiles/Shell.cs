@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class Shell : MonoBehaviour
 {
-    [SerializeField] private float splashRadius = 10f;
-    [SerializeField] private float lifetime = 5f;
-
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private SphereCollider sphereCollider;
 
@@ -14,6 +11,7 @@ public class Shell : MonoBehaviour
     [SerializeField] private ParticleSystem shellExplosionVFX;
     [SerializeField] private float shellVFXScaleFactor = 3f;
 
+    private MortarTower owner;
     private Vector3 start;
     private Vector3 target;
     private float damage;
@@ -26,15 +24,16 @@ public class Shell : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, splashRadius);
+        Gizmos.DrawWireSphere(transform.position, owner.ShellSplashRadius);
     }
 
-    private void Awake()
+    public void Initialize(MortarTower ownerTower)
     {
+        owner = ownerTower;
         shellExplosionVFX.transform.localScale = new(
-            splashRadius / shellVFXScaleFactor,
-            splashRadius / shellVFXScaleFactor,
-            splashRadius / shellVFXScaleFactor
+            owner.ShellSplashRadius / shellVFXScaleFactor,
+            owner.ShellSplashRadius / shellVFXScaleFactor,
+            owner.ShellSplashRadius / shellVFXScaleFactor
         );
     }
 
@@ -49,7 +48,7 @@ public class Shell : MonoBehaviour
 
         travelDuration = Mathf.Clamp(1.5f, 0.8f, 2.5f);
 
-        Destroy(gameObject, lifetime);
+        Destroy(gameObject, owner.ShellLifetime);
     }
 
     void Update()
@@ -79,7 +78,7 @@ public class Shell : MonoBehaviour
         shellExplosionVFX.transform.parent = null;
         shellExplosionVFX.Play();
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, splashRadius);
+        Collider[] hits = Physics.OverlapSphere(transform.position, owner.ShellSplashRadius);
         HashSet<IEnemy> damaged = new();
 
         foreach (Collider c in hits)

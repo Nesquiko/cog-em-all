@@ -29,7 +29,7 @@ public class TowerPreviewManager : MonoBehaviour
 
     private void Start()
     {
-        currentTowerIndex = Mathf.Clamp(defaultTowerIndex, 0, towerDataCatalog.TowerCount - 1);
+        currentTowerIndex = Mathf.Clamp(defaultTowerIndex, 0, towerDataCatalog.TowersCount - 1);
         currentLevelIndex = Mathf.Clamp(defaultTowerLevelIndex, 0, towerDataCatalog.TowerLevelsCount - 1);
         ShowTowerAtIndexAndLevel(currentTowerIndex, currentLevelIndex);
     }
@@ -55,15 +55,14 @@ public class TowerPreviewManager : MonoBehaviour
 
     private void UpdateTowerStats(int index, int level)
     {
-        TowerData data = towerDataCatalog.FromIndex(index);
-        Assert.IsNotNull(data);
-
-        if (nameText) nameText.text = data.displayName;
-        if (descriptionText) descriptionText.text = data.description;
-        if (damageText) damageText.text = $"{data.damage}";
+        TowerData<TowerDataBase> towerData = towerDataCatalog.FromIndex(index);
+        // TODO update with level somehow
+        if (nameText) nameText.text = towerData.DisplayName;
+        if (descriptionText) descriptionText.text = towerData.Description;
+        /*if (damageText) damageText.text = $"{data.damage}";
         if (rangeText) rangeText.text = $"{data.range}";
         if (fireRateText) fireRateText.text = $"{data.fireRate}";
-        if (costText) costText.text = $"{data.cost}";
+        if (costText) costText.text = $"{data.cost}";*/
     }
 
     public void NextTower()

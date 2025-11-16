@@ -6,25 +6,21 @@ using UnityEngine;
 
 public class Beam : MonoBehaviour
 {
-    [Header("Stats")]
-    [SerializeField] private float speed = 200f;
-    [SerializeField] private float chainRadius = 10f;
-    [SerializeField] private int maxChains = 3;
-    [SerializeField] private float stayTimeOnHit = 0.05f;
-
     [Header("References")]
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private LayerMask enemyMask;
 
+    private TeslaTower owner;
     private Transform firePoint;
     private Transform initialTarget;
     private float damage;
     private bool crit;
 
-    public void Initialize(Transform from, Transform to, float dmg, bool isCritical)
+    public void Initialize(TeslaTower ownerTower, Transform from, Transform to, float dmg, bool isCritical)
     {
         Assert.IsNotNull(from);
         Assert.IsNotNull(to);
+        owner = ownerTower;
         firePoint = from;
         initialTarget = to;
         damage = dmg;
@@ -44,7 +40,7 @@ public class Beam : MonoBehaviour
 
     private IEnumerator ChainRoutine()
     {
-        List<IEnemy> chainTargets = BuildChain(initialTarget, maxChains - 1)
+        List<IEnemy> chainTargets = BuildChain(initialTarget, owner.BeamMaxChains - 1)
             .Where(e => e != null)
             .ToList();
 
@@ -80,7 +76,7 @@ public class Beam : MonoBehaviour
                     yield break;
                 }
 
-                t += Time.deltaTime * (speed / distance);
+                t += Time.deltaTime * (owner.BeamSpeed / distance);
                 Vector3 point = Vector3.Lerp(currentPos, targetPos, t);
 
                 lineRenderer.SetPosition(0, currentPos);
@@ -93,7 +89,7 @@ public class Beam : MonoBehaviour
                 nextEnemy.TakeDamage(damage, crit);
             }
 
-            yield return new WaitForSeconds(stayTimeOnHit);
+            yield return new WaitForSeconds(owner.BeamStayTimeOnHit);
 
             currentPos = targetPos;
         }
@@ -127,7 +123,7 @@ public class Beam : MonoBehaviour
 
     private IEnemy FindClosestEnemy(Vector3 origin, List<IEnemy> exclude)
     {
-        Collider[] hits = Physics.OverlapSphere(origin, chainRadius, enemyMask, QueryTriggerInteraction.Ignore);
+        Collider[] hits = Physics.OverlapSphere(origin, owner.BeamChainRadius, enemyMask, QueryTriggerInteraction.Ignore);
 
         IEnemy closest = null;
         float minDistance = Mathf.Infinity;

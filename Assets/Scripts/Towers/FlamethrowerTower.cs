@@ -5,10 +5,12 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerUpgradeable, ITowerRotateable
+public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable
 {
     [Header("Stats")]
     [SerializeField] private float flameDamagePerPulse = 20f;
+    [SerializeField] private float flamePulseInterval = 0.25f;
+    [SerializeField] private float flameDuration = 3f;
     [SerializeField] private float range = 10f;
     [SerializeField] private float flameAngle = 60f;
     [SerializeField] private float cooldownDuration = 2f;
@@ -29,6 +31,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -41,6 +44,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private Flame activeFlame;
 
     public float DamagePerPulse => flameDamagePerPulse;
+    public float FlamePulseInterval => flamePulseInterval;
+    public float FlameDuration => flameDuration;
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
 
@@ -51,7 +56,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private TowerRotationOverlay towerRotationOverlay;
 
     private TowerSelectionManager towerSelectionManager;
-    private TowerUpgradeManager towerUpgradeManager;
 
     private Func<float, float> CalculateBaseFlameDamagePerPulse;
 
@@ -59,7 +63,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public int CurrentLevel() => currentLevel;
 
-    public bool CanUpgrade() => towerUpgradeManager.CanUpgrade(TowerType(), CurrentLevel());
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
     private void OnDrawGizmosSelected()
     {
@@ -99,7 +103,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         towerRotationOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
-        towerUpgradeManager = FindFirstObjectByType<TowerUpgradeManager>();
     }
 
     private void Start()
@@ -144,7 +147,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.Initialize(this, range);
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
-        StartCoroutine(CooldownRoutine(activeFlame.FireDuration));
+        StartCoroutine(CooldownRoutine(flameDuration));
     }
 
     public List<IEnemy> GetCurrentEnemiesInRange()
@@ -273,18 +276,22 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerUpgradeData data)
+    public void ApplyUpgrade(TowerDataBase baseData)
     {
-        // TODO: upgrade has to receive tower-specific data + make sure every stat update works
+        if (baseData is not FlamethrowerTowerData data) return;
 
         upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 
-        currentLevel = data.level;
+        currentLevel = data.Level;
 
-        flameDamagePerPulse = data.damage;
+        flameDamagePerPulse = data.flameDamagePerPulse;
+        flamePulseInterval = data.flamePulseInterval;
+        flameDuration = data.flameDuration;
         range = data.range;
+        flameAngle = data.flameAngle;
+        cooldownDuration = data.cooldownDuration;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
