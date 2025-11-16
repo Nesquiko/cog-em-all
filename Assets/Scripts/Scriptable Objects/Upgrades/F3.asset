@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 41f6302759fdc53a6b261cc8c778160c, type: 3}
   m_Name: F3
   m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTowerData
   level: 3

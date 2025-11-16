@@ -9,17 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 41f6302759fdc53a6b261cc8c778160c, type: 3}
   m_Name: F1
   m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTowerData
   level: 1
-  cost: 1000
-  sellPrice: 500
-  flameDamagePerPulse: 25
-  flamePulseInterval: 0.25
-  flameDuration: 3
-  range: 20
-  flameAngle: 60
-  cooldownDuration: 2
-  critChance: 0.2
-  critMultiplier: 2
+  cost: 0
+  sellPrice: 0
+  flameDamagePerPulse: 0
+  flamePulseInterval: 0
+  flameDuration: 0
+  range: 0
+  flameAngle: 0
+  cooldownDuration: 0
+  critChance: 0
+  critMultiplier: 0

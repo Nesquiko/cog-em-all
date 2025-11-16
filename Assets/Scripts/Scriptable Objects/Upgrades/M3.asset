@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 0e7ea17fa0b29740a8899d978931d660, type: 3}
   m_Name: M3
   m_EditorClassIdentifier: Assembly-CSharp::MortarTowerData
   level: 3
