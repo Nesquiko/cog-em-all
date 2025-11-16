@@ -37,8 +37,8 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
 
         foreach (var enemy in enemiesInRange.Values)
         {
-            if (enemy != null)
-                enemy.RemoveEffect(EffectType.Oiled);
+            if (enemy.Equals(null) || enemy.Transform.Equals(null)) continue;
+            enemy.RemoveEffect(EffectType.Oiled);
         }
         enemiesInRange.Clear();
 
@@ -52,7 +52,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
 
         foreach (var e in enemiesInRange.Values)
         {
-            if (e == null) continue;
+            if (e.Equals(null) || e.Transform.Equals(null)) continue;
             e.ApplyEffect(EnemyStatusEffect.OilBurn(flameTickDamage, flameTickInterval));
         }
     }
@@ -64,7 +64,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
 
         foreach (var e in enemiesInRange.Values)
         {
-            if (e == null) continue;
+            if (e.Equals(null) || e.Transform.Equals(null)) continue;
             e.RemoveEffect(EffectType.OilBurned);
         }
     }
