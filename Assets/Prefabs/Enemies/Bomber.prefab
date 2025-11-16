@@ -121,6 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1812148564014596359}
   - component: {fileID: 4046338385926235126}
+  - component: {fileID: 5922369346954750063}
   - component: {fileID: 7023257257306693827}
   - component: {fileID: 3847010007015475350}
   m_Layer: 12
@@ -163,20 +164,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2ee740f4c0002548997b98c1c99a5f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bomber
+--- !u!114 &5922369346954750063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262293100744859469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1544fc980e96517879d7de7b9e5adb8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBehaviour
   attackDamage: 100
+  attackRate: 1
   attackRange: 1
-  sphereCollider: {fileID: 4718485936862218545}
+  onKillGearsReward: 10
   path: {fileID: 0}
   speed: 25
   maxHealthPoints: 50
-  healthBar: {fileID: 537620982127759364}
+  healthBar: {fileID: 190142121739465054}
   jumpHeight: 0.5
   forwardDistance: 0.4
   duration: 0.4
   popupHeightOffset: 10
   buffVFX: {fileID: 223556009725416161}
   debuffVFX: {fileID: 9140909221555358007}
-  onKillGearsReward: 10
 --- !u!65 &7023257257306693827
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -301,11 +314,6 @@ PrefabInstance:
 --- !u!4 &3218559603337890145 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2688950768184771334, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
-  m_PrefabInstance: {fileID: 719323124344703591}
-  m_PrefabAsset: {fileID: 0}
---- !u!135 &4718485936862218545 stripped
-SphereCollider:
-  m_CorrespondingSourceObject: {fileID: 5224423403621122902, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
   m_PrefabInstance: {fileID: 719323124344703591}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1590020736253074172
@@ -440,11 +448,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}
---- !u!1 &537620982127759364 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2877667028861716741, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}
+--- !u!114 &190142121739465054 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2466284593485129823, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}
   m_PrefabInstance: {fileID: 2349055490193725697}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7dc058a7cbbc5d4cbebf0699cceb943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBar
 --- !u!4 &2067072234576268633 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4338711070166242392, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}

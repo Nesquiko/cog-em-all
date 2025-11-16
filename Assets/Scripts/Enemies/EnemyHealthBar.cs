@@ -8,6 +8,8 @@ public class EnemyHealthBar : MonoBehaviour
 
     private Vector3 initialScale;
 
+    public bool ActiveSelf => gameObject.activeSelf;
+
     void Start()
     {
         if (cam == null) cam = Camera.main;
@@ -31,5 +33,10 @@ public class EnemyHealthBar : MonoBehaviour
             initialScale.y * hpFraction,
             initialScale.z
         );
+    }
+
+    public void SetActive(bool value)
+    {
+        gameObject.SetActive(value);
     }
 }

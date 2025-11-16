@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1812148564014596359}
   - component: {fileID: 2468554044529842787}
+  - component: {fileID: 5922369346954750063}
   - component: {fileID: 5731813046175760494}
   - component: {fileID: 8570290156597185274}
   m_Layer: 12
@@ -64,13 +65,38 @@ MonoBehaviour:
   jumpHeight: 0.5
   forwardDistance: 0.4
   duration: 0.4
-  popupHeightOffset: 10
   shieldHealthFraction: 0.1
   shieldCooldown: 10
   shieldVFX: {fileID: 1082178015267793600}
   buffVFX: {fileID: 6684248467443651309}
   debuffVFX: {fileID: 874947352617746961}
   onKillGearsReward: 10
+--- !u!114 &5922369346954750063
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1262293100744859469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1544fc980e96517879d7de7b9e5adb8b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyBehaviour
+  attackDamage: 50
+  attackRate: 3
+  attackRange: 2
+  onKillGearsReward: 25
+  path: {fileID: 0}
+  speed: 10
+  maxHealthPoints: 500
+  healthBar: {fileID: 7450686709206500711}
+  jumpHeight: 0.5
+  forwardDistance: 0.4
+  duration: 0.4
+  popupHeightOffset: 10
+  buffVFX: {fileID: 6684248467443651309}
+  debuffVFX: {fileID: 874947352617746961}
 --- !u!65 &5731813046175760494
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -614,6 +640,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2877667028861716741, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}
   m_PrefabInstance: {fileID: 4997914575313136952}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7450686709206500711 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2466284593485129823, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}
+  m_PrefabInstance: {fileID: 4997914575313136952}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7112219800450982973}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7dc058a7cbbc5d4cbebf0699cceb943, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHealthBar
 --- !u!4 &8748834261829237088 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4338711070166242392, guid: c1657403a7fba9c4796a02421d1472bb, type: 3}
