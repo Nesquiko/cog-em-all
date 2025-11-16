@@ -14,17 +14,9 @@ public class Bomber : MonoBehaviour, IEnemy
     [SerializeField] private float attackRange = 1f;
     [SerializeField] private SphereCollider sphereCollider;
 
-    [Header("Movement & Path")]
+    [Header("Movement & Health")]
     [SerializeField] private SplineContainer path;
     [SerializeField] private float speed = 25f;
-    public float Speed
-    {
-        get => speed;
-        set => speed = value;
-    }
-
-    public Transform Transform => transform;
-
     [SerializeField] private float maxHealthPoints = 100f;
     [SerializeField] private GameObject healthBar;
 
@@ -33,10 +25,18 @@ public class Bomber : MonoBehaviour, IEnemy
     [SerializeField] private float forwardDistance = 0.4f;
     [SerializeField] private float duration = 0.4f;
 
-    [Header("UI")]
-    [SerializeField] private float popupHeightOffset = 10f;
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem buffVFX;
+    [SerializeField] private ParticleSystem debuffVFX;
 
     [SerializeField] private int onKillGearsReward = 10;
+
+    public float Speed
+    {
+        get => speed;
+        set => speed = value;
+    }
+    public Transform Transform => transform;
 
     public int OnKillGearsReward => onKillGearsReward;
 
@@ -89,13 +89,12 @@ public class Bomber : MonoBehaviour, IEnemy
 
     public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
     {
-        if (healthPoints <= 0f) { return; }
+        if (healthPoints <= 0f) return;
 
-        healthPoints -= damage;
         if (!healthBar.activeSelf) healthBar.SetActive(true);
+        healthPoints -= damage;
 
-        Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
-        damagePopupManager.ShowPopup(popupSpawnPosition, damage, isCritical);
+        damagePopupManager.ShowPopup(transform.position, damage, isCritical);
 
         if (healthPoints <= 0)
         {
@@ -202,6 +201,9 @@ public class Bomber : MonoBehaviour, IEnemy
         if (activeEffects.ContainsKey(effect.type) && activeEffects[effect.type] != null)
             StopCoroutine(activeEffects[effect.type]);
 
+        if (effect.negative) debuffVFX.Play();
+        else buffVFX.Play();
+
         if (effect.persistent)
         {
             ApplyPersistentEffect(effect);
@@ -249,6 +251,10 @@ public class Bomber : MonoBehaviour, IEnemy
             case EffectType.OilBurned:
                 break;
         }
+
+        bool negative = EnemyStatusEffect.IsNegative(type);
+        if (negative) debuffVFX.Stop(withChildren: true);
+        else buffVFX.Stop(withChildren: true);
     }
 
     private IEnumerator HandleEffect(EnemyStatusEffect effect)
@@ -274,7 +280,7 @@ public class Bomber : MonoBehaviour, IEnemy
                 break;
         }
 
-        activeEffects.Remove(effect.type);
+        RemoveEffect(effect.type);
     }
 
     private IEnumerator IndefiniteBurn(EnemyStatusEffect effect)

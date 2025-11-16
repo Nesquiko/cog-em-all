@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: T2
   m_EditorClassIdentifier: Assembly-CSharp::TeslaTowerData
-  level: 1
-  cost: 0
-  sellPrice: 0
-  beamDamage: 0
-  beamSpeed: 0
-  beamChainRadius: 0
-  beamMaxChains: 0
-  beamStayTimeOnHit: 0
-  fireRate: 0
-  range: 0
-  critChance: 0
-  critMultiplier: 0
+  level: 2
+  cost: 400
+  sellPrice: 200
+  beamDamage: 50
+  beamSpeed: 1000
+  beamChainRadius: 15
+  beamMaxChains: 3
+  beamStayTimeOnHit: 0.05
+  fireRate: 1
+  range: 50
+  critChance: 0.5
+  critMultiplier: 2

@@ -109,8 +109,6 @@ public class HUDPanelUI : MonoBehaviour
 
     private IEnumerator RunSkillCooldown(SkillButton button, float duration)
     {
-        Debug.Log("RunSkillCooldown");
-
         button.SetCoolingDown(true);
 
         float t = 0f;

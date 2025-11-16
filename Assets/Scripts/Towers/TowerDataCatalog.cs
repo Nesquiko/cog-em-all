@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,14 +9,14 @@ using UnityEngine.Assertions;
 public class TowerDataCatalog : ScriptableObject
 {
     [SerializeField, Tooltip("All towers and their per-level data.")]
-    private List<TowerData<TowerDataBase>> towers;
+    private TowerData<TowerDataBase>[] towers;
 
     private readonly Dictionary<TowerTypes, TowerData<TowerDataBase>> catalog = new();
 
     public Action<int> OnUpgradeTower;
 
     public Dictionary<TowerTypes, TowerData<TowerDataBase>> Catalog => catalog;
-    public int TowersCount => towers.Count;
+    public int TowersCount => towers.Count();
     public int TowerLevelsCount => 3;
 
     private void OnEnable() => RebuildCatalog();
@@ -42,7 +43,7 @@ public class TowerDataCatalog : ScriptableObject
 
     public TowerData<TowerDataBase> FromIndex(int index)
     {
-        Assert.IsTrue(index >= 0 && index < towers.Count, $"Invalid tower index: {index}");
+        Assert.IsTrue(index >= 0 && index < towers.Count(), $"Invalid tower index: {index}");
         var towerData = towers[index];
         Assert.IsNotNull(towerData, $"Tower data missing at index: {index}");
         return towerData;
@@ -55,7 +56,7 @@ public class TowerDataCatalog : ScriptableObject
 
     public TowerDataBase FromIndexAndLevel(int index, int level)
     {
-        Assert.IsTrue(index >= 0 && index < towers.Count, $"Invalid tower index: {index}");
+        Assert.IsTrue(index >= 0 && index < towers.Count(), $"Invalid tower index: {index}");
         var towerData = towers[index];
         Assert.IsNotNull(towerData, $"Tower data missing at index: {index}");
         var levelData = towerData.GetDataForLevel(level);

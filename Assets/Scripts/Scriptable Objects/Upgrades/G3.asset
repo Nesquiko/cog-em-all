@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: G3
   m_EditorClassIdentifier: Assembly-CSharp::GatlingTowerData
-  level: 1
-  cost: 0
-  sellPrice: 0
-  bulletDamage: 0
-  bulletSpeed: 0
-  bulletLifetime: 0
-  fireRate: 0
-  range: 0
-  critChance: 0
-  critMultiplier: 0
+  level: 3
+  cost: 250
+  sellPrice: 125
+  bulletDamage: 100
+  bulletSpeed: 100
+  bulletLifetime: 3
+  fireRate: 2
+  range: 50
+  critChance: 0.5
+  critMultiplier: 2

@@ -86,14 +86,14 @@ public class TowerData<T> where T : TowerDataBase
     [SerializeField] private TowerTypes type;
     [SerializeField] private string displayName;
     [SerializeField, TextArea] private string description;
-    [SerializeField] List<T> perLevelStats = new();
+    [SerializeField] T[] perLevelStats;
 
     public TowerTypes TowerType => type;
     public string DisplayName => displayName;
     public string Description => description;
     public IReadOnlyList<T> PerLevelStats => perLevelStats;
 
-    public TowerData(TowerTypes type, string displayName, string description, List<T> perLevelStats)
+    public TowerData(TowerTypes type, string displayName, string description, T[] perLevelStats)
     {
         this.type = type;
         this.displayName = displayName;
@@ -103,11 +103,19 @@ public class TowerData<T> where T : TowerDataBase
 
     public T GetDataForLevel(int level)
     {
-        return perLevelStats.Find(d => d.Level == level);
+        if (perLevelStats == null) return null;
+        foreach (var d in perLevelStats)
+            if (d != null && d.Level == level)
+                return d;
+        return null;
     }
 
     public bool CanUpgrade(int currentLevel)
     {
-        return perLevelStats.Exists(d => d.Level == currentLevel + 1);
+        if (perLevelStats == null) return false;
+        foreach (var d in perLevelStats)
+            if (d != null && d.Level == currentLevel + 1)
+                return true;
+        return false;
     }
 }

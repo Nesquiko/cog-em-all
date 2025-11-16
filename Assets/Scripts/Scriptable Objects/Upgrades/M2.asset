@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 0}
   m_Name: M2
   m_EditorClassIdentifier: Assembly-CSharp::MortarTowerData
-  level: 1
-  cost: 0
-  sellPrice: 0
-  shellDamage: 0
-  shellSplashRadius: 0
-  shellLifetime: 0
-  fireRate: 0
-  minRange: 0
-  maxRange: 0
-  critChance: 0
-  critMultiplier: 0
-  rotationSpeed: 0
-  launchSpeed: 0
-  arcHeight: 0
+  level: 2
+  cost: 700
+  sellPrice: 350
+  shellDamage: 150
+  shellSplashRadius: 10
+  shellLifetime: 5
+  fireRate: 0.5
+  minRange: 20
+  maxRange: 60
+  critChance: 0.5
+  critMultiplier: 2
+  rotationSpeed: 5
+  launchSpeed: 30
+  arcHeight: 15
