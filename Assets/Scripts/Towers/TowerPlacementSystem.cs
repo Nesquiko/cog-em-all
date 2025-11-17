@@ -16,6 +16,7 @@ public class TowerPlacementSystem : MonoBehaviour
     [SerializeField] private SkillPlacementSystem wallPlacementSystem;
     [SerializeField] private PauseManager pauseManager;
     [SerializeField] private GameObject[] towerPrefabs;
+    [SerializeField] private TowerButton[] towerButtons;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
@@ -169,19 +170,15 @@ public class TowerPlacementSystem : MonoBehaviour
     private IEnumerator ReenableSelectionNextFrame()
     {
         yield return null;
-        yield return null;
-        yield return null;
-        yield return null;
-        yield return null;
         towerSelectionManager.EnableSelection();
     }
 
     private int GetPressedTowerHotkey()
     {
-        if (Keyboard.current.digit1Key.wasPressedThisFrame) return 0;
-        if (Keyboard.current.digit2Key.wasPressedThisFrame) return 1;
-        if (Keyboard.current.digit3Key.wasPressedThisFrame) return 2;
-        if (Keyboard.current.digit4Key.wasPressedThisFrame) return 3;
+        if (Keyboard.current.digit1Key.wasPressedThisFrame && towerButtons[0].IsEnabled) return 0;
+        if (Keyboard.current.digit2Key.wasPressedThisFrame && towerButtons[1].IsEnabled) return 1;
+        if (Keyboard.current.digit3Key.wasPressedThisFrame && towerButtons[2].IsEnabled) return 2;
+        if (Keyboard.current.digit4Key.wasPressedThisFrame && towerButtons[3].IsEnabled) return 3;
         return -1;
     }
 

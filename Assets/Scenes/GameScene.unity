@@ -643,6 +643,17 @@ MonoBehaviour:
   m_ShadowLayerMask: 1
   m_RenderingLayers: 1
   m_ShadowRenderingLayers: 1
+--- !u!114 &495593659 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1463108597531906768, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d53b008a115fa8449ba38897870279e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillButton
 --- !u!1 &519454935 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7821844484642487330, guid: cefae6128805776438276a1085b0216b, type: 3}
@@ -786,9 +797,25 @@ MonoBehaviour:
   - {fileID: 2884996292687604640, guid: a97b98293661524459f05581e973a1b7, type: 3}
   - {fileID: 8884071559928029575, guid: b53fe72a14d20fd47ace4e7d463df75c, type: 3}
   - {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+  towerButtons:
+  - {fileID: 1685461721}
+  - {fileID: 1849288237}
+  - {fileID: 901296428}
+  - {fileID: 1447150290}
   ghostValidMaterial: {fileID: 2100000, guid: b1473191157a0264381e30e6f99447fb, type: 2}
   ghostInvalidMaterial: {fileID: 2100000, guid: fa647975f89d8744e9417241dd1aa56b, type: 2}
   placementSettings: {fileID: 11400000, guid: 5ca76f9905673fb4a95807acaa9c855c, type: 2}
+--- !u!114 &649373485 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2298537230882194165, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d53b008a115fa8449ba38897870279e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillButton
 --- !u!1 &676245770
 GameObject:
   m_ObjectHideFlags: 0
@@ -1223,6 +1250,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &901296428 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7990823488543271302, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6863e0405ad32db4d93a01288fad7f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerButton
 --- !u!114 &920153810 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1144577461460255518, guid: 00e4b1dd012a4754e9ce77e7019ddfab, type: 3}
@@ -1408,7 +1446,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e8a7db8bb30ba7846922a11cebbe1a2f, type: 2}
+  - {fileID: 2100000, guid: 3eb079016c4106b41bc3f19de570f770, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1533,6 +1571,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   towerInfoPanel: {fileID: 519454940}
+--- !u!114 &1447150290 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7463730386078834030, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6863e0405ad32db4d93a01288fad7f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerButton
 --- !u!1 &1467292430
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,11 +1694,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95cb958a58ff624088da16dde6caad2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OperationResultUI
+--- !u!114 &1685461721 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7665998506473885952, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6863e0405ad32db4d93a01288fad7f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerButton
 --- !u!1 &1722586637 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2928079618678718244, guid: cefae6128805776438276a1085b0216b, type: 3}
   m_PrefabInstance: {fileID: 8362696552140826646}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1727170493 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4861334768258783374, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d53b008a115fa8449ba38897870279e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillButton
+--- !u!114 &1849288237 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3830488810643962395, guid: cefae6128805776438276a1085b0216b, type: 3}
+  m_PrefabInstance: {fileID: 8362696552140826646}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6863e0405ad32db4d93a01288fad7f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TowerButton
 --- !u!1 &2036624458
 GameObject:
   m_ObjectHideFlags: 0
@@ -1689,6 +1771,10 @@ MonoBehaviour:
   - {fileID: 3763980083327337614, guid: 16a5256d607acf14b981f1b9dfeeafb5, type: 3}
   - {fileID: 3639713596541949016, guid: b885353a54770ff46ba288e615523d7b, type: 3}
   - {fileID: 5157639234088474056, guid: 7369b1815d5ae6545ac63789fb25e0c5, type: 3}
+  skillButtons:
+  - {fileID: 1727170493}
+  - {fileID: 495593659}
+  - {fileID: 649373485}
   ghostValidMaterial: {fileID: 2100000, guid: b1473191157a0264381e30e6f99447fb, type: 2}
   ghostInvalidMaterial: {fileID: 2100000, guid: fa647975f89d8744e9417241dd1aa56b, type: 2}
 --- !u!4 &2036624460

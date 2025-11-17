@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -13,14 +14,16 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
     [Header("Cooldown")]
     [SerializeField] private Image[] cooldownImages;
-    [SerializeField] private float pulseScale = 1.15f;
-    [SerializeField] private float pulseSpeed = 10f;
+    [SerializeField] private float pulseScale = 1.25f;
+    [SerializeField] private float pulseSpeed = 5f;
 
     private CanvasGroup canvasGroup;
     private Vector3 originalScale;
 
     private bool isEnabled = true;
     private bool isCoolingDown = false;
+
+    public bool CanPlaceSkill => isEnabled && !isCoolingDown;
 
     private void Awake()
     {
@@ -60,6 +63,12 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
             float fill = Mathf.Clamp01((progress - i * perSegment) / perSegment);
             cooldownImages[i].fillAmount = Mathf.Clamp01(fill);
         }
+
+        if (progress == 1)
+        {
+            for (int i = 0; i < cooldownImages.Count(); i++)
+                cooldownImages[i].fillAmount = 0f;
+        }
     }
 
     public void SetCoolingDown(bool cooling)
@@ -95,8 +104,5 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
         }
 
         transform.localScale = originalScale;
-
-        foreach (var img in cooldownImages)
-            img.fillAmount = 0f;
     }
 }

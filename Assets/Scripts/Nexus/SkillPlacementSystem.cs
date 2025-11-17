@@ -17,6 +17,7 @@ public class SkillPlacementSystem : MonoBehaviour
     
     [Header("Skills")]
     [SerializeField] private GameObject[] skillPrefabs;
+    [SerializeField] private SkillButton[] skillButtons;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
@@ -197,9 +198,9 @@ public class SkillPlacementSystem : MonoBehaviour
 
     private int GetPressedSkillHotkey()
     {
-        if (Keyboard.current.digit5Key.wasPressedThisFrame) return 0;
-        if (Keyboard.current.digit6Key.wasPressedThisFrame) return 1;
-        if (Keyboard.current.digit7Key.wasPressedThisFrame) return 2;
+        if (Keyboard.current.digit5Key.wasPressedThisFrame && skillButtons[0].CanPlaceSkill) return 0;
+        if (Keyboard.current.digit6Key.wasPressedThisFrame && skillButtons[1].CanPlaceSkill) return 1;
+        if (Keyboard.current.digit7Key.wasPressedThisFrame && skillButtons[2].CanPlaceSkill) return 2;
         return -1;
     }
 

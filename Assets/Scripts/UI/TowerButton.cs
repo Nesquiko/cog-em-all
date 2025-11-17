@@ -11,6 +11,7 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler
     private CanvasGroup canvasGroup;
 
     private bool isEnabled = false;
+    public bool IsEnabled => isEnabled;
 
     private void Awake()
     {
