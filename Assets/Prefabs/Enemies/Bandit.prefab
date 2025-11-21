@@ -181,8 +181,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
   attackDamage: 20
+  attackRange: 1.5
+  attackTrigger: {fileID: 3906246663465091158}
   attackRate: 1
-  attackRange: 2
   onKillGearsReward: 10
   path: {fileID: 0}
   speed: 20
@@ -641,7 +642,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5224423403621122902, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
       propertyPath: m_Radius
-      value: 1.5
+      value: 0.00001
       objectReference: {fileID: 0}
     - target: {fileID: 6504268954571296645, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
       propertyPath: owner
@@ -656,6 +657,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+--- !u!135 &3906246663465091158 stripped
+SphereCollider:
+  m_CorrespondingSourceObject: {fileID: 5224423403621122902, guid: a0634f7f428a75b49b19a8442de47346, type: 3}
+  m_PrefabInstance: {fileID: 9130247538672616192}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6621476421797511174 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2688950768184771334, guid: a0634f7f428a75b49b19a8442de47346, type: 3}

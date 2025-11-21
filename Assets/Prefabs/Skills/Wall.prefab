@@ -229,6 +229,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Wall
   skillType: 0
+  placementRotationOffset: {x: 0, y: 0, z: 0, w: 1}
   maxHealthPoints: 500
   wallHealthBar: {fileID: 8881895888070689336}
   wallModel: {fileID: 7939329576195289905}
@@ -236,6 +237,7 @@ MonoBehaviour:
   wallHealthBarScale: {x: 10, y: 7, z: 7}
   minimapIndicatorScale: {x: 20, y: 0.01, z: 2.5}
   wallExplosion: {fileID: 6851029741423520864}
+  skillModifierCatalog: {fileID: 11400000, guid: cd36eebc899da7e47bf2222d880d876a, type: 2}
 --- !u!65 &8190396389264763879
 BoxCollider:
   m_ObjectHideFlags: 0

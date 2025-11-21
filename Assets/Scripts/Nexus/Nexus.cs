@@ -32,7 +32,7 @@ public class Nexus : MonoBehaviour, IDamageable
         nexusVignette.Initialize(this);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, IEnemy attacker)
     {
         if (isDying) return;
 

@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GearDrop
   visual: {fileID: 7863297497342557481}
-  rotateSpeed: 250
+  rotateSpeed: 100
   idleTime: 0.8
   flySpeed: 8
 --- !u!1001 &4365691553240690698
@@ -58,12 +58,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 6168641012951451794}
     m_Modifications:
     - target: {fileID: 5887900434135747875, guid: 1876259d00cf5514f9ff17880f12fb6a, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887900434135747875, guid: 1876259d00cf5514f9ff17880f12fb6a, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887900434135747875, guid: 1876259d00cf5514f9ff17880f12fb6a, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5887900434135747875, guid: 1876259d00cf5514f9ff17880f12fb6a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5887900434135747875, guid: 1876259d00cf5514f9ff17880f12fb6a, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.5
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 5887900434135747875, guid: 1876259d00cf5514f9ff17880f12fb6a, type: 3}
       propertyPath: m_LocalPosition.z

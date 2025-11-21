@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 93516756cae6c7849967e6e714d72bf2, type: 3}
+  m_Name: SatansWrathModifier
+  m_EditorClassIdentifier: Assembly-CSharp::SatansWrathModifier
+  skillType: 1
+  modifier: 0
+  displayName: Satan's Wrath
+  description: Satan's Wrath description
+  oilBurn:
+    type: 5
+    duration: Infinity
+    tickDamage: 5
+    tickInterval: 0.5
+    speedMultiplier: 1
+    persistent: 1
+    negative: 1

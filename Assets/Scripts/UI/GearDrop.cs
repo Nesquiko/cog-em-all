@@ -11,19 +11,18 @@ public class GearDrop : MonoBehaviour
     private float elapsed;
     private bool flying;
     private Vector3 velocity;
-    private Vector3 startPosition;
+    private float currentYRotation;
+    private Quaternion baseRotation;
 
-    public bool Done
-    {
-        get;
-        private set;
-    }
+    public bool Done { get; private set; }
 
     public void Activate(Vector3 worldPosition)
     {
         transform.position = worldPosition;
         transform.localScale = Vector3.one;
-        visual.localRotation = Random.rotation;
+        visual.localRotation = baseRotation;
+        currentYRotation = 0f;
+
         Done = false;
         elapsed = 0f;
         flying = false;
@@ -38,20 +37,21 @@ public class GearDrop : MonoBehaviour
 
         if (!flying)
         {
-            velocity += Physics.gravity * t * 0.5f;
+            velocity += 0.5f * t * Physics.gravity;
             transform.position += velocity * t;
-            visual.Rotate(Vector3.up, rotateSpeed * t, Space.Self);
+
+            currentYRotation += rotateSpeed * t;
+            visual.localRotation = Quaternion.Euler(0f, currentYRotation, 0f);
 
             if (elapsed >= idleTime)
             {
                 flying = true;
-                startPosition = transform.position;
             }
             return;
         }
 
         transform.position = Vector3.Lerp(transform.position, targetWorld, t * flySpeed);
-        transform.Rotate(Vector3.up, rotateSpeed * t, Space.Self);
+        visual.localRotation = Quaternion.Euler(0f, currentYRotation, 0f);
 
         if ((transform.position - targetWorld).sqrMagnitude < 0.05f)
             Done = true;

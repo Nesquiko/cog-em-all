@@ -10,6 +10,7 @@ public class PauseManager : MonoBehaviour
     [SerializeField] private GameObject optionsMenu;
     [SerializeField] private GameObject confirmation;
     [SerializeField] private Toggle damageDealtCheckbox;
+    [SerializeField] private Toggle gearDropCheckbox;
 
     [SerializeField] private TowerSelectionManager towerSelectionManager;
 
@@ -24,6 +25,7 @@ public class PauseManager : MonoBehaviour
         confirmationDialog = confirmation.GetComponent<ConfirmationDialog>();
 
         damageDealtCheckbox.isOn = PlayerPrefs.GetInt("ShowDamageDealt") == 1;
+        gearDropCheckbox.isOn = PlayerPrefs.GetInt("ShowGearDrops") == 1;
 
         pauseMenu.SetActive(false);
         optionsMenu.SetActive(false);
@@ -123,5 +125,10 @@ public class PauseManager : MonoBehaviour
     public void ToggleShowDamageDealt(bool value)
     {
         PlayerPrefs.SetInt("ShowDamageDealt", value ? 1 : 0);
+    }
+
+    public void ToggleShowGearDrops(bool value)
+    {
+        PlayerPrefs.SetInt("ShowGearDrops", value ? 1 : 0);
     }
 }

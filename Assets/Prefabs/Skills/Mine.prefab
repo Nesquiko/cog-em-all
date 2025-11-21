@@ -677,6 +677,8 @@ MonoBehaviour:
   triggerDelay: 3
   explosionRadius: 20
   explosionDamage: 200
+  explosionCount: 1
+  timeBetweenExplosions: 0.3
   enemyMask:
     serializedVersion: 2
     m_Bits: 4096
@@ -694,6 +696,7 @@ MonoBehaviour:
   minimapIndicator: {fileID: 602551466847080759}
   minimapIndicatorScale: {x: 5, y: 0.01, z: 5}
   mineExplosion: {fileID: 4558748034808626897}
+  skillModifierCatalog: {fileID: 11400000, guid: cd36eebc899da7e47bf2222d880d876a, type: 2}
 --- !u!135 &8624953941422520413
 SphereCollider:
   m_ObjectHideFlags: 0

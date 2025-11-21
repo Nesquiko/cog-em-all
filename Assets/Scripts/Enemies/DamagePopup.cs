@@ -6,7 +6,7 @@ public class DamagePopup : MonoBehaviour
     [Header("Animation")]
     [SerializeField] private float riseDistance = 1.0f;
     [SerializeField] private float duration = 1.0f;
-    [SerializeField] private Vector3 randomSpawnOffset = new(0.3f, 0.15f, 0.3f);
+    [SerializeField] private Vector3 randomSpawnOffset = new(1f, 0.5f, 1f);
 
     [Header("Scaling")]
     [SerializeField] private float sizeOnScreen = 1.0f;

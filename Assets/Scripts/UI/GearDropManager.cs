@@ -6,7 +6,7 @@ using UnityEngine.Pool;
 public class GearDropManager : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GearDrop gearDropPrefab;
+    [SerializeField] private GameObject gearDropPrefab;
     [SerializeField] private RectTransform gearIconUI;
     [SerializeField] private Canvas canvasUI;
     [SerializeField] private float targetDepth = 10f;
@@ -16,8 +16,8 @@ public class GearDropManager : MonoBehaviour
     [SerializeField] private float targetRecalcInterval = 0.2f;
     [SerializeField] private float collectionDelay = 0.1f;
 
-    private ObjectPool<GearDrop> pool;
-    private readonly List<GearDrop> active = new();
+    private ObjectPool<GameObject> pool;
+    private readonly List<GameObject> active = new();
 
     private Camera mainCamera;
     private Vector3 cachedWorldTarget;
@@ -27,7 +27,7 @@ public class GearDropManager : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        pool = new ObjectPool<GearDrop>(
+        pool = new ObjectPool<GameObject>(
             Create,
             OnGet,
             OnRelease,
@@ -40,16 +40,16 @@ public class GearDropManager : MonoBehaviour
             pool.Release(pool.Get());
     }
 
-    private GearDrop Create()
+    private GameObject Create()
     {
         var gearDrop = Instantiate(gearDropPrefab, transform);
-        gearDrop.gameObject.SetActive(false);
+        gearDrop.SetActive(false);
         return gearDrop;
     }
 
-    private void OnGet(GearDrop gearDrop) => gearDrop.gameObject.SetActive(true);
-    private void OnRelease(GearDrop gearDrop) => gearDrop.gameObject.SetActive(false);
-    private void OnDestroyGearDrop(GearDrop gearDrop) => Destroy(gearDrop.gameObject);
+    private void OnGet(GameObject gearDrop) => gearDrop.SetActive(true);
+    private void OnRelease(GameObject gearDrop) => gearDrop.SetActive(false);
+    private void OnDestroyGearDrop(GameObject gearDrop) => Destroy(gearDrop);
 
     private void Update()
     {
@@ -63,12 +63,13 @@ public class GearDropManager : MonoBehaviour
         float t = Time.deltaTime;
         for (int i = active.Count - 1; i >= 0; i--)
         {
-            var gearDrop = active[i];
+            var gearDropGO = active[i];
+            GearDrop gearDrop = gearDropGO.GetComponent<GearDrop>();
             gearDrop.Tick(t, cachedWorldTarget);
             if (gearDrop.Done)
             {
                 active.RemoveAt(i);
-                HandleCollected(gearDrop);
+                HandleCollected(gearDropGO);
             }
         }
     }
@@ -82,25 +83,26 @@ public class GearDropManager : MonoBehaviour
 
     public void SpawnGears(Vector3 worldPosition, int gears)
     {
-        int count = (int) gears / 10;
+        if (PlayerPrefs.GetInt("ShowGearDrops") == 0) return;
+        int count = gears;  // TODO
 
         count = Mathf.Max(1, count);
         for (int i = 0; i < count; i++)
         {
-            var gearDrop = pool.Get();
-            active.Add(gearDrop);
+            var gearDropGO = pool.Get();
+            active.Add(gearDropGO);
             Vector3 offset = Random.insideUnitSphere * 0.5f;
             offset.y = Mathf.Abs(offset.y) * 1.5f;
-            gearDrop.Activate(worldPosition + offset);
+            gearDropGO.GetComponent<GearDrop>().Activate(worldPosition + offset);
         }
     }
 
-    private void HandleCollected(GearDrop gearDrop)
+    private void HandleCollected(GameObject gearDrop)
     {
         StartCoroutine(DelayedRelease(gearDrop));
     }
 
-    private IEnumerator DelayedRelease(GearDrop gearDrop)
+    private IEnumerator DelayedRelease(GameObject gearDrop)
     {
         yield return new WaitForSeconds(collectionDelay);
         pool.Release(gearDrop);

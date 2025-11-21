@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef634322a301bf14aac3da06238fbaf9, type: 3}
+  m_Name: LeftoverDebrisModifier
+  m_EditorClassIdentifier: Assembly-CSharp::LeftoverDebrisModifier
+  skillType: 0
+  modifier: 2
+  displayName: Leftover Debris
+  description: Leftover Debris description
+  debrisAreaRadius: 15
+  debrisDuration: 5
+  debrisSlow:
+    type: 6
+    duration: Infinity
+    tickDamage: 0
+    tickInterval: 0
+    speedMultiplier: 0.5
+    persistent: 1
+    negative: 1
+  debrisAreaPrefab: {fileID: 3055804023588965866, guid: 63144f6ff68c6c944850bfbe560f5995, type: 3}

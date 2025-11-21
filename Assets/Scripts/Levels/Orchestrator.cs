@@ -23,6 +23,7 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private SkillPlacementSystem skillPlacementSystem;
     [SerializeField] private TowerSellManager towerSellManager;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
+    [SerializeField] private GearDropManager gearDropManager;
     [SerializeField] private Camera mainCamera;
     [SerializeField] private CinemachineBrain brain;
 

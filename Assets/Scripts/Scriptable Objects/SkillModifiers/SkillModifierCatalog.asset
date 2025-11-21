@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0434785c9c3a07e4a8901f25953ad13c, type: 3}
+  m_Name: SkillModifierCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::SkillModifierCatalog
+  steelReinforcementModifier: {fileID: 11400000, guid: 96776c3c7bf8b994994f9c8cf41817df, type: 2}
+  sharpThornsModifier: {fileID: 11400000, guid: 8e86b0a620cf24443af36f130560a967, type: 2}
+  leftoverDebrisModifier: {fileID: 11400000, guid: f9e6d6f49f3c90f478b787583cb1f991, type: 2}
+  satansWrathModifier: {fileID: 11400000, guid: ec471eb398847f845a518423e8741240, type: 2}
+  gooeyGooModifier: {fileID: 11400000, guid: f1ed2137d8251d643a24ec3582b8e136, type: 2}
+  stickityStickModifier: {fileID: 11400000, guid: 7a1dcaf82c9adc44589985d6aa3d0510, type: 2}
+  doubleTheBoomModifier: {fileID: 11400000, guid: 002e158514c053e4ea7b5f28efe0f833, type: 2}
+  wideDestructionModifier: {fileID: 11400000, guid: 27c20cbe466bd9f40b87b04b13f830b6, type: 2}
+  quickFuseModifier: {fileID: 11400000, guid: 3821b7bfbbb8caf4dbb112f29c0a3e2f, type: 2}

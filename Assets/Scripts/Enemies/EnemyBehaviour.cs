@@ -7,9 +7,10 @@ using UnityEngine.Splines;
 
 public class EnemyBehaviour : MonoBehaviour
 {
-
     [Header("Attack")]
     [SerializeField] private float attackDamage = 20f;
+    [SerializeField] private float attackRange = 1.5f;
+    [SerializeField] private SphereCollider attackTrigger;
     public float AttackDamage => attackDamage;
     [SerializeField] private float attackRate = 1f;
     public event Action<IDamageable> OnSuicide;
@@ -42,8 +43,8 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float duration = 0.4f;
 
     [Header("UI")]
-    [SerializeField] private float popupHeightOffset = 10f;
     private DamagePopupManager damagePopupManager;
+    private GearDropManager gearDropManager;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem buffVFX;
@@ -66,6 +67,7 @@ public class EnemyBehaviour : MonoBehaviour
     private void Awake()
     {
         damagePopupManager = FindFirstObjectByType<DamagePopupManager>();
+        gearDropManager = FindFirstObjectByType<GearDropManager>();
 
         healthPoints = maxHealthPoints;
         originalSpeed = speed;
@@ -73,7 +75,7 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Start()
     {
-        // sphereCollider.radius = attackRange;
+        attackTrigger.radius = attackRange;
     }
 
     private void Update()
@@ -105,8 +107,7 @@ public class EnemyBehaviour : MonoBehaviour
         healthPoints -= damage;
         if (!healthBar.ActiveSelf) healthBar.SetActive(true);
 
-        Vector3 popupSpawnPosition = transform.position + Vector3.up * popupHeightOffset;
-        damagePopupManager.ShowPopup(popupSpawnPosition, damage, isCritical);
+        damagePopupManager.ShowPopup(transform.position, damage, isCritical);
 
         if (healthPoints <= 0)
         {
@@ -184,7 +185,8 @@ public class EnemyBehaviour : MonoBehaviour
 
             if (!hasDealtDamage && normalized > 0.3f)
             {
-                damageableTarget.TakeDamage(attackDamage);
+                IEnemy attacker = GetComponent<IEnemy>();
+                damageableTarget.TakeDamage(attackDamage, attacker);
                 hasDealtDamage = true;
             }
 
@@ -226,6 +228,7 @@ public class EnemyBehaviour : MonoBehaviour
 
         Coroutine routine = StartCoroutine(HandleEffect(effect));
         activeEffects[effect.type] = routine;
+        UpdateVFXState();
     }
 
     private void ApplyPersistentEffect(EnemyStatusEffect effect)
@@ -233,6 +236,7 @@ public class EnemyBehaviour : MonoBehaviour
         switch (effect.type)
         {
             case EffectType.Oiled:
+            case EffectType.DebrisSlowed:
                 speed = originalSpeed * effect.speedMultiplier;
                 if (!activeEffects.ContainsKey(effect.type))
                     activeEffects[effect.type] = null;
@@ -260,16 +264,12 @@ public class EnemyBehaviour : MonoBehaviour
         switch (type)
         {
             case EffectType.Oiled:
+            case EffectType.DebrisSlowed:
                 speed = originalSpeed;
-                break;
-            case EffectType.OilBurned:
                 break;
         }
 
-
-        bool negative = EnemyStatusEffect.IsNegative(type);
-        if (negative) debuffVFX.Stop(withChildren: true);
-        else buffVFX.Stop(withChildren: true);
+        UpdateVFXState();
     }
 
     private IEnumerator HandleEffect(EnemyStatusEffect effect)
@@ -295,6 +295,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
 
         activeEffects.Remove(effect.type);
+        UpdateVFXState();
     }
 
     private IEnumerator IndefiniteBurn(EnemyStatusEffect effect)
@@ -306,10 +307,36 @@ public class EnemyBehaviour : MonoBehaviour
         }
     }
 
+    private void UpdateVFXState()
+    {
+        bool anyNegative = false;
+        bool anyPositive = false;
+
+        foreach (var type in activeEffects.Keys)
+        {
+            if (EnemyStatusEffect.IsNegative(type))
+                anyNegative = true;
+            else
+                anyPositive = true;
+        }
+
+        if (anyNegative)
+        {
+            if (!debuffVFX.isPlaying) debuffVFX.Play();
+        }
+        else debuffVFX.Stop(withChildren: true);
+
+        if (anyPositive)
+        {
+            if (!buffVFX.isPlaying) buffVFX.Play();
+        }
+        else buffVFX.Stop(withChildren: true);
+    }
+
     private void Die()
     {
         OnDeath?.Invoke();
+        gearDropManager.SpawnGears(transform.position, 1);
         Destroy(gameObject);
     }
-
 }

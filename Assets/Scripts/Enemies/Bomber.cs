@@ -25,7 +25,7 @@ public class Bomber : MonoBehaviour, IEnemy
 
     private void Explode(IDamageable target)
     {
-        target.TakeDamage(behaviour.AttackDamage);
+        target.TakeDamage(behaviour.AttackDamage, this);
     }
 
     // IEnemy functions
