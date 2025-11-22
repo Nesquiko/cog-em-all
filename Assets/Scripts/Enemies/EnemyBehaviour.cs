@@ -309,6 +309,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void UpdateVFXState()
     {
+        if (debuffVFX == null || buffVFX == null) return;
+
         bool anyNegative = false;
         bool anyPositive = false;
 

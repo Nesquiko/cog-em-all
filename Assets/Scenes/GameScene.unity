@@ -1012,66 +1012,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dab5c7d4c32e743048dfca98e2d5914f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Splines::UnityEngine.Splines.SplineContainer
---- !u!1001 &924480383
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 124.61572
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.15616383
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 287.47354
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 815502513940582449, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3764628356170761970, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      propertyPath: m_Name
-      value: DamagePopup
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 3405577832027362893, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-  m_SourcePrefab: {fileID: 100100000, guid: ab4b76b4d8166a64fb997a58c8a8343a, type: 3}
 --- !u!1 &1066359650
 GameObject:
   m_ObjectHideFlags: 0
@@ -2091,6 +2031,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1245706508179194492, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245706508179194492, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245706508179194492, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1245706508179194492, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1463108597531906768, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: skillPlacementSystem
       value: 
@@ -2347,6 +2303,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4480914510004859533, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4480914510004859533, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4480914510004859533, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4480914510004859533, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4861334768258783374, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: skillPlacementSystem
       value: 
@@ -2427,6 +2399,22 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 2589817}
+    - target: {fileID: 5816150752987910062, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816150752987910062, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816150752987910062, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5816150752987910062, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5832020152561346123, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -2702,4 +2690,3 @@ SceneRoots:
   - {fileID: 8362696552140826646}
   - {fileID: 1467292433}
   - {fileID: 1653858014}
-  - {fileID: 924480383}

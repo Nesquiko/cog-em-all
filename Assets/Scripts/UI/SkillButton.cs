@@ -79,6 +79,7 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
     public void PlayPulse()
     {
+        if (!isActiveAndEnabled) return;
         StopAllCoroutines();
         StartCoroutine(PulseAnimation());
     }

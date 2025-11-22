@@ -19,6 +19,7 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private SkillButton oilSpillButton;
     [SerializeField] private SkillButton mineButton;
     [SerializeField] private GameObject placementInfoPanel;
+    [SerializeField] private TextMeshProUGUI placementInfoLabel;
     [SerializeField] private TextMeshProUGUI placementObjectNameLabel;
     [SerializeField] private TextMeshProUGUI placementObjectCostLabel;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
@@ -37,6 +38,7 @@ public class HUDPanelUI : MonoBehaviour
         TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(towerType);
         TowerDataBase level1Data = towerDataCatalog.FromTypeAndLevel(towerType, 1);
 
+        placementInfoLabel.text = $"Placing tower:";
         placementObjectNameLabel.text = towerData.DisplayName;
         placementObjectCostLabel.text = $"{level1Data.Cost} Gears";
 
@@ -48,6 +50,7 @@ public class HUDPanelUI : MonoBehaviour
     {
         SkillData skillData = skillDataCatalog.FromType(skillType);
 
+        placementInfoLabel.text = $"Placing skill:";
         placementObjectNameLabel.text = skillData.displayName;
         placementObjectCostLabel.text = $"{skillData.cost} Gears";
 
@@ -119,8 +122,8 @@ public class HUDPanelUI : MonoBehaviour
             yield return null;
         }
 
-        button.UpdateCooldownVisual(1f);
         button.SetCoolingDown(false);
+        button.UpdateCooldownVisual(1f);
         button.PlayPulse();
     }
 

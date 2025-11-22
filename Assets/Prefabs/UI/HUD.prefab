@@ -3185,6 +3185,7 @@ MonoBehaviour:
   oilSpillButton: {fileID: 4643764006408556070}
   mineButton: {fileID: 5465676871598464515}
   placementInfoPanel: {fileID: 5710990706200264572}
+  placementInfoLabel: {fileID: 8000239654665522928}
   placementObjectNameLabel: {fileID: 2519347310697951444}
   placementObjectCostLabel: {fileID: 635751628044666029}
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}

@@ -13,7 +13,13 @@ public class Bandit : MonoBehaviour, IEnemy
     [SerializeField, Range(0f, 1f)] private float leaderChance = 0.1f;
     [SerializeField, Range(5f, 25f)] private float battlecryRange = 15f;
     [SerializeField] private float battlecryDuration = 3f;
-    [SerializeField] private float battlecryCooldown = 10f;
+    [SerializeField] private float battlecryCooldown = 15f;
+    [SerializeField] private float vfxFactor = 7.5f;
+    [SerializeField] private LayerMask enemyMask;
+
+    [Header("VFX")]
+    [SerializeField] private ParticleSystem leaderBattlecryVFX;
+
     private bool isLeader;
 
     // IEnemy fields
@@ -29,6 +35,16 @@ public class Bandit : MonoBehaviour, IEnemy
         behaviour = GetComponent<EnemyBehaviour>();
         Assert.IsNotNull(behaviour);
         isLeader = UnityEngine.Random.value <= leaderChance;
+
+        var main = leaderBattlecryVFX.main;
+        main.duration = battlecryDuration;
+        main.loop = false;
+        main.startLifetime = battlecryDuration;
+        leaderBattlecryVFX.gameObject.transform.localScale = new(
+            battlecryRange / vfxFactor,
+            battlecryRange / vfxFactor,
+            battlecryRange / vfxFactor
+        );
     }
 
     private void Start()
@@ -43,8 +59,11 @@ public class Bandit : MonoBehaviour, IEnemy
     {
         while (behaviour.HealthPoints > 0)
         {
-            yield return new WaitForSeconds(battlecryDuration + battlecryCooldown);
+            yield return new WaitForSeconds(battlecryCooldown);
+            leaderBattlecryVFX.Play();
             Battlecry();
+            yield return new WaitForSeconds(battlecryDuration);
+            leaderBattlecryVFX.Stop(withChildren: true);
         }
     }
 
@@ -52,13 +71,13 @@ public class Bandit : MonoBehaviour, IEnemy
     {
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
-            battlecryRange,
-            LayerMask.GetMask("Enemies")
+            battlecryRange / 2f,
+            enemyMask
         );
 
         foreach (Collider hit in hits)
         {
-            if (!hit.TryGetComponent<Bandit>(out var ally)) return;
+            if (!hit.TryGetComponent<Bandit>(out var _)) return;
             if (!hit.TryGetComponent<EnemyBehaviour>(out var allyStats)) return;
 
             allyStats.ApplyEffect(EnemyStatusEffect.Accelerate(battlecryDuration));
