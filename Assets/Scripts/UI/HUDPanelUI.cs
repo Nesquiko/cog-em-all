@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -22,8 +23,11 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI placementInfoLabel;
     [SerializeField] private TextMeshProUGUI placementObjectNameLabel;
     [SerializeField] private TextMeshProUGUI placementObjectCostLabel;
+    [SerializeField] private TextMeshProUGUI activeModifiersLabel;
+    [SerializeField] private GameObject[] modifiers;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
     [SerializeField] private SkillDataCatalog skillDataCatalog;
+    [SerializeField] private SkillModifierCatalog skillModifierCatalog;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private SkillPlacementSystem skillPlacementSystem;
 
@@ -38,9 +42,11 @@ public class HUDPanelUI : MonoBehaviour
         TowerData<TowerDataBase> towerData = towerDataCatalog.FromType(towerType);
         TowerDataBase level1Data = towerDataCatalog.FromTypeAndLevel(towerType, 1);
 
-        placementInfoLabel.text = $"Placing tower:";
+        placementInfoLabel.text = "Placing tower:";
         placementObjectNameLabel.text = towerData.DisplayName;
         placementObjectCostLabel.text = $"{level1Data.Cost} Gears";
+
+        activeModifiersLabel.text = "";
 
         towerButtonsPanel.SetActive(false);
         placementInfoPanel.SetActive(true);
@@ -50,9 +56,34 @@ public class HUDPanelUI : MonoBehaviour
     {
         SkillData skillData = skillDataCatalog.FromType(skillType);
 
-        placementInfoLabel.text = $"Placing skill:";
+        placementInfoLabel.text = "Placing skill:";
         placementObjectNameLabel.text = skillData.displayName;
         placementObjectCostLabel.text = $"{skillData.cost} Gears";
+
+        foreach (var mod in modifiers)
+            mod.SetActive(false);
+
+        if (skillModifierCatalog.skillModifierIndices.TryGetValue(skillType, out int[] indices))
+        {
+            HashSet<SkillModifiers> activeModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
+        
+            foreach (int i in indices)
+            {
+                if (i < 0 || i >= modifiers.Length) continue;
+                var go = modifiers[i];
+                go.SetActive(true);
+
+                SkillModifiers modifierEnum = skillModifierCatalog.ModifierEnumFromIndex(i);
+
+                bool active = activeModifiers.Contains(modifierEnum);
+                Image image = go.GetComponent<Image>();
+                Color color = image.color;
+                color.a = active ? 0.5f : 0.1f;
+                image.color = color;
+            }
+        }
+
+        activeModifiersLabel.text = "Active modifiers:";
 
         towerButtonsPanel.SetActive(false);
         placementInfoPanel.SetActive(true);
