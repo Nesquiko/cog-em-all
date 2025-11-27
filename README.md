@@ -66,12 +66,6 @@ two waves with just one stim setup. Also the gear bonus.
 
 When a suicidal bomber is killed it explodes, dealing damage to near enemies.
 
-#### Oil road segment
-
-Wombo combo with Flamethrower, increases fire damage on the oil segment, even
-if the Flamethrower range doesn't hit enemy it still damages him, because he is
-in the oil.
-
 #### Towers on hill gain range
 
 #### On hit effects
@@ -83,7 +77,6 @@ in the oil.
 - **Mortar**:
   - "bleed", applies DoT, on hit reapplies
   - slow, enemies in AoE are slowed
-  - applies "armor shredder" or "ionization"
 - **Flamethrower**: "burn", applies DoT, on hit reapplies
 
 #### Base health regeneration
