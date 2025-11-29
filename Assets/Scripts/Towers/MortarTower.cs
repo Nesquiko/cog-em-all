@@ -24,6 +24,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private GameObject shellPrefab;
     [SerializeField] private Transform basePivot;
     [SerializeField] private Transform cannonPivot;
+    [SerializeField] private Transform barrel;
     [SerializeField] private Transform firePoint;
     [SerializeField] private CapsuleCollider outerCollider;
     [SerializeField] private CapsuleCollider innerCollider;
@@ -52,7 +53,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private IEnemy target;
     private float fireCooldown;
 
-    private Vector3 cannonPivotDefaultPosition;
+    private Vector3 barrelDefaultPosition;
     private Coroutine recoilRoutine;
 
     private GameObject towerOverlayGO;
@@ -116,8 +117,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         innerRangeIndicator.SetActive(false);
         innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
 
-        Assert.IsNotNull(cannonPivot);
-        cannonPivotDefaultPosition = cannonPivot.localPosition;
+        Assert.IsNotNull(barrel);
+        barrelDefaultPosition = barrel.localPosition;
     }
 
     private void Update()
@@ -265,14 +266,14 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private IEnumerator RecoilKick()
     {
-        Vector3 start = cannonPivot.localPosition;
-        Vector3 back = cannonPivotDefaultPosition + cannonPivot.forward * recoilDistance;
+        Vector3 start = barrel.localPosition;
+        Vector3 back = barrelDefaultPosition - Vector3.up * recoilDistance;
 
         float t = 0f;
         while (t < 1f)
         {
             t += Time.deltaTime * recoilSpeed;
-            cannonPivot.localPosition = Vector3.Lerp(start, back, t);
+            barrel.localPosition = Vector3.Lerp(start, back, t);
             yield return null;
         }
 
@@ -280,11 +281,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         while (t < 1f)
         {
             t += Time.deltaTime * recoilReturnSpeed;
-            cannonPivot.localPosition = Vector3.Lerp(back, cannonPivotDefaultPosition, t);
+            barrel.localPosition = Vector3.Lerp(back, barrelDefaultPosition, t);
             yield return null;
         }
 
-        cannonPivot.localPosition = cannonPivotDefaultPosition;
+        barrel.localPosition = barrelDefaultPosition;
     }
 
     public void Select()

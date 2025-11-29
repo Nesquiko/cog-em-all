@@ -41,6 +41,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Recoil")]
+    [SerializeField, Min(1)] private int barrelsPerGun = 8;
     [SerializeField] private float recoilDistance = 0.2f;
     [SerializeField] private float recoilSpeed = 20f;
     [SerializeField] private float recoilReturnSpeed = 5f;
@@ -58,6 +59,18 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private Vector3 gunPositionR;
     private Coroutine recoilRoutineL;
     private Coroutine recoilRoutineR;
+    private float barrelAngleStep;
+    private float currentSpinL;
+    private float currentSpinR;
+    private float spinDuration;
+    private float spinElapsedL;
+    private float spinElapsedR;
+    private float startAngleL;
+    private float startAngleR;
+    private float targetAngleL;
+    private float targetAngleR;
+    private bool spinningL;
+    private bool spinningR;
 
     private bool shootFromLeftFirePoint = true;
 
@@ -97,6 +110,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         towerOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
+
+        barrelAngleStep = 360f / barrelsPerGun;
+        spinDuration = 2f / fireRate;
+        currentSpinL = currentSpinR = targetAngleL = targetAngleR = 0f;
     }
 
     private void Start()
@@ -136,18 +153,9 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
             fireCooldown = 1f / fireRate;
         }
 
-        if (gatlingHead == null || target == null) return;
+        TowerMechanics.RotateTowardTarget(gatlingHead, target.Transform);
 
-        Vector3 direction = target.Transform.position - gatlingHead.position;
-        
-        if (direction == Vector3.zero) return;
-
-        Quaternion desiredRotation = Quaternion.LookRotation(direction);
-        gatlingHead.rotation = Quaternion.Lerp(
-            gatlingHead.rotation,
-            desiredRotation,
-            10f * Time.deltaTime
-        );
+        UpdateGunSpin();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -193,19 +201,37 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
             if (recoilRoutineL != null) StopCoroutine(recoilRoutineL);
             recoilRoutineL = StartCoroutine(RecoilKick(gun, gunPositionL));
             muzzleFlashL.Play();
+            StartGunSpinLeft();
         }
         else
         {
             if (recoilRoutineR != null) StopCoroutine(recoilRoutineR);
             recoilRoutineR = StartCoroutine(RecoilKick(gun, gunPositionR));
             muzzleFlashR.Play();
+            StartGunSpinRight();
         }
+    }
+
+    private void StartGunSpinLeft()
+    {
+        startAngleL = gatlingGunL.localEulerAngles.z;
+        targetAngleL = startAngleL + barrelAngleStep;
+        spinElapsedL = 0f;
+        spinningL = true;
+    }
+
+    private void StartGunSpinRight()
+    {
+        startAngleR = gatlingGunR.localEulerAngles.z;
+        targetAngleR = startAngleR - barrelAngleStep;
+        spinElapsedR = 0f;
+        spinningR = true;
     }
 
     private IEnumerator RecoilKick(Transform gun, Vector3 defaultLocalPosition)
     {
         Vector3 start = gun.localPosition;
-        Vector3 back = defaultLocalPosition + gun.up * recoilDistance;
+        Vector3 back = defaultLocalPosition - Vector3.forward * recoilDistance;
 
         float t = 0f;
         while (t < 1f)
@@ -224,6 +250,27 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         }
 
         gun.localPosition = defaultLocalPosition;
+    }
+
+    private void UpdateGunSpin()
+    {
+        if (spinningL)
+        {
+            spinElapsedL += Time.deltaTime;
+            float t = Mathf.Clamp01(spinElapsedL / spinDuration);
+            float angle = Mathf.LerpAngle(startAngleL, targetAngleL, t);
+            gatlingGunL.localRotation = Quaternion.Euler(0f, 0f, angle);
+            if (t >= 1f) spinningL = false;
+        }
+
+        if (spinningR)
+        {
+            spinElapsedR += Time.deltaTime;
+            float t = Mathf.Clamp01(spinElapsedR / spinDuration);
+            float angle = Mathf.LerpAngle(startAngleR, targetAngleR, t);
+            gatlingGunR.localRotation = Quaternion.Euler(0f, 0f, angle);
+            if (t >= 1f) spinningR = false;
+        }
     }
 
     public void Select()

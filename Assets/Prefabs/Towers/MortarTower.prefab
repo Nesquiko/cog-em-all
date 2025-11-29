@@ -981,6 +981,7 @@ MonoBehaviour:
   shellPrefab: {fileID: 1174702483455924470, guid: fb7ff1d451ada2648b8328c05680e2b3, type: 3}
   basePivot: {fileID: 4306667976503387257}
   cannonPivot: {fileID: 2464234625407531642}
+  barrel: {fileID: 2237290140647085976}
   firePoint: {fileID: 249308152964308707}
   outerCollider: {fileID: 7789605996719583948}
   innerCollider: {fileID: 8212388849909936526}
@@ -991,9 +992,9 @@ MonoBehaviour:
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   currentLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
-  recoilDistance: 0
-  recoilSpeed: 1
-  recoilReturnSpeed: 1
+  recoilDistance: 0.01
+  recoilSpeed: 30
+  recoilReturnSpeed: 2
   upgradeVFX: {fileID: 5105556605833891603}
 --- !u!54 &8104814890352558503
 Rigidbody:
