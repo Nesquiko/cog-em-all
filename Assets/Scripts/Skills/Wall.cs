@@ -49,12 +49,7 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
         healthPoints = maxHealthPoints;
         OnHealthChanged?.Invoke(this);
 
-        activeWallModifiers = new()  // TODO: luky -> find my wall modifiers
-        {
-            SkillModifiers.SteelReinforcement,
-            SkillModifiers.SharpThorns,
-            SkillModifiers.LeftoverDebris,
-        };
+        activeWallModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
 
         InitializeModifiers();
     }

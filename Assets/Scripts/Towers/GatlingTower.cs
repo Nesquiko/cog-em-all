@@ -136,7 +136,18 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
             fireCooldown = 1f / fireRate;
         }
 
-        TowerMechanics.RotateTowardTarget(gatlingHead, target.Transform, 10f);
+        if (gatlingHead == null || target == null) return;
+
+        Vector3 direction = target.Transform.position - gatlingHead.position;
+        
+        if (direction == Vector3.zero) return;
+
+        Quaternion desiredRotation = Quaternion.LookRotation(direction);
+        gatlingHead.rotation = Quaternion.Lerp(
+            gatlingHead.rotation,
+            desiredRotation,
+            10f * Time.deltaTime
+        );
     }
 
     private void OnTriggerEnter(Collider other)

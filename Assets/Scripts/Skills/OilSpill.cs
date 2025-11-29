@@ -37,12 +37,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
 
     private void Awake()
     {
-        activeOilSpillModifiers = new()  // TODO: luky -> find my oil spill modifiers
-        {
-            SkillModifiers.SatansWrath,
-            SkillModifiers.GooeyGoo,
-            SkillModifiers.StickityStick,
-        };
+        activeOilSpillModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
 
         InitializeModifiers();
     }

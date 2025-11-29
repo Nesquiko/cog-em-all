@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class HUDPanelUI : MonoBehaviour
@@ -30,6 +31,22 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private SkillModifierCatalog skillModifierCatalog;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private SkillPlacementSystem skillPlacementSystem;
+    [SerializeField] private GameObject minimapImage;
+    [SerializeField] private string minimapBackgroundTag;
+    [SerializeField] private string maximizedMinimapTag;
+
+    private GameObject minimapBackground;
+    private GameObject maximizedMinimap;
+    private bool minimapMaximized = false;
+
+    private void Awake()
+    {
+        minimapBackground = GameObject.FindGameObjectWithTag(minimapBackgroundTag);
+        maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
+
+        Debug.Log(minimapBackground);
+        Debug.Log(maximizedMinimap);
+    }
 
     private void Start()
     {
@@ -177,5 +194,26 @@ public class HUDPanelUI : MonoBehaviour
     public void SetPassiveGearsIncomeProgress(float progress)
     {
         gearsPassiveFill.fillAmount = progress;
+    }
+
+    private void Update()
+    {
+        if (Keyboard.current.mKey.wasPressedThisFrame) ToggleMaximizeMinimap();
+    }
+
+    public void ToggleMaximizeMinimap()
+    {
+        bool maximized = !minimapMaximized;
+
+        minimapImage.SetActive(!maximized);
+        minimapBackground.SetActive(!maximized);
+        
+        if (maximizedMinimap.transform.childCount > 0)
+        {
+            GameObject firstChild = maximizedMinimap.transform.GetChild(0).gameObject;
+            firstChild.SetActive(maximized);
+        }
+
+        minimapMaximized = maximized;
     }
 }

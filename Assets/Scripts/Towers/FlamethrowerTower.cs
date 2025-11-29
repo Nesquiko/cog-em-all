@@ -20,6 +20,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [Header("References")]
     [SerializeField] private GameObject flamePrefab;
     [SerializeField] private Transform firePoint;
+    [SerializeField] private GameObject flamethrowerHead;
     [SerializeField] private GameObject flameCollider;
     [SerializeField] private GameObject rangeIndicator;
     [SerializeField] private Renderer[] highlightRenderers;
@@ -99,7 +100,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         towerRotationOverlayGO = Instantiate(towerRotationOverlayPrefab, canvas.transform, true);
         towerRotationOverlay = towerRotationOverlayGO.GetComponent<TowerRotationOverlay>();
-        towerRotationOverlay.Initialize(gameObject);
+        towerRotationOverlay.Initialize(flamethrowerHead.transform);
         towerRotationOverlay.Hide();
 
         towerSelectionManager = FindFirstObjectByType<TowerSelectionManager>();
@@ -114,7 +115,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         rangeIndicator.SetActive(false);
         rangeIndicator.transform.localScale = new(range, rangeIndicator.transform.localScale.y, range);
 
-        Vector3 flamePosition = new(firePoint.position.x, 0f, firePoint.position.z);
+        Vector3 flamePosition = new(firePoint.position.x, 2f, firePoint.position.z);
         GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
         activeFlame = flame.GetComponent<Flame>();
         activeFlame.Initialize(this, range);
@@ -135,6 +136,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         if (activeFlame != null)
         {
+            flameCollider.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
+            rangeIndicator.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
             activeFlame.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
         }
     }

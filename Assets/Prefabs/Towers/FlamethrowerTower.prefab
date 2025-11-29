@@ -736,12 +736,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2248606153511172024}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 11.5, z: 7.5}
-  m_LocalScale: {x: 0.525, y: 3.1500006, z: 0.52500004}
+  m_LocalRotation: {x: 0.69430804, y: -0.1339269, z: -0.1339269, w: 0.6943079}
+  m_LocalPosition: {x: -0.047644686, y: -0.116216816, z: 0.14339997}
+  m_LocalScale: {x: 0.0052499995, y: 0.03150001, z: 0.005250001}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4793412355603679537}
+  m_Father: {fileID: 2088234961116154943}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2718719258927750110
 GameObject:
@@ -867,8 +867,8 @@ Transform:
   - {fileID: 8030533561447239712}
   - {fileID: 3293714217340556054}
   - {fileID: 6342403012648805787}
-  - {fileID: 7103826429612278080}
   - {fileID: 9121606912552565528}
+  - {fileID: 1365470126462052491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8504577141823410101
@@ -884,6 +884,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTower
   flameDamagePerPulse: 20
+  flamePulseInterval: 0.25
+  flameDuration: 3
   range: 50
   flameAngle: 34
   cooldownDuration: 2
@@ -891,22 +893,10 @@ MonoBehaviour:
   critMultiplier: 2
   flamePrefab: {fileID: 252755963940105304, guid: 7beb1e94f42efea478a22fe26fa70c68, type: 3}
   firePoint: {fileID: 7103826429612278080}
+  flamethrowerHead: {fileID: 7402364551894291815}
   flameCollider: {fileID: 8205056374922064436}
   rangeIndicator: {fileID: 1965079155947363702}
-  highlightRenderers:
-  - {fileID: 4572404966580389983}
-  - {fileID: 544835138325377813}
-  - {fileID: 978337891355390299}
-  - {fileID: 3343948968567712962}
-  - {fileID: 6343322589690180348}
-  - {fileID: 8702922546342584328}
-  - {fileID: 8185695715039287883}
-  - {fileID: 9200512895891133272}
-  - {fileID: 4069367093509624985}
-  - {fileID: 1266013304927016639}
-  - {fileID: 7297359660430018326}
-  - {fileID: 4178716590797618299}
-  - {fileID: 5399746261442547585}
+  highlightRenderers: []
   towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
   towerRotationOverlayPrefab: {fileID: 1850511929951099344, guid: ec045bdaeac92144b9aadf17124af12b, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
@@ -959,8 +949,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 12, y: 20, z: 12}
-  m_Center: {x: 0, y: 10, z: 0}
+  m_Size: {x: 8, y: 17, z: 8}
+  m_Center: {x: 0, y: 8.5, z: 0}
 --- !u!1 &3454720702521180971
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,7 +1146,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3293714217340556054
 Transform:
   m_ObjectHideFlags: 0
@@ -1523,7 +1513,7 @@ Transform:
   m_GameObject: {fileID: 8205056374922064436}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.91, z: 12.58}
   m_LocalScale: {x: 50, y: 50, z: 50}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1564,6 +1554,81 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: -2432090755550338912, guid: 203912e5edfb9b44cbbac6dcaa501239, type: 3}
+--- !u!1001 &1547451174872993632
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4793412355603679537}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      propertyPath: m_Name
+      value: Flamethrower
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 685461967257830239, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7103826429612278080}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+--- !u!4 &1365470126462052491 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+  m_PrefabInstance: {fileID: 1547451174872993632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2088234961116154943 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 685461967257830239, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+  m_PrefabInstance: {fileID: 1547451174872993632}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7402364551894291815 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -881617069575333369, guid: 122b19733ea86964faa62dcbdbe647e8, type: 3}
+  m_PrefabInstance: {fileID: 1547451174872993632}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5494348937786967840
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -44,12 +44,7 @@ public class Mine : MonoBehaviour, ISkillPlaceable
 
     private void Awake()
     {
-        activeMineModifiers = new()  // TODO: luky -> find my mine modifiers
-        {
-            SkillModifiers.DoubleTheBoom,
-            SkillModifiers.WideDestruction,
-            SkillModifiers.QuickFuse,
-        };
+        activeMineModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
 
         InitializeModifiers();
     }

@@ -354,7 +354,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1601318743041153875
 Transform:
   m_ObjectHideFlags: 0
@@ -364,7 +364,7 @@ Transform:
   m_GameObject: {fileID: 2747210973633533730}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 15.4, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -701,6 +701,37 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &6810929593505795042
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 249308152964308707}
+  m_Layer: 8
+  m_Name: MortarFirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &249308152964308707
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6810929593505795042}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0.000000061817246, y: -0.7071069, z: -0.70710677, w: -3.552714e-15}
+  m_LocalPosition: {x: 0.00002, y: 0.14073, z: 0.00242}
+  m_LocalScale: {x: 0.029999994, y: 0.030000001, z: 0.09999998}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2237290140647085976}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7425603785052607762
 GameObject:
   m_ObjectHideFlags: 0
@@ -921,6 +952,7 @@ Transform:
   - {fileID: 745565968438956816}
   - {fileID: 6705421868211201135}
   - {fileID: 9178745550796979335}
+  - {fileID: 6052697442730268258}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4435376755774137479
@@ -936,6 +968,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MortarTower
   shellDamage: 120
+  shellSplashRadius: 10
+  shellLifetime: 5
   fireRate: 0.33
   minRange: 30
   maxRange: 80
@@ -945,25 +979,21 @@ MonoBehaviour:
   launchSpeed: 30
   arcHeight: 20
   shellPrefab: {fileID: 1174702483455924470, guid: fb7ff1d451ada2648b8328c05680e2b3, type: 3}
-  basePivot: {fileID: 813306345649447482}
-  cannonPivot: {fileID: 1699519997319527913}
-  firePoint: {fileID: 5024660489982930112}
+  basePivot: {fileID: 4306667976503387257}
+  cannonPivot: {fileID: 2464234625407531642}
+  firePoint: {fileID: 249308152964308707}
   outerCollider: {fileID: 7789605996719583948}
   innerCollider: {fileID: 8212388849909936526}
   outerRangeIndicator: {fileID: 880261750442403161}
   innerRangeIndicator: {fileID: 269120066980370199}
-  highlightRenderers:
-  - {fileID: 3352011900174925156}
-  - {fileID: 7380470263972290283}
-  - {fileID: 1304282059508026308}
-  - {fileID: 3554226702230824119}
+  highlightRenderers: []
   towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   currentLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
-  recoilDistance: 0.5
-  recoilSpeed: 20
-  recoilReturnSpeed: 5
+  recoilDistance: 0
+  recoilSpeed: 1
+  recoilReturnSpeed: 1
   upgradeVFX: {fileID: 5105556605833891603}
 --- !u!54 &8104814890352558503
 Rigidbody:
@@ -1011,7 +1041,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 12, y: 20, z: 12}
+  m_Size: {x: 8, y: 20, z: 8}
   m_Center: {x: 0, y: 10, z: 0}
 --- !u!1001 &5604967667675185343
 PrefabInstance:
@@ -1091,4 +1121,84 @@ ParticleSystem:
 Transform:
   m_CorrespondingSourceObject: {fileID: 3650638188812647480, guid: 83dae1f2b30866b47a30a896208faad8, type: 3}
   m_PrefabInstance: {fileID: 5604967667675185343}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6085833401597112713
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 352041422836785006}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      propertyPath: m_Name
+      value: MortarJoined
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -3784911842985908719, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 249308152964308707}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+--- !u!4 &2237290140647085976 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -3784911842985908719, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+  m_PrefabInstance: {fileID: 6085833401597112713}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2464234625407531642 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8522923111598066675, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+  m_PrefabInstance: {fileID: 6085833401597112713}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4306667976503387257 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8048322349259281904, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+  m_PrefabInstance: {fileID: 6085833401597112713}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &6052697442730268258 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2f818adb36472bc46bf35f03acc70dab, type: 3}
+  m_PrefabInstance: {fileID: 6085833401597112713}
   m_PrefabAsset: {fileID: 0}

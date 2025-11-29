@@ -11,12 +11,12 @@ public class TowerRotationOverlay : MonoBehaviour
 
     private Camera mainCamera;
     private RectTransform rectTransform;
-    private GameObject towerGO;
+    private Transform towerHead;
     private bool active;
 
-    public void Initialize(GameObject t)
+    public void Initialize(Transform head)
     {
-        towerGO = t;
+        towerHead = head;
     }
 
     private void Awake()
@@ -30,18 +30,12 @@ public class TowerRotationOverlay : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (!active || towerGO == null)
-        {
-            return;
-        }
-        Vector3 targetPosition = towerGO.transform.position;
+        if (!active || towerHead == null) return;
+        Vector3 targetPosition = towerHead.transform.position;
         targetPosition.y += 7f;
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(targetPosition);
 
-        if (screenPosition.z < 0)
-        {
-            return;
-        }
+        if (screenPosition.z < 0) return;
         
         rectTransform.position = screenPosition;
 
@@ -51,8 +45,8 @@ public class TowerRotationOverlay : MonoBehaviour
 
     private void Rotate(int direction)
     {
-        if (!towerGO) return;
-        towerGO.transform.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime, Space.World);
+        if (!towerHead) return;
+        towerHead.transform.Rotate(Vector3.up, direction * rotationSpeed * Time.deltaTime, Space.World);
     }
 
     private void RotateLeft() => Rotate(-1);
