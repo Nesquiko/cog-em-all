@@ -26,7 +26,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private GameObject towerOverlayPrefab;
+    [SerializeField] private TowerOverlayCatalog towerOverlayCatalog;
     [SerializeField] private GameObject towerRotationOverlayPrefab;
     [SerializeField] private CursorSettings cursorSettings;
 
@@ -66,6 +66,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
+    public Faction GetFaction() => Faction.TheBrassArmy;
+
     private void OnDrawGizmosSelected()
     {
         float radius = range;
@@ -93,7 +95,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         Canvas canvas = FindFirstObjectByType<Canvas>();
 
-        towerOverlayGO = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();

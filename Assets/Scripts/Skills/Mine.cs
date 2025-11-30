@@ -2,13 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Mine : MonoBehaviour, ISkillPlaceable
+public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
 {
     [SerializeField] private SkillTypes skillType = SkillTypes.Mine;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
     public SkillTypes SkillType() => skillType;
     public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
+    public DamageSourceType Type() => DamageSourceType.Mine;
 
     [Header("Settings")]
     [SerializeField] private float armDelay = 1.0f;
@@ -147,7 +148,7 @@ public class Mine : MonoBehaviour, ISkillPlaceable
         foreach (var hit in hits)
         {
             if (hit.TryGetComponent<IEnemy>(out var e))
-                e.TakeDamage(explosionDamage);
+                e.TakeDamage(explosionDamage, Type());
         }
     }
 }

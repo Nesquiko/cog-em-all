@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityEngine.Assertions;
 
-public class Bullet : MonoBehaviour
+public class Bullet : MonoBehaviour, IDamageSource
 {
     private GatlingTower owner;
     private Transform target;
     private Vector3 flightDirection;
     private float damage;
     private bool crit;
+
+    public DamageSourceType Type() => DamageSourceType.Bullet;
 
     public void Initialize(GatlingTower ownerTower, Transform enemyTarget, float dmg, bool isCrit)
     {
@@ -40,7 +42,7 @@ public class Bullet : MonoBehaviour
     {
         if (other.TryGetComponent<IEnemy>(out var enemy))
         {
-            enemy.TakeDamage(damage, crit, effect: EnemyStatusEffect.Bleed);
+            enemy.TakeDamage(damage, Type(), crit, effect: EnemyStatusEffect.Bleed);
             Destroy(gameObject);
         }
 

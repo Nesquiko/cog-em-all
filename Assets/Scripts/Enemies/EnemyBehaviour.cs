@@ -57,12 +57,12 @@ public class EnemyBehaviour : MonoBehaviour
 
 
     private readonly Dictionary<EffectType, Coroutine> activeEffects = new();
+    private readonly Dictionary<EffectType, int> stackCounts = new();
 
     // Path following
     private float splinePathT = 0f;
     private float pathLength;
     private float lateralOffset;
-
 
     private void Awake()
     {
@@ -100,11 +100,17 @@ public class EnemyBehaviour : MonoBehaviour
     }
 
 
-    public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect withEffect = null)
+    public void TakeDamage(float damage, DamageSourceType source, bool isCritical = false, EnemyStatusEffect withEffect = null)
     {
-        if (healthPoints <= 0f) { return; }
+        if (healthPoints <= 0f) return;
 
-        healthPoints -= damage;
+        float totalMultiplier = 1f;
+        if (source == DamageSourceType.Bullet && stackCounts.TryGetValue(EffectType.ArmorShredded, out int shredStacks))
+        {
+            totalMultiplier += shredStacks * EnemyStatusEffect.ArmorShred.damageMultiplierPerStack;
+        }
+
+        healthPoints -= damage * totalMultiplier;
         if (!healthBar.ActiveSelf) healthBar.SetActive(true);
 
         damagePopupManager.ShowPopup(transform.position, damage, isCritical);
@@ -214,15 +220,18 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void ApplyEffect(EnemyStatusEffect effect)
     {
+        if (effect.stackable)
+        {
+            HandleStackableEffect(effect);
+            return;
+        }
+
         if (activeEffects.ContainsKey(effect.type) && activeEffects[effect.type] != null)
             StopCoroutine(activeEffects[effect.type]);
 
-        if (effect.negative) debuffVFX.Play();
-        else buffVFX.Play();
-
         if (effect.persistent)
         {
-            ApplyPersistentEffect(effect);
+            HandlePersistentEffect(effect);
             return;
         }
 
@@ -231,7 +240,7 @@ public class EnemyBehaviour : MonoBehaviour
         UpdateVFXState();
     }
 
-    private void ApplyPersistentEffect(EnemyStatusEffect effect)
+    private void HandlePersistentEffect(EnemyStatusEffect effect)
     {
         switch (effect.type)
         {
@@ -249,6 +258,42 @@ public class EnemyBehaviour : MonoBehaviour
                 }
                 break;
         }
+    }
+
+    private void HandleStackableEffect(EnemyStatusEffect effect)
+    {
+        stackCounts.TryGetValue(effect.type, out int stacks);
+        stacks = Mathf.Min(stacks + 1, effect.maxStacks);
+        stackCounts[effect.type] = stacks;
+
+        if (activeEffects.ContainsKey(effect.type) && activeEffects[effect.type] != null)
+            StopCoroutine(activeEffects[effect.type]);
+
+        Coroutine routine = StartCoroutine(HandleStackableLifetime(effect));
+        activeEffects[effect.type] = routine;
+
+        UpdateVFXState();
+    }
+
+    private IEnumerator HandleStackableLifetime(EnemyStatusEffect effect)
+    {
+        yield return new WaitForSeconds(effect.duration);
+        if (stackCounts.TryGetValue(effect.type, out int stacks))
+        {
+            stacks--;
+            if (stacks <= 0)
+            {
+                stackCounts.Remove(effect.type);
+                activeEffects.Remove(effect.type);
+            }
+            else
+            {
+                stackCounts[effect.type] = stacks;
+                activeEffects[effect.type] = StartCoroutine(HandleStackableLifetime(effect));
+            }
+        }
+
+        UpdateVFXState();
     }
 
     public void RemoveEffect(EffectType type)
@@ -282,7 +327,7 @@ public class EnemyBehaviour : MonoBehaviour
             case EffectType.Bleeding:
                 while (elapsed < effect.duration)
                 {
-                    TakeDamage(effect.tickDamage, isCritical: false);
+                    TakeDamage(effect.tickDamage, DamageSourceType.Effect, isCritical: false);
                     yield return new WaitForSeconds(effect.tickInterval);
                     elapsed += effect.tickInterval;
                 }
@@ -302,7 +347,7 @@ public class EnemyBehaviour : MonoBehaviour
     {
         while (true)
         {
-            TakeDamage(effect.tickDamage, isCritical: false);
+            TakeDamage(effect.tickDamage, DamageSourceType.Effect, isCritical: false);
             yield return new WaitForSeconds(effect.tickInterval);
         }
     }

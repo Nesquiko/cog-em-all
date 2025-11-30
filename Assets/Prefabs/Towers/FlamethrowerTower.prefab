@@ -897,7 +897,7 @@ MonoBehaviour:
   flameCollider: {fileID: 8205056374922064436}
   rangeIndicator: {fileID: 1965079155947363702}
   highlightRenderers: []
-  towerOverlayPrefab: {fileID: 1850511929951099344, guid: c86b76252aa9b2944bbcb9986e4877cf, type: 3}
+  towerOverlayCatalog: {fileID: 11400000, guid: 388409edb51f9274ba3dc4a7b4c33da0, type: 2}
   towerRotationOverlayPrefab: {fileID: 1850511929951099344, guid: ec045bdaeac92144b9aadf17124af12b, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   currentLevel: 1

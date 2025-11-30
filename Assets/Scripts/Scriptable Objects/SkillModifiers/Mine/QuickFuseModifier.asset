@@ -16,4 +16,4 @@ MonoBehaviour:
   modifier: 2
   displayName: Quick Fuse
   description: Quick Fuse description
-  triggerSpeedMultiplier: 2
+  triggerSpeedMultiplier: 0.5

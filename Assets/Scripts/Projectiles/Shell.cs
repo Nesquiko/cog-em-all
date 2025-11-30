@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shell : MonoBehaviour
+public class Shell : MonoBehaviour, IDamageSource
 {
     [SerializeField] private MeshRenderer meshRenderer;
     [SerializeField] private SphereCollider sphereCollider;
@@ -20,6 +20,8 @@ public class Shell : MonoBehaviour
     private float travelDuration;
     private float elapsed;
     private bool launched;
+
+    public DamageSourceType Type() => DamageSourceType.Shell;
 
     private void OnDrawGizmosSelected()
     {
@@ -85,7 +87,7 @@ public class Shell : MonoBehaviour
         {
             if (c.TryGetComponent<IEnemy>(out var e) && damaged.Add(e))
             {
-                e.TakeDamage(damage, crit, effect: EnemyStatusEffect.Slow);
+                e.TakeDamage(damage, Type(), crit, effect: EnemyStatusEffect.Slow);
             }
         }
 

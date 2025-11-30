@@ -24,6 +24,7 @@ public interface ITower
     int CurrentLevel();
     void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
+    Faction GetFaction();
 }
 
 public interface ITowerSelectable : ITower
@@ -50,6 +51,11 @@ public interface ITowerSellable : ITower
 public interface ITowerRotateable : ITower
 {
     void ShowTowerRotationOverlay();
+}
+
+public interface ITowerStimulable : ITower
+{
+
 }
 
 public static class TowerMechanics

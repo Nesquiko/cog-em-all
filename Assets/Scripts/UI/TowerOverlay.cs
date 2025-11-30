@@ -2,8 +2,10 @@ using UnityEngine;
 
 public class TowerOverlay : MonoBehaviour
 {
-    [SerializeField] private GameObject upgradeButton;
     [SerializeField] private GameObject takeControlButton;
+    [SerializeField] private GameObject stimModeButton;
+    [SerializeField] private GameObject upgradeButton;
+    [SerializeField] private GameObject sellButton;
     [SerializeField] private GameObject rotateButton;
 
     [SerializeField] private TowerDataCatalog towerDataCatalog;
@@ -17,6 +19,11 @@ public class TowerOverlay : MonoBehaviour
     private ScaleOnHover takeControlScaleOnHover;
     private CursorPointer takeControlCursorPointer;
     private TooltipOnButton takeControlTooltipOnButton;
+
+    private CanvasGroup stimModeCanvasGroup;
+    private ScaleOnHover stimModeScaleOnHover;
+    private CursorPointer stimModeCursorPointer;
+    private TooltipOnButton stimModeTooltipOnButton;
 
     private CanvasGroup rotateCanvasGroup;
     private ScaleOnHover rotateScaleOnHover;
@@ -49,25 +56,43 @@ public class TowerOverlay : MonoBehaviour
         towerControlManager = FindFirstObjectByType<TowerControlManager>();
         towerSellManager = FindFirstObjectByType<TowerSellManager>();
 
-        upgradeCanvasGroup = upgradeButton.GetComponent<CanvasGroup>();
-        upgradeScaleOnHover = upgradeButton.GetComponent<ScaleOnHover>();
-        upgradeCursorPointer = upgradeButton.GetComponent<CursorPointer>();
-        upgradeTooltipOnButton = upgradeButton.GetComponent<TooltipOnButton>();
+        if (upgradeButton != null)
+        {
+            upgradeCanvasGroup = upgradeButton.GetComponent<CanvasGroup>();
+            upgradeScaleOnHover = upgradeButton.GetComponent<ScaleOnHover>();
+            upgradeCursorPointer = upgradeButton.GetComponent<CursorPointer>();
+            upgradeTooltipOnButton = upgradeButton.GetComponent<TooltipOnButton>();
+        }
 
-        takeControlCanvasGroup = takeControlButton.GetComponent<CanvasGroup>();
-        takeControlScaleOnHover = takeControlButton.GetComponent<ScaleOnHover>();
-        takeControlCursorPointer = takeControlButton.GetComponent<CursorPointer>();
-        takeControlTooltipOnButton = takeControlButton.GetComponent<TooltipOnButton>();
+        if (stimModeButton != null)
+        {
+            stimModeCanvasGroup = takeControlButton.GetComponent<CanvasGroup>();
+            stimModeScaleOnHover = takeControlButton.GetComponent<ScaleOnHover>();
+            stimModeCursorPointer = takeControlButton.GetComponent<CursorPointer>();
+            stimModeTooltipOnButton = takeControlButton.GetComponent<TooltipOnButton>();
+        }
 
-        rotateCanvasGroup = rotateButton.GetComponent<CanvasGroup>();
-        rotateScaleOnHover = rotateButton.GetComponent<ScaleOnHover>();
-        rotateCursorPointer = rotateButton.GetComponent<CursorPointer>();
-        rotateTooltipOnButton = rotateButton.GetComponent<TooltipOnButton>();
+        if (takeControlButton != null)
+        {
+            takeControlCanvasGroup = takeControlButton.GetComponent<CanvasGroup>();
+            takeControlScaleOnHover = takeControlButton.GetComponent<ScaleOnHover>();
+            takeControlCursorPointer = takeControlButton.GetComponent<CursorPointer>();
+            takeControlTooltipOnButton = takeControlButton.GetComponent<TooltipOnButton>();
+        }
+
+        if (rotateButton != null)
+        {
+            rotateCanvasGroup = rotateButton.GetComponent<CanvasGroup>();
+            rotateScaleOnHover = rotateButton.GetComponent<ScaleOnHover>();
+            rotateCursorPointer = rotateButton.GetComponent<CursorPointer>();
+            rotateTooltipOnButton = rotateButton.GetComponent<TooltipOnButton>();
+        }
     }
 
     private void AdjustOverlayButtons()
     {
-        if (!towerGO.TryGetComponent<ITower>(out var tower) || !towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel()))
+        // Upgradeable
+        if (upgradeButton != null && (!towerGO.TryGetComponent<ITower>(out var tower) || !towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel())))
         {
             upgradeCanvasGroup.alpha = 0.5f;
             upgradeScaleOnHover.enabled = false;
@@ -75,7 +100,17 @@ public class TowerOverlay : MonoBehaviour
             upgradeTooltipOnButton.enabled = false;
         }
 
-        if (!towerGO.TryGetComponent<ITowerControllable>(out _))
+        // Stimulable
+        if (stimModeButton != null && !towerGO.TryGetComponent<ITowerStimulable>(out _))
+        {
+            stimModeCanvasGroup.alpha = 0.5f;
+            stimModeScaleOnHover.enabled = false;
+            stimModeCursorPointer.enabled = false;
+            stimModeTooltipOnButton.enabled = false;
+        }
+
+        // Controllable
+        if (takeControlButton != null && !towerGO.TryGetComponent<ITowerControllable>(out _))
         {
             takeControlCanvasGroup.alpha = 0.5f;
             takeControlScaleOnHover.enabled = false;
@@ -83,17 +118,14 @@ public class TowerOverlay : MonoBehaviour
             takeControlTooltipOnButton.enabled = false;
         }
 
-        if (!towerGO.TryGetComponent<ITowerRotateable>(out _))
+        // Rotateable
+        if (rotateButton != null && !towerGO.TryGetComponent<ITowerRotateable>(out _))
         {
             rotateCanvasGroup.alpha = 0.5f;
             rotateScaleOnHover.enabled = false;
             rotateCursorPointer.enabled = false;
             rotateTooltipOnButton.enabled = false;
         }
-
-        Debug.Log($"type: {tower.TowerType()}");
-        Debug.Log($"can upgrade: {towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel())}");
-        Debug.Log($"max level: {towerDataCatalog.GetMaxLevel(tower.TowerType())}");
     }
 
     private void LateUpdate()
@@ -111,15 +143,21 @@ public class TowerOverlay : MonoBehaviour
         rectTransform.position = screenPosition;
     }
 
+    public void OnStimModeClicked()
+    {
+        if (stimModeButton == null || !towerGO.TryGetComponent<ITowerStimulable>(out var tower)) return;
+        //towerStimManager.ActivateStimMode(tower);
+    }
+
     public void OnTakeControlClicked()
     {
-        if (!towerGO.TryGetComponent<ITowerControllable>(out var tower)) return;
+        if (takeControlButton == null || !towerGO.TryGetComponent<ITowerControllable>(out var tower)) return;
         towerControlManager.TakeControl(tower);
     }
 
     public void OnUpgradeTowerClicked()
     {
-        if (!towerGO.TryGetComponent<ITower>(out var tower)) return;
+        if (upgradeButton == null || !towerGO.TryGetComponent<ITower>(out var tower)) return;
         towerDataCatalog.RequestUpgrade(tower);
 
         AdjustOverlayButtons();
@@ -127,13 +165,15 @@ public class TowerOverlay : MonoBehaviour
 
     public void OnSellTowerClicked()
     {
-        if (!towerGO.TryGetComponent<ITowerSellable>(out var tower)) return;
+        if (sellButton == null || !towerGO.TryGetComponent<ITowerSellable>(out var tower)) return;
         towerSellManager.RequestSell(tower);
+
+        AdjustOverlayButtons();
     }
 
     public void OnRotateTowerClicked()
     {
-        if (!towerGO.TryGetComponent<ITowerRotateable>(out var tower)) return;
+        if (rotateButton == null || !towerGO.TryGetComponent<ITowerRotateable>(out var tower)) return;
         tower.ShowTowerRotationOverlay();
     }
 

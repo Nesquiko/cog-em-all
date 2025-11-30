@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Beam : MonoBehaviour
+public class Beam : MonoBehaviour, IDamageSource
 {
     [Header("References")]
     [SerializeField] private LineRenderer lineRenderer;
@@ -15,6 +15,8 @@ public class Beam : MonoBehaviour
     private Transform initialTarget;
     private float damage;
     private bool crit;
+
+    public DamageSourceType Type() => DamageSourceType.Beam;
 
     public void Initialize(TeslaTower ownerTower, Transform from, Transform to, float dmg, bool isCritical)
     {
@@ -84,10 +86,7 @@ public class Beam : MonoBehaviour
 
                 yield return null;
             }
-            if (nextEnemy != null)
-            {
-                nextEnemy.TakeDamage(damage, crit);
-            }
+            nextEnemy?.TakeDamage(damage, Type(), crit);
 
             yield return new WaitForSeconds(owner.BeamStayTimeOnHit);
 

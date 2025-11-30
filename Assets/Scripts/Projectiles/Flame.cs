@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Flame : MonoBehaviour
+public class Flame : MonoBehaviour, IDamageSource
 {
     [Header("VFX")]
     [SerializeField] private ParticleSystem flameVFX;
@@ -19,6 +19,8 @@ public class Flame : MonoBehaviour
     private FlamethrowerTower owner;
 
     public bool IsActive => isActive;
+
+    public DamageSourceType Type() => DamageSourceType.Flame;
 
     public void Initialize(FlamethrowerTower ownerTower, float flameRange)
     {
@@ -104,7 +106,7 @@ public class Flame : MonoBehaviour
         {
             bool isCritical = UnityEngine.Random.value < critChance;
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
-            enemy.TakeDamage(damage, isCritical, effect: EnemyStatusEffect.Burn);
+            enemy.TakeDamage(damage, Type(), isCritical, effect: EnemyStatusEffect.Burn);
         }
     }
 

@@ -29,7 +29,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private GameObject towerOverlayPrefab;
+    [SerializeField] private TowerOverlayCatalog towerOverlayCatalog;
     [SerializeField] private CursorSettings cursorSettings;
 
     [Header("Tower Control Mode")]
@@ -60,8 +60,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private Coroutine recoilRoutineL;
     private Coroutine recoilRoutineR;
     private float barrelAngleStep;
-    private float currentSpinL;
-    private float currentSpinR;
     private float spinDuration;
     private float spinElapsedL;
     private float spinElapsedR;
@@ -96,6 +94,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public Transform GetControlPoint() => controlPoint;
 
+    public Faction GetFaction() => Faction.TheBrassArmy;
+
     private void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, range);
@@ -104,7 +104,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private void Awake()
     {
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlayGO = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();
@@ -113,7 +113,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         barrelAngleStep = 360f / barrelsPerGun;
         spinDuration = 2f / fireRate;
-        currentSpinL = currentSpinR = targetAngleL = targetAngleR = 0f;
     }
 
     private void Start()

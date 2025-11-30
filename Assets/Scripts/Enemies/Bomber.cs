@@ -39,9 +39,9 @@ public class Bomber : MonoBehaviour, IEnemy
         };
     }
 
-    public void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect effect = null)
+    public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
-        behaviour.TakeDamage(damage, isCritical, effect);
+        behaviour.TakeDamage(damage, sourceType, isCritical, effect);
     }
 
     public void EnterAttackRange(IDamageable damageable)

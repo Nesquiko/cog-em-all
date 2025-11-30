@@ -28,7 +28,7 @@ public interface IEnemy
     event Action<IEnemy> OnDeath;
 
     void Initialize(SplineContainer path, float startT, float lateralOffset, Action<IEnemy> onDeath);
-    void TakeDamage(float damage, bool isCritical = false, EnemyStatusEffect effect = null);
+    void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null);
     void EnterAttackRange(IDamageable damageable);
     void ExitAttackRange(IDamageable damageable);
     int GetInstanceID();
@@ -45,6 +45,7 @@ public enum EffectType
     Oiled,
     OilBurned,
     DebrisSlowed,
+    ArmorShredded,
 }
 
 [Serializable]
@@ -57,6 +58,9 @@ public class EnemyStatusEffect
     public float speedMultiplier = 1f;
     public bool persistent = false;
     public bool negative = true;
+    public bool stackable = false;
+    public int maxStacks = 1;
+    public float damageMultiplierPerStack = 0f;
 
     public EnemyStatusEffect() { }
 
@@ -67,7 +71,10 @@ public class EnemyStatusEffect
         float tickInterval = 1f,
         float speedMultiplier = 1f,
         bool persistent = false,
-        bool negative = true
+        bool negative = true,
+        bool stackable = false,
+        int maxStacks = 1,
+        float damageMultiplierPerStack = 0f
     )
     {
         this.type = type;
@@ -77,6 +84,9 @@ public class EnemyStatusEffect
         this.speedMultiplier = speedMultiplier;
         this.persistent = persistent;
         this.negative = negative;
+        this.stackable = stackable;
+        this.maxStacks = maxStacks;
+        this.damageMultiplierPerStack = damageMultiplierPerStack;
     }
 
     public static bool IsNegative(EffectType type)
@@ -162,5 +172,17 @@ public class EnemyStatusEffect
         speedMultiplier: speedMultiplier,
         persistent: true,
         negative: true
+    );
+
+    public static EnemyStatusEffect ArmorShred => new(
+        type: EffectType.ArmorShredded,
+        duration: 5f,
+        tickDamage: 0f,
+        tickInterval: 0f,
+        persistent: false,
+        negative: true,
+        stackable: true,
+        maxStacks: 2,
+        damageMultiplierPerStack: 0.05f
     );
 }

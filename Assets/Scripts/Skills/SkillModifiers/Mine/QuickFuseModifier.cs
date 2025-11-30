@@ -10,7 +10,7 @@ public class QuickFuseModifier : ScriptableObject, ISkillModifier
     [SerializeField, TextArea] private string description = "Quick Fuse description";
 
     [Header("Specific")]
-    public float triggerSpeedMultiplier = 2f;
+    public float triggerSpeedMultiplier = 0.5f;
 
     public SkillTypes SkillType => skillType;
     public SkillModifiers Modifier => modifier;

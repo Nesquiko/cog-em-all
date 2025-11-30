@@ -33,7 +33,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
-    [SerializeField] private GameObject towerOverlayPrefab;
+    [SerializeField] private TowerOverlayCatalog towerOverlayCatalog;
     [SerializeField] private CursorSettings cursorSettings;
 
     [Header("Upgrades")]
@@ -72,6 +72,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
+    public Faction GetFaction() => Faction.TheBrassArmy;
+
     private void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(
@@ -93,7 +95,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private void Awake()
     {
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlayGO = Instantiate(towerOverlayPrefab, canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();

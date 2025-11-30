@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d8758955a8523243a3f1710cd8fdc88, type: 3}
+  m_Name: TowerOverlayCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::TowerOverlayCatalog
+  brassArmyTowerOverlays:
+  - {fileID: 1850511929951099344, guid: 3fb14f0d2d6790b468a3a299e53bf679, type: 3}
+  - {fileID: 1850511929951099344, guid: 7e531e799825cd3449c5eeb54a8dd68f, type: 3}
+  - {fileID: 1850511929951099344, guid: 650af2ae4f327f64bad7d45c2ab48af4, type: 3}
+  - {fileID: 1850511929951099344, guid: 4d35147f9b57c5e4e9e1dcc7b2ecb98a, type: 3}
+  valveboundSeraphsTowerOverlays:
+  - {fileID: 1850511929951099344, guid: 5acd32649d2df1d47a61adc3e7014360, type: 3}
+  - {fileID: 1850511929951099344, guid: 2006ec0e83ced5c479b81596c6a14372, type: 3}
+  - {fileID: 1850511929951099344, guid: 85c97de411603c9408c278f063169dae, type: 3}
+  - {fileID: 1850511929951099344, guid: af89fbc3bfb63de4d9f3fa2e51a39388, type: 3}
+  overpressureCollectiveTowerOverlays:
+  - {fileID: 1850511929951099344, guid: a9eabc95d2952af4aa85fa892954ea50, type: 3}
+  - {fileID: 1850511929951099344, guid: 04e16e12acee96542b36461c3ce1a9cd, type: 3}
+  - {fileID: 1850511929951099344, guid: 80f46f1c822a5d94aaf74d49cc0295dc, type: 3}
+  - {fileID: 1850511929951099344, guid: d304a3e908c524642af26d2f8ff6f37b, type: 3}

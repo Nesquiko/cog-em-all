@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
+public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
 {
     [SerializeField] private SkillTypes skillType = SkillTypes.Wall;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
@@ -11,6 +11,7 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
     public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
     public Transform Transform() => transform;
+    public DamageSourceType Type() => DamageSourceType.Wall;
 
     [SerializeField] private float maxHealthPoints = 500f;
     [SerializeField] private GameObject wallHealthBar;
@@ -93,7 +94,7 @@ public class Wall : MonoBehaviour, ISkillPlaceable, IDamageable
         if (sharpThornsActive)
         {
             float reflectedDamage = damage * sharpThornsModifier.fractionToReturn;
-            attacker?.TakeDamage(reflectedDamage);
+            attacker?.TakeDamage(reflectedDamage, Type());
         }
 
         if (healthPoints <= 0f)
