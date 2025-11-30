@@ -12,51 +12,136 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d06297eaccf7a61cc97ed1e23d1687bd, type: 3}
   m_Name: ModifiersDatabase
   m_EditorClassIdentifier: Assembly-CSharp::ModifiersDatabase
-  theBrassArmyBaseModifiers:
+  theBrassArmyModifiers:
   - rid: 2945730231310221375
-  theValveboundSeraphsBaseModifiers:
-  - rid: 2945730231310221376
-  overpressureCollectiveBaseModifiers:
-  - rid: 2945730231310221378
-  - rid: 2945730231310221379
-  - rid: 2945730231310221380
+  - rid: 2945730877504618564
+  - rid: 2945730877504618565
+  theBrassArmyStaticModifiersSlugs:
+  - ballistic_superiority
+  - legionnaire_firegrid
+  - optimized_supply_lines
+  theValveboundSeraphsModifiers:
+  - rid: 2945730885520719941
+  - rid: 2945730885520719942
+  - rid: 2945730885520719943
+  theValveboundSeraphsStaticModifiersSlugs:
+  - halo_of_reach
+  - seraphic_restraint
+  - valvebound_mending
+  overpressureCollectiveModifiers:
+  - rid: 2945730885520719944
+  - rid: 2945730885520719945
+  - rid: 2945730885520719946
+  overpressureCollectiveStaticModifiersSlugs:
+  - dangerous_dividends
+  - overpressure_protocol
+  - instant_cast_costly_act
   references:
     version: 2
     RefIds:
     - rid: 2945730231310221375
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
       data:
+        name: Ballistic Superiority
+        slug: ballistic_superiority
+        description: The Brass Army's rigorous gunnery drills and precision forged
+          barrels permanently increase Gatling Tower damage by 10%.
         type: 0
         applyTo: 0
         modifiedAttribute: 0
         changeType: 1
         change: 1.1
-    - rid: 2945730231310221376
+    - rid: 2945730877504618564
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Legionnaire Firegrid
+        slug: legionnaire_firegrid
+        description: Every deployed tower strengthens the Brass Army's coordinated
+          firing lattice, granting all towers +2% critical hit chance per tower currently
+          on the battlefield.
+        type: 0
+        applyTo: -1
+        modifiedAttribute: 3
+        changeType: 3
+        change: 2
+    - rid: 2945730877504618565
+      type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Optimized Supply Lines
+        slug: optimized_supply_lines
+        description: The Brass Army's meticulously engineered logistics reduce the
+          resource cost of all tower upgrades by 10%, enabling faster, more efficient
+          battlefield escalation.
+        type: 0
+        category: 3
+        changeType: 1
+        change: 0.9
+    - rid: 2945730885520719941
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Halo of Reach
+        slug: halo_of_reach
+        description: The Valvebound Seraphs extend a radiant mantle over the battlefield,
+          increasing the attack range of all towers by 15%.
+        type: 0
+        applyTo: -1
+        modifiedAttribute: 2
+        changeType: 1
+        change: 1.15
+    - rid: 2945730885520719942
       type: {class: EnemyModifier, ns: , asm: Assembly-CSharp}
       data:
+        name: Seraphic Restraint
+        slug: seraphic_restraint
+        description: The Valvebound Seraphs shackle the advance of their foes, causing
+          all enemies to move 1% slower for each tower you have deployed.
         type: 1
-        applyTo: 0
+        applyTo: -1
         modifiedAttribute: 0
-        changeType: 1
-        change: 0.75
-    - rid: 2945730231310221378
-      type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
+        changeType: 3
+        change: -1
+    - rid: 2945730885520719943
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
       data:
-        type: 0
-        category: 0
-        changeType: 0
-        change: 5
-    - rid: 2945730231310221379
-      type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
+        name: Valvebound Mending
+        slug: valvebound_mending
+        description: Precision engineered repair systems steadily restore the base's
+          integrity, regenerating 10 health per second.
+        type: 2
+        unlocks: 0
+    - rid: 2945730885520719944
+      type: {class: EconomyDoubleEdgedMofifier, ns: , asm: Assembly-CSharp}
       data:
+        name: Dangerous Dividends
+        slug: dangerous_dividends
+        description: ' The Overpressure Collective chases high risk profit, earning
+          10% more Gears from every enemy killed at the cost of losing 100 Gears
+          whenever the base is hit.'
         type: 0
-        category: 1
-        changeType: 0
-        change: -4
-    - rid: 2945730231310221380
-      type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
+        benefit:
+          category: 2
+          changeType: 1
+          change: 1.1
+        disadvantage:
+          category: 4
+          changeType: 0
+          change: -100
+    - rid: 2945730885520719945
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
       data:
+        name: Overpressure Protocol
+        slug: overpressure_protocol
+        description: Experimental steam injectors unlock a powerful stim mode for
+          all towers, temporarily overclocking their performance at the cost of a
+          heavy cooldown once the surge ends.
+        type: 2
+        unlockOn: -1
+        unlock: 0
+    - rid: 2945730885520719946
+      type: {class: AbilityNoCooldownCost100Gears, ns: , asm: Assembly-CSharp}
+      data:
+        name: Instant Cast Costly Act
+        slug: instant_cast_costly_act
+        description: Active can now be used with no cooldown and unleashed in rapid
+          succession, but each activation consumes 100 Gears.
         type: 0
-        category: 2
-        changeType: 0
-        change: 1

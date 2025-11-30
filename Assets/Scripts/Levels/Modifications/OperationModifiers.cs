@@ -42,13 +42,13 @@ public class OperationModifiers : ScriptableObject
         switch (faction)
         {
             case Faction.TheBrassArmy:
-                modifiers = modifiersDatabase.TheBrassArmyBaseModifiers;
+                modifiers = modifiersDatabase.TheBrassArmyStaticModifiers;
                 break;
             case Faction.TheValveboundSeraphs:
-                modifiers = modifiersDatabase.TheValveboundSeraphsBaseModifiers;
+                modifiers = modifiersDatabase.TheBrassArmyStaticModifiers;
                 break;
             case Faction.OverpressureCollective:
-                modifiers = modifiersDatabase.OverpressureCollectiveBaseModifiers;
+                modifiers = modifiersDatabase.OverpressureCollectiveStaticModifiers;
                 break;
             default:
                 throw new ArgumentOutOfRangeException(

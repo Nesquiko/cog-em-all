@@ -54,7 +54,7 @@ public static class ModifiersCalculator
                 case TowerAttribute.Damage:
                     towerDamagePipeline.Add((tower, baseDmg) =>
                     {
-                        if (tower.TowerType() != towerMod.applyTo) return baseDmg;
+                        if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return baseDmg;
                         return ApplyChangeType(towerMod.changeType, towerMod.change, baseDmg);
                     });
                     break;
@@ -100,7 +100,7 @@ public static class ModifiersCalculator
                 case EnemyAttributes.MovementSpeed:
                     enemySpeedPipeline.Add((enemy, speed) =>
                     {
-                        if (enemy.Type != enemyMod.applyTo) return speed;
+                        if (!EnemyModifier.AppliesTo(enemyMod, enemy.Type)) return speed;
                         return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed);
                     });
                     break;

@@ -16,6 +16,7 @@ public enum TowerAttribute
     Damage,
     FireRate,
     Range,
+    CritChange,
 }
 
 public interface ITower
