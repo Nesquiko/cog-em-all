@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering.Universal;
 
 public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
 {
@@ -28,8 +29,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private Transform firePoint;
     [SerializeField] private CapsuleCollider outerCollider;
     [SerializeField] private CapsuleCollider innerCollider;
-    [SerializeField] private GameObject outerRangeIndicator;
-    [SerializeField] private GameObject innerRangeIndicator;
+    [SerializeField] private DecalProjector outerRangeProjector;
+    [SerializeField] private DecalProjector innerRangeProjector;
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
@@ -39,6 +40,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+
+    [Header("Range on Hill")]
+    [SerializeField] private bool hillRangeSkillActive = false;
+    [SerializeField] private float heightRangeMultiplier = 0.05f;
+    [SerializeField] private float baselineHeight = 0f;
 
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.5f;
@@ -80,16 +86,16 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
             transform.position,
             new (float, Color?)[]
             {
-                (maxRange, Color.cyan),
-                (minRange, Color.red)
+                (EffectiveRange(maxRange), Color.cyan),
+                (EffectiveRange(minRange), Color.red)
             }
         );
 
         Handles.color = Color.cyan;
-        Handles.DrawWireDisc(transform.position, Vector3.up, maxRange);
+        Handles.DrawWireDisc(transform.position, Vector3.up, EffectiveRange(maxRange));
 
         Handles.color = Color.red;
-        Handles.DrawWireDisc(transform.position, Vector3.up, minRange);
+        Handles.DrawWireDisc(transform.position, Vector3.up, EffectiveRange(minRange));
     }
 
     private void Awake()
@@ -106,21 +112,39 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private void Start()
     {
         Assert.IsNotNull(outerCollider);
-        outerCollider.radius = maxRange;
+        outerCollider.radius = EffectiveRange(maxRange);
 
         Assert.IsNotNull(innerCollider);
-        innerCollider.radius = minRange;
+        innerCollider.radius = EffectiveRange(minRange);
 
-        Assert.IsNotNull(outerRangeIndicator);
-        outerRangeIndicator.SetActive(false);
-        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);
+        Assert.IsNotNull(outerRangeProjector);
+        ShowRange(outerRangeProjector, false);
+        SetRangeProjector(outerRangeProjector, EffectiveRange(maxRange));
 
-        Assert.IsNotNull(innerRangeIndicator);
-        innerRangeIndicator.SetActive(false);
-        innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
+        Assert.IsNotNull(innerRangeProjector);
+        ShowRange(innerRangeProjector, false);
+        SetRangeProjector(innerRangeProjector, EffectiveRange(minRange));
 
         Assert.IsNotNull(barrel);
         barrelDefaultPosition = barrel.localPosition;
+    }
+
+    private float EffectiveRange(float r)
+    {
+        if (!hillRangeSkillActive) return r;
+
+        float height = transform.position.y - baselineHeight;
+        float heightBonus = Mathf.Max(0f, 1f + height * heightRangeMultiplier);
+        return r * heightBonus;
+    }
+
+    private void ShowRange(DecalProjector projector, bool show) => projector.gameObject.SetActive(show);
+
+    private void SetRangeProjector(DecalProjector projector, float radius)
+    {
+        var size = projector.size;
+        size.x = size.y = radius * 2f;
+        projector.size = size;
     }
 
     private void Update()
@@ -190,7 +214,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private bool IsEnemyValid(Vector3 enemyPosition)
     {
         float distance = Vector3.Distance(transform.position, enemyPosition);
-        return distance >= minRange && distance <= maxRange;
+        return distance >= EffectiveRange(minRange) && distance <= EffectiveRange(maxRange);
     }
 
     private IEnemy GetValidTarget()
@@ -292,16 +316,16 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public void Select()
     {
-        outerRangeIndicator.SetActive(true);
-        innerRangeIndicator.SetActive(true);
+        ShowRange(outerRangeProjector, true);
+        ShowRange(innerRangeProjector, true);
         towerOverlay.Show();
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
     }
 
     public void Deselect()
     {
-        outerRangeIndicator.SetActive(false);
-        innerRangeIndicator.SetActive(false);
+        ShowRange(outerRangeProjector, false);
+        ShowRange(innerRangeProjector, false);
         towerOverlay.Hide();
         TowerMechanics.ClearHighlight(highlightRenderers);
     }
@@ -355,10 +379,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         launchSpeed = data.launchSpeed;
         arcHeight = data.arcHeight;
 
-        innerCollider.radius = data.minRange;
-        outerCollider.radius = data.maxRange;
-        innerRangeIndicator.transform.localScale = new(minRange * 2, innerRangeIndicator.transform.localScale.y, minRange * 2);
-        outerRangeIndicator.transform.localScale = new(maxRange * 2, outerRangeIndicator.transform.localScale.y, maxRange * 2);
+        outerCollider.radius = EffectiveRange(data.maxRange);
+        innerCollider.radius = EffectiveRange(data.minRange);
+        SetRangeProjector(outerRangeProjector, EffectiveRange(data.maxRange));
+        SetRangeProjector(innerRangeProjector, EffectiveRange(data.minRange));
     }
 
     public void SetDamageCalculation(Func<float, float> f)

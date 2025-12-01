@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CapsuleCollider))]
 public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
@@ -21,7 +22,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private GameObject beamPrefab;
     [SerializeField] private Transform firePoint;
     [SerializeField] private CapsuleCollider capsuleCollider;
-    [SerializeField] private GameObject rangeIndicator;
+    [SerializeField] private DecalProjector rangeProjector;
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
@@ -31,6 +32,11 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+
+    [Header("Range on Hill")]
+    [SerializeField] private bool hillRangeSkillActive = false;
+    [SerializeField] private float heightRangeMultiplier = 0.05f;
+    [SerializeField] private float baselineHeight = 0f;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -61,7 +67,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     void OnDrawGizmosSelected()
     {
-        TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, range);
+        TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, EffectiveRange(range));
     }
 
     private void Awake()
@@ -78,11 +84,29 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private void Start()
     {
         Assert.IsNotNull(capsuleCollider);
-        capsuleCollider.radius = range;
+        capsuleCollider.radius = EffectiveRange(range);
 
-        Assert.IsNotNull(rangeIndicator);
-        rangeIndicator.SetActive(false);
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+        Assert.IsNotNull(rangeProjector);
+        ShowRange(false);
+        SetRangeProjector(EffectiveRange(range));
+    }
+
+    private float EffectiveRange(float r)
+    {
+        if (!hillRangeSkillActive) return r;
+
+        float height = transform.position.y - baselineHeight;
+        float heightBonus = Mathf.Max(0f, 1f + height * heightRangeMultiplier);
+        return r * heightBonus;
+    }
+
+    private void ShowRange(bool show) => rangeProjector.gameObject.SetActive(show);
+
+    private void SetRangeProjector(float radius)
+    {
+        var size = rangeProjector.size;
+        size.x = size.y = radius * 2f;
+        rangeProjector.size = size;
     }
 
     private void Update()
@@ -95,7 +119,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
             if (target == null) return;
         }
 
-        if (!TowerMechanics.IsEnemyInRange(transform.position, target, range))
+        if (!TowerMechanics.IsEnemyInRange(transform.position, target, EffectiveRange(range)))
         {
             target = null;
             return;
@@ -136,14 +160,14 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public void Select()
     {
-        rangeIndicator.SetActive(true);
+        ShowRange(true);
         towerOverlay.Show();
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
     }
 
     public void Deselect()
     {
-        rangeIndicator.SetActive(false);
+        ShowRange(false);
         towerOverlay.Hide();
         TowerMechanics.ClearHighlight(highlightRenderers);
     }
@@ -195,7 +219,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+        capsuleCollider.radius = EffectiveRange(range);
+        SetRangeProjector(EffectiveRange(range));
     }
 
     public void SetDamageCalculation(Func<float, float> f)

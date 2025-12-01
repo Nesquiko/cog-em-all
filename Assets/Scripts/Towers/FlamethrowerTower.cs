@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering.Universal;
 
 public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable
 {
@@ -22,7 +23,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private Transform firePoint;
     [SerializeField] private GameObject flamethrowerHead;
     [SerializeField] private GameObject flameCollider;
-    [SerializeField] private GameObject rangeIndicator;
+    [SerializeField] private DecalProjector rangeProjector;
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
@@ -33,6 +34,11 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+
+    [Header("Range on Hill")]
+    [SerializeField] private bool hillRangeSkillActive = false;
+    [SerializeField] private float heightRangeMultiplier = 0.05f;
+    [SerializeField] private float baselineHeight = 0f;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -70,7 +76,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private void OnDrawGizmosSelected()
     {
-        float radius = range;
+        float radius = EffectiveRange(range);
         float angle = flameAngle;
 
         Handles.color = Color.cyan;
@@ -111,17 +117,38 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private void Start()
     {
         Assert.IsNotNull(flameCollider);
-        flameCollider.transform.localScale = new(range, range, range);
+        flameCollider.transform.localScale = new(EffectiveRange(range), EffectiveRange(range), EffectiveRange(range));
 
-        Assert.IsNotNull(rangeIndicator);
-        rangeIndicator.SetActive(false);
-        rangeIndicator.transform.localScale = new(range, rangeIndicator.transform.localScale.y, range);
+        Assert.IsNotNull(rangeProjector);
+        ShowRange(false);
+        SetRangeProjector(EffectiveRange(range));
 
         Vector3 flamePosition = new(firePoint.position.x, 2f, firePoint.position.z);
         GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
         activeFlame = flame.GetComponent<Flame>();
-        activeFlame.Initialize(this, range);
+        activeFlame.Initialize(this, EffectiveRange(range));
         flame.SetActive(false);
+    }
+
+    private float EffectiveRange(float r)
+    {
+        if (!hillRangeSkillActive) return r;
+
+        float height = transform.position.y - baselineHeight;
+        float heightBonus = Mathf.Max(0f, 1f + height * heightRangeMultiplier);
+        return r * heightBonus;
+    }
+
+    private void ShowRange(bool show)
+    {
+        rangeProjector.gameObject.SetActive(show);
+    }
+
+    private void SetRangeProjector(float range)
+    {
+        var size = rangeProjector.size;
+        size.x = size.y = range;
+        rangeProjector.size = size;
     }
 
     private void Update()
@@ -139,7 +166,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         if (activeFlame != null)
         {
             flameCollider.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
-            rangeIndicator.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
+            rangeProjector.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
             activeFlame.transform.SetPositionAndRotation(new(firePoint.position.x, 0f, firePoint.position.z), firePoint.rotation);
         }
     }
@@ -149,7 +176,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         if (isCoolingDown || activeFlame == null) return;
 
         activeFlame.gameObject.SetActive(true);
-        activeFlame.Initialize(this, range);
+        activeFlame.Initialize(this, EffectiveRange(range));
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
         StartCoroutine(CooldownRoutine(flameDuration));
@@ -200,7 +227,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public void Select()
     {
-        rangeIndicator.SetActive(true);
+        ShowRange(true);
         towerOverlay.Show();
         towerRotationOverlay.Hide();
         TowerMechanics.ApplyHighlight(highlightRenderers, TowerMechanics.SelectedColor);
@@ -208,7 +235,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public void Deselect()
     {
-        rangeIndicator.SetActive(false);
+        ShowRange(false);
         towerOverlay.Hide();
         towerRotationOverlay.Hide();
         EndManualRotation();
@@ -300,8 +327,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
 
-        activeFlame.UpdateRange(data.range);
-        rangeIndicator.transform.localScale = new(range * 2, rangeIndicator.transform.localScale.y, range * 2);
+        activeFlame.UpdateRange(EffectiveRange(range));
+        SetRangeProjector(EffectiveRange(range));
     }
 
     public void SetDamageCalculation(Func<float, float> f)
