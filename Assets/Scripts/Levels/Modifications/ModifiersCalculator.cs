@@ -44,6 +44,7 @@ public static class ModifiersCalculator
     public static TowerMods CalculateTowerMods(List<Modifier> modifiers)
     {
         var towerDamagePipeline = new List<Func<ITower, float, float>>();
+        var towerCritChancePipeline = new List<Func<ITower, float, float>>();
 
         foreach (var m in modifiers)
         {
@@ -58,6 +59,14 @@ public static class ModifiersCalculator
                         return ApplyChangeType(towerMod.changeType, towerMod.change, baseDmg);
                     });
                     break;
+                case TowerAttribute.CritChange:
+                    towerCritChancePipeline.Add((tower, baseCritChance) =>
+                    {
+                        if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return baseCritChance;
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseCritChance);
+                    });
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(towerMod.modifiedAttribute), towerMod.modifiedAttribute, "Unsupported modified attritbute.");
             }
