@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Assertions;
-using JetBrains.Annotations;
 
 public enum Faction
 {
@@ -12,6 +11,7 @@ public enum Faction
     OverpressureCollective,
 }
 
+[Obsolete("For now this enum is useless, maybe the modifiers are expressive enough without this. First implement the logic for modifiers, then remove this if it is useless.")]
 public enum ModifierType
 {
     Buff,
@@ -21,10 +21,10 @@ public enum ModifierType
 
 public enum ChangeType
 {
-    Add,       // adds flat value (e.g., +1 gear)
-    Mult,      // multiplies (e.g., 1.10 = +10%)
-    Replace,    // overrides the base value entirely
-    PerPlacedTowerAddPercentage // for each tower on the map, add +X% (if there are 2 towers, adds +2*X% => should multiplies by 1 + 2*X )
+    Add = 0,       // adds flat value (e.g., +1 gear)
+    Mult = 1,      // multiplies (e.g., 1.10 = +10%)
+    Replace = 2,    // overrides the base value entirely
+    PerPlacedTowerAddPercentage = 3, // for each tower on the map, add +X% (if there are 2 towers, adds +2*X% => should multiplies by 1 + 2*X )
 }
 
 [Serializable]
@@ -82,6 +82,18 @@ public class EnemyModifier : Modifier
     }
 }
 
+public enum EnemyAbilities
+{
+
+    BomberOnDeathFriendlyFire = 0,
+}
+
+[Serializable]
+class EnemyAbilityUnlock : Modifier
+{
+    public EnemyAbilities toUnlock;
+}
+
 public enum EconomyAttributes
 {
     PassiveGearsAmount,
@@ -124,6 +136,14 @@ public class UnlockTowerTypeModifier : Modifier
 public enum TowerUnlocks
 {
     StimMode = 0,
+    ManualMode = 1,
+    OnHillRangeIncrease = 2,
+    OnHitDot = 3,
+    ArmorShreding = 4,
+    OnHitStun = 5,
+    OnHitRemoveEnemyAbilities = 6,
+    OnHitSlow = 7,
+    OnHitKnockback = 8,
 }
 
 [Serializable]
@@ -134,15 +154,35 @@ public class UnlockTowerAbilityModifier : Modifier
 }
 
 [Serializable]
+public class UnlockTowerAbilityOnMultipleModifier : Modifier
+{
+    public List<TowerModifierApplyTo> unlockOn;
+    public TowerUnlocks unlock;
+}
+
+[Serializable]
+public class TowerAttributeChange
+{
+    public TowerAttribute modifiedAttribute;
+    public ChangeType changeType;
+    public float change;
+}
+
+
+[Serializable]
 public class UnlockTowerUpgradeModifier : Modifier
 {
     public TowerTypes applyTo;
     public int allowLevel;
+    public List<TowerAttributeChange> upgrades;
 }
 
 public enum BaseUnlocks
 {
     HealthRegen = 0,
+    AirShipAirStrike = 1,
+    AirShipFreeze = 2,
+    AirShipDisableEnemyAbilitiesZone = 3,
 }
 
 [Serializable]
@@ -169,9 +209,33 @@ public class AbilityModifierUnlock : Modifier
 // so I am betting on my future self, that I will not come up with something like this...
 public class AbilityNoCooldownCost100Gears : Modifier { }
 
+public enum StimModeModifiers
+{
+    /// <summary>
+    /// For example mortar shoots 2 shells, or tesla fires 2 beams
+    /// </summary>
+    DoublePayload = 0,
+    FlamethrowerSweepLeftToRight = 1,
+
+    /// <summary>
+    /// The stim mode keeps upping the stats of the tower until the end
+    /// </summary>
+    ExponentialStim = 2,
+}
+
+[Serializable]
+public class StimModeModifier : Modifier
+{
+    public TowerTypes applyTo;
+    public StimModeModifiers modifies;
+}
+
 [CreateAssetMenu(fileName = "ModifiersDatabase", menuName = "Scriptable Objects/ModifiersDatabase")]
 public class ModifiersDatabase : ScriptableObject
 {
+
+    [SerializeReference] private List<Modifier> genericModifiers = new();
+    public List<Modifier> GenericModifiers => genericModifiers;
 
     [SerializeReference] private List<Modifier> theBrassArmyModifiers = new();
     public List<Modifier> TheBrassArmyModifiers => theBrassArmyModifiers;
@@ -212,6 +276,8 @@ public class ModifiersDatabase : ScriptableObject
 [CustomEditor(typeof(ModifiersDatabase))]
 public class ModifiersDatabaseEditor : Editor
 {
+    private SerializedProperty genericModifsProp;
+
     private SerializedProperty brassArmyModifsProp;
     private SerializedProperty brassArmyStaticModifsProp;
 
@@ -225,6 +291,7 @@ public class ModifiersDatabaseEditor : Editor
     {
         serializedObject.Update();
 
+        AutoSyncSlugs(genericModifsProp);
         AutoSyncSlugs(brassArmyModifsProp);
         AutoSyncSlugs(brassArmyStaticModifsProp);
 
@@ -234,7 +301,10 @@ public class ModifiersDatabaseEditor : Editor
         AutoSyncSlugs(collectiveModifsProp);
         AutoSyncSlugs(collectiveStaticModifsProp);
 
-        // Draw each faction list with its own controls
+        DrawGenericMajor(genericModifsProp);
+
+        EditorGUILayout.Space(10);
+
         DrawFactionSection(
             header: "The Brass Army",
             faction: Faction.TheBrassArmy,
@@ -270,6 +340,8 @@ public class ModifiersDatabaseEditor : Editor
 
     private void OnEnable()
     {
+        genericModifsProp = serializedObject.FindProperty("genericModifiers");
+
         brassArmyModifsProp = serializedObject.FindProperty("theBrassArmyModifiers");
         brassArmyStaticModifsProp = serializedObject.FindProperty("theBrassArmyStaticModifiersSlugs");
 
@@ -280,6 +352,14 @@ public class ModifiersDatabaseEditor : Editor
         collectiveStaticModifsProp = serializedObject.FindProperty("overpressureCollectiveStaticModifiersSlugs");
     }
 
+    private void DrawGenericMajor(SerializedProperty modifsListProp)
+    {
+        EditorGUILayout.LabelField("Generic major modifications", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(modifsListProp, includeChildren: true);
+
+        DrawAddModificationButtons(modifsListProp, null);
+    }
+
     private void DrawFactionSection(string header, Faction faction, SerializedProperty factionModifsProp, SerializedProperty factionStaticSlugsProp)
     {
         EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
@@ -287,59 +367,112 @@ public class ModifiersDatabaseEditor : Editor
         // list of faction specific modifications
         EditorGUILayout.PropertyField(factionModifsProp, includeChildren: true);
 
-        // buttons to insert modifier subclass instances
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            if (GUILayout.Button("Add Tower Modifier"))
-                Add(factionModifsProp, new TowerModifier());
-            if (GUILayout.Button("Add Enemy Modifiery"))
-                Add(factionModifsProp, new EnemyModifier());
-            if (GUILayout.Button("Add Economy Modifiery"))
-                Add(factionModifsProp, new EconomyModifier());
-        }
-
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            if (GUILayout.Button("Add Unlock Tower Type"))
-                Add(factionModifsProp, new UnlockTowerTypeModifier());
-            if (GUILayout.Button("Add Unlock Tower Ability"))
-                Add(factionModifsProp, new UnlockTowerAbilityModifier());
-            if (GUILayout.Button("Add Unlock Tower Upgrade"))
-                Add(factionModifsProp, new UnlockTowerUpgradeModifier());
-        }
-
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            if (GUILayout.Button("Add ability unlock"))
-                Add(factionModifsProp, new AbilityUnlock());
-            if (GUILayout.Button("Add ability modifier unlock"))
-                Add(factionModifsProp, new AbilityModifierUnlock());
-        }
-
-        if (faction == Faction.TheValveboundSeraphs)
-        {
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Add Base Unlock"))
-                    Add(factionModifsProp, new BaseUnlock());
-            }
-        }
-
-        if (faction == Faction.OverpressureCollective)
-        {
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Add Double edged economy modifier"))
-                    Add(factionModifsProp, new EconomyDoubleEdgedMofifier());
-                if (GUILayout.Button("Add Double edged ability modifier"))
-                    Add(factionModifsProp, new AbilityNoCooldownCost100Gears());
-            }
-        }
+        DrawAddModificationButtons(factionModifsProp, faction);
 
         EditorGUILayout.Space(4);
         EditorGUILayout.LabelField("Static Modifiers (by slug)", EditorStyles.miniBoldLabel);
 
         DrawStaticSlugList(factionModifsProp, factionStaticSlugsProp);
+    }
+
+    private void DrawAddModificationButtons(SerializedProperty modifsListProp, Faction? faction)
+    {
+        EditorGUILayout.LabelField("Add Modification", EditorStyles.boldLabel);
+
+        // --- General categories ---
+
+        // Towers
+        EditorGUILayout.LabelField("Towers", EditorStyles.miniBoldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Tower Modifier"))
+                Add(modifsListProp, new TowerModifier());
+
+            if (GUILayout.Button("Unlock Tower Type"))
+                Add(modifsListProp, new UnlockTowerTypeModifier());
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Unlock Tower Ability"))
+                Add(modifsListProp, new UnlockTowerAbilityModifier());
+
+            if (GUILayout.Button("Unlock Tower Ability (Multiple)"))
+                Add(modifsListProp, new UnlockTowerAbilityOnMultipleModifier());
+
+            if (GUILayout.Button("Unlock Tower Upgrade"))
+                Add(modifsListProp, new UnlockTowerUpgradeModifier());
+        }
+
+        EditorGUILayout.Space(4);
+
+        // Enemies
+        EditorGUILayout.LabelField("Enemies", EditorStyles.miniBoldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Enemy Modifier"))
+                Add(modifsListProp, new EnemyModifier());
+
+            if (GUILayout.Button("Enemy Ability Unlock"))
+                Add(modifsListProp, new EnemyAbilityUnlock());
+        }
+
+        EditorGUILayout.Space(4);
+
+        // Economy
+        EditorGUILayout.LabelField("Economy", EditorStyles.miniBoldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Economy Modifier"))
+                Add(modifsListProp, new EconomyModifier());
+        }
+
+        EditorGUILayout.Space(4);
+
+        // Abilities
+        EditorGUILayout.LabelField("Abilities", EditorStyles.miniBoldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Ability Unlock"))
+                Add(modifsListProp, new AbilityUnlock());
+
+            if (GUILayout.Button("Ability Modifier Unlock"))
+                Add(modifsListProp, new AbilityModifierUnlock());
+        }
+
+        EditorGUILayout.Space(4);
+
+        // Base
+        EditorGUILayout.LabelField("Base", EditorStyles.miniBoldLabel);
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Base Unlock"))
+                Add(modifsListProp, new BaseUnlock());
+        }
+
+        EditorGUILayout.Space(8);
+
+        // --- Faction-specific: Overpressure Collective ---
+
+        if (faction == Faction.OverpressureCollective)
+        {
+            EditorGUILayout.LabelField(
+                "Overpressure Collective – Special",
+                EditorStyles.miniBoldLabel
+            );
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (GUILayout.Button("Double-Edged Economy Modifier"))
+                    Add(modifsListProp, new EconomyDoubleEdgedMofifier());
+
+                if (GUILayout.Button("Ability: No CD, 100 Gears"))
+                    Add(modifsListProp, new AbilityNoCooldownCost100Gears());
+
+                if (GUILayout.Button("Stim Mode Modifier"))
+                    Add(modifsListProp, new StimModeModifier());
+            }
+        }
     }
 
     private static void Add(SerializedProperty listProp, Modifier instance)
@@ -483,7 +616,7 @@ public class ModifiersDatabaseEditor : Editor
 
         string s = raw.Trim().ToLowerInvariant();
 
-        return s.Replace(' ', '_');
+        return s.Replace(' ', '_').Replace("'", "");
     }
 }
 #endif

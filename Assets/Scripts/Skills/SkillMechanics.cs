@@ -5,6 +5,8 @@ public enum SkillTypes
     Wall = 0,
     OilSpill = 1,
     Mine = 2,
+    MarkEnemy = 3,
+    SuddenDeath = 4,
 }
 
 public interface ISkillModifier
@@ -26,6 +28,7 @@ public enum SkillModifiers
     DoubleTheBoom = 6,
     WideDestruction = 7,
     QuickFuse = 8,
+    ShatterCharge = 9,
 }
 
 public interface ISkill
