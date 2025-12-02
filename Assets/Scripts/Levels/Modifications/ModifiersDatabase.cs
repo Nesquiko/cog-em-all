@@ -53,6 +53,7 @@ public class TowerModifier : Modifier
     public TowerAttribute modifiedAttribute;
     public ChangeType changeType;
     public float change;
+    public int maxRanks = 1;
 
     public static bool AppliesTo(TowerModifier mod, TowerTypes towerType)
     {
@@ -84,7 +85,6 @@ public class EnemyModifier : Modifier
 
 public enum EnemyAbilities
 {
-
     BomberOnDeathFriendlyFire = 0,
 }
 
@@ -197,6 +197,15 @@ public class AbilityUnlock : Modifier
     public SkillTypes toUnlock;
 }
 
+
+[Serializable]
+public class AbilityAddUsages : Modifier
+{
+    public SkillTypes addTo;
+    public int maxRanks;
+    public int numOfUsages;
+}
+
 [Serializable]
 public class AbilityModifierUnlock : Modifier
 {
@@ -234,8 +243,11 @@ public class StimModeModifier : Modifier
 public class ModifiersDatabase : ScriptableObject
 {
 
-    [SerializeReference] private List<Modifier> genericModifiers = new();
-    public List<Modifier> GenericModifiers => genericModifiers;
+    [SerializeReference] private List<Modifier> genericMinorModifiers = new();
+    public List<Modifier> GenericMinorModifiers => genericMinorModifiers;
+
+    [SerializeReference] private List<Modifier> genericMajorModifiers = new();
+    public List<Modifier> GenericMajorModifiers => genericMajorModifiers;
 
     [SerializeReference] private List<Modifier> theBrassArmyModifiers = new();
     public List<Modifier> TheBrassArmyModifiers => theBrassArmyModifiers;
@@ -276,7 +288,8 @@ public class ModifiersDatabase : ScriptableObject
 [CustomEditor(typeof(ModifiersDatabase))]
 public class ModifiersDatabaseEditor : Editor
 {
-    private SerializedProperty genericModifsProp;
+    private SerializedProperty genericMinorModifsProp;
+    private SerializedProperty genericMajorModifsProp;
 
     private SerializedProperty brassArmyModifsProp;
     private SerializedProperty brassArmyStaticModifsProp;
@@ -287,11 +300,19 @@ public class ModifiersDatabaseEditor : Editor
     private SerializedProperty collectiveModifsProp;
     private SerializedProperty collectiveStaticModifsProp;
 
+    private GUIStyle BigBoldLabelStyle => new(EditorStyles.boldLabel)
+    {
+        fontSize = 20,
+        fontStyle = FontStyle.Bold
+    };
+
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
 
-        AutoSyncSlugs(genericModifsProp);
+        AutoSyncSlugs(genericMinorModifsProp);
+        AutoSyncSlugs(genericMajorModifsProp);
+
         AutoSyncSlugs(brassArmyModifsProp);
         AutoSyncSlugs(brassArmyStaticModifsProp);
 
@@ -301,7 +322,8 @@ public class ModifiersDatabaseEditor : Editor
         AutoSyncSlugs(collectiveModifsProp);
         AutoSyncSlugs(collectiveStaticModifsProp);
 
-        DrawGenericMajor(genericModifsProp);
+        DrawGeneric(genericMinorModifsProp);
+        DrawGeneric(genericMajorModifsProp);
 
         EditorGUILayout.Space(10);
 
@@ -340,7 +362,8 @@ public class ModifiersDatabaseEditor : Editor
 
     private void OnEnable()
     {
-        genericModifsProp = serializedObject.FindProperty("genericModifiers");
+        genericMinorModifsProp = serializedObject.FindProperty("genericMinorModifiers");
+        genericMajorModifsProp = serializedObject.FindProperty("genericMajorModifiers");
 
         brassArmyModifsProp = serializedObject.FindProperty("theBrassArmyModifiers");
         brassArmyStaticModifsProp = serializedObject.FindProperty("theBrassArmyStaticModifiersSlugs");
@@ -352,9 +375,9 @@ public class ModifiersDatabaseEditor : Editor
         collectiveStaticModifsProp = serializedObject.FindProperty("overpressureCollectiveStaticModifiersSlugs");
     }
 
-    private void DrawGenericMajor(SerializedProperty modifsListProp)
+    private void DrawGeneric(SerializedProperty modifsListProp)
     {
-        EditorGUILayout.LabelField("Generic major modifications", EditorStyles.boldLabel);
+        EditorGUILayout.LabelField("Generic major modifications", BigBoldLabelStyle);
         EditorGUILayout.PropertyField(modifsListProp, includeChildren: true);
 
         DrawAddModificationButtons(modifsListProp, null);
@@ -362,7 +385,7 @@ public class ModifiersDatabaseEditor : Editor
 
     private void DrawFactionSection(string header, Faction faction, SerializedProperty factionModifsProp, SerializedProperty factionStaticSlugsProp)
     {
-        EditorGUILayout.LabelField(header, EditorStyles.boldLabel);
+        EditorGUILayout.LabelField(header, BigBoldLabelStyle);
 
         // list of faction specific modifications
         EditorGUILayout.PropertyField(factionModifsProp, includeChildren: true);
@@ -435,6 +458,9 @@ public class ModifiersDatabaseEditor : Editor
         {
             if (GUILayout.Button("Ability Unlock"))
                 Add(modifsListProp, new AbilityUnlock());
+
+            if (GUILayout.Button("Ability add usages"))
+                Add(modifsListProp, new AbilityAddUsages());
 
             if (GUILayout.Button("Ability Modifier Unlock"))
                 Add(modifsListProp, new AbilityModifierUnlock());

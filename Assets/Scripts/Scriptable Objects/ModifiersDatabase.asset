@@ -12,7 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d06297eaccf7a61cc97ed1e23d1687bd, type: 3}
   m_Name: ModifiersDatabase
   m_EditorClassIdentifier: Assembly-CSharp::ModifiersDatabase
-  genericModifiers:
+  genericMinorModifiers:
+  - rid: 7348732250137296964
+  - rid: 7348732250137296965
+  - rid: 7348732250137296966
+  - rid: 7348732250137296967
+  - rid: 7348732250137296968
+  - rid: 7348732250137296970
+  - rid: 7348732250137296971
+  - rid: 7348732250137296972
+  - rid: 7348732250137296974
+  genericMajorModifiers:
   - rid: 7348732237428031582
   - rid: 7348732237428031583
   - rid: 7348732237428031584
@@ -88,6 +98,7 @@ MonoBehaviour:
         modifiedAttribute: 0
         changeType: 1
         change: 1.1
+        maxRanks: 1
     - rid: 2945730877504618564
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -101,6 +112,7 @@ MonoBehaviour:
         modifiedAttribute: 3
         changeType: 3
         change: 2
+        maxRanks: 1
     - rid: 2945730877504618565
       type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -125,6 +137,7 @@ MonoBehaviour:
         modifiedAttribute: 2
         changeType: 1
         change: 1.15
+        maxRanks: 1
     - rid: 2945730885520719942
       type: {class: EnemyModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -649,3 +662,112 @@ MonoBehaviour:
           to damage nearby enemies.
         type: 2
         toUnlock: 2
+    - rid: 7348732250137296964
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Rapid Fire
+        slug: rapid_fire
+        description: ' Gatling Tower attack rate increased by 10% per rank.'
+        type: 0
+        applyTo: 0
+        modifiedAttribute: 0
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296965
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Chain Reach
+        slug: chain_reach
+        description: Tesla Tower beam chain length by +1 per rank, allowing its lightning
+          to jump to more additional enemies.
+        type: 0
+        applyTo: 1
+        modifiedAttribute: 6
+        changeType: 0
+        change: 1
+        maxRanks: 3
+    - rid: 7348732250137296966
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Rapid Loading
+        slug: rapid_loading
+        description: Mortar Tower attack rate increased by 10% per rank.
+        type: 0
+        applyTo: 2
+        modifiedAttribute: 1
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296967
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Sustained Burn
+        slug: sustained_burn
+        description: Flamethrower flame duration increased by 10% per rank.
+        type: 0
+        applyTo: 3
+        modifiedAttribute: 5
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296968
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Persistent Burn
+        slug: persistent_burn
+        description: Increases Flamethrower burn duration by 10% per rank, causing
+          enemies to suffer burning damage for longer after being hit.
+        type: 0
+        applyTo: 3
+        modifiedAttribute: 7
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296970
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Additional Barricades
+        slug: additional_barricades
+        description: Increases the maximum number of Wall charges by +2 per rank,
+          allowing you to deploy more barricades on the battlefield during operation.
+        type: 2
+        addTo: 0
+        maxRanks: 3
+        numOfUsages: 2
+    - rid: 7348732250137296971
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Reserve Barrels
+        slug: reserve_barrels
+        description: ' Increases the maximum number of Oil Spill charges by +2 per
+          rank, letting you deploy more slowing oil pools across the battlefield.'
+        type: 2
+        addTo: 1
+        maxRanks: 3
+        numOfUsages: 2
+    - rid: 7348732250137296972
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine Stockpile
+        slug: mine_stockpile
+        description: ' Increases the maximum number of Mine charges by +2 per rank,
+          allowing you to seed more explosive traps along enemy paths.'
+        type: 2
+        addTo: 2
+        maxRanks: 3
+        numOfUsages: 2
+    - rid: 7348732250137296974
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Enhanced Rending
+        slug: enhanced_rending
+        description: Increases the maximum number of Rending Rounds armor shred stacks
+          by +1 per rank, allowing Gatling fire to strip more protection from hardened
+          targets before reaching full effect.
+        type: 0
+        applyTo: 0
+        modifiedAttribute: 8
+        changeType: 0
+        change: 1
+        maxRanks: 2

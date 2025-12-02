@@ -19,6 +19,9 @@ public enum TowerAttribute
     CritChange = 3,
     CritDamage = 4,
     FireTime = 5,
+    ChainLength = 6,
+    DotDuration = 7,
+    MaxAppliedStacks = 8,
 }
 
 public interface ITower
