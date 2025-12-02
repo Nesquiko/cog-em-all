@@ -7,6 +7,7 @@ TagManager:
   - TowerModel
   - MinimapBackground
   - MaximizedMinimap
+  - SkillTreeConnectionLayer
   layers:
   - Default
   - TransparentFX
