@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.Assertions;
+using System.Linq;
 
 public enum Faction
 {
@@ -242,27 +243,76 @@ public class StimModeModifier : Modifier
 [CreateAssetMenu(fileName = "ModifiersDatabase", menuName = "Scriptable Objects/ModifiersDatabase")]
 public class ModifiersDatabase : ScriptableObject
 {
-
     [SerializeReference] private List<Modifier> genericMinorModifiers = new();
     public List<Modifier> GenericMinorModifiers => genericMinorModifiers;
+    public List<string> GenericMinorModifierSlugs => genericMinorModifiers.Select(modif => modif.slug).ToList();
+
+    public Modifier GetGenericMinorModifierBySlug(string slug)
+    {
+        Assert.IsNotNull(genericMinorModifiers);
+        Assert.IsFalse(string.IsNullOrEmpty(slug));
+        var modifier = genericMinorModifiers.FirstOrDefault(m => m.slug == slug);
+        Assert.IsNotNull(modifier, $"No generic minor modifier found with slug '{slug}'.");
+        return modifier;
+    }
 
     [SerializeReference] private List<Modifier> genericMajorModifiers = new();
     public List<Modifier> GenericMajorModifiers => genericMajorModifiers;
+    public List<string> GenericMajorModifierSlugs => genericMinorModifiers.Select(modif => modif.slug).ToList();
+
+    public Modifier GetGenericMajorModifierBySlug(string slug)
+    {
+        Assert.IsNotNull(genericMajorModifiers);
+        Assert.IsFalse(string.IsNullOrEmpty(slug));
+        var modifier = genericMajorModifiers.FirstOrDefault(m => m.slug == slug);
+        Assert.IsNotNull(modifier, $"No generic major modifier found with slug '{slug}'.");
+        return modifier;
+    }
 
     [SerializeReference] private List<Modifier> theBrassArmyModifiers = new();
     public List<Modifier> TheBrassArmyModifiers => theBrassArmyModifiers;
     [SerializeReference] private List<string> theBrassArmyStaticModifiersSlugs = new();
     public List<Modifier> TheBrassArmyStaticModifiers => ResolveModifiers(theBrassArmyModifiers, theBrassArmyStaticModifiersSlugs);
+    public List<string> TheBrassArmyModifierSlugs => theBrassArmyModifiers.Select(modif => modif.slug).ToList();
+
+    public Modifier GetTheBrassArmyModifierBySlug(string slug)
+    {
+        Assert.IsNotNull(theBrassArmyModifiers);
+        Assert.IsFalse(string.IsNullOrEmpty(slug));
+        var modifier = theBrassArmyModifiers.FirstOrDefault(m => m.slug == slug);
+        Assert.IsNotNull(modifier, $"No brass army modifier found with slug '{slug}'.");
+        return modifier;
+    }
 
     [SerializeReference] private List<Modifier> theValveboundSeraphsModifiers = new();
     public List<Modifier> TheValveboundSeraphsModifiers => theValveboundSeraphsModifiers;
     [SerializeReference] private List<string> theValveboundSeraphsStaticModifiersSlugs = new();
     public List<Modifier> TheValveboundSeraphsStaticModifiers => ResolveModifiers(theValveboundSeraphsModifiers, theValveboundSeraphsStaticModifiersSlugs);
+    public List<string> TheValveboundSeraphsModifierSlugs => theValveboundSeraphsModifiers.Select(modif => modif.slug).ToList();
+
+    public Modifier GetValveboundSeraphsModifierBySlug(string slug)
+    {
+        Assert.IsNotNull(theValveboundSeraphsModifiers);
+        Assert.IsFalse(string.IsNullOrEmpty(slug));
+        var modifier = theValveboundSeraphsModifiers.FirstOrDefault(m => m.slug == slug);
+        Assert.IsNotNull(modifier, $"No valvebound seraphs modifier found with slug '{slug}'.");
+        return modifier;
+    }
 
     [SerializeReference] private List<Modifier> overpressureCollectiveModifiers = new();
     public List<Modifier> OverpressureCollectiveModifiers => overpressureCollectiveModifiers;
     [SerializeReference] private List<string> overpressureCollectiveStaticModifiersSlugs = new();
     public List<Modifier> OverpressureCollectiveStaticModifiers => ResolveModifiers(overpressureCollectiveModifiers, overpressureCollectiveStaticModifiersSlugs);
+    public List<string> OverpressureCollectiveModifierSlugs => overpressureCollectiveModifiers.Select(modif => modif.slug).ToList();
+
+    public Modifier GetOverpressureCollectiveModifierBySlug(string slug)
+    {
+        Assert.IsNotNull(overpressureCollectiveModifiers);
+        Assert.IsFalse(string.IsNullOrEmpty(slug));
+        var modifier = overpressureCollectiveModifiers.FirstOrDefault(m => m.slug == slug);
+        Assert.IsNotNull(modifier, $"No overpressure collective modifier found with slug '{slug}'.");
+        return modifier;
+    }
 
     private static List<Modifier> ResolveModifiers(List<Modifier> source, List<string> slugRefs)
     {
