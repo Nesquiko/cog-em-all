@@ -13,10 +13,15 @@ public enum TowerTypes
 
 public enum TowerAttribute
 {
-    Damage,
-    FireRate,
-    Range,
-    CritChange,
+    Damage = 0,
+    FireRate = 1,
+    Range = 2,
+    CritChange = 3,
+    CritDamage = 4,
+    FireTime = 5,
+    ChainLength = 6,
+    DotDuration = 7,
+    MaxAppliedStacks = 8,
 }
 
 public interface ITower

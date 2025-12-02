@@ -12,10 +12,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d06297eaccf7a61cc97ed1e23d1687bd, type: 3}
   m_Name: ModifiersDatabase
   m_EditorClassIdentifier: Assembly-CSharp::ModifiersDatabase
+  genericMinorModifiers:
+  - rid: 7348732250137296964
+  - rid: 7348732250137296965
+  - rid: 7348732250137296966
+  - rid: 7348732250137296967
+  - rid: 7348732250137296968
+  - rid: 7348732250137296970
+  - rid: 7348732250137296971
+  - rid: 7348732250137296972
+  - rid: 7348732250137296974
+  genericMajorModifiers:
+  - rid: 7348732237428031582
+  - rid: 7348732237428031583
+  - rid: 7348732237428031584
+  - rid: 7348732237428031585
+  - rid: 7348732237428031586
+  - rid: 7348732237428031587
+  - rid: 7348732237428031588
+  - rid: 7348732237428031589
+  - rid: 7348732237428031590
+  - rid: 7348732237428031591
+  - rid: 7348732237428031592
+  - rid: 7348732237428031593
+  - rid: 7348732237428031594
+  - rid: 7348732237428031595
   theBrassArmyModifiers:
   - rid: 2945730231310221375
   - rid: 2945730877504618564
   - rid: 2945730877504618565
+  - rid: 7348732237428031488
+  - rid: 7348732237428031557
+  - rid: 7348732237428031558
+  - rid: 7348732237428031559
+  - rid: 7348732237428031560
+  - rid: 7348732237428031561
+  - rid: 7348732237428031562
   theBrassArmyStaticModifiersSlugs:
   - ballistic_superiority
   - legionnaire_firegrid
@@ -24,6 +56,14 @@ MonoBehaviour:
   - rid: 2945730885520719941
   - rid: 2945730885520719942
   - rid: 2945730885520719943
+  - rid: 7348732237428031563
+  - rid: 7348732237428031564
+  - rid: 7348732237428031565
+  - rid: 7348732237428031566
+  - rid: 7348732237428031567
+  - rid: 7348732237428031569
+  - rid: 7348732237428031570
+  - rid: 7348732237428031572
   theValveboundSeraphsStaticModifiersSlugs:
   - halo_of_reach
   - seraphic_restraint
@@ -32,6 +72,13 @@ MonoBehaviour:
   - rid: 2945730885520719944
   - rid: 2945730885520719945
   - rid: 2945730885520719946
+  - rid: 7348732237428031573
+  - rid: 7348732237428031574
+  - rid: 7348732237428031575
+  - rid: 7348732237428031577
+  - rid: 7348732237428031578
+  - rid: 7348732237428031579
+  - rid: 7348732237428031580
   overpressureCollectiveStaticModifiersSlugs:
   - dangerous_dividends
   - overpressure_protocol
@@ -51,6 +98,7 @@ MonoBehaviour:
         modifiedAttribute: 0
         changeType: 1
         change: 1.1
+        maxRanks: 1
     - rid: 2945730877504618564
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -64,6 +112,7 @@ MonoBehaviour:
         modifiedAttribute: 3
         changeType: 3
         change: 2
+        maxRanks: 1
     - rid: 2945730877504618565
       type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -88,6 +137,7 @@ MonoBehaviour:
         modifiedAttribute: 2
         changeType: 1
         change: 1.15
+        maxRanks: 1
     - rid: 2945730885520719942
       type: {class: EnemyModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -145,3 +195,579 @@ MonoBehaviour:
         description: Active can now be used with no cooldown and unleashed in rapid
           succession, but each activation consumes 100 Gears.
         type: 0
+    - rid: 7348732237428031488
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Executioner's Current
+        slug: executioners_current
+        description: Unlocks manual control for Tesla Towers, allowing them to channel
+          a lethal surge that instantly executes enemies below 30% health.
+        type: 2
+        unlockOn: 1
+        unlock: 1
+    - rid: 7348732237428031557
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: High Ground
+        slug: high_ground
+        description: Towers built on elevated terrain gain increased attack range,
+          capitalizing on superior firing positions across the battlefield.
+        type: 2
+        unlockOn: -1
+        unlock: 2
+    - rid: 7348732237428031558
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Shrapnel shells
+        slug: shrapnel_shells
+        description: Mortar impacts rupture enemy plating with high-velocity fragments,
+          causing sustained structural damage over time as their armor and components
+          are torn apart.
+        type: 2
+        unlockOn: 2
+        unlock: 3
+    - rid: 7348732237428031559
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Rending Rounds
+        slug: rending_rounds
+        description: Gatling Tower fire tears into enemy armor, applying up to 2
+          stacks of armor shred that increase all subsequent bullet damage against
+          the target by 5% per stack.
+        type: 2
+        unlockOn: 0
+        unlock: 4
+    - rid: 7348732237428031560
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Iron Rain
+        slug: iron_rain
+        description: Call in a Brass Army airship to blanket a targeted area in a
+          devastating bombardment, pelting enemies below with a concentrated storm
+          of explosive ordnance.
+        type: 2
+        unlocks: 1
+    - rid: 7348732237428031561
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Molten Spray
+        slug: molten_spray
+        description: Flamethrower Towers douse enemies in superheated fuel, inflicting
+          a lingering burn that continues to melt their mechanical frames over time.
+        type: 2
+        unlockOn: 3
+        unlock: 3
+    - rid: 7348732237428031562
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Commanded Fire
+        slug: commanded_fire
+        description: Unlocks manual control for Gatling Towers, letting you personally
+          direct their shots anywhere on the battlefield with no range limitation.
+        type: 2
+        unlockOn: 0
+        unlock: 1
+    - rid: 7348732237428031563
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Angelic Interdiction
+        slug: angelic_interdiction
+        description: Tesla Towers strike with a sanctified surge that stuns the initial
+          enemy hit, halting their advance.
+        type: 2
+        unlockOn: 1
+        unlock: 5
+    - rid: 7348732237428031564
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Purging Current
+        slug: purging_current
+        description: Tesla hits unleash a cleansing surge that strips enemies of
+          all active buffs and tearing away enhancements like Bandit leadership auras
+          and Dreadnought shields.
+        type: 2
+        unlockOn: 1
+        unlock: 6
+    - rid: 7348732237428031565
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Angel's Verdict
+        slug: angels_verdict
+        description: Designate a single enemy for judgment, marking it so that all
+          towers prioritize and focus their fire on that target until it is destroyed.
+        type: 2
+        toUnlock: 3
+    - rid: 7348732237428031566
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Hindering shells
+        slug: hindering_shells
+        description: Mortar impacts saturate the target area with destabilizing shockwaves,
+          slowing all enemies caught in the blast and dragging their advance through
+          the kill zone.
+        type: 2
+        unlockOn: 2
+        unlock: 7
+    - rid: 7348732237428031567
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Hindering Volley
+        slug: hindering_volley
+        description: Gatling Tower fire peppers advancing enemies with precise suppressive
+          shots, slowing each target hit and weakening their momentum.
+        type: 2
+        unlockOn: 0
+        unlock: 7
+    - rid: 7348732237428031569
+      type: {class: UnlockTowerAbilityOnMultipleModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Weight of Judgment
+        slug: weight_of_judgment
+        description: Each projectile from Gatling and Mortar Towers lands with condemning
+          force, knocking enemies on hit.
+        type: 2
+        unlockOn: 0000000002000000
+        unlock: 8
+    - rid: 7348732237428031570
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Cryo Strike
+        slug: cryo_strike
+        description: An airship deploys a concentrated cryogenic charge that blankets
+          a targeted area in freezing vapor, stunning all enemies caught within the
+          blast.
+        type: 2
+        unlocks: 2
+    - rid: 7348732237428031572
+      type: {class: AbilityModifierUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Shatter Charge
+        slug: shatter_charge
+        description: Detonated mines violently fracture the cryo-frozen zone, shattering
+          immobilized enemies and dealing heavy damage to all targets trapped in
+          the ice.
+        type: 2
+        applyTo: 2
+        toUnlock: 9
+    - rid: 7348732237428031573
+      type: {class: StimModeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Dual Discharge
+        slug: dual_discharge
+        description: In stim mode, Tesla Towers unleash twin lightning beams instead
+          of one, doubling their targets and flooding the battlefield with overcharged
+          arcs before entering cooldown.
+        type: 2
+        applyTo: 1
+        modifies: 0
+    - rid: 7348732237428031574
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Nullwave Strike
+        slug: nullwave_strike
+        description: An overpressure airstrike floods a targeted area with disruptive
+          waves that completely disable enemy abilities, but foes emerging from the
+          zone are fully restored.
+        type: 2
+        unlocks: 3
+    - rid: 7348732237428031575
+      type: {class: StimModeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Duplex Bombardment
+        slug: duplex_bombardment
+        description: In stim mode, Mortar Towers unleash two shells in rapid succession
+          with each volley.
+        type: 2
+        applyTo: 2
+        modifies: 0
+    - rid: 7348732237428031577
+      type: {class: EnemyAbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Splashover Blast
+        slug: splashover_blast
+        description: When Suicidal Bombers are destroyed, their unstable payloads
+          detonate in a volatile burst that damages nearby enemies as well as anything
+          caught in the blast radius.
+        type: 2
+        toUnlock: 0
+    - rid: 7348732237428031578
+      type: {class: StimModeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Sweeping Inferno
+        slug: sweeping_inferno
+        description: In stim mode, Flamethrower Towers unleash a continuous arc of
+          flame that sweeps left to right across their cone, scorching every enemy
+          in its path before the system overheats into cooldown.
+        type: 2
+        applyTo: 3
+        modifies: 1
+    - rid: 7348732237428031579
+      type: {class: StimModeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Intensifying Crescendo
+        slug: intensifying_crescendo
+        description: In stim mode, Gatling Towers ramp up over time, increasing their
+          fire rate and damage until the surge peaks and the overheated system drops
+          into cooldown.
+        type: 2
+        applyTo: 0
+        modifies: 2
+    - rid: 7348732237428031580
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Sudden Death
+        slug: sudden_death
+        description: "Lock the operation into a high\u2011stakes state where Gear
+          income is boosted to 150%, but a single enemy damaging the base will immediately
+          destroy it and you will fail the operation."
+        type: 2
+        toUnlock: 4
+    - rid: 7348732237428031582
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Gatling Level 2
+        slug: gatling_level_2
+        description: Upgrades the Gatling Tower with reinforced barrels and refined
+          targeting, increasing its fire rate, damage, and critical hit chance.
+        type: 2
+        applyTo: 0
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+    - rid: 7348732237428031583
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Gatling Level 3
+        slug: gatling_level_3
+        description: Further enhances the Gatling Tower with superior barrel assemblies
+          and advanced optics, boosting its fire rate, damage, critical hit chance,
+          range, and critical damage.
+        type: 2
+        applyTo: 0
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+        - modifiedAttribute: 2
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 4
+          changeType: 0
+          change: 0.25
+    - rid: 7348732237428031584
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Tower
+        slug: tesla_tower
+        description: Grants access to the Tesla Tower, a short-range conduit that
+          channels chaining lightning to strike enemies and arc damage through clustered
+          targets.
+        type: 2
+        toUnlock: 1
+    - rid: 7348732237428031585
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Level 2
+        slug: tesla_level_2
+        description: Upgrades the Tesla Tower with reinforced coils and improved
+          conduits, increasing its damage, fire rate, and critical hit chance.
+        type: 2
+        applyTo: 1
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.1
+    - rid: 7348732237428031586
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Level 3
+        slug: tesla_level_3
+        description: Perfects the Tesla Tower with high-capacity capacitors and extended
+          conductors, further boosting its damage, fire rate, critical hit chance,
+          range, and critical damage.
+        type: 2
+        applyTo: 1
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.1
+        - modifiedAttribute: 2
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 4
+          changeType: 0
+          change: 0.25
+    - rid: 7348732237428031587
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar
+        slug: mortar
+        description: Grants access to the Mortar, a long-range artillery platform
+          that lobs explosive shells to devastate enemies in a wide area along distant
+          paths.
+        type: 2
+        toUnlock: 2
+    - rid: 7348732237428031588
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar Level 2
+        slug: mortar_level_2
+        description: Upgrades the Mortar with enhanced shell loading and explosive
+          payloads, increasing its fire rate, the area-of-effect damage of its blasts
+          and crit chance.
+        type: 2
+        applyTo: 2
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+    - rid: 7348732237428031589
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar Level 3
+        slug: mortar_level_3
+        description: Further refines the Mortar with advanced targeting and high-yield
+          munitions, boosting its fire rate, area-of-effect damage, range, and critical
+          damage.
+        type: 2
+        applyTo: 2
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+        - modifiedAttribute: 2
+          changeType: 1
+          change: 1.25
+        - modifiedAttribute: 4
+          changeType: 0
+          change: 0.2
+    - rid: 7348732237428031590
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower
+        slug: flamethrower
+        description: Grants access to the Flamethrower, a close-range weapon that
+          bathes enemies in burning fuel, dealing continuous damage over time to
+          anything caught in its cone.
+        type: 2
+        toUnlock: 3
+    - rid: 7348732237428031591
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower Level 2
+        slug: flamethrower_level_2
+        description: Upgrades the Flamethrower with enriched fuel and improved feed
+          systems, increasing its damage and sustained firing duration.
+        type: 2
+        applyTo: 3
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 5
+          changeType: 1
+          change: 1.1
+    - rid: 7348732237428031592
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower Level 3
+        slug: flamethrower_level_3
+        description: Further refines the Flamethrower with optimized pressure and
+          cooling systems, boosting its burn damage, sustained firing duration, and
+          reducing its cooldown time between bursts.
+        type: 2
+        applyTo: 3
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 5
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+    - rid: 7348732237428031593
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Wall
+        slug: wall
+        description: Grants access to the Wall, allowing you to place temporary barricades
+          directly on enemy paths to block their advance and force them to attack
+          and break through before proceeding.
+        type: 2
+        toUnlock: 0
+    - rid: 7348732237428031594
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Oil Spill
+        slug: oil_spill
+        description: Grants access to the Oil Spill, allowing you to coat a section
+          of the path in slick fuel that significantly slows enemies moving through
+          it.
+        type: 2
+        toUnlock: 1
+    - rid: 7348732237428031595
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine
+        slug: mine
+        description: Grants access to the Mine, letting you plant hidden explosives
+          on the path that arm when stepped on, then detonate after a short fuse
+          to damage nearby enemies.
+        type: 2
+        toUnlock: 2
+    - rid: 7348732250137296964
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Rapid Fire
+        slug: rapid_fire
+        description: ' Gatling Tower attack rate increased by 10% per rank.'
+        type: 0
+        applyTo: 0
+        modifiedAttribute: 0
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296965
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Chain Reach
+        slug: chain_reach
+        description: Tesla Tower beam chain length by +1 per rank, allowing its lightning
+          to jump to more additional enemies.
+        type: 0
+        applyTo: 1
+        modifiedAttribute: 6
+        changeType: 0
+        change: 1
+        maxRanks: 3
+    - rid: 7348732250137296966
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Rapid Loading
+        slug: rapid_loading
+        description: Mortar Tower attack rate increased by 10% per rank.
+        type: 0
+        applyTo: 2
+        modifiedAttribute: 1
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296967
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Sustained Burn
+        slug: sustained_burn
+        description: Flamethrower flame duration increased by 10% per rank.
+        type: 0
+        applyTo: 3
+        modifiedAttribute: 5
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296968
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Persistent Burn
+        slug: persistent_burn
+        description: Increases Flamethrower burn duration by 10% per rank, causing
+          enemies to suffer burning damage for longer after being hit.
+        type: 0
+        applyTo: 3
+        modifiedAttribute: 7
+        changeType: 1
+        change: 1.1
+        maxRanks: 2
+    - rid: 7348732250137296970
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Additional Barricades
+        slug: additional_barricades
+        description: Increases the maximum number of Wall charges by +2 per rank,
+          allowing you to deploy more barricades on the battlefield during operation.
+        type: 2
+        addTo: 0
+        maxRanks: 3
+        numOfUsages: 2
+    - rid: 7348732250137296971
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Reserve Barrels
+        slug: reserve_barrels
+        description: ' Increases the maximum number of Oil Spill charges by +2 per
+          rank, letting you deploy more slowing oil pools across the battlefield.'
+        type: 2
+        addTo: 1
+        maxRanks: 3
+        numOfUsages: 2
+    - rid: 7348732250137296972
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine Stockpile
+        slug: mine_stockpile
+        description: ' Increases the maximum number of Mine charges by +2 per rank,
+          allowing you to seed more explosive traps along enemy paths.'
+        type: 2
+        addTo: 2
+        maxRanks: 3
+        numOfUsages: 2
+    - rid: 7348732250137296974
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Enhanced Rending
+        slug: enhanced_rending
+        description: Increases the maximum number of Rending Rounds armor shred stacks
+          by +1 per rank, allowing Gatling fire to strip more protection from hardened
+          targets before reaching full effect.
+        type: 0
+        applyTo: 0
+        modifiedAttribute: 8
+        changeType: 0
+        change: 1
+        maxRanks: 2
