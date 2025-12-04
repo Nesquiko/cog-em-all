@@ -1,13 +1,26 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIHomeManager : MonoBehaviour
 {
+
+    [SerializeField] private SaveContextDontDestroy saveContext;
+    [SerializeField] private Button loadGameButton;
+    [SerializeField] private CursorPointer loadGameButtonCursorPointer;
+
     [Header("Content Panels")]
     [SerializeField] private GameObject homePanel;
     [SerializeField] private GameObject loadGamePanel;
 
     private void Start()
     {
+        var saveFilesCount = SaveSystem.CountSaveFiles();
+        Debug.Log($"there are {saveFilesCount} save files");
+
+        var areThereSaves = saveFilesCount > 0;
+        loadGameButton.interactable = areThereSaves;
+        loadGameButtonCursorPointer.SetDisabled(!areThereSaves);
+
         ShowHomePanel();
     }
 
@@ -19,6 +32,8 @@ public class UIHomeManager : MonoBehaviour
 
     public void HandleNewGameClick()
     {
+        var newSaveData = SaveSystem.CreateNewSave();
+        saveContext.SetCurrentSave(newSaveData);
         SceneLoader.LoadScene("MenuScene");
     }
 
