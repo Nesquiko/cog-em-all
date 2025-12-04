@@ -1,9 +1,10 @@
-using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum SkillNodeType
@@ -20,7 +21,7 @@ public enum SkillNodeState
     Active = 2,
 }
 
-public class SkillTreeNodeButton : MonoBehaviour
+public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private string skillSlug;
     [SerializeField] private Faction faction;
@@ -28,10 +29,10 @@ public class SkillTreeNodeButton : MonoBehaviour
     [SerializeField] private GameObject unlockedOverlay;
     [SerializeField] private GameObject lockedOverlay;
     [SerializeField] private Image borderImage;
-    [SerializeField] private SkillNodeState state;
     [SerializeField] private SkillNodeType type;
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private SkillTreeNodeButton[] prerequisities;
+    [SerializeField] private SkillTreeNodeButton[] postrequisities;
     [SerializeField] private ModifiersDatabase modifiersDatabase;
     [SerializeField] private GameObject connectionPrefab;
     [SerializeField] private RectTransform connectionLayer;
@@ -39,7 +40,19 @@ public class SkillTreeNodeButton : MonoBehaviour
     [SerializeField] private GameObject rankState;
     [SerializeField] private GameObject rankIndicatorPrefab;
     [SerializeField] private TMP_Text rankText;
-    [SerializeField] private int activeRanks;
+
+    [Header("Tooltip")]
+    [SerializeField] private GameObject tooltip;
+    [SerializeField] private TMP_Text tooltipTitle;
+    [SerializeField] private TMP_Text tooltipDescription;
+    [SerializeField] private TMP_Text tooltipActiveRanksLabel;
+    [SerializeField] private TMP_Text tooltipActiveRanks;
+    [SerializeField] private TMP_Text tooltipMaxRanksLabel;
+    [SerializeField] private TMP_Text tooltipMaxRanks;
+    [SerializeField] private TMP_Text tooltipRanksSeparator;
+
+    private int activeRanks = 0;  // 0 -> unlocked/locked (based on prerequisities), 1+ -> active
+    private SkillNodeState state = SkillNodeState.Unlocked;
 
     private int maxRanks = 1;
 
@@ -49,39 +62,102 @@ public class SkillTreeNodeButton : MonoBehaviour
 
     public RectTransform RectTransform => rectTransform;
 
-    public SkillNodeState State
-    {
-        get => state;
-        set
-        {
-            state = value;
-            UpdateVisual();
-        }
-    }
+    public SkillNodeState State => state;
+
+    private ScaleOnHover scaleOnHover;
 
     private void Awake()
     {
+        // activeRanks = TODO: luky -> odniekial vytiahnut
         modifier = GetModifier();
 
-        if (modifier is IRankedModifier ranked && state != SkillNodeState.Locked)
+        scaleOnHover = button.GetComponent<ScaleOnHover>();
+
+        tooltip.SetActive(false);
+        tooltipTitle.text = modifier.name;
+        tooltipDescription.text = modifier.description;
+        tooltipActiveRanksLabel.text = "";
+        tooltipActiveRanks.text = "";
+        tooltipMaxRanksLabel.text = "";
+        tooltipMaxRanks.text = "";
+        tooltipRanksSeparator.text = "";
+
+        if (modifier is IRankedModifier ranked)
         {
             maxRanks = ranked.MaxRanks();
-            GenerateRanks();
+            tooltipActiveRanksLabel.text = "Active ranks";
+            tooltipActiveRanks.text = activeRanks.ToString();
+            tooltipMaxRanksLabel.text = "Max ranks";
+            tooltipMaxRanks.text = maxRanks.ToString();
+            tooltipRanksSeparator.text = "/";
         }
-
-        UpdateVisual();
     }
 
     private void Start()
     {
-        StartCoroutine(DeferredConnection());
+        Initialize();
+    }
+
+    private void Initialize()
+    {
+        UpdateState();
+        UpdateVisual();
+    }
+
+    public void UpdateState()
+    {
+        SkillNodeState oldState = state;
+
+        bool canBeUnlocked = false;
+
+        if (prerequisities == null || prerequisities.Length == 0)
+        {
+            canBeUnlocked = true;
+        }
+        else
+        {
+            foreach (var pr in prerequisities)
+            {
+                if (pr != null && pr.State == SkillNodeState.Active)
+                {
+                    canBeUnlocked = true;
+                    break;
+                }
+            }
+        }
+
+        if (!canBeUnlocked)
+        {
+            state = SkillNodeState.Locked;
+        }
+        else
+        {
+            if (activeRanks >= 1)
+                state = SkillNodeState.Active;
+            else
+                state = SkillNodeState.Unlocked;
+        }
+
+        if (state != oldState)
+        {
+            UpdateVisual();
+            NotifyPostrequisities();
+        }
+    }
+
+    private void NotifyPostrequisities()
+    {
+        if (postrequisities == null || postrequisities.Length == 0) return;
+
+        foreach (var pr in postrequisities)
+        {
+            pr.UpdateState();
+        }
     }
 
     private void GenerateRanks()
     {
-        foreach (Transform child in rankState.transform)
-            Destroy(child.gameObject);
-        rankIndicators.Clear();
+        ClearRanks();
 
         for (int i = 0; i < maxRanks; i++)
         {
@@ -90,26 +166,56 @@ public class SkillTreeNodeButton : MonoBehaviour
         }
     }
 
+    private void ClearRanks()
+    {
+        foreach (Transform child in rankState.transform)
+            Destroy(child.gameObject);
+        rankIndicators.Clear();
+    }
+
     private void FillRanks()
     {
         for (int i = 0; i < rankIndicators.Count; i++)
         {
-            GameObject rankIndicator = rankIndicators[i];
-            rankIndicator.GetComponentInChildren<Image>().fillAmount = activeRanks > i ? 1 : 0;
+            var fillImage = rankIndicators[i].transform.GetChild(0).GetComponent<Image>();
+            fillImage.fillAmount = (activeRanks > i) ? 1f : 0f;
         }
     }
 
-    public void HandleClick()
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        tooltip.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        tooltip.SetActive(false);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
     {
         if (state == SkillNodeState.Locked) return;
-        SetActiveRanks(activeRanks + 1);
 
-        state = activeRanks > 0 ? SkillNodeState.Active : SkillNodeState.Unlocked;
+        if (eventData.button == PointerEventData.InputButton.Left)
+            HandleLeftClick();
+        else if (eventData.button == PointerEventData.InputButton.Right)
+            HandleRightClick();
+    }
+
+    private void HandleLeftClick()
+    {
+        SetActiveRanks(activeRanks + 1);
+    }
+
+    private void HandleRightClick()
+    {
+        SetActiveRanks(activeRanks - 1);
     }
 
     public void SetActiveRanks(int ranks)
     {
         activeRanks = Mathf.Clamp(ranks, 0, maxRanks);
+        UpdateState();
         UpdateVisual();
     }
 
@@ -132,18 +238,45 @@ public class SkillTreeNodeButton : MonoBehaviour
 
     private void UpdateVisual()
     {
-        lockedOverlay.SetActive(state == SkillNodeState.Locked);
-        unlockedOverlay.SetActive(state == SkillNodeState.Unlocked);
-        button.interactable = state != SkillNodeState.Locked;
-
-        if (type == SkillNodeType.FactionSpecific)
-            borderImage.color = FactionAccent(faction);
-
-        if (modifier is IRankedModifier && state != SkillNodeState.Locked)
+        if (modifier is IRankedModifier)
         {
-            FillRanks();
-            rankText.text = $"{activeRanks} / {maxRanks}";
+            tooltipActiveRanksLabel.text = "Active ranks";
+            tooltipActiveRanks.text = activeRanks.ToString();
+            tooltipMaxRanksLabel.text = "Max ranks";
+            tooltipMaxRanks.text = maxRanks.ToString();
+            tooltipRanksSeparator.text = "/";
+
+            if (state != SkillNodeState.Locked)
+            {
+                GenerateRanks();
+                FillRanks();
+                rankText.text = $"{activeRanks} / {maxRanks}";
+            }
         }
+        else
+        {
+            tooltipActiveRanksLabel.text = state == SkillNodeState.Locked ? "Locked" : state == SkillNodeState.Unlocked ? "Unlocked" : "Active";
+        }
+
+        switch (state)
+        {
+            case SkillNodeState.Locked:
+                lockedOverlay.SetActive(true);
+                unlockedOverlay.SetActive(false);
+                ClearRanks();
+                break;
+            case SkillNodeState.Unlocked:
+                lockedOverlay.SetActive(false);
+                unlockedOverlay.SetActive(true);
+                break;
+            case SkillNodeState.Active:
+                lockedOverlay.SetActive(false);
+                unlockedOverlay.SetActive(false);
+                break;
+        }
+
+        button.interactable = state != SkillNodeState.Locked;
+        scaleOnHover.enabled = state != SkillNodeState.Locked;
     }
 
     private static Color FactionAccent(Faction f)
@@ -157,15 +290,11 @@ public class SkillTreeNodeButton : MonoBehaviour
         };
     }
 
-    private IEnumerator DeferredConnection()
-    {
-        yield return null;
-        GenerateConnections();
-    }
-
     [ContextMenu("Generate Connections")]
     public void GenerateConnections()
     {
+        if (prerequisities == null || prerequisities.Length == 0) return;
+
         foreach (var pr in prerequisities)
         {
             DrawConnection(rectTransform, pr.RectTransform);

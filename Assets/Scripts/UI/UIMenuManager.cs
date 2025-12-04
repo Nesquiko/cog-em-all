@@ -9,6 +9,7 @@ public class UIMenuManager : MonoBehaviour
     [SerializeField] private GameObject skillTreePanel;
 
     private GameObject currentPanel;
+    private Faction currentFaction = Faction.TheBrassArmy;
 
     private void Start()
     {
@@ -23,6 +24,11 @@ public class UIMenuManager : MonoBehaviour
         overviewPanel.SetActive(panelToShow == overviewPanel);
         towersPanel.SetActive(panelToShow == towersPanel);
         skillTreePanel.SetActive(panelToShow == skillTreePanel);
+
+        if (panelToShow == skillTreePanel)
+        {
+            skillTreePanel.GetComponent<FactionSkillTreeUI>().Initialize(currentFaction);
+        }
 
         currentPanel = panelToShow;
     }
