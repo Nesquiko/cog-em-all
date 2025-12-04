@@ -6,6 +6,7 @@ public class UIMenuManager : MonoBehaviour
     [SerializeField] private GameObject factionsPanel;
     [SerializeField] private GameObject overviewPanel;
     [SerializeField] private GameObject towersPanel;
+    [SerializeField] private GameObject skillTreePanel;
 
     private GameObject currentPanel;
 
@@ -21,6 +22,7 @@ public class UIMenuManager : MonoBehaviour
         factionsPanel.SetActive(panelToShow == factionsPanel);
         overviewPanel.SetActive(panelToShow == overviewPanel);
         towersPanel.SetActive(panelToShow == towersPanel);
+        skillTreePanel.SetActive(panelToShow == skillTreePanel);
 
         currentPanel = panelToShow;
     }

@@ -5339,6 +5339,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: rapid_loading
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -5462,6 +5466,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: rapid_fire
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
@@ -5593,6 +5601,10 @@ PrefabInstance:
       value: TeslaExecute
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: executioners_current
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -5705,6 +5717,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: m_Name
       value: MortarLVL2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: mortar_level_2
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
@@ -5832,6 +5848,10 @@ PrefabInstance:
       value: GatlingLVL2
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: gatling_level_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -5947,6 +5967,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: m_Name
       value: GatlingLVL3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: gatling_level_3
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
@@ -6074,6 +6098,10 @@ PrefabInstance:
       value: GatlingArmorShredder
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: rending_rounds
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -6195,6 +6223,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: persistent_burn
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -6311,6 +6343,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: m_Name
       value: OilSpill
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: oil_spill
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
@@ -6442,6 +6478,10 @@ PrefabInstance:
       value: FlamethrowerLVL1
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: flamethrower
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -6553,6 +6593,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: additional_barricades
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
@@ -6684,6 +6728,10 @@ PrefabInstance:
       value: MortarLVL1
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: mortar
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -6801,6 +6849,10 @@ PrefabInstance:
       value: GatlingManualNoRange
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: commanded_fire
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -6909,6 +6961,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: mine_stockpile
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
@@ -7027,6 +7083,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: m_Name
       value: Wall
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: wall
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
@@ -7158,6 +7218,10 @@ PrefabInstance:
       value: TowersRangeOnHill
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: high_ground
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -7274,6 +7338,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: m_Name
       value: FlamethrowerLVL3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: flamethrower_level_3
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
@@ -7401,6 +7469,10 @@ PrefabInstance:
       value: TeslaLVL3
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: tesla_level_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -7526,9 +7598,25 @@ PrefabInstance:
       value: TeslaLVL1
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: faction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: tesla_tower
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: prerequisities.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7637,6 +7725,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: chain_reach
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
@@ -7768,6 +7860,10 @@ PrefabInstance:
       value: FlamethrowerLVL2
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: flamethrower_level_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -7887,6 +7983,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: sustained_burn
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
@@ -8018,6 +8118,10 @@ PrefabInstance:
       value: FlamethrowerBurn
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: molten_spray
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -8143,6 +8247,10 @@ PrefabInstance:
       value: AirshipAirstrike
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: iron_rain
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -8259,6 +8367,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: m_Name
       value: Mine
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: mine
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
@@ -8390,6 +8502,10 @@ PrefabInstance:
       value: TeslaLVL2
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: tesla_level_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -8513,6 +8629,10 @@ PrefabInstance:
     - target: {fileID: 6732208326636679577, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: m_Name
       value: MortarBleed
+      objectReference: {fileID: 0}
+    - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
+      propertyPath: skillSlug
+      value: shrapnel_shells
       objectReference: {fileID: 0}
     - target: {fileID: 8231490231485553653, guid: 97ad5cdc58d1e274da8c3d78caead34f, type: 3}
       propertyPath: connectionLayer
@@ -8640,6 +8760,10 @@ PrefabInstance:
       value: MortarLVL3
       objectReference: {fileID: 0}
     - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
+      propertyPath: skillSlug
+      value: mortar_level_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7606135000473013401, guid: fde6a25f2f24bfa42b89ee40f5c426a2, type: 3}
       propertyPath: connectionLayer
       value: 
       objectReference: {fileID: 8135242679859409262}
@@ -8748,6 +8872,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: enhanced_rending
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer
@@ -8862,6 +8990,10 @@ PrefabInstance:
     - target: {fileID: 1265226375158241525, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
+      propertyPath: skillSlug
+      value: reserve_barrels
       objectReference: {fileID: 0}
     - target: {fileID: 5785668835557367970, guid: 01d8e6cc5b3c85c4f92126f24fe5fc83, type: 3}
       propertyPath: connectionLayer

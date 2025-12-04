@@ -5,11 +5,12 @@ using UnityEditor;
 using UnityEngine.Assertions;
 using System.Linq;
 
+[Serializable]
 public enum Faction
 {
-    TheBrassArmy,
-    TheValveboundSeraphs,
-    OverpressureCollective,
+    TheBrassArmy = 0,
+    TheValveboundSeraphs = 1,
+    OverpressureCollective = 2,
 }
 
 [Obsolete("For now this enum is useless, maybe the modifiers are expressive enough without this. First implement the logic for modifiers, then remove this if it is useless.")]
@@ -38,6 +39,11 @@ public abstract class Modifier
     public ModifierType type;
 }
 
+public interface IRankedModifier
+{
+    int MaxRanks();
+}
+
 public enum TowerModifierApplyTo
 {
     All = -1,
@@ -48,7 +54,7 @@ public enum TowerModifierApplyTo
 }
 
 [Serializable]
-public class TowerModifier : Modifier
+public class TowerModifier : Modifier, IRankedModifier
 {
     public TowerModifierApplyTo applyTo;
     public TowerAttribute modifiedAttribute;
@@ -60,6 +66,8 @@ public class TowerModifier : Modifier
     {
         return mod.applyTo == TowerModifierApplyTo.All || (TowerTypes)mod.applyTo == towerType;
     }
+
+    public int MaxRanks() => maxRanks;
 }
 
 public enum EnemyModifierApplyTo
@@ -200,11 +208,13 @@ public class AbilityUnlock : Modifier
 
 
 [Serializable]
-public class AbilityAddUsages : Modifier
+public class AbilityAddUsages : Modifier, IRankedModifier
 {
     public SkillTypes addTo;
     public int maxRanks;
     public int numOfUsages;
+
+    public int MaxRanks() => maxRanks;
 }
 
 [Serializable]
@@ -258,7 +268,7 @@ public class ModifiersDatabase : ScriptableObject
 
     [SerializeReference] private List<Modifier> genericMajorModifiers = new();
     public List<Modifier> GenericMajorModifiers => genericMajorModifiers;
-    public List<string> GenericMajorModifierSlugs => genericMinorModifiers.Select(modif => modif.slug).ToList();
+    public List<string> GenericMajorModifierSlugs => genericMajorModifiers.Select(modif => modif.slug).ToList();
 
     public Modifier GetGenericMajorModifierBySlug(string slug)
     {
