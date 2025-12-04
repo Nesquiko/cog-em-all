@@ -13,6 +13,7 @@ class Spawner : MonoBehaviour
     [SerializeField] private Dreadnought dreadnoughtPrefab;
 
     [Header("Enemy spawn settings")]
+    [SerializeField] public GameObject spawnInThisGameObject;
     [SerializeField] public Vector2 spawnTimeStaggerRange = new(0f, .005f);
     [SerializeField] public Vector2 spawnLateralOffsetRange = new(-5f, 5f);
 
@@ -77,9 +78,9 @@ class Spawner : MonoBehaviour
     {
         return enemyType switch
         {
-            EnemyType.Bandit => Instantiate(banditPrefab),
-            EnemyType.Bomber => Instantiate(bomberPrefab),
-            EnemyType.Dreadnought => Instantiate(dreadnoughtPrefab),
+            EnemyType.Bandit => Instantiate(banditPrefab, spawnInThisGameObject.transform),
+            EnemyType.Bomber => Instantiate(bomberPrefab, spawnInThisGameObject.transform),
+            EnemyType.Dreadnought => Instantiate(dreadnoughtPrefab, spawnInThisGameObject.transform),
             _ => throw new ArgumentOutOfRangeException(
                        nameof(enemyType),
                        enemyType,
