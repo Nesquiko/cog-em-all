@@ -30,15 +30,13 @@ public class SkillPlacementSystem : MonoBehaviour
     private bool canPlace;
 
     private int currentHotkeyIndex = -1;
+    private SkillActivationMode currentMode;
 
     public event Action<ISkill> OnUseSkill;
 
     public bool IsPlacing => isPlacing;
 
-    private void Awake()
-    {
-        mainCamera = Camera.main;
-    }
+    private void Awake() => mainCamera = Camera.main;
 
     private void Update()
     {
@@ -64,7 +62,7 @@ public class SkillPlacementSystem : MonoBehaviour
             }
             else
             {
-                BeginPlacement(skillPrefabs[hotkeyPressed], hotkeyPressed);  // will be skillPrefabs
+                BeginPlacement(skillPrefabs[hotkeyPressed], hotkeyPressed);
                 return;
             }
         }
@@ -72,6 +70,18 @@ public class SkillPlacementSystem : MonoBehaviour
         if (Keyboard.current.fKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             CancelPlacement();
+            return;
+        }
+
+        HandlePlacementUpdate();
+    }
+
+    private void HandlePlacementUpdate()
+    {
+        if (currentMode == SkillActivationMode.Raycast)
+        {
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+                TryActivateRaycastSkill();
             return;
         }
 
@@ -143,14 +153,66 @@ public class SkillPlacementSystem : MonoBehaviour
         towerSelectionManager.DisableSelection();
 
         skillPrefab = prefab;
-        isPlacing = true;
         currentHotkeyIndex = hotkeyIndex;
 
+        var skill = skillPrefab.GetComponent<ISkill>();
+        if (skill == null) return;
+
+        currentMode = skill.ActivationMode();
+
+        HUDPanelUI.ShowPlacementInfo(skill.SkillType());
+
+        switch (currentMode)
+        {
+            case SkillActivationMode.Placement:
+            case SkillActivationMode.Airship:
+                CreateGhost(skillPrefab);
+                isPlacing = true;
+                break;
+
+            case SkillActivationMode.Raycast:
+                isPlacing = true;
+                break;
+
+            case SkillActivationMode.Instant:
+                TriggerInstantSkill();
+                break;
+        }
+    }
+
+    private void PlaceSkill(Vector3 position, Quaternion rotation)
+    {
+        if (!isPlacing || skillPrefab == null) return;
+
+        if (!skillPrefab.TryGetComponent<ISkill>(out var skill)) return;
+
+        switch (skill.ActivationMode())
+        {
+            case SkillActivationMode.Placement:
+                var staticSkill = Instantiate(skillPrefab, position, rotation);
+                if (staticSkill.TryGetComponent<ISkillPlaceable>(out var placeable))
+                    placeable.Initialize();
+                var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
+                var progress = circle.GetComponent<BuildProgress>();
+                progress.Initialize(staticSkill, disableObjectBehaviors: false);
+                break;
+
+            case SkillActivationMode.Airship:
+                /*var airSkill = skillPrefab.GetComponent<AirshipBase>();
+                var airSkillGO = Instantiate(skillPrefab, position, rotation);
+                airSkillGO.GetComponent<AirshipBase>().Trigger(position);*/
+                Debug.Log("Deploying an airship skill");
+                break;
+        }
+
+        OnUseSkill?.Invoke(skill);
+        CancelPlacement();
+        StartCoroutine(EnableSelectionNextFrame());
+    }
+
+    private void CreateGhost(GameObject prefab)
+    {
         ghostInstance = Instantiate(skillPrefab);
-        SkillTypes skillType = ghostInstance.GetComponent<ISkill>().SkillType();
-
-        HUDPanelUI.ShowPlacementInfo(skillType);
-
         int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
         ghostInstance.layer = ghostLayer;
         foreach (Transform t in ghostInstance.GetComponentsInChildren<Transform>(true))
@@ -159,23 +221,34 @@ public class SkillPlacementSystem : MonoBehaviour
         ApplyGhostMaterial(ghostValidMaterial);
     }
 
-    private void PlaceSkill(Vector3 position, Quaternion rotation)
+    private void TryActivateRaycastSkill()
     {
-        if (skillPrefab == null || !isPlacing) return;
-
-        GameObject skillGO = Instantiate(skillPrefab, position, rotation);
-        if (skillGO.TryGetComponent<ISkillPlaceable>(out var skill))
-            skill.Initialize();
-
-        OnUseSkill?.Invoke(skill);
-
-        var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
-        var progress = circle.GetComponent<BuildProgress>();
-        progress.Initialize(skillGO, disableObjectBehaviors: false);
-
         CancelPlacement();
+        /*
+        var skill = skillPrefab.GetComponent<MarkEnemy>();
+        skill.TryActivate();
+        OnUseSkill?.Invoke(skill);*/
+        Debug.Log("Deploying a raycast skill");
+    }
 
-        StartCoroutine(EnableSelectionNextFrame());
+    private void TriggerInstantSkill()
+    {
+        Debug.Log("Deploying an instant skill");
+        /*
+        // TODO: sudden death
+        var skill = skillPrefab.GetComponent<ISkill>();
+        OnUseSkill?.Invoke(skill);*/
+    }
+
+    public void CancelPlacement()
+    {
+        isPlacing = false;
+        currentHotkeyIndex = -1;
+
+        if (ghostInstance != null) Destroy(ghostInstance);
+        ghostInstance = null;
+        skillPrefab = null;
+        HUDPanelUI.HidePlacementInfo();
     }
 
     private IEnumerator EnableSelectionNextFrame()
@@ -184,23 +257,13 @@ public class SkillPlacementSystem : MonoBehaviour
         towerSelectionManager.EnableSelection();
     }
 
-    public void CancelPlacement()
-    {
-        isPlacing = false;
-        skillPrefab = null;
-        currentHotkeyIndex = -1;
-
-        if (ghostInstance != null) Destroy(ghostInstance);
-        ghostInstance = null;
-
-        HUDPanelUI.HidePlacementInfo();
-    }
-
     private int GetPressedSkillHotkey()
     {
         if (Keyboard.current.digit5Key.wasPressedThisFrame && skillButtons[0].CanPlaceSkill) return 0;
         if (Keyboard.current.digit6Key.wasPressedThisFrame && skillButtons[1].CanPlaceSkill) return 1;
         if (Keyboard.current.digit7Key.wasPressedThisFrame && skillButtons[2].CanPlaceSkill) return 2;
+        if (Keyboard.current.digit8Key.wasPressedThisFrame && skillButtons[3].CanPlaceSkill) return 3;
+        if (Keyboard.current.digit9Key.wasPressedThisFrame && skillButtons[4].CanPlaceSkill) return 4;
         return -1;
     }
 

@@ -9,6 +9,7 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
     public SkillTypes SkillType() => skillType;
     public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
+    public SkillActivationMode ActivationMode() => SkillActivationMode.Placement;
     public DamageSourceType Type() => DamageSourceType.Mine;
 
     [Header("Settings")]

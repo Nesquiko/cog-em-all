@@ -5,8 +5,11 @@ public enum SkillTypes
     Wall = 0,
     OilSpill = 1,
     Mine = 2,
-    MarkEnemy = 3,
-    SuddenDeath = 4,
+    AirshipAirstrike = 3,
+    AirshipFreezeZone = 4,
+    AirshipDisableZone = 5,
+    MarkEnemy = 6,
+    SuddenDeath = 7,
 }
 
 public interface ISkillModifier
@@ -31,9 +34,18 @@ public enum SkillModifiers
     ShatterCharge = 9,
 }
 
+public enum SkillActivationMode
+{
+    Placement,  // Place directly on ground (wall, oilspill, mine)
+    Airship,    // Pick a location, airship takes over (airstrike, freeze, disable)
+    Raycast,    // Hover & click an enemy (mark)
+    Instant,    // Immediate activation (sudden death)
+}
+
 public interface ISkill
 {
     SkillTypes SkillType();
+    SkillActivationMode ActivationMode();
     float GetCooldown();
 }
 
