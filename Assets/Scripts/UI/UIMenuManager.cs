@@ -10,14 +10,35 @@ public class UIMenuManager : MonoBehaviour
 
     private GameObject currentPanel;
     private Faction currentFaction = Faction.TheBrassArmy;
+    private FactionSkillTreeUI factionSkillTreeUI;
+
+    private void Awake()
+    {
+        factionSkillTreeUI = skillTreePanel.GetComponent<FactionSkillTreeUI>();
+    }
 
     private void Start()
     {
         ShowPanel(overviewPanel);
     }
 
+    public void HandleFactionCardClick(int index)
+    {
+        currentFaction = index switch
+        {
+            0 => Faction.TheBrassArmy,
+            1 => Faction.TheValveboundSeraphs,
+            2 => Faction.OverpressureCollective,
+            _ => Faction.TheBrassArmy,
+        };
+        ShowPanel(skillTreePanel);
+    }
+
     public void ShowPanel(GameObject panelToShow)
     {
+        if (currentPanel == skillTreePanel && panelToShow != skillTreePanel)
+            factionSkillTreeUI.SaveSkillTrees();
+
         if (currentPanel == panelToShow) return;
 
         factionsPanel.SetActive(panelToShow == factionsPanel);
@@ -27,7 +48,7 @@ public class UIMenuManager : MonoBehaviour
 
         if (panelToShow == skillTreePanel)
         {
-            skillTreePanel.GetComponent<FactionSkillTreeUI>().Initialize(currentFaction);
+            factionSkillTreeUI.Initialize(currentFaction);
         }
 
         currentPanel = panelToShow;

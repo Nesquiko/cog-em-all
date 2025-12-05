@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -28,7 +29,6 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     [SerializeField] private Button button;
     [SerializeField] private GameObject unlockedOverlay;
     [SerializeField] private GameObject lockedOverlay;
-    [SerializeField] private Image borderImage;
     [SerializeField] private SkillNodeType type;
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private SkillTreeNodeButton[] prerequisities;
@@ -40,6 +40,7 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     [SerializeField] private GameObject rankState;
     [SerializeField] private GameObject rankIndicatorPrefab;
     [SerializeField] private TMP_Text rankText;
+    [SerializeField] private SkillTree skillTree;
 
     [Header("Tooltip")]
     [SerializeField] private GameObject tooltip;
@@ -51,7 +52,10 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     [SerializeField] private TMP_Text tooltipMaxRanks;
     [SerializeField] private TMP_Text tooltipRanksSeparator;
 
+    public string SkillSlug => skillSlug;
+
     private int activeRanks = 0;  // 0 -> unlocked/locked (based on prerequisities), 1+ -> active
+    public int ActiveRanks => activeRanks;
     private SkillNodeState state = SkillNodeState.Unlocked;
 
     private int maxRanks = 1;
@@ -65,6 +69,8 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     public SkillNodeState State => state;
 
     private ScaleOnHover scaleOnHover;
+
+    public event Action<SkillTreeNodeButton, int> OnActiveRanksChanged;
 
     private void Awake()
     {
@@ -214,7 +220,23 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
 
     public void SetActiveRanks(int ranks)
     {
-        activeRanks = Mathf.Clamp(ranks, 0, maxRanks);
+        int newActiveRanks = Mathf.Clamp(ranks, 0, maxRanks);
+        int delta = newActiveRanks - activeRanks;
+        if (delta == 0) return;
+
+        if (delta > 0 && !skillTree.CanAssignSkillPoint) return;  // cannot assign skill point
+        if (delta < 0 && (!skillTree.CanRemoveSkillPoint || postrequisities.Any(pr => pr.State == SkillNodeState.Active))) return;  // cannot remove skill point
+
+        activeRanks = newActiveRanks;
+        UpdateState();
+        UpdateVisual();
+
+        OnActiveRanksChanged?.Invoke(this, delta);
+    }
+
+    public void ResetActiveRanks()
+    {
+        activeRanks = 0;
         UpdateState();
         UpdateVisual();
     }

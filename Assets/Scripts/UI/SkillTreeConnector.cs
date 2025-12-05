@@ -17,7 +17,8 @@ public class SkillTreeConnector : MonoBehaviour
             for (int i = rank.childCount - 1; i >= 0; i--)
             {
                 var node = rank.GetChild(i);
-                node.GetComponent<SkillTreeNodeButton>().GenerateConnections();
+                if (!node.TryGetComponent<SkillTreeNodeButton>(out var button)) continue;
+                button.GenerateConnections();
             }
         }
     }
@@ -30,7 +31,8 @@ public class SkillTreeConnector : MonoBehaviour
             for (int i = rank.childCount - 1; i >= 0; i--)
             {
                 var node = rank.GetChild(i);
-                node.GetComponent<SkillTreeNodeButton>().ClearConnections();
+                if (!node.TryGetComponent<SkillTreeNodeButton>(out var button)) continue;
+                button.ClearConnections();
             }
         }
     }
