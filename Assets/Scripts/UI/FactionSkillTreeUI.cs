@@ -1,23 +1,29 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class FactionSkillTreeUI : MonoBehaviour
 {
-    [SerializeField] private Faction[] factions;
-    [SerializeField] private GameObject[] skillTrees;
+    [SerializeField] private List<Faction> factions;
+    [SerializeField] private List<SkillTree> skillTrees;
 
-    public void Initialize(Faction factionToDisplay)
+    public void Initialize(Faction factionToDisplay, FactionSaveState factionSave)
     {
-        for (int i = 0; i < factions.Length; i++)
+        for (int i = 0; i < factions.Count; i++)
         {
-            skillTrees[i].SetActive(factions[i] == factionToDisplay);
+            var isInitialized = factions[i] == factionToDisplay;
+            var skillTree = skillTrees[i];
+            if (isInitialized)
+            {
+                skillTree.Initialize(factionSave);
+            }
+            skillTree.gameObject.SetActive(isInitialized);
         }
     }
 
     public void SaveSkillTrees()
     {
-        foreach (var skillTreeGO in skillTrees)
+        foreach (var skillTree in skillTrees)
         {
-            var skillTree = skillTreeGO.GetComponent<SkillTree>();
             skillTree.SaveCurrentState();
         }
     }

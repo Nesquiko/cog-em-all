@@ -20,12 +20,12 @@ public class SkillTree : MonoBehaviour
     public bool CanRemoveSkillPoint => assignedSkillPoints > 0;
 
     private Dictionary<string, int> skillNodes = new();
-    private int level = 15;
+    private int level = 0;
 
-    private void Awake()
+    public void Initialize(FactionSaveState factionSaveState)
     {
-        // skillNodes =  // TODO: luky -> sem musi prist dictionary <skillSlug, activeRanks>
-        // level =  // TODO: luky -> sem musi prist faction level
+        level = factionSaveState.level;
+        skillNodes = factionSaveState.SkillNodes();
         assignedSkillPoints = AssignSkillPoints(addActions: true);
         availableSkillPoints = CalculateAvailableSkillPoints();
     }
@@ -46,7 +46,7 @@ public class SkillTree : MonoBehaviour
             for (int i = 0; i < rank.transform.childCount; i++)
             {
                 var nodeTransform = rank.transform.GetChild(i);
-                
+
                 if (!nodeTransform.TryGetComponent<SkillTreeNodeButton>(out var button)) continue;
 
                 int activeRanks = 0;

@@ -176,6 +176,7 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     {
         foreach (Transform child in rankState.transform)
             Destroy(child.gameObject);
+        rankText.text = "";
         rankIndicators.Clear();
     }
 

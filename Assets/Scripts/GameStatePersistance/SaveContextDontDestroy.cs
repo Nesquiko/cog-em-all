@@ -15,6 +15,17 @@ public class SaveContextDontDestroy : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
     }
+
+    public static SaveContextDontDestroy GetOrCreateDev()
+    {
+        var existing = FindFirstObjectByType<SaveContextDontDestroy>();
+        if (existing != null) return existing;
+
+        var go = new GameObject("SaveContext (Dev)");
+        var ctx = go.AddComponent<SaveContextDontDestroy>();
+        ctx.SetCurrentSave(SaveSystem.LoadDevSave());
+        return ctx;
+    }
 }
 
 #if UNITY_EDITOR

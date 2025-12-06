@@ -8,15 +8,78 @@ using UnityEngine.Assertions;
 public class SaveData
 {
     /// <summary>
-    /// e.g. "Save-1", MUST BE UNIQUE!
+    /// e.g. "Save-1", MUST BE UNIQUE!, the file name will match this name.
     /// </summary>
     public string name;
+
     /// <summary>
     /// ISO 8601 string, e.g. "2025-12-04T18:00:00Z"
     /// </summary>
     public string lastPlayed;
 
+    public FactionSaveState brassArmySave;
+    public FactionSaveState seraphsSave;
+    public FactionSaveState overpressuSave;
+
+    public SaveData() { }
+
+    public SaveData(
+        string name,
+        DateTime lastPlayed,
+        FactionSaveState brassArmySave,
+        FactionSaveState seraphsSave,
+        FactionSaveState overpressuSave
+    )
+    {
+        this.name = name;
+        this.lastPlayed = lastPlayed.ToString("o");
+        this.brassArmySave = brassArmySave;
+        this.seraphsSave = seraphsSave;
+        this.overpressuSave = overpressuSave;
+    }
+
     public override string ToString() => JsonUtility.ToJson(this, prettyPrint: true);
+}
+
+[Serializable]
+public class FactionSaveState
+{
+    public const int FactionLevelMax = 15;
+
+    public FactionSaveState() { }
+
+    public FactionSaveState(int level, Dictionary<string, int> skillNodes)
+    {
+        this.level = level;
+        this.skillNodes = new();
+        foreach (var skillNode in skillNodes)
+        {
+            this.skillNodes.Add(new SkillNodeEntry { slug = skillNode.Key, level = skillNode.Value });
+        }
+    }
+
+    public int level;
+
+    [Serializable]
+    public class SkillNodeEntry
+    {
+        public string slug;
+        public int level;
+    }
+
+    // JsonUtil doesn't support serializing dictionaries...
+    private List<SkillNodeEntry> skillNodes = new();
+
+    public Dictionary<string, int> SkillNodes()
+    {
+        var dict = new Dictionary<string, int>();
+        foreach (var entry in skillNodes)
+        {
+            dict[entry.slug] = entry.level;
+        }
+
+        return dict;
+    }
 }
 
 public class SaveSystem : MonoBehaviour
@@ -26,6 +89,9 @@ public class SaveSystem : MonoBehaviour
 
     private const string SaveNamePrefix = "Save-";
     private const string FileExtension = ".json";
+
+    private static readonly string DevSavesFolder = Path.Combine(SavesFolder, "dev");
+    private const string DevSaveName = "Save-DEV";
 
     static SaveSystem()
     {
@@ -39,7 +105,7 @@ public class SaveSystem : MonoBehaviour
         return files.Length;
     }
 
-    public static string SaveFilesIndex(string saveName) => saveName[SaveNamePrefix.Length..];
+    public static string SaveFileNumber(string saveName) => saveName[SaveNamePrefix.Length..];
 
     public static List<SaveData> LoadAllSaves()
     {
@@ -80,49 +146,72 @@ public class SaveSystem : MonoBehaviour
         int nextIndex = GetNextSaveIndex();
         string saveName = $"{SaveNamePrefix}{nextIndex}";
 
-        var data = new SaveData
-        {
-            name = saveName,
-            lastPlayed = DateTime.UtcNow.ToString("o"), // ISO 8601
-        };
+        var data = new SaveData(
+            name: saveName,
+            lastPlayed: DateTime.UtcNow,
+            brassArmySave: new FactionSaveState(0, new()),
+            seraphsSave: new FactionSaveState(0, new()),
+            overpressuSave: new FactionSaveState(0, new())
+        );
 
-        SaveToFile(data);
+        SaveToFile(data, SavesFolder);
         return data;
     }
 
-    public static void UpdateSave(SaveData data)
+    public static void UpdateSave(SaveData data, string folder)
     {
         data.lastPlayed = DateTime.UtcNow.ToString("o");
-        SaveToFile(data);
+        SaveToFile(data, folder);
     }
 
-    public static SaveData LoadSave(string saveName)
+    public static SaveData LoadSave(string saveName, string folder)
     {
-        CreateSavesFolder(SavesFolder);
-        string path = GetSaveFilePath(saveName);
-        Assert.IsTrue(File.Exists(path));
-        string json = File.ReadAllText(path);
+        var fullSavePath = Path.Combine(folder, saveName);
+        if (!File.Exists(fullSavePath)) return null;
+
+        string json = File.ReadAllText(fullSavePath);
         try
         {
             return JsonUtility.FromJson<SaveData>(json);
         }
         catch (Exception e)
         {
-            Debug.LogError($"Error loading save file {saveName}: {e}");
+            Debug.LogError($"Error loading save file {fullSavePath}: {e}");
             return null;
         }
     }
 
-    private static void SaveToFile(SaveData data)
+    public static SaveData LoadDevSave()
     {
-        CreateSavesFolder(SavesFolder);
-        string path = GetSaveFilePath(data.name);
+        CreateSavesFolder(DevSavesFolder);
+
+        var devSave = LoadSave(DevSaveName + FileExtension, DevSavesFolder);
+        if (devSave != null) return devSave;
+
+        var devSaveData = new SaveData(
+            name: DevSaveName,
+            lastPlayed: DateTime.UtcNow,
+            brassArmySave: new FactionSaveState(FactionSaveState.FactionLevelMax, new()),
+            seraphsSave: new FactionSaveState(FactionSaveState.FactionLevelMax, new()),
+            overpressuSave: new FactionSaveState(FactionSaveState.FactionLevelMax, new())
+        );
+
+        SaveToFile(devSaveData, DevSavesFolder);
+        return devSaveData;
+    }
+
+    private static void SaveToFile(SaveData data, string folder)
+    {
+        CreateSavesFolder(folder);
+
+        var path = GetSaveFilePath(data.name, folder);
         string json = JsonUtility.ToJson(data, true);
+
         File.WriteAllText(path, json);
         Debug.Log($"Saved {data.name} to {path}");
     }
 
-    private static string GetSaveFilePath(string saveName) => Path.Combine(SavesFolder, saveName + FileExtension);
+    private static string GetSaveFilePath(string saveName, string folder) => Path.Combine(folder, saveName + FileExtension);
 
     private static int GetNextSaveIndex()
     {

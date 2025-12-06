@@ -16,7 +16,7 @@ public class UILoadGameManager : MonoBehaviour
         foreach (var saveData in saves)
         {
             var savedGameButton = Instantiate(savedGameButtonPrefab, savedGamesButtonsParent.transform);
-            savedGameButton.SetLabel($"Saved game {SaveSystem.SaveFilesIndex(saveData.name)}");
+            savedGameButton.SetLabel($"Saved game {SaveSystem.SaveFileNumber(saveData.name)}");
             savedGameButton.SetButtonOnClick(() => HandleLoadSelectedGameClick(saveData));
         }
     }

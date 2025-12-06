@@ -19,7 +19,6 @@ public class UIHomeManager : MonoBehaviour
 
         var areThereSaves = saveFilesCount > 0;
         loadGameButton.interactable = areThereSaves;
-        loadGameButtonCursorPointer.SetDisabled(!areThereSaves);
 
         ShowHomePanel();
     }
