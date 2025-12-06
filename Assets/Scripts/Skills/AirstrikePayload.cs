@@ -1,13 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
-public class AirstrikePayload : MonoBehaviour, IAirshipPayload, IDamageSource
+public class AirstrikePayload : MonoBehaviour, IAirshipPayload
 {
-    [SerializeField] private float explosionRadius = 7.5f;
-    [SerializeField] private float damage = 400f;
-    [SerializeField] private LayerMask enemyMask;
-
-    public DamageSourceType Type() => DamageSourceType.Airstrike;
+    [SerializeField] private GameObject airstrikePrefab;
 
     public void DropFromAirship(Vector3 targetPosition, float dropDuration)
     {
@@ -28,18 +24,12 @@ public class AirstrikePayload : MonoBehaviour, IAirshipPayload, IDamageSource
 
         OnArrive(targetPosition);
 
-        Destroy(gameObject, 2f);
+        Destroy(gameObject);
     }
 
     private void OnArrive(Vector3 target)
     {
-        Collider[] hits = Physics.OverlapSphere(target, explosionRadius, enemyMask);
-        foreach (var h in hits)
-        {
-            if (h.TryGetComponent<IEnemy>(out var enemy))
-            {
-                enemy.TakeDamage(damage, Type());
-            }
-        }
+        GameObject airstrike = Instantiate(airstrikePrefab, target, Quaternion.identity);
+        airstrike.GetComponent<Airstrike>().Initialize();
     }
 }

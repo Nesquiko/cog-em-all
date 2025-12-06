@@ -50,7 +50,7 @@ public class SkillPlacementSystem : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,
@@ -279,11 +279,8 @@ public class SkillPlacementSystem : MonoBehaviour
             case SkillActivationMode.Airship:
                 if (!skillPrefab.TryGetComponent<AirshipSkill>(out var airshipSkill)) break;
                 Vector3 startPosition = airshipDropPoint.transform.position;
-                Quaternion rot = Quaternion.LookRotation(position);
                 airshipSkill.Initialize(
-                    type: AirshipSkillType.FreezeZone,
                     startPos: startPosition,
-                    rot: rot,
                     targetPos: position
                 );
                 break;
@@ -296,7 +293,7 @@ public class SkillPlacementSystem : MonoBehaviour
 
     private void CreateGhost(GameObject prefab)
     {
-        ghostInstance = Instantiate(skillPrefab);
+        ghostInstance = Instantiate(prefab);
         int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
         ghostInstance.layer = ghostLayer;
         foreach (Transform t in ghostInstance.GetComponentsInChildren<Transform>(true))

@@ -23,7 +23,9 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
     private bool isEnabled = true;
     private bool isCoolingDown = false;
 
-    public bool CanPlaceSkill => isEnabled && !isCoolingDown;
+    private bool disabledPermanently = false;
+
+    public bool CanPlaceSkill => isEnabled && !isCoolingDown && !disabledPermanently;
 
     private void Awake()
     {
@@ -36,19 +38,23 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (!isEnabled || isCoolingDown) return;
+        if (!isEnabled || isCoolingDown || disabledPermanently) return;
         skillPlacementSystem.BeginPlacement(skillPrefab, hotkeyIndex);
     }
 
-    public void Enable(bool enable)
+    public void Enable(bool enable, bool permanently = false)
     {
         isEnabled = enable;
+
+        if (!enable && permanently)
+            disabledPermanently = true;
+
         UpdateVisualState();
     }
 
     private void UpdateVisualState()
     {
-        bool active = isEnabled && !isCoolingDown;
+        bool active = isEnabled && !isCoolingDown && !disabledPermanently;
         canvasGroup.alpha = active ? 1f : 0.5f;
         canvasGroup.interactable = active;
         canvasGroup.blocksRaycasts = active;
@@ -73,13 +79,14 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
     public void SetCoolingDown(bool cooling)
     {
+        if (disabledPermanently) return;
         isCoolingDown = cooling;
         UpdateVisualState();
     }
 
     public void PlayPulse()
     {
-        if (!isActiveAndEnabled) return;
+        if (!isActiveAndEnabled || disabledPermanently) return;
         StopAllCoroutines();
         StartCoroutine(PulseAnimation());
     }

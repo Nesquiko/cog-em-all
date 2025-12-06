@@ -26,11 +26,14 @@ public class EnemyBehaviour : MonoBehaviour
         get => speed;
         set => speed = value;
     }
+    private Coroutine smoothRecoveryRoutine;
+    private readonly float accelerationRate = 7.5f;
 
     [Header("Health")]
     [SerializeField] private float maxHealthPoints = 100f;
     public float MaxHealthPoints => maxHealthPoints;
     [SerializeField] private EnemyHealthBar healthBar;
+    [SerializeField, Range(0f, 1f)] private float disableBuffsHealFraction = 0.1f;
     private float healthPoints;
     public float HealthPoints => healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
@@ -55,9 +58,11 @@ public class EnemyBehaviour : MonoBehaviour
     private float attackCooldown;
     private float originalSpeed;
 
-
     private readonly Dictionary<EffectType, Coroutine> activeEffects = new();
     private readonly Dictionary<EffectType, int> stackCounts = new();
+    private readonly List<EnemyStatusEffect> storedBuffs = new();
+    private bool buffsDisabled = false;
+    public bool BuffsDisabled => buffsDisabled;
 
     // Path following
     private float splinePathT = 0f;
@@ -220,6 +225,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     public void ApplyEffect(EnemyStatusEffect effect)
     {
+        if (buffsDisabled && !EnemyStatusEffect.IsNegative(effect.type)) return;  // Ignoring buffs when in disable buffs zone
+
         if (effect.stackable)
         {
             HandleStackableEffect(effect);
@@ -246,6 +253,7 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case EffectType.Oiled:
             case EffectType.DebrisSlowed:
+            case EffectType.Frozen:
                 speed = originalSpeed * effect.speedMultiplier;
                 if (!activeEffects.ContainsKey(effect.type))
                     activeEffects[effect.type] = null;
@@ -255,6 +263,28 @@ public class EnemyBehaviour : MonoBehaviour
                 {
                     Coroutine routine = StartCoroutine(IndefiniteBurn(effect));
                     activeEffects[effect.type] = routine;
+                }
+                break;
+            case EffectType.DisabledBuffs:
+                if (!activeEffects.ContainsKey(effect.type))
+                    activeEffects[effect.type] = null;
+                buffsDisabled = true;
+                storedBuffs.Clear();
+                List<EffectType> toRemove = new();
+                foreach (var(t, _) in activeEffects)
+                    if (!EnemyStatusEffect.IsNegative(t))
+                        toRemove.Add(t);
+                foreach (var t in toRemove)
+                {
+                    switch (t)
+                    {
+                        case EffectType.Accelerated:
+                            storedBuffs.Add(EnemyStatusEffect.Accelerate(3));
+                            break;
+                        default:
+                            break;
+                    }
+                    RemoveEffect(t);
                 }
                 break;
         }
@@ -310,7 +340,18 @@ public class EnemyBehaviour : MonoBehaviour
         {
             case EffectType.Oiled:
             case EffectType.DebrisSlowed:
-                speed = originalSpeed;
+            case EffectType.Frozen:
+            case EffectType.Accelerated:
+                if (smoothRecoveryRoutine != null)
+                    StopCoroutine(smoothRecoveryRoutine);
+                smoothRecoveryRoutine = StartCoroutine(SmoothRestoreSpeed());
+                break;
+            case EffectType.DisabledBuffs:
+                buffsDisabled = false;
+                foreach (var b in storedBuffs)
+                    ApplyEffect(b);
+                storedBuffs.Clear();
+                healthPoints = Math.Min(healthPoints + (maxHealthPoints * disableBuffsHealFraction), maxHealthPoints);
                 break;
         }
 
@@ -333,6 +374,7 @@ public class EnemyBehaviour : MonoBehaviour
                 }
                 break;
             case EffectType.Slowed:
+            case EffectType.Accelerated:
                 speed = originalSpeed * effect.speedMultiplier;
                 yield return new WaitForSeconds(effect.duration);
                 speed = originalSpeed;
@@ -350,6 +392,19 @@ public class EnemyBehaviour : MonoBehaviour
             TakeDamage(effect.tickDamage, DamageSourceType.Effect, isCritical: false);
             yield return new WaitForSeconds(effect.tickInterval);
         }
+    }
+
+    private IEnumerator SmoothRestoreSpeed()
+    {
+        while (speed < originalSpeed)
+        {
+            speed += accelerationRate * Time.deltaTime;
+            if (speed > originalSpeed)
+                speed = originalSpeed;
+            yield return null;
+        }
+
+        smoothRecoveryRoutine = null;
     }
 
     private void UpdateVFXState()
@@ -378,6 +433,9 @@ public class EnemyBehaviour : MonoBehaviour
             if (!buffVFX.isPlaying) buffVFX.Play();
         }
         else buffVFX.Stop(withChildren: true);
+
+        if (activeEffects.ContainsKey(EffectType.DisabledBuffs))
+            buffVFX.Stop(withChildren: true);
     }
 
     private void Die()

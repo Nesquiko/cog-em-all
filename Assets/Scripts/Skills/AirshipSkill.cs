@@ -25,11 +25,11 @@ public class AirshipSkill : MonoBehaviour, ISkill
     private Quaternion rotation;
     private Vector3 targetPosition;
 
-    public void Initialize(AirshipSkillType type, Vector3 startPos, Quaternion rot, Vector3 targetPos)
+    public void Initialize(Vector3 startPos, Vector3 targetPos)
     {
         startPosition = startPos;
-        rotation = rot;
         targetPosition = targetPos;
+        rotation = Quaternion.LookRotation((targetPosition - startPosition).normalized, Vector3.up) * Quaternion.Euler(90f, 0f, 0f);
 
         GameObject airshipGO = Instantiate(payloadPrefab, startPosition, rotation);
 

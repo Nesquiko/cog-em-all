@@ -69,6 +69,8 @@ public class HUDPanelUI : MonoBehaviour
     private SkillButton markEnemyButton;
     private SkillButton suddenDeathButton;
 
+    private bool airstrikeActive, freezeZoneActive, disableZoneActive, markEnemyActive, suddenDeathActive;
+
     private Faction currentFaction;
     private HashSet<FactionSpecificSkill> activeFactionSpecificSkills;
 
@@ -77,7 +79,7 @@ public class HUDPanelUI : MonoBehaviour
         minimapBackground = GameObject.FindGameObjectWithTag(minimapBackgroundTag);
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,
@@ -92,6 +94,12 @@ public class HUDPanelUI : MonoBehaviour
         airshipDisableZoneButton = airshipDisableZoneSkill.GetComponentInChildren<SkillButton>();
         markEnemyButton = markEnemySkill.GetComponentInChildren<SkillButton>();
         suddenDeathButton = suddenDeathSkill.GetComponentInChildren<SkillButton>();
+
+        airstrikeActive = activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipAirstrike);
+        freezeZoneActive = activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipFreezeZone);
+        disableZoneActive = activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipDisableZone);
+        markEnemyActive = activeFactionSpecificSkills.Contains(FactionSpecificSkill.MarkEnemy);
+        suddenDeathActive = activeFactionSpecificSkills.Contains(FactionSpecificSkill.SuddenDeath);
     }
 
     private void Start()
@@ -118,19 +126,19 @@ public class HUDPanelUI : MonoBehaviour
         {
             case Faction.TheBrassArmy:
                 airshipAirstrikeSkill.SetActive(true);
-                airshipAirstrikeButton.Enable(activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipAirstrike));
+                airshipAirstrikeButton.Enable(airstrikeActive, permanently: !airstrikeActive);
                 break;
             case Faction.TheValveboundSeraphs:
                 airshipFreezeZoneSkill.SetActive(true);
-                airshipFreezeZoneButton.Enable(activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipFreezeZone));
+                airshipFreezeZoneButton.Enable(freezeZoneActive, permanently: !freezeZoneActive);
                 markEnemySkill.SetActive(true);
-                markEnemyButton.Enable(activeFactionSpecificSkills.Contains(FactionSpecificSkill.MarkEnemy));
+                markEnemyButton.Enable(markEnemyActive, permanently: !markEnemyActive);
                 break;
             case Faction.OverpressureCollective:
                 airshipDisableZoneSkill.SetActive(true);
-                airshipDisableZoneButton.Enable(activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipDisableZone));
+                airshipDisableZoneButton.Enable(disableZoneActive, permanently: !disableZoneActive);
                 suddenDeathSkill.SetActive(true);
-                suddenDeathButton.Enable(activeFactionSpecificSkills.Contains(FactionSpecificSkill.SuddenDeath));
+                suddenDeathButton.Enable(suddenDeathActive, permanently: !suddenDeathActive);
                 break;
         }
     }
@@ -239,19 +247,19 @@ public class HUDPanelUI : MonoBehaviour
                 StartCoroutine(RunSkillCooldown(mineButton, skill.GetCooldown()));
                 break;
             case SkillTypes.AirshipAirstrike:
-                StartCoroutine(RunSkillCooldown(airshipAirstrikeButton.GetComponentInChildren<SkillButton>(), skill.GetCooldown()));
+                StartCoroutine(RunSkillCooldown(airshipAirstrikeButton, skill.GetCooldown()));
                 break;
             case SkillTypes.AirshipFreezeZone:
-                StartCoroutine(RunSkillCooldown(airshipFreezeZoneButton.GetComponentInChildren<SkillButton>(), skill.GetCooldown()));
+                StartCoroutine(RunSkillCooldown(airshipFreezeZoneButton, skill.GetCooldown()));
                 break;
             case SkillTypes.AirshipDisableZone:
-                StartCoroutine(RunSkillCooldown(airshipDisableZoneButton.GetComponentInChildren<SkillButton>(), skill.GetCooldown()));
+                StartCoroutine(RunSkillCooldown(airshipDisableZoneButton, skill.GetCooldown()));
                 break;
             case SkillTypes.MarkEnemy:
-                StartCoroutine(RunSkillCooldown(markEnemyButton.GetComponentInChildren<SkillButton>(), skill.GetCooldown()));
+                StartCoroutine(RunSkillCooldown(markEnemyButton, skill.GetCooldown()));
                 break;
             case SkillTypes.SuddenDeath:
-                StartCoroutine(RunSkillCooldown(suddenDeathButton.GetComponentInChildren<SkillButton>(), skill.GetCooldown()));
+                suddenDeathButton.Enable(false, permanently: true);
                 break;
         }
     }
@@ -287,19 +295,19 @@ public class HUDPanelUI : MonoBehaviour
                 mineButton.Enable(enable);
                 break;
             case SkillTypes.AirshipAirstrike:
-                if (airshipAirstrikeButton != null) airshipAirstrikeButton.Enable(enable);
+                airshipAirstrikeButton.Enable(enable);
                 break;
             case SkillTypes.AirshipFreezeZone:
-                if (airshipFreezeZoneButton != null) airshipFreezeZoneButton.Enable(enable);
+                airshipFreezeZoneButton.Enable(enable);
                 break;
             case SkillTypes.AirshipDisableZone:
-                if (airshipDisableZoneButton != null) airshipDisableZoneButton.Enable(enable);
+                airshipDisableZoneButton.Enable(enable);
                 break;
             case SkillTypes.MarkEnemy:
-                if (markEnemyButton != null) markEnemyButton.Enable(enable);
+                markEnemyButton.Enable(enable);
                 break;
             case SkillTypes.SuddenDeath:
-                if (suddenDeathButton != null) suddenDeathButton.Enable(enable);
+                suddenDeathButton.Enable(enable);
                 break;
         }
     }

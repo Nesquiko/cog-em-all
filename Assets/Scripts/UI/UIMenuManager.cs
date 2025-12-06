@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class UIMenuManager : MonoBehaviour
@@ -9,11 +10,12 @@ public class UIMenuManager : MonoBehaviour
     [SerializeField] private GameObject skillTreePanel;
 
     private GameObject currentPanel;
-    private Faction currentFaction = Faction.TheBrassArmy;
+    private Faction currentFaction;
     private FactionSkillTreeUI factionSkillTreeUI;
 
     private void Awake()
     {
+        currentFaction = Faction.TheBrassArmy;  // TODO: luky -> here i need current faction
         factionSkillTreeUI = skillTreePanel.GetComponent<FactionSkillTreeUI>();
     }
 
@@ -24,6 +26,13 @@ public class UIMenuManager : MonoBehaviour
 
     public void HandleFactionCardClick(int index)
     {
+        SetCurrentFaction(index);
+        ShowPanel(skillTreePanel);
+    }
+
+    private void SetCurrentFaction(int index)
+    {
+        // TODO: luky -> here im setting current faction
         currentFaction = index switch
         {
             0 => Faction.TheBrassArmy,
@@ -31,7 +40,6 @@ public class UIMenuManager : MonoBehaviour
             2 => Faction.OverpressureCollective,
             _ => Faction.TheBrassArmy,
         };
-        ShowPanel(skillTreePanel);
     }
 
     public void ShowPanel(GameObject panelToShow)

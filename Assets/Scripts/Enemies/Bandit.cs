@@ -59,10 +59,31 @@ public class Bandit : MonoBehaviour, IEnemy
     {
         while (behaviour.HealthPoints > 0)
         {
-            yield return new WaitForSeconds(battlecryCooldown);
+            for (float t = 0f; t < battlecryCooldown; t += Time.deltaTime)
+            {
+                if (behaviour.BuffsDisabled)
+                    break;
+                yield return null;
+            }
+
+            if (behaviour.BuffsDisabled)
+            {
+                if (leaderBattlecryVFX.isPlaying)
+                    leaderBattlecryVFX.Stop(withChildren: true);
+                yield return null;
+                continue;
+            }
+
             leaderBattlecryVFX.Play();
             Battlecry();
-            yield return new WaitForSeconds(battlecryDuration);
+
+            for (float t = 0f; t < battlecryDuration; t += Time.deltaTime)
+            {
+                if (behaviour.BuffsDisabled)
+                    break;
+                yield return null;
+            }
+
             leaderBattlecryVFX.Stop(withChildren: true);
         }
     }

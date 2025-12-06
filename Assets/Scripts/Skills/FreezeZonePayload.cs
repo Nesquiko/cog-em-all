@@ -4,9 +4,6 @@ using UnityEngine;
 public class FreezeZonePayload : MonoBehaviour, IAirshipPayload
 {
     [SerializeField] private GameObject freezeZonePrefab;
-    [SerializeField] private float freezeRadius = 7.5f;
-    [SerializeField] private float duration = 10f;
-    [SerializeField] private LayerMask enemyMask;
 
     public void DropFromAirship(Vector3 targetPosition, float dropDuration)
     {
@@ -33,16 +30,6 @@ public class FreezeZonePayload : MonoBehaviour, IAirshipPayload
     private void OnArrive(Vector3 target)
     {
         GameObject freezeZone = Instantiate(freezeZonePrefab, target, Quaternion.identity);
-        Destroy(freezeZone, duration);
-
-        Collider[] hits = Physics.OverlapSphere(target, freezeRadius, enemyMask);
-        foreach (var h in hits)
-        {
-            if (h.TryGetComponent<IEnemy>(out var enemy))
-            {
-                // TODO: has to be freeze
-                enemy.ApplyEffect(EnemyStatusEffect.Slow);
-            }
-        }
+        freezeZone.GetComponent<FreezeZone>().Initialize();
     }
 }
