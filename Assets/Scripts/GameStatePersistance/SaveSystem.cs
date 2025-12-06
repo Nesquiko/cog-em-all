@@ -68,7 +68,7 @@ public class FactionSaveState
     }
 
     // JsonUtil doesn't support serializing dictionaries...
-    private List<SkillNodeEntry> skillNodes = new();
+    public List<SkillNodeEntry> skillNodes = new();
 
     public Dictionary<string, int> SkillNodes()
     {
@@ -158,10 +158,12 @@ public class SaveSystem : MonoBehaviour
         return data;
     }
 
-    public static void UpdateSave(SaveData data, string folder)
+    public static void UpdateSave(SaveData data)
     {
         data.lastPlayed = DateTime.UtcNow.ToString("o");
-        SaveToFile(data, folder);
+
+        if (data.name == DevSaveName) SaveToFile(data, DevSavesFolder);
+        else SaveToFile(data, SavesFolder);
     }
 
     public static SaveData LoadSave(string saveName, string folder)

@@ -3481,11 +3481,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154bf96fa15af7c4eb7c55fa7ca242f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FactionSkillTreeUI
-  factions: 000000000100000002000000
-  skillTrees:
-  - {fileID: 6405589597913557699}
-  - {fileID: 268871719969650673}
-  - {fileID: 4363646327276243591}
+  entries:
+  - faction: 0
+    skillTree: {fileID: 6405589597913557699}
+  - faction: 1
+    skillTree: {fileID: 268871719969650673}
+  - faction: 2
+    skillTree: {fileID: 4363646327276243591}
 --- !u!1 &4802108282366545978
 GameObject:
   m_ObjectHideFlags: 0

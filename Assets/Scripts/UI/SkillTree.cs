@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class SkillTree : MonoBehaviour
 {
     [SerializeField] private Faction faction;
+    public Faction Faction => faction;
     [SerializeField] private TMP_Text skillPointsText;
     [SerializeField] private Button resetSkillPointsButton;
     [SerializeField] private GameObject[] ranks;
@@ -20,18 +22,21 @@ public class SkillTree : MonoBehaviour
     public bool CanRemoveSkillPoint => assignedSkillPoints > 0;
 
     private Dictionary<string, int> skillNodes = new();
+    public Dictionary<string, int> SkillNodes => skillNodes;
+
     private int level = 0;
+    public int Level => level;
 
     public void Initialize(FactionSaveState factionSaveState)
     {
         level = factionSaveState.level;
         skillNodes = factionSaveState.SkillNodes();
-        assignedSkillPoints = AssignSkillPoints(addActions: true);
-        availableSkillPoints = CalculateAvailableSkillPoints();
     }
 
     private void Start()
     {
+        availableSkillPoints = CalculateAvailableSkillPoints();
+        assignedSkillPoints = AssignSkillPoints(addActions: true);
         UpdateVisual();
     }
 
@@ -112,11 +117,5 @@ public class SkillTree : MonoBehaviour
         suppressEvents = false;
         availableSkillPoints = CalculateAvailableSkillPoints();
         UpdateVisual();
-    }
-
-    public void SaveCurrentState()
-    {
-        // TODO: luky -> tu mi uloz skillNodes do jsonu (toto sa vola ked odidem zo skilltree panelu)
-        Debug.Log($"[{faction}] Save current state: {skillNodes}");
     }
 }

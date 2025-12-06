@@ -36,14 +36,7 @@ public class UIMenuManager : MonoBehaviour
 
     public void ShowSkillTree(Faction faction)
     {
-        FactionSaveState factionSave = faction switch
-        {
-            Faction.TheBrassArmy => saveContext.CurrentSave.brassArmySave,
-            Faction.TheValveboundSeraphs => saveContext.CurrentSave.seraphsSave,
-            Faction.OverpressureCollective => saveContext.CurrentSave.overpressuSave,
-            _ => throw new ArgumentOutOfRangeException(nameof(faction), faction, "Unhandled faction")
-        };
-        skillTreeUI.Initialize(faction, factionSave);
+        skillTreeUI.Initialize(faction, saveContext.CurrentSave);
         ShowPanel(Panel.SkillTree);
     }
 
