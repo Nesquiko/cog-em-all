@@ -17,7 +17,7 @@ public class UIMenuManager : MonoBehaviour
 
     [Header("Content Panels")]
     [SerializeField] private FactionsPanel factionsPanel;
-    [SerializeField] private GameObject overviewPanel;
+    [SerializeField] private OverviewManager overviewPanel;
     [SerializeField] private GameObject towersPanel;
     [SerializeField] private FactionSkillTreeUI skillTreeUI;
 
@@ -37,16 +37,39 @@ public class UIMenuManager : MonoBehaviour
     public void ShowSkillTree(Faction faction)
     {
         skillTreeUI.Initialize(faction, saveContext.CurrentSave);
+        saveContext.CurrentSave.lastPlayedFaction = (SaveData.PlayedFaction)faction;
+        SaveSystem.UpdateSave(saveContext.CurrentSave);
         ShowPanel(Panel.SkillTree);
     }
 
-    public void ShowOverview() => ShowPanel(Panel.Overview);
+    public void ShowOverview()
+    {
+        var save = saveContext.CurrentSave;
+
+        if (save.lastPlayedFaction == SaveData.PlayedFaction.None)
+        {
+            ShowFactions();
+            return;
+        }
+        var lastPlayedFaction = save.LastPlayedFaction;
+
+        var lastPlayedFactionSave = lastPlayedFaction switch
+        {
+            Faction.TheBrassArmy => save.brassArmySave,
+            Faction.TheValveboundSeraphs => save.seraphsSave,
+            Faction.OverpressureCollective => save.overpressuSave,
+            _ => throw new ArgumentOutOfRangeException(nameof(save.lastPlayedFaction), save.lastPlayedFaction, "Unhandled faction"),
+        };
+
+        overviewPanel.Initialize(lastPlayedFactionSave);
+        ShowPanel(Panel.Overview);
+    }
 
     public void ShowTowers() => ShowPanel(Panel.Towers);
 
     private void Start()
     {
-        ShowPanel(Panel.Overview);
+        ShowOverview();
     }
 
     private void ShowPanel(Panel toShow)
@@ -57,7 +80,7 @@ public class UIMenuManager : MonoBehaviour
         if (currentPanel == toShow) return;
 
         factionsPanel.gameObject.SetActive(toShow == Panel.Factions);
-        overviewPanel.SetActive(toShow == Panel.Overview);
+        overviewPanel.gameObject.SetActive(toShow == Panel.Overview);
         towersPanel.SetActive(toShow == Panel.Towers);
         skillTreeUI.gameObject.SetActive(toShow == Panel.SkillTree);
 

@@ -4,9 +4,21 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+
+
 [Serializable]
 public class SaveData
 {
+
+    [Serializable]
+    public enum PlayedFaction
+    {
+        None = -1,
+        TheBrassArmy = Faction.TheBrassArmy,
+        TheValveboundSeraphs = Faction.TheValveboundSeraphs,
+        OverpressureCollective = Faction.OverpressureCollective,
+    }
+
     /// <summary>
     /// e.g. "Save-1", MUST BE UNIQUE!, the file name will match this name.
     /// </summary>
@@ -16,6 +28,17 @@ public class SaveData
     /// ISO 8601 string, e.g. "2025-12-04T18:00:00Z"
     /// </summary>
     public string lastPlayed;
+
+    public PlayedFaction lastPlayedFaction = PlayedFaction.None;
+    public Faction LastPlayedFaction
+    {
+        get
+        {
+            if (lastPlayedFaction == PlayedFaction.None) return Faction.TheBrassArmy;
+            return (Faction)lastPlayedFaction;
+        }
+    }
+
 
     public FactionSaveState brassArmySave;
     public FactionSaveState seraphsSave;

@@ -27,6 +27,11 @@ public class OverviewManager : MonoBehaviour
 
     [SerializeField] private OperationModifiers operationModifiers;
 
+    public void Initialize(FactionSaveState lastPlayedFaction)
+    {
+        factionLevel = lastPlayedFaction.level;
+    }
+
     private void Start()
     {
         DisplayFaction();
