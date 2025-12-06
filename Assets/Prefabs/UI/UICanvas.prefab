@@ -775,6 +775,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1879505779081514721, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: hotkeyIndex
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 1888821213063489400, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -823,6 +827,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2663069898780305935, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_Name
+      value: AirshipAirstrikeCooldown
+      objectReference: {fileID: 0}
     - target: {fileID: 2735350568096501525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -838,6 +846,18 @@ PrefabInstance:
     - target: {fileID: 2735350568096501525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780756241076903173, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780756241076903173, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2780756241076903173, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 55
       objectReference: {fileID: 0}
     - target: {fileID: 2788923370830309490, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_AnchorMax.y
@@ -987,6 +1007,34 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5311781826661754551, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5311781826661754551, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5311781826661754551, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 5378257006941179395, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: hotkeyIndex
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 5378257006941179395, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: skillPrefab
+      value: 
+      objectReference: {fileID: 5157639234088474056, guid: d96e8ceeab313b0459fd23223c7baf11, type: 3}
+    - target: {fileID: 5518242890409572525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: markEnemySkill
+      value: 
+      objectReference: {fileID: 6365643973836909478}
+    - target: {fileID: 5518242890409572525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: suddenDeathSkill
+      value: 
+      objectReference: {fileID: 4194152594364903486}
     - target: {fileID: 5518242890409572525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: maximizedMinimapTag
       value: MaximizedMinimap
@@ -995,6 +1043,18 @@ PrefabInstance:
       propertyPath: minimapBackgroundTag
       value: MinimapBackground
       objectReference: {fileID: 0}
+    - target: {fileID: 5518242890409572525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: airshipAirstrikeSkill
+      value: 
+      objectReference: {fileID: 736360154091563462}
+    - target: {fileID: 5518242890409572525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: airshipFreezeZoneSkill
+      value: 
+      objectReference: {fileID: 2185455175545364377}
+    - target: {fileID: 5518242890409572525, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: airshipDisableZoneSkill
+      value: 
+      objectReference: {fileID: 4226105754539908267}
     - target: {fileID: 5710990706200264572, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -1143,6 +1203,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6382570904617262727, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: hotkeyIndex
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6382570904617262727, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: skillPrefab
+      value: 
+      objectReference: {fileID: 5157639234088474056, guid: afd8979d6901bde4bbbebfa29ce92ea9, type: 3}
     - target: {fileID: 6562573282099141514, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1215,6 +1283,30 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6721800040680145929, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: hotkeyIndex
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 6952190057626825879, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6952190057626825879, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6952190057626825879, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131708229856230210, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: hotkeyIndex
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7131708229856230210, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+      propertyPath: skillPrefab
+      value: 
+      objectReference: {fileID: 5157639234088474056, guid: aaeaf076d5083914aa5d6345b3b50c53, type: 3}
     - target: {fileID: 7567778756270898157, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1307,6 +1399,31 @@ PrefabInstance:
 --- !u!224 &314305679601848940 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5792566039032221338, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+  m_PrefabInstance: {fileID: 6070842706648603894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &736360154091563462 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6775635876504319280, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+  m_PrefabInstance: {fileID: 6070842706648603894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2185455175545364377 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5362587184679617391, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+  m_PrefabInstance: {fileID: 6070842706648603894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4194152594364903486 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7929546840635649224, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+  m_PrefabInstance: {fileID: 6070842706648603894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4226105754539908267 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7969633614186561629, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
+  m_PrefabInstance: {fileID: 6070842706648603894}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6365643973836909478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 894167048138536784, guid: a588d24d63191f74c911871d4d8fc353, type: 3}
   m_PrefabInstance: {fileID: 6070842706648603894}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6734797591303396653

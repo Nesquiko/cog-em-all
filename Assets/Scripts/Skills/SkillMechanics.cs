@@ -54,3 +54,8 @@ public interface ISkillPlaceable : ISkill
     void Initialize();
     Quaternion PlacementRotationOffset();
 }
+
+public interface IAirshipPayload
+{
+    void DropFromAirship(Vector3 targetPosition, float dropDuration);
+}

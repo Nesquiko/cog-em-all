@@ -3,32 +3,99 @@ using UnityEngine.InputSystem;
 
 public class MarkEnemy : MonoBehaviour, ISkill
 {
+    [Header("Raycast Settings")]
     [SerializeField] private LayerMask enemyMask;
-    [SerializeField] private GameObject markerPrefab;
-    [SerializeField] private float markDuration = 10f;
+    [SerializeField] private LayerMask groundMask;
+    [SerializeField] private float maxDistance = 500f;
+
+    [Header("Visual")]
+    [SerializeField] private GameObject linePrefab;
+    //[SerializeField] private GameObject reticlePrefab;
+
+    [Header("Marker")]
+    //[SerializeField] private GameObject markerPrefab;
+    [SerializeField] private float markedDuration = 10f;
 
     private Camera mainCamera;
+    private GameObject lineInstance;
+    private LineRenderer lineRenderer;
+    private GameObject reticleInstance;
+    private bool aiming;
 
     private void Awake() => mainCamera = Camera.main;
 
     public SkillTypes SkillType() => SkillTypes.MarkEnemy;
     public SkillActivationMode ActivationMode() => SkillActivationMode.Raycast;
-    public float GetCooldown() => 4f;
+    public float GetCooldown() => 60f;
 
-    public void TryActivate()
+    public void BeginAim()
+    {
+        lineInstance = Instantiate(linePrefab);
+        lineRenderer = lineInstance.GetComponent<LineRenderer>();
+
+        //reticleInstance = Instantiate(reticlePrefab);
+        //reticleInstance.SetActive(false);
+
+        aiming = true;
+    }
+
+    public void StopAim()
+    {
+        if (lineInstance) Destroy(lineInstance);
+        if (reticleInstance) Destroy(reticleInstance);
+        aiming = false;
+    }
+
+    private void Update()
+    {
+        if (!aiming) return;
+        DrawLaser();
+    }
+
+    private void DrawLaser()
     {
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out var hit, 500f, enemyMask))
+        Vector3 origin = mainCamera.ScreenToWorldPoint(
+            new Vector3(Screen.width / 2f, 0f, 0.2f)
+        ); 
+        if (Physics.Raycast(ray, out var hit, maxDistance, enemyMask | groundMask))
         {
-            var enemy = hit.collider.GetComponent<IEnemy>();
-            if (enemy != null) Mark(enemy);
+            lineRenderer.SetPosition(0, origin);
+            lineRenderer.SetPosition(1, hit.point);
+
+            //reticleInstance.transform.position = hit.point + Vector3.up * 0.1f;
+            //reticleInstance.SetActive(true);
+
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                if ((enemyMask.value & (1 << hit.collider.gameObject.layer)) != 0)
+                {
+                    if (hit.collider.TryGetComponent<IEnemy>(out var enemy))
+                    {
+                        Mark(enemy);
+                        StopAim();
+                    }
+                }
+                else
+                {
+                    StopAim();
+                }
+            }
+        }
+        else
+        {
+            Vector3 end = ray.origin + ray.direction * maxDistance;
+            lineRenderer.SetPosition(0, origin);
+            lineRenderer.SetPosition(1, end);
+            reticleInstance.SetActive(false);
         }
     }
 
     private void Mark(IEnemy enemy)
     {
-        var marker = Instantiate(markerPrefab, enemy.Transform.position, Quaternion.identity, enemy.Transform);
-        Destroy(marker, markDuration);
+        //var marker = Instantiate(markerPrefab, enemy.Transform.position, Quaternion.identity, enemy.Transform);
+        //Destroy(marker, markedDuration);
         // TODO set enemy as marked
+        Debug.Log($"Marked enemy: {enemy.Type}");
     }
 }
