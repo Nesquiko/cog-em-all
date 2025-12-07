@@ -79,7 +79,7 @@ public class HUDPanelUI : MonoBehaviour
         minimapBackground = GameObject.FindGameObjectWithTag(minimapBackgroundTag);
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,

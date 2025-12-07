@@ -2616,10 +2616,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 171036884}
     - target: {fileID: 4804839545236141888, guid: 719bbe8ca2fbbf04fa8fd11408a4f857, type: 3}
-      propertyPath: cursorSettings
-      value: 
-      objectReference: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
-    - target: {fileID: 4804839545236141888, guid: 719bbe8ca2fbbf04fa8fd11408a4f857, type: 3}
       propertyPath: playerControlUI
       value: 
       objectReference: {fileID: 405443173}

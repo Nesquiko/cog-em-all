@@ -76,13 +76,12 @@ public static class TowerMechanics
     public static IEnemy GetClosestEnemy(Vector3 towerPosition, IDictionary<int, IEnemy> enemies)
     {
         IEnemy closest = null;
-        float minDist = Mathf.Infinity;
+        float minDist = float.MaxValue;
 
         foreach (var e in enemies.Values)
         {
             if (e == null) continue;
-
-            float dist = Vector3.Distance(towerPosition, e.Transform.position);
+            float dist = (e.Transform.position - towerPosition).sqrMagnitude;
             if (dist < minDist)
             {
                 minDist = dist;
@@ -91,6 +90,44 @@ public static class TowerMechanics
         }
 
         return closest;
+    }
+
+    public static IEnemy GetClosestMarkedEnemy(Vector3 towerPosition, Dictionary<int, IEnemy> enemies)
+    {
+        IEnemy best = null;
+        float bestDistSq = float.MaxValue;
+        foreach (var e in enemies.Values)
+        {
+            if (e == null || !e.Marked) continue;
+            float d = (e.Transform.position - towerPosition).sqrMagnitude;
+            if (d < bestDistSq)
+            {
+                bestDistSq = d;
+                best = e;
+            }
+        }
+        return best;
+    }
+
+    public static IEnemy SelectTargetWithMarkPriority(
+        Vector3 towerPosition,
+        Dictionary<int, IEnemy> enemiesInRange,
+        IEnemy current,
+        float range
+    )
+    {
+        if (current != null && current.Marked && IsEnemyInRange(towerPosition, current, range))
+            return current;
+
+        var marked = GetClosestMarkedEnemy(towerPosition, enemiesInRange);
+        if (marked != null && IsEnemyInRange(towerPosition, marked, range))
+            return marked;
+
+        var fallback = GetClosestEnemy(towerPosition, enemiesInRange);
+        if (fallback != null && IsEnemyInRange(towerPosition, fallback, range))
+            return fallback;
+
+        return null;
     }
 
     public static bool IsEnemyInRange(Vector3 towerPosition, IEnemy enemy, float range)

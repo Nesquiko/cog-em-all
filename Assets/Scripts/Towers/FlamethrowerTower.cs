@@ -35,6 +35,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    [Header("Sweep")]
+    [SerializeField] private bool sweepEnabled = true;
+    [SerializeField] private float sweepAmplitudeDegrees = 45f;
+    [SerializeField] private float sweepCycleSeconds = 1.5f;
+    [SerializeField] private float sweepReturnSpeed = 30f;
+
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
@@ -49,6 +55,11 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private bool underPlayerRotation = false;
     private bool isCoolingDown = false;
     private Flame activeFlame;
+
+    private bool isSweeping;
+    private float sweepBaseYaw;
+    private float sweepTime;
+    private Coroutine sweepReturnRoutine;
 
     public float DamagePerPulse => flameDamagePerPulse;
     public float FlamePulseInterval => flamePulseInterval;
@@ -155,6 +166,9 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         if (underPlayerRotation) return;
 
+        if (isSweeping)
+            UpdateSweep();
+
         if (!isCoolingDown && enemiesInRange.Count > 0 && activeFlame != null)
         {
             Shoot();
@@ -179,6 +193,9 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.Initialize(this, EffectiveRange(range));
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
+        if (sweepEnabled)
+            BeginSweep();
+
         StartCoroutine(CooldownRoutine(flameDuration));
     }
 
@@ -201,8 +218,87 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.StopFlame();
         activeFlame.gameObject.SetActive(false);
 
+        if (sweepEnabled)
+            EndSweep();
+
         yield return new WaitForSeconds(cooldownDuration);
         isCoolingDown = false;
+    }
+
+    private void BeginSweep()
+    {
+        isSweeping = true;
+        sweepTime = 0f;
+        sweepBaseYaw = flamethrowerHead.transform.eulerAngles.y;
+    
+        if (sweepReturnRoutine != null)
+        {
+            StopCoroutine(sweepReturnRoutine);
+            sweepReturnRoutine = null;
+        }
+    }
+
+    private void EndSweep()
+    {
+        if (!isSweeping) return;
+        isSweeping = false;
+
+        if (sweepReturnRoutine != null)
+            StopCoroutine(sweepReturnRoutine);
+
+        sweepReturnRoutine = StartCoroutine(ReturnHeadToBaseYaw());
+    }
+
+    private IEnumerator ReturnHeadToBaseYaw()
+    {
+        float currentYaw = flamethrowerHead.transform.eulerAngles.y;
+
+        while (true)
+        {
+            if (isSweeping)
+            {
+                sweepReturnRoutine = null;
+                yield break;
+            }
+
+            float targetYaw = sweepBaseYaw;
+            float delta = Mathf.DeltaAngle(currentYaw, targetYaw);
+
+            if (Mathf.Abs(delta) < 0.05f)
+            {
+                currentYaw = targetYaw;
+                Vector3 doneE = flamethrowerHead.transform.eulerAngles;
+                doneE.y = currentYaw;
+                flamethrowerHead.transform.eulerAngles = doneE;
+                break;
+            }
+
+            float step = Mathf.Sign(delta) * Mathf.Min(Mathf.Abs(delta), sweepReturnSpeed * Time.deltaTime);
+            currentYaw += step;
+
+            Vector3 e = flamethrowerHead.transform.eulerAngles;
+            e.y = currentYaw;
+            flamethrowerHead.transform.eulerAngles = e;
+
+            yield return null;
+        }
+
+        sweepReturnRoutine = null;
+    }
+
+    private void UpdateSweep()
+    {
+        if (!sweepEnabled) return;
+
+        sweepTime += Time.deltaTime;
+        if (sweepCycleSeconds <= 0f) return;
+
+        float phase = (sweepTime / sweepCycleSeconds) * Mathf.PI * 2f;
+        float offset = sweepAmplitudeDegrees * Mathf.Sin(phase);
+
+        Vector3 e = flamethrowerHead.transform.eulerAngles;
+        e.y = sweepBaseYaw + offset;
+        flamethrowerHead.transform.eulerAngles = e;
     }
 
     public void RegisterInRange(IEnemy e)

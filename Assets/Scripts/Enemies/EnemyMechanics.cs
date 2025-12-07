@@ -34,6 +34,10 @@ public interface IEnemy
     int GetInstanceID();
     void ApplyEffect(EnemyStatusEffect effect);
     void RemoveEffect(EffectType type);
+    void ApplyHighlight(bool apply);
+    bool Marked { get; }
+    void Mark();
+    void Unmark();
 }
 
 public enum EffectType

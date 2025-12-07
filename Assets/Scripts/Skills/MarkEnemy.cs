@@ -91,10 +91,8 @@ public class MarkEnemy : MonoBehaviour, ISkill
         }
     }
 
-    private void Mark(IEnemy enemy)
+    public void Mark(IEnemy enemy)
     {
-        //var marker = Instantiate(markerPrefab, enemy.Transform.position, Quaternion.identity, enemy.Transform);
-        //Destroy(marker, markedDuration);
         // TODO set enemy as marked
         Debug.Log($"Marked enemy: {enemy.Type}");
     }

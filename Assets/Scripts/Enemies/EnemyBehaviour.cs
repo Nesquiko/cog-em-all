@@ -46,6 +46,10 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private float duration = 0.4f;
 
     [Header("UI")]
+    [SerializeField] private GameObject markedIndicator;
+    [SerializeField] private MeshRenderer markedRenderer;
+    [SerializeField] private Material markHoveredMaterial;
+    [SerializeField] private Material markedMaterial;
     private DamagePopupManager damagePopupManager;
     private GearDropManager gearDropManager;
 
@@ -53,10 +57,14 @@ public class EnemyBehaviour : MonoBehaviour
     [SerializeField] private ParticleSystem buffVFX;
     [SerializeField] private ParticleSystem debuffVFX;
 
+    private bool marked = false;
+    public bool Marked => marked;
+
     // Damaging target
     private IDamageable target;
     private float attackCooldown;
     private float originalSpeed;
+    public float OriginalSpeed => originalSpeed;
 
     private readonly Dictionary<EffectType, Coroutine> activeEffects = new();
     private readonly Dictionary<EffectType, int> stackCounts = new();
@@ -68,6 +76,8 @@ public class EnemyBehaviour : MonoBehaviour
     private float splinePathT = 0f;
     private float pathLength;
     private float lateralOffset;
+
+    private Color originalColor;
 
     private void Awake()
     {
@@ -436,6 +446,51 @@ public class EnemyBehaviour : MonoBehaviour
 
         if (activeEffects.ContainsKey(EffectType.DisabledBuffs))
             buffVFX.Stop(withChildren: true);
+    }
+
+    public void ApplyHighlight(Renderer[] renderers)
+    {
+        markedRenderer.material = markHoveredMaterial;
+        markedIndicator.SetActive(true);
+
+        if (renderers == null || renderers.Length == 0) return;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+
+            originalColor = r.material.color;
+            r.material.color = Color.red;
+        }
+    }
+
+    public void ClearHighlight(Renderer[] renderers)
+    {
+        markedIndicator.SetActive(false);
+
+        if (renderers == null || renderers.Length == 0) return;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer r = renderers[i];
+            if (r == null) continue;
+
+            r.material.color = originalColor;
+        }
+    }
+
+    public void Mark()
+    {
+        marked = true;
+        markedRenderer.material = markedMaterial;
+        markedIndicator.SetActive(marked);
+    }
+
+    public void Unmark()
+    {
+        marked = false;
+        markedIndicator.SetActive(false);
     }
 
     private void Die()

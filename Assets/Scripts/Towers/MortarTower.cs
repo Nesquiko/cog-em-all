@@ -149,15 +149,13 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Update()
     {
-        if (target == null || !IsEnemyValid(target.Transform.position))
-        {
-            target = GetValidTarget();
-            if (target == null) return;
-        }
+        target = GetValidTarget();
+        if (target == null) return;
 
         RotateTowardTarget(target.Transform);
 
         fireCooldown -= Time.deltaTime;
+
         if (fireCooldown <= 0f && IsAimedAtTarget(target.Transform))
         {
             Shoot(target);
@@ -225,6 +223,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         foreach (var (id, enemy) in enemiesInRange)
         {
             if (tooClose.Contains(id)) continue;
+
+            if (enemy.Marked) return enemy;
 
             float distance = Vector3.Distance(transform.position, enemy.Transform.position);
             if (distance < bestDistance)

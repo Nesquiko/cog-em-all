@@ -113,17 +113,14 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     {
         fireCooldown -= Time.deltaTime;
 
-        if (target == null)
-        {
-            target = TowerMechanics.GetClosestEnemy(transform.position, enemiesInRange);
-            if (target == null) return;
-        }
+        target = TowerMechanics.SelectTargetWithMarkPriority(
+            transform.position,
+            enemiesInRange,
+            target,
+            EffectiveRange(range)
+        );
 
-        if (!TowerMechanics.IsEnemyInRange(transform.position, target, EffectiveRange(range)))
-        {
-            target = null;
-            return;
-        }
+        if (target == null) return;
 
         if (fireCooldown <= 0f)
         {

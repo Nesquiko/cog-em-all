@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,11 +28,15 @@ public class SkillPlacementSystem : MonoBehaviour
     [SerializeField] private Material ghostValidMaterial;
     [SerializeField] private Material ghostInvalidMaterial;
 
+    [SerializeField] private LayerMask enemyMask;
+    [SerializeField] private CursorSettings cursorSettings;
+
     private GameObject skillPrefab;
     private GameObject ghostInstance;
     private Camera mainCamera;
     private bool isPlacing;
     private bool canPlace;
+    private IEnemy currentHoveredEnemy;
 
     private readonly Dictionary<int, GameObject> hotkeyToPrefab = new();
     private readonly Dictionary<int, SkillButton> hotkeyToButton = new();
@@ -50,7 +55,7 @@ public class SkillPlacementSystem : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,
@@ -156,8 +161,7 @@ public class SkillPlacementSystem : MonoBehaviour
     {
         if (currentMode == SkillActivationMode.Raycast)
         {
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-                TryActivateRaycastSkill();
+            HandleRaycastUpdate();
             return;
         }
 
@@ -193,6 +197,42 @@ public class SkillPlacementSystem : MonoBehaviour
         {
             PlaceSkill(position, rotation);
         }
+    }
+
+    private void HandleRaycastUpdate()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out var hit, 500f))
+        {
+            if (hit.collider.TryGetComponent<EnemyAttackTrigger>(out var enemyAttackTrigger))
+            {
+                Cursor.SetCursor(cursorSettings.hoverCursor, cursorSettings.hotspot, CursorMode.Auto);
+                var enemy = enemyAttackTrigger.GetComponentInParent<IEnemy>();
+                Debug.Log(enemy);
+                if (enemy != currentHoveredEnemy)
+                {
+                    currentHoveredEnemy?.ApplyHighlight(false);
+                    enemy.ApplyHighlight(true);
+                }
+                currentHoveredEnemy = enemy;
+
+                if (Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    if (currentHoveredEnemy == null)
+                    {
+                        Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
+                        return;
+                    }
+                    currentHoveredEnemy?.ApplyHighlight(false);
+                    currentHoveredEnemy.Mark();
+                    CancelPlacement();
+                    StartCoroutine(EnableSelectionNextFrame());
+                }
+                return;
+            }
+        }
+        currentHoveredEnemy?.ApplyHighlight(false);
+        Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
     }
 
     private (Vector3 position, Vector3 tangent) GetClosestPointOnRoad(Vector3 samplePoint)

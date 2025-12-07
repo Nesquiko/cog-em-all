@@ -19,6 +19,8 @@ public class Dreadnought : MonoBehaviour, IEnemy
     [Header("VFX")]
     [SerializeField] private ParticleSystem shieldVFX;
 
+    [SerializeField] private Renderer[] highlightRenderers;
+
     // IEnemy fields
     public EnemyType Type => EnemyType.Dreadnought;
     public event Action<IEnemy> OnDeath;
@@ -26,6 +28,10 @@ public class Dreadnought : MonoBehaviour, IEnemy
     public float HealthPointsNormalized => behaviour.HealthPointsNormalized;
     public float Speed { get => behaviour.Speed; set => behaviour.Speed = value; }
     public Transform Transform => transform;
+    public bool Marked
+    {
+        get => behaviour.Marked;
+    }
 
     private void Awake()
     {
@@ -128,5 +134,24 @@ public class Dreadnought : MonoBehaviour, IEnemy
 
         if (type == EffectType.DisabledBuffs)
             nextShieldTimer = 0f;
+    }
+
+    public void ApplyHighlight(bool apply)
+    {
+        Debug.Log($"Applying highlight to {Type}, {apply}");
+        if (apply)
+            behaviour.ApplyHighlight(highlightRenderers);
+        else
+            behaviour.ClearHighlight(highlightRenderers);
+    }
+
+    public void Mark()
+    {
+        behaviour.Mark();
+    }
+
+    public void Unmark()
+    {
+        behaviour.Unmark();
     }
 }
