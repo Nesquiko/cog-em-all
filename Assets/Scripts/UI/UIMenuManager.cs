@@ -15,7 +15,7 @@ public class UIMenuManager : MonoBehaviour
 
     private void Awake()
     {
-        currentFaction = Faction.TheBrassArmy;  // TODO: luky -> here i need current faction
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu chcem fakciu
         factionSkillTreeUI = skillTreePanel.GetComponent<FactionSkillTreeUI>();
     }
 

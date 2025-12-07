@@ -177,6 +177,7 @@ MonoBehaviour:
   prewarmCount: 50
   distanceUpdateEveryFrames: 1
   popupHeightOffset: 10
+  pauseManager: {fileID: 0}
 --- !u!1 &4351666456078714511
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,12 +283,18 @@ MonoBehaviour:
   - {fileID: 3763980083327337614, guid: 16a5256d607acf14b981f1b9dfeeafb5, type: 3}
   - {fileID: 3639713596541949016, guid: b885353a54770ff46ba288e615523d7b, type: 3}
   - {fileID: 5157639234088474056, guid: 7369b1815d5ae6545ac63789fb25e0c5, type: 3}
+  factionSpecificSkillPrefabs: []
   skillButtons:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  airshipDropPoint: {fileID: 0}
   ghostValidMaterial: {fileID: 2100000, guid: b1473191157a0264381e30e6f99447fb, type: 2}
   ghostInvalidMaterial: {fileID: 2100000, guid: fa647975f89d8744e9417241dd1aa56b, type: 2}
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  cursorSettings: {fileID: 0}
 --- !u!1 &4812674696945707097
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,16 +490,24 @@ MonoBehaviour:
   roadMask:
     serializedVersion: 2
     m_Bits: 128
+  ghostLayer:
+    serializedVersion: 2
+    m_Bits: 1024
   buildProgressPrefab: {fileID: 8046800401251688829, guid: 30bf0823e03c29a4292a593cff38da36, type: 3}
   HUDPanelUI: {fileID: 0}
   towerSelectionManager: {fileID: 7161200660772854307}
-  wallPlacementSystem: {fileID: 4804839545236141888}
+  skillPlacementSystem: {fileID: 0}
   pauseManager: {fileID: 5980993326044197678}
   towerPrefabs:
   - {fileID: 3790200311388746545, guid: 082a34f533816ac40af20f94ec2e00e5, type: 3}
   - {fileID: 2884996292687604640, guid: a97b98293661524459f05581e973a1b7, type: 3}
   - {fileID: 8884071559928029575, guid: b53fe72a14d20fd47ace4e7d463df75c, type: 3}
   - {fileID: 2884996292687604640, guid: 78e70f89d2f482645bfc0fc2730bb5d8, type: 3}
+  towerGhostPrefabs:
+  - {fileID: 3790200311388746545, guid: 2a02d8f27d7d3d84a8b7a2c2ec3131ce, type: 3}
+  - {fileID: 2884996292687604640, guid: 8c049102381de7840a25400dd2a66026, type: 3}
+  - {fileID: 8884071559928029575, guid: fd2d5247a083f12438e95e45e5d82bbc, type: 3}
+  - {fileID: 2884996292687604640, guid: 52dba02de36f2aa459a7d2d030656609, type: 3}
   towerButtons:
   - {fileID: 0}
   - {fileID: 0}

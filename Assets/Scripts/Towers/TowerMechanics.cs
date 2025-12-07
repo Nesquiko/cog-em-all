@@ -61,7 +61,10 @@ public interface ITowerRotateable : ITower
 
 public interface ITowerStimulable : ITower
 {
-
+    bool StimActive();
+    bool StimCoolingDown();
+    void ActivateStim();
+    bool CanActivateStim();
 }
 
 public static class TowerMechanics

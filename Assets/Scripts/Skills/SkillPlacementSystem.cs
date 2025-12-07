@@ -55,7 +55,7 @@ public class SkillPlacementSystem : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,

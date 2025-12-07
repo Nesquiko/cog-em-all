@@ -10,12 +10,14 @@ public class TowerPlacementSystem : MonoBehaviour
     [SerializeField] private LayerMask groundMask;
     [SerializeField] private LayerMask blockingMask;
     [SerializeField] private LayerMask roadMask;
+    [SerializeField] private LayerMask ghostLayer;
     [SerializeField] private GameObject buildProgressPrefab;
     [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
-    [SerializeField] private SkillPlacementSystem wallPlacementSystem;
+    [SerializeField] private SkillPlacementSystem skillPlacementSystem;
     [SerializeField] private PauseManager pauseManager;
     [SerializeField] private GameObject[] towerPrefabs;
+    [SerializeField] private GameObject[] towerGhostPrefabs;
     [SerializeField] private TowerButton[] towerButtons;
 
     [Header("Visuals")]
@@ -25,6 +27,7 @@ public class TowerPlacementSystem : MonoBehaviour
     [SerializeField] private TowerPlacementSettings placementSettings;
 
     private GameObject towerPrefab;
+    private GameObject ghostPrefab;
     private GameObject ghostInstance;
     private Camera mainCamera;
     private bool isPlacing;
@@ -78,10 +81,7 @@ public class TowerPlacementSystem : MonoBehaviour
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-        int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
-        int effectiveMask = groundMask & ~(1 << ghostLayer);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, effectiveMask, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(ray, out RaycastHit hit, 1000f, groundMask & ~(1 << ghostLayer), QueryTriggerInteraction.Ignore))
         {
             Vector3 point = hit.point;
 
@@ -112,7 +112,9 @@ public class TowerPlacementSystem : MonoBehaviour
 
     public void BeginPlacement(GameObject prefab, int hotkeyIndex = -1)
     {
-        wallPlacementSystem.CancelPlacement();
+        ghostPrefab = towerGhostPrefabs[hotkeyIndex];
+
+        skillPlacementSystem.CancelPlacement();
         CancelPlacement(enableSelectionAfter: false);
 
         towerSelectionManager.DisableSelection();
@@ -121,16 +123,10 @@ public class TowerPlacementSystem : MonoBehaviour
         isPlacing = true;
         currentHotkeyIndex = hotkeyIndex;
 
-        ghostInstance = Instantiate(prefab);
-        TowerTypes towerType = ghostInstance.GetComponent<ITower>().TowerType();
-
+        ghostInstance = Instantiate(ghostPrefab);
+        TowerTypes towerType = prefab.GetComponent<ITower>().TowerType();
         HUDPanelUI.ShowPlacementInfo(towerType);
 
-        int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
-        ghostInstance.layer = ghostLayer;
-        foreach (Transform t in ghostInstance.GetComponentsInChildren<Transform>(true))
-            t.gameObject.layer = ghostLayer;
-        SetGhostMode(ghostInstance, true);
         ApplyGhostMaterial(ghostValidMaterial);
     }
 
@@ -180,18 +176,6 @@ public class TowerPlacementSystem : MonoBehaviour
         if (Keyboard.current.digit3Key.wasPressedThisFrame && towerButtons[2].IsEnabled) return 2;
         if (Keyboard.current.digit4Key.wasPressedThisFrame && towerButtons[3].IsEnabled) return 3;
         return -1;
-    }
-
-    private void SetGhostMode(GameObject obj, bool enable)
-    {
-        foreach (var c in obj.GetComponentsInChildren<MonoBehaviour>())
-            c.enabled = !enable;
-
-        foreach (var col in obj.GetComponentsInChildren<Collider>())
-            col.enabled = !enable;
-
-        foreach (var r in obj.GetComponentsInChildren<Renderer>())
-            r.sharedMaterial = ghostValidMaterial;
     }
 
     private void ApplyGhostMaterial(Material material)
