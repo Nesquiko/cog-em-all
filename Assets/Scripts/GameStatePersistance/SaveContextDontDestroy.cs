@@ -16,11 +16,23 @@ public class SaveContextDontDestroy : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public FactionSaveState LastFactionSaveState()
+    {
+        return CurrentSave.LastPlayedFaction switch
+        {
+            Faction.TheBrassArmy => CurrentSave.brassArmySave,
+            Faction.TheValveboundSeraphs => CurrentSave.seraphsSave,
+            Faction.OverpressureCollective => CurrentSave.overpressuSave,
+            _ => throw new ArgumentOutOfRangeException(nameof(CurrentSave.lastPlayedFaction), CurrentSave.lastPlayedFaction, "Unhandled faction"),
+        };
+    }
+
     public static SaveContextDontDestroy GetOrCreateDev()
     {
         var existing = FindFirstObjectByType<SaveContextDontDestroy>();
         if (existing != null) return existing;
 
+        Debug.Log("Using dev save");
         var go = new GameObject("SaveContext (Dev)");
         var ctx = go.AddComponent<SaveContextDontDestroy>();
         ctx.SetCurrentSave(SaveSystem.LoadDevSave());

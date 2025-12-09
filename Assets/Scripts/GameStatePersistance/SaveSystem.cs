@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using GLTFast.Schema;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -77,7 +79,7 @@ public class FactionSaveState
         this.skillNodes = new();
         foreach (var skillNode in skillNodes)
         {
-            this.skillNodes.Add(new SkillNodeEntry { slug = skillNode.Key, level = skillNode.Value });
+            this.skillNodes.Add(new SkillNodeEntry { slug = skillNode.Key, rank = skillNode.Value });
         }
     }
 
@@ -87,18 +89,19 @@ public class FactionSaveState
     public class SkillNodeEntry
     {
         public string slug;
-        public int level;
+        public int rank;
     }
 
     // JsonUtil doesn't support serializing dictionaries...
     public List<SkillNodeEntry> skillNodes = new();
 
-    public Dictionary<string, int> SkillNodes()
+    public Dictionary<string, int> SkillNodes(bool filtered = false)
     {
         var dict = new Dictionary<string, int>();
         foreach (var entry in skillNodes)
         {
-            dict[entry.slug] = entry.level;
+            if (filtered && entry.rank == 0) continue;
+            dict[entry.slug] = entry.rank;
         }
 
         return dict;

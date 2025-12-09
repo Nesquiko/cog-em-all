@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEditor;
+using System.Linq;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
@@ -19,10 +20,9 @@ public class Level : MonoBehaviour
     [SerializeField]
     private string levelFileName = "testing-level.json";
 
-    private SerializableLevel data = new SerializableLevel();
+    private SerializableLevel data = new();
     private SplineContainer splineContainer;
     private SplineMeshTools.Core.SplineMesh splineMesh;
-    private Coroutine runRoutine;
 
     void OnValidate()
     {
@@ -44,26 +44,16 @@ public class Level : MonoBehaviour
 
     private void Start()
     {
-        LoadLevelFromFile(levelFileName);
-        runRoutine = StartCoroutine(orchestrator.RunLevel(data, splineContainer));
-    }
+        var operationData = OperationDataDontDestroy.GetOrReadDev();
 
-    public void StopLevel()
-    {
-        if (runRoutine != null)
+        Debug.Log($"operation with faction {operationData.Faction} with these slugs: " + string.Join(", ", operationData.Modifiers.Select(m =>
         {
-            StopCoroutine(runRoutine);
-            runRoutine = null;
-        }
-    }
+            var ranks = m is IRankedModifier r ? r.CurrentRanks() : 1;
+            return $"{m.slug} (ranks: {ranks})";
+        })));
 
-    public void SetLevelFileName(string newFileName)
-    {
-        levelFileName = newFileName;
         LoadLevelFromFile(levelFileName);
-
-        if (runRoutine != null) StopCoroutine(runRoutine);
-        runRoutine = StartCoroutine(orchestrator.RunLevel(data, splineContainer));
+        StartCoroutine(orchestrator.RunLevel(data, splineContainer, operationData));
     }
 
     private void LoadLevelFromFile(string fileName)

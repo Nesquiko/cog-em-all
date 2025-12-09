@@ -41,6 +41,8 @@ public abstract class Modifier
 
 public interface IRankedModifier
 {
+    void SetCurrentRanks(int value);
+    int CurrentRanks();
     int MaxRanks();
 }
 
@@ -60,6 +62,7 @@ public class TowerModifier : Modifier, IRankedModifier
     public TowerAttribute modifiedAttribute;
     public ChangeType changeType;
     public float change;
+    public int currentRanks = 0;
     public int maxRanks = 1;
 
     public static bool AppliesTo(TowerModifier mod, TowerTypes towerType)
@@ -67,6 +70,8 @@ public class TowerModifier : Modifier, IRankedModifier
         return mod.applyTo == TowerModifierApplyTo.All || (TowerTypes)mod.applyTo == towerType;
     }
 
+    public void SetCurrentRanks(int value) => currentRanks = value;
+    public int CurrentRanks() => currentRanks;
     public int MaxRanks() => maxRanks;
 }
 
@@ -213,7 +218,11 @@ public class AbilityAddUsages : Modifier, IRankedModifier
     public SkillTypes addTo;
     public int maxRanks;
     public int numOfUsages;
+    public int currentRanks = 0;
 
+    public void SetCurrentRanks(int value) => currentRanks = value;
+
+    public int CurrentRanks() => currentRanks;
     public int MaxRanks() => maxRanks;
 }
 
@@ -324,6 +333,55 @@ public class ModifiersDatabase : ScriptableObject
         return modifier;
     }
 
+    private Dictionary<string, Modifier> slugToModifierCache;
+
+    private void OnEnable()
+    {
+        BuildSlugIndex();
+    }
+
+    public List<Modifier> GetModifiersBySlugs(Dictionary<string, int> skillNodes)
+    {
+        var result = new List<Modifier>();
+
+        foreach (var kvp in skillNodes)
+        {
+            var slug = kvp.Key;
+            var ranks = kvp.Value;
+
+            if (string.IsNullOrEmpty(slug))
+            {
+                Debug.LogWarning($"Empty slug in request to GetModifiersBySlugs on {name}");
+                continue;
+            }
+
+            if (slugToModifierCache.TryGetValue(slug, out var modifier))
+            {
+                if (modifier is IRankedModifier rankedModifier)
+                {
+                    Assert.IsTrue(ranks <= rankedModifier.MaxRanks(), $"trying to set ranks on slug '{slug}' to {ranks}, but MaxRanks is {rankedModifier.MaxRanks()}");
+                    Assert.IsTrue(ranks >= 0, $"trying to set ranks on slug '{slug}' to {ranks}, but ranks cannot be negative");
+                    rankedModifier.SetCurrentRanks(ranks);
+                }
+                result.Add(modifier);
+            }
+            else
+            {
+                Debug.LogError($"No modifier found with slug '{slug}' in ModifiersDatabase '{name}'.");
+            }
+        }
+
+        return result;
+    }
+
+    public Modifier GetModifierBySlug(string slug)
+    {
+        Assert.IsFalse(string.IsNullOrEmpty(slug));
+        slugToModifierCache.TryGetValue(slug, out var modifier);
+        Assert.IsNotNull(modifier, $"modifier with slug {slug} not found");
+        return modifier;
+    }
+
     private static List<Modifier> ResolveModifiers(List<Modifier> source, List<string> slugRefs)
     {
         var result = new List<Modifier>(slugRefs.Count);
@@ -340,6 +398,38 @@ public class ModifiersDatabase : ScriptableObject
         }
 
         return result;
+    }
+
+    private void BuildSlugIndex()
+    {
+        slugToModifierCache = new Dictionary<string, Modifier>();
+        AddModifiersToCache(genericMinorModifiers, nameof(genericMinorModifiers), slugToModifierCache);
+        AddModifiersToCache(genericMajorModifiers, nameof(genericMajorModifiers), slugToModifierCache);
+        AddModifiersToCache(theBrassArmyModifiers, nameof(theBrassArmyModifiers), slugToModifierCache);
+        AddModifiersToCache(theValveboundSeraphsModifiers, nameof(theValveboundSeraphsModifiers), slugToModifierCache);
+        AddModifiersToCache(overpressureCollectiveModifiers, nameof(overpressureCollectiveModifiers), slugToModifierCache);
+    }
+
+    private static void AddModifiersToCache(List<Modifier> list, string listName, Dictionary<string, Modifier> cache)
+    {
+        Assert.IsNotNull(list);
+
+        foreach (var mod in list)
+        {
+            if (string.IsNullOrEmpty(mod.slug))
+            {
+                Debug.LogWarning($"Modifier without slug in {listName}");
+                continue;
+            }
+
+            if (cache.ContainsKey(mod.slug))
+            {
+                Debug.LogError($"Duplicate modifier slug '{mod.slug}' found in {listName}");
+                continue;
+            }
+
+            cache.Add(mod.slug, mod);
+        }
     }
 }
 

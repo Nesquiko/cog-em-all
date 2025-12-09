@@ -21,8 +21,6 @@ public class UIMenuManager : MonoBehaviour
     [SerializeField] private GameObject towersPanel;
     [SerializeField] private FactionSkillTreeUI skillTreeUI;
 
-    [SerializeField] private FactionDataCatalog factionDataCatalog;
-
     private Panel currentPanel;
 
     private void Awake()
@@ -51,24 +49,13 @@ public class UIMenuManager : MonoBehaviour
 
     public void ShowOverview()
     {
-        var save = saveContext.CurrentSave;
-
-        if (save.lastPlayedFaction == SaveData.PlayedFaction.None)
+        if (saveContext.CurrentSave.lastPlayedFaction == SaveData.PlayedFaction.None)
         {
             ShowFactions();
             return;
         }
-        var lastPlayedFaction = save.LastPlayedFaction;
 
-        var lastPlayedFactionSave = lastPlayedFaction switch
-        {
-            Faction.TheBrassArmy => save.brassArmySave,
-            Faction.TheValveboundSeraphs => save.seraphsSave,
-            Faction.OverpressureCollective => save.overpressuSave,
-            _ => throw new ArgumentOutOfRangeException(nameof(save.lastPlayedFaction), save.lastPlayedFaction, "Unhandled faction"),
-        };
-
-        overviewPanel.Initialize(lastPlayedFactionSave, factionDataCatalog.FromType(lastPlayedFaction));
+        overviewPanel.Initialize(saveContext);
         ShowPanel(Panel.Overview);
     }
 

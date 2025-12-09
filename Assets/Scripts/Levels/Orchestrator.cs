@@ -8,8 +8,6 @@ using UnityEngine.Splines;
 [RequireComponent(typeof(Spawner))]
 class Orchestrator : MonoBehaviour
 {
-    [SerializeField] private OperationModifiers operationModifiers;
-
     [SerializeField] private Spawner spawner;
     private SerializableLevel level;
     private int wavesSpawned = 0;
@@ -106,12 +104,13 @@ class Orchestrator : MonoBehaviour
         menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized());
     }
 
-    public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer)
+    public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer, OperationDataDontDestroy operationData)
     {
         Assert.IsNotNull(level);
         this.level = level;
 
-        var (faction, modifiers) = operationModifiers.ReadModifiers();
+        var fact = operationData.Faction;
+        var modifiers = operationData.Modifiers;
         var economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
         var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
         towerMods = ModifiersCalculator.CalculateTowerMods(modifiers);

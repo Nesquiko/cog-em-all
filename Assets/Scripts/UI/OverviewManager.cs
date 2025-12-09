@@ -24,17 +24,21 @@ public class OverviewManager : MonoBehaviour
     [SerializeField] private GameObject enemiesPanel;
     [SerializeField] private GameObject enemyEntryPrefab;
 
-    [SerializeField] private OperationModifiers operationModifiers;
+    [SerializeField] private FactionDataCatalog factionDataCatalog;
+    [SerializeField] private ModifiersDatabase modifiersDatabase;
 
-    private int factionLevel = 0;
     private FactionData factionData;
+    private SaveContextDontDestroy saveContext;
 
 
-    public void Initialize(FactionSaveState lastPlayedFaction, FactionData factionData)
+    public void Initialize(SaveContextDontDestroy saveContext)
     {
-        Assert.IsNotNull(lastPlayedFaction);
+        this.saveContext = saveContext;
+        var lastPlayedFaction = saveContext.CurrentSave.LastPlayedFaction;
+
+        var factionData = factionDataCatalog.FromType(lastPlayedFaction);
+
         Assert.IsNotNull(factionData);
-        factionLevel = lastPlayedFaction.level;
         this.factionData = factionData;
         UpdateVisuals();
     }
@@ -48,7 +52,7 @@ public class OverviewManager : MonoBehaviour
 
     private void DisplayFaction()
     {
-        factionLevelLabel.text = $"Level {factionLevel}";
+        factionLevelLabel.text = $"Level {saveContext.LastFactionSaveState().level}";
         Assert.IsNotNull(factionSymbol);
         factionSymbol.sprite = factionData.symbol;
     }
@@ -86,7 +90,12 @@ public class OverviewManager : MonoBehaviour
 
     public void StartOperation()
     {
-        // TODO use the operationModifiers.LoadModifications to load skill tree effects and other buffs/debuffs
+        var go = new GameObject("Operation data");
+        var data = go.AddComponent<OperationDataDontDestroy>();
+
+        var modifiers = modifiersDatabase.GetModifiersBySlugs(saveContext.LastFactionSaveState().SkillNodes(filtered: true));
+        data.Initialize(saveContext.CurrentSave.LastPlayedFaction, modifiers);
+
         SceneLoader.LoadScene("GameScene");
     }
 }
