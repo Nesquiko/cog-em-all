@@ -164,9 +164,9 @@ MonoBehaviour:
       data:
         name: Dangerous Dividends
         slug: dangerous_dividends
-        description: ' The Overpressure Collective chases high risk profit, earning
+        description: The Overpressure Collective chases high risk profit, earning
           10% more Gears from every enemy killed at the cost of losing 100 Gears
-          whenever the base is hit.'
+          whenever the base is hit.
         type: 0
         benefit:
           category: 2

@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
+public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerStimulable
 {
     [Header("Stats")]
     [SerializeField] private float beamDamage = 30f;
@@ -38,12 +38,34 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float heightRangeMultiplier = 0.05f;
     [SerializeField] private float baselineHeight = 0f;
 
+    [Header("Stim Mode")]
+    [SerializeField] private float stimMultiplier = 2f;
+    [SerializeField] private float stimDuration = 5f;
+    [SerializeField] private float stimCooldown = 5f;
+
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
+    [SerializeField] private ParticleSystem stimModeVFX;
+    [SerializeField] private ParticleSystem[] stimCooldownVFX;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private IEnemy target;
     private float fireCooldown = 0f;
+
+    private bool stimActive = false;
+    private bool stimCoolingDown = false;
+    private float stimTimer;
+    private float stimCooldownTimer;
+    public bool StimActive() => stimActive;
+    public bool StimCoolingDown() => stimCoolingDown;
+    public bool CanActivateStim() => !stimActive && !stimCoolingDown;
+
+    private float baseBeamDamage;
+    private float baseBeamChainRadius;
+    private float baseCritChance;
+    private float baseCritMultiplier;
+    private float baseFireRate;
+    private float baseRange;
 
     private GameObject towerOverlayGO;
     private TowerOverlay towerOverlay;
@@ -63,7 +85,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
-    public Faction GetFaction() => Faction.TheBrassArmy;
+    private Faction currentFaction;
+    public Faction GetFaction() => currentFaction;
 
     void OnDrawGizmosSelected()
     {
@@ -72,6 +95,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private void Awake()
     {
+        currentFaction = Faction.OverpressureCollective;
+
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
@@ -111,25 +136,66 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private void Update()
     {
+        HandleStimUpdate();
+        if (stimCoolingDown) return;
+
         fireCooldown -= Time.deltaTime;
 
-        if (target == null)
-        {
-            target = TowerMechanics.GetClosestEnemy(transform.position, enemiesInRange);
-            if (target == null) return;
-        }
+        target = TowerMechanics.SelectTargetWithMarkPriority(
+            transform.position,
+            enemiesInRange,
+            target,
+            EffectiveRange(range)
+        );
 
-        if (!TowerMechanics.IsEnemyInRange(transform.position, target, EffectiveRange(range)))
-        {
-            target = null;
-            return;
-        }
+        if (target == null) return;
 
         if (fireCooldown <= 0f)
         {
             Shoot(target);
             fireCooldown = 1f / fireRate;
         }
+    }
+
+    private void HandleStimUpdate()
+    {
+        if (stimActive)
+        {
+            stimTimer -= Time.deltaTime;
+            if (stimTimer <= 0f)
+                EndStim();
+        }
+        else if (stimCoolingDown)
+        {
+            stimCooldownTimer -= Time.deltaTime;
+            if (stimCooldownTimer <= 0f)
+            {
+                stimCoolingDown = false;
+                foreach (var scVFX in stimCooldownVFX)
+                    scVFX.Stop(withChildren: true);
+            }
+        }
+    }
+
+    private void EndStim()
+    {
+        stimActive = false;
+        stimCoolingDown = true;
+        stimCooldownTimer = stimCooldown;
+
+        beamDamage = baseBeamDamage;
+        beamChainRadius = baseBeamChainRadius;
+        critChance = baseCritChance;
+        critMultiplier = baseCritMultiplier;
+        fireRate = baseFireRate;
+        range = baseRange;
+
+        capsuleCollider.radius = EffectiveRange(range);
+        SetRangeProjector(EffectiveRange(range));
+
+        stimModeVFX.Stop(withChildren: true);
+        foreach (var scVFX in stimCooldownVFX)
+            scVFX.Play();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -227,6 +293,34 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     {
         Assert.IsNotNull(f);
         CalculateBaseBeamDamage = f;
+    }
+
+    public void ActivateStim()
+    {
+        if (stimActive || stimCoolingDown) return;
+
+        stimActive = true;
+        stimTimer = stimDuration;
+        stimCoolingDown = false;
+
+        baseBeamDamage = beamDamage;
+        baseBeamChainRadius = beamChainRadius;
+        baseCritChance = critChance;
+        baseCritMultiplier = critMultiplier;
+        baseFireRate = fireRate;
+        baseRange = range;
+
+        beamDamage *= stimMultiplier;
+        beamChainRadius *= stimMultiplier;
+        critChance *= Mathf.Clamp01(critChance * stimMultiplier);
+        critMultiplier *= stimMultiplier;
+        fireRate *= stimMultiplier;
+        range *= stimMultiplier;
+
+        capsuleCollider.radius = EffectiveRange(range);
+        SetRangeProjector(EffectiveRange(range));
+
+        stimModeVFX.Play();
     }
 
     private void OnDestroy()

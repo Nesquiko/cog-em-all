@@ -34,6 +34,10 @@ public interface IEnemy
     int GetInstanceID();
     void ApplyEffect(EnemyStatusEffect effect);
     void RemoveEffect(EffectType type);
+    void ApplyHighlight(bool apply);
+    bool Marked { get; }
+    void Mark();
+    void Unmark();
 }
 
 public enum EffectType
@@ -46,6 +50,8 @@ public enum EffectType
     OilBurned,
     DebrisSlowed,
     ArmorShredded,
+    Frozen,
+    DisabledBuffs,
 }
 
 [Serializable]
@@ -133,7 +139,7 @@ public class EnemyStatusEffect
         duration: duration,
         tickDamage: 0f,
         tickInterval: 0f,
-        speedMultiplier: 1.20f,
+        speedMultiplier: 1.5f,
         persistent: false,
         negative: false
     );
@@ -184,5 +190,25 @@ public class EnemyStatusEffect
         stackable: true,
         maxStacks: 2,
         damageMultiplierPerStack: 0.05f
+    );
+
+    public static EnemyStatusEffect Freeze => new(
+        type: EffectType.Frozen,
+        duration: Mathf.Infinity,
+        tickDamage: 0f,
+        tickInterval: 0f,
+        speedMultiplier: 0,
+        persistent: true,
+        negative: true
+    );
+
+    public static EnemyStatusEffect DisableBuffs => new(
+        type: EffectType.DisabledBuffs,
+        duration: Mathf.Infinity,
+        tickDamage: 0f,
+        tickInterval: 0f,
+        speedMultiplier: 1f,
+        persistent: true,
+        negative: true
     );
 }

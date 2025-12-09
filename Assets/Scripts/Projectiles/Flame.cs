@@ -41,30 +41,41 @@ public class Flame : MonoBehaviour, IDamageSource
 
     public void StartFlame(Func<float, float> CalculateBaseFlameDamagePerPulse)
     {
-        if (isActive) return;
+        if (isActive)
+            return;
+
         isActive = true;
 
         flameVFX.Play();
 
+        if (fireRoutine != null)
+            StopCoroutine(fireRoutine);
+
         fireRoutine = StartCoroutine(FlameRoutine(CalculateBaseFlameDamagePerPulse));
 
         foreach (var oil in oilsInRange)
-            if (oil != null) oil.Ignite();
+            if (oil != null)
+                oil.Ignite();
     }
 
     public void StopFlame()
     {
-        if (!isActive) return;
+        if (!isActive)
+            return;
+
         isActive = false;
+
         if (fireRoutine != null)
         {
             StopCoroutine(fireRoutine);
+            fireRoutine = null;
         }
 
         flameVFX.Stop(withChildren: true, stopBehavior: ParticleSystemStopBehavior.StopEmittingAndClear);
 
         foreach (var oil in oilsInRange)
-            if (oil != null) oil.Extinguish();
+            if (oil != null)
+                oil.Extinguish();
     }
 
     private IEnumerator FlameRoutine(Func<float, float> CalculateBaseFlameDamagePerPulse)
@@ -74,11 +85,13 @@ public class Flame : MonoBehaviour, IDamageSource
         float duration = 0f;
         float tickTimer = 0f;
 
-        var runTime = owner.FlameDuration - burnDelay;
-        while (duration < runTime)
+        while (isActive)
         {
             duration += Time.deltaTime;
             tickTimer += Time.deltaTime;
+
+            if (!owner.StimActive() && duration >= owner.FlameDuration - burnDelay)
+                break;
 
             if (tickTimer >= owner.FlamePulseInterval)
             {
@@ -90,6 +103,7 @@ public class Flame : MonoBehaviour, IDamageSource
         }
 
         isActive = false;
+        fireRoutine = null;
     }
 
     private void DealDamage(float baseDamagePerPulse)

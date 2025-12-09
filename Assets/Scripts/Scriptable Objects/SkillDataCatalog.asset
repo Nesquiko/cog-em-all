@@ -26,3 +26,23 @@ MonoBehaviour:
     description: Place a mine that triggers after contact and a short delay and deals
       AoE damage.
     cost: 200
+  - type: 3
+    displayName: Airship Airstrike
+    description: Airship airstrike description.
+    cost: 500
+  - type: 4
+    displayName: Airship Freeze Zone
+    description: Airship freeze zone description.
+    cost: 500
+  - type: 5
+    displayName: Airship Disable Zone
+    description: Airship disable zone description.
+    cost: 500
+  - type: 6
+    displayName: Mark Enemy
+    description: Mark enemy description.
+    cost: 500
+  - type: 7
+    displayName: Sudden Death
+    description: Sudden death description.
+    cost: 500

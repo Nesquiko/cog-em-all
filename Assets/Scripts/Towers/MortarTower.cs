@@ -1,3 +1,4 @@
+using NUnit.Framework.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
-public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable
+public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerStimulable
 {
     [Header("Stats")]
     [SerializeField] private float shellDamage = 120f;
@@ -46,6 +47,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private float heightRangeMultiplier = 0.05f;
     [SerializeField] private float baselineHeight = 0f;
 
+    [Header("Stim Mode")]
+    [SerializeField] private float stimMultiplier = 2f;
+    [SerializeField] private float stimDuration = 5f;
+    [SerializeField] private float stimCooldown = 5f;
+
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.5f;
     [SerializeField] private float recoilSpeed = 20f;
@@ -53,6 +59,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
+    [SerializeField] private ParticleSystem stimModeVFX;
+    [SerializeField] private ParticleSystem stimCooldownVFX;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private readonly HashSet<int> tooClose = new();
@@ -61,6 +69,21 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private Vector3 barrelDefaultPosition;
     private Coroutine recoilRoutine;
+
+    private bool stimActive = false;
+    private bool stimCoolingDown = false;
+    private float stimTimer;
+    private float stimCooldownTimer;
+    public bool StimActive() => stimActive;
+    public bool StimCoolingDown() => stimCoolingDown;
+    public bool CanActivateStim() => !stimActive && !stimCoolingDown;
+
+    private float baseShellDamage;
+    private float baseShellSplashRadius;
+    private float baseCritChance;
+    private float baseCritMultiplier;
+    private float baseFireRate;
+    private float baseMaxRange;
 
     private GameObject towerOverlayGO;
     private TowerOverlay towerOverlay;
@@ -78,7 +101,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
-    public Faction GetFaction() => Faction.TheBrassArmy;
+    private Faction currentFaction;
+    public Faction GetFaction() => currentFaction;
 
     private void OnDrawGizmosSelected()
     {
@@ -100,6 +124,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Awake()
     {
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> aktualna fakcia
+
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
@@ -149,20 +175,60 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Update()
     {
-        if (target == null || !IsEnemyValid(target.Transform.position))
-        {
-            target = GetValidTarget();
-            if (target == null) return;
-        }
+        HandleStimUpdate();
+        if (stimCoolingDown) return;
+
+        target = GetValidTarget();
+        if (target == null) return;
 
         RotateTowardTarget(target.Transform);
 
         fireCooldown -= Time.deltaTime;
+
         if (fireCooldown <= 0f && IsAimedAtTarget(target.Transform))
         {
             Shoot(target);
             fireCooldown = 1f / fireRate;
         }
+    }
+
+    private void HandleStimUpdate()
+    {
+        if (stimActive)
+        {
+            stimTimer -= Time.deltaTime;
+            if (stimTimer <= 0f)
+                EndStim();
+        }
+        else if (stimCoolingDown)
+        {
+            stimCooldownTimer -= Time.deltaTime;
+            if (stimCooldownTimer <= 0f)
+            {
+                stimCoolingDown = false;
+                stimCooldownVFX.Stop(withChildren: true);
+            }
+        }
+    }
+
+    private void EndStim()
+    {
+        stimActive = false;
+        stimCoolingDown = true;
+        stimCooldownTimer = stimCooldown;
+
+        shellDamage = baseShellDamage;
+        shellSplashRadius = baseShellSplashRadius;
+        critChance = baseCritChance;
+        critMultiplier = baseCritMultiplier;
+        fireRate = baseFireRate;
+        maxRange = baseMaxRange;
+
+        outerCollider.radius = EffectiveRange(maxRange);
+        SetRangeProjector(outerRangeProjector, EffectiveRange(maxRange));
+
+        stimModeVFX.Stop(withChildren: true);
+        stimCooldownVFX.Play();
     }
 
     public void RegisterInRange(IEnemy e)
@@ -211,29 +277,17 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         shell.Launch(enemy.Transform.position, dmg, isCritical, arcHeight);
     }
 
-    private bool IsEnemyValid(Vector3 enemyPosition)
-    {
-        float distance = Vector3.Distance(transform.position, enemyPosition);
-        return distance >= EffectiveRange(minRange) && distance <= EffectiveRange(maxRange);
-    }
-
     private IEnemy GetValidTarget()
     {
-        IEnemy best = null;
-        float bestDistance = Mathf.Infinity;
-
         foreach (var (id, enemy) in enemiesInRange)
         {
             if (tooClose.Contains(id)) continue;
 
-            float distance = Vector3.Distance(transform.position, enemy.Transform.position);
-            if (distance < bestDistance)
-            {
-                bestDistance = distance;
-                best = enemy;
-            }
+            if (enemy.Marked) return enemy;
+
+            return enemy;
         }
-        return best;
+        return null;
     }
 
     private bool IsAimedAtTarget(Transform targetTransform, float yawTolerance = 0.5f, float pitchTolerance = 20f)
@@ -389,6 +443,34 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     {
         Assert.IsNotNull(f);
         CalculateBaseShellDamage = f;
+    }
+
+    public void ActivateStim()
+    {
+        if (stimActive || stimCoolingDown) return;
+
+        stimActive = true;
+        stimTimer = stimDuration;
+        stimCoolingDown = false;
+
+        baseShellDamage = shellDamage;
+        baseShellSplashRadius = shellSplashRadius;
+        baseCritChance = critChance;
+        baseCritMultiplier = critMultiplier;
+        baseFireRate = fireRate;
+        baseMaxRange = maxRange;
+
+        shellDamage *= stimMultiplier;
+        shellSplashRadius *= stimMultiplier;
+        critChance *= Mathf.Clamp01(critChance * stimMultiplier);
+        critMultiplier *= stimMultiplier;
+        fireRate *= stimMultiplier;
+        maxRange *= stimMultiplier;
+
+        outerCollider.radius = EffectiveRange(maxRange);
+        SetRangeProjector(outerRangeProjector, EffectiveRange(maxRange));
+
+        stimModeVFX.Play();
     }
 
     private void OnDestroy()

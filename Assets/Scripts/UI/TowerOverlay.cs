@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerOverlay : MonoBehaviour
 {
@@ -44,11 +46,6 @@ public class TowerOverlay : MonoBehaviour
         tower = towerGO.GetComponent<ITower>();
     }
 
-    public void Start()
-    {
-        AdjustOverlayButtons();
-    }
-
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -66,10 +63,10 @@ public class TowerOverlay : MonoBehaviour
 
         if (stimModeButton != null)
         {
-            stimModeCanvasGroup = takeControlButton.GetComponent<CanvasGroup>();
-            stimModeScaleOnHover = takeControlButton.GetComponent<ScaleOnHover>();
-            stimModeCursorPointer = takeControlButton.GetComponent<CursorPointer>();
-            stimModeTooltipOnButton = takeControlButton.GetComponent<TooltipOnButton>();
+            stimModeCanvasGroup = stimModeButton.GetComponent<CanvasGroup>();
+            stimModeScaleOnHover = stimModeButton.GetComponent<ScaleOnHover>();
+            stimModeCursorPointer = stimModeButton.GetComponent<CursorPointer>();
+            stimModeTooltipOnButton = stimModeButton.GetComponent<TooltipOnButton>();
         }
 
         if (takeControlButton != null)
@@ -89,21 +86,30 @@ public class TowerOverlay : MonoBehaviour
         }
     }
 
+    public void Start()
+    {
+        AdjustOverlayButtons();
+    }
+
     private void AdjustOverlayButtons()
     {
         // Upgradeable
         if (upgradeButton != null && (!towerGO.TryGetComponent<ITower>(out var tower) || !towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel())))
         {
+            upgradeButton.GetComponent<Button>().interactable = false;
             upgradeCanvasGroup.alpha = 0.5f;
+            upgradeCanvasGroup.interactable = false;
             upgradeScaleOnHover.enabled = false;
             upgradeCursorPointer.enabled = false;
             upgradeTooltipOnButton.enabled = false;
         }
 
         // Stimulable
-        if (stimModeButton != null && !towerGO.TryGetComponent<ITowerStimulable>(out _))
+        if (stimModeButton != null && (!towerGO.TryGetComponent<ITowerStimulable>(out var stimTower) || !stimTower.CanActivateStim()))
         {
+            stimModeButton.GetComponent<Button>().interactable = false;
             stimModeCanvasGroup.alpha = 0.5f;
+            stimModeCanvasGroup.interactable = false;
             stimModeScaleOnHover.enabled = false;
             stimModeCursorPointer.enabled = false;
             stimModeTooltipOnButton.enabled = false;
@@ -112,7 +118,9 @@ public class TowerOverlay : MonoBehaviour
         // Controllable
         if (takeControlButton != null && !towerGO.TryGetComponent<ITowerControllable>(out _))
         {
+            takeControlButton.GetComponent<Button>().interactable = false;
             takeControlCanvasGroup.alpha = 0.5f;
+            takeControlCanvasGroup.interactable = false;
             takeControlScaleOnHover.enabled = false;
             takeControlCursorPointer.enabled = false;
             takeControlTooltipOnButton.enabled = false;
@@ -121,7 +129,9 @@ public class TowerOverlay : MonoBehaviour
         // Rotateable
         if (rotateButton != null && !towerGO.TryGetComponent<ITowerRotateable>(out _))
         {
+            rotateButton.GetComponent<Button>().interactable = false;
             rotateCanvasGroup.alpha = 0.5f;
+            rotateCanvasGroup.interactable = false;
             rotateScaleOnHover.enabled = false;
             rotateCursorPointer.enabled = false;
             rotateTooltipOnButton.enabled = false;
@@ -135,10 +145,7 @@ public class TowerOverlay : MonoBehaviour
         targetPosition.y += 7f;
         Vector3 screenPosition = mainCamera.WorldToScreenPoint(targetPosition);
 
-        if (screenPosition.z < 0)
-        {
-            return;
-        }
+        if (screenPosition.z < 0) return;
 
         rectTransform.position = screenPosition;
     }
@@ -146,7 +153,8 @@ public class TowerOverlay : MonoBehaviour
     public void OnStimModeClicked()
     {
         if (stimModeButton == null || !towerGO.TryGetComponent<ITowerStimulable>(out var tower)) return;
-        //towerStimManager.ActivateStimMode(tower);
+        tower.ActivateStim();
+        StartCoroutine(HandleStimButtonCooldown(tower));
     }
 
     public void OnTakeControlClicked()
@@ -184,5 +192,26 @@ public class TowerOverlay : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
+    }
+
+    private IEnumerator HandleStimButtonCooldown(ITowerStimulable stimTower)
+    {
+        SetStimButtonInteractable(false);
+
+        while (stimTower.StimActive() || stimTower.StimCoolingDown())
+            yield return null;
+
+        SetStimButtonInteractable(true);
+    }
+
+    private void SetStimButtonInteractable(bool enable)
+    {
+        if (stimModeButton == null) return;
+        stimModeButton.GetComponent<Button>().interactable = enable;
+        stimModeCanvasGroup.alpha = enable ? 1f : 0.5f;
+        stimModeCanvasGroup.interactable = enable;
+        stimModeScaleOnHover.enabled = enable;
+        stimModeCursorPointer.enabled = enable;
+        stimModeTooltipOnButton.enabled = enable;
     }
 }

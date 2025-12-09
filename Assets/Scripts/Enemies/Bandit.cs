@@ -20,6 +20,8 @@ public class Bandit : MonoBehaviour, IEnemy
     [Header("VFX")]
     [SerializeField] private ParticleSystem leaderBattlecryVFX;
 
+    [SerializeField] private Renderer[] highlightRenderers;
+
     private bool isLeader;
 
     // IEnemy fields
@@ -29,6 +31,11 @@ public class Bandit : MonoBehaviour, IEnemy
     public float HealthPointsNormalized => behaviour.HealthPointsNormalized;
     public float Speed { get => behaviour.Speed; set => behaviour.Speed = value; }
     public Transform Transform => transform;
+
+    public bool Marked
+    {    
+        get => behaviour.Marked;
+    }
 
     private void Awake()
     {
@@ -59,10 +66,31 @@ public class Bandit : MonoBehaviour, IEnemy
     {
         while (behaviour.HealthPoints > 0)
         {
-            yield return new WaitForSeconds(battlecryCooldown);
+            for (float t = 0f; t < battlecryCooldown; t += Time.deltaTime)
+            {
+                if (behaviour.BuffsDisabled)
+                    break;
+                yield return null;
+            }
+
+            if (behaviour.BuffsDisabled)
+            {
+                if (leaderBattlecryVFX.isPlaying)
+                    leaderBattlecryVFX.Stop(withChildren: true);
+                yield return null;
+                continue;
+            }
+
             leaderBattlecryVFX.Play();
             Battlecry();
-            yield return new WaitForSeconds(battlecryDuration);
+
+            for (float t = 0f; t < battlecryDuration; t += Time.deltaTime)
+            {
+                if (behaviour.BuffsDisabled)
+                    break;
+                yield return null;
+            }
+
             leaderBattlecryVFX.Stop(withChildren: true);
         }
     }
@@ -118,5 +146,24 @@ public class Bandit : MonoBehaviour, IEnemy
     public void RemoveEffect(EffectType type)
     {
         behaviour.RemoveEffect(type);
+    }
+
+    public void ApplyHighlight(bool apply)
+    {
+        Debug.Log($"Applying highlight to {Type}, {apply}");
+        if (apply)
+            behaviour.ApplyHighlight(highlightRenderers);
+        else
+            behaviour.ClearHighlight(highlightRenderers);
+    }
+
+    public void Mark()
+    {
+        behaviour.Mark();
+    }
+
+    public void Unmark()
+    {
+        behaviour.Unmark();
     }
 }

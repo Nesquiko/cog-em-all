@@ -9,6 +9,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
     public SkillTypes SkillType() => skillType;
     public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
+    public SkillActivationMode ActivationMode() => SkillActivationMode.Placement;
 
     [Header("Oil Settings")]
     [SerializeField] private float duration = 10f;

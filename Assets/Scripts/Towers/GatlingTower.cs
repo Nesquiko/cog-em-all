@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerControllable
+public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerControllable, ITowerStimulable
 {
     [Header("Stats")]
     [SerializeField] private float bulletDamage = 50f;
@@ -46,6 +46,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private float heightRangeMultiplier = 0.05f;
     [SerializeField] private float baselineHeight = 0f;
 
+    [Header("Stim Mode")]
+    [SerializeField] private float stimMultiplier = 2f;
+    [SerializeField] private float stimDuration = 5f;
+    [SerializeField] private float stimCooldown = 5f;
+
     [Header("Recoil")]
     [SerializeField, Min(1)] private int barrelsPerGun = 8;
     [SerializeField] private float recoilDistance = 0.2f;
@@ -56,6 +61,9 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private ParticleSystem muzzleFlashL;
     [SerializeField] private ParticleSystem muzzleFlashR;
     [SerializeField] private ParticleSystem upgradeVFX;
+    [SerializeField] private ParticleSystem stimModeVFX;
+    [SerializeField] private ParticleSystem stimCooldownLeftVFX;
+    [SerializeField] private ParticleSystem stimCooldownRightVFX;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private IEnemy target;
@@ -75,6 +83,20 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private float targetAngleR;
     private bool spinningL;
     private bool spinningR;
+
+    private bool stimActive = false;
+    private bool stimCoolingDown = false;
+    private float stimTimer;
+    private float stimCooldownTimer;
+    public bool StimActive() => stimActive;
+    public bool StimCoolingDown() => stimCoolingDown;
+    public bool CanActivateStim() => !stimActive && !stimCoolingDown;
+
+    private float baseBulletDamage;
+    private float baseCritChance;
+    private float baseCritMultiplier;
+    private float baseFireRate;
+    private float baseRange;
 
     private bool shootFromLeftFirePoint = true;
 
@@ -100,7 +122,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public Transform GetControlPoint() => controlPoint;
 
-    public Faction GetFaction() => Faction.TheBrassArmy;
+    private Faction currentFaction;
+    public Faction GetFaction() => currentFaction;
 
     private void OnDrawGizmosSelected()
     {
@@ -109,6 +132,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     private void Awake()
     {
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> aktualna fakcia
+
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
@@ -156,19 +181,19 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         if (underPlayerControl) return;
 
+        HandleStimUpdate();
+        if (stimCoolingDown) return;
+
         fireCooldown -= Time.deltaTime;
 
-        if (target == null)
-        {
-            target = TowerMechanics.GetClosestEnemy(transform.position, enemiesInRange);
-            if (target == null) return;
-        }
+        target = TowerMechanics.SelectTargetWithMarkPriority(
+            transform.position,
+            enemiesInRange,
+            target,
+            EffectiveRange(range)
+        );
 
-        if (!TowerMechanics.IsEnemyInRange(transform.position, target, EffectiveRange(range)))
-        {
-            target = null;
-            return;
-        }
+        if (target == null) return;
 
         if (fireCooldown <= 0f)
         {
@@ -179,6 +204,46 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         TowerMechanics.RotateTowardTarget(gatlingHead, target.Transform);
 
         UpdateGunSpin();
+    }
+
+    private void HandleStimUpdate()
+    {
+        if (stimActive)
+        {
+            stimTimer -= Time.deltaTime;
+            if (stimTimer <= 0f)
+                EndStim();
+        }
+        else if (stimCoolingDown)
+        {
+            stimCooldownTimer -= Time.deltaTime;
+            if (stimCooldownTimer <= 0f)
+            {
+                stimCoolingDown = false;
+                stimCooldownLeftVFX.Stop(withChildren: true);
+                stimCooldownRightVFX.Stop(withChildren: true);
+            }
+        }
+    }
+
+    private void EndStim()
+    {
+        stimActive = false;
+        stimCoolingDown = true;
+        stimCooldownTimer = stimCooldown;
+
+        bulletDamage = baseBulletDamage;
+        critChance = baseCritChance;
+        critMultiplier = baseCritMultiplier;
+        fireRate = baseFireRate;
+        range = baseRange;
+
+        capsuleCollider.radius = EffectiveRange(range);
+        SetRangeProjector(EffectiveRange(range));
+
+        stimModeVFX.Stop(withChildren: true);
+        stimCooldownLeftVFX.Play();
+        stimCooldownRightVFX.Play();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -485,6 +550,32 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         Assert.IsNotNull(f);
         CalculateBaseBulletDamage = f;
+    }
+
+    public void ActivateStim()
+    {
+        if (stimActive || stimCoolingDown) return;
+
+        stimActive = true;
+        stimTimer = stimDuration;
+        stimCoolingDown = false;
+
+        baseBulletDamage = bulletDamage;
+        baseCritChance = critChance;
+        baseCritMultiplier = critMultiplier;
+        baseFireRate = fireRate;
+        baseRange = range;
+
+        bulletDamage *= stimMultiplier;
+        critChance *= Mathf.Clamp01(critChance * stimMultiplier);
+        critMultiplier *= stimMultiplier;
+        fireRate *= stimMultiplier;
+        range *= stimMultiplier;
+
+        capsuleCollider.radius = EffectiveRange(range);
+        SetRangeProjector(EffectiveRange(range));
+
+        stimModeVFX.Play();
     }
 
     private void OnDestroy()

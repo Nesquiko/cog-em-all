@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
-public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable
+public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable, ITowerStimulable
 {
     [Header("Stats")]
     [SerializeField] private float flameDamagePerPulse = 20f;
@@ -35,13 +35,26 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    [Header("Sweep")]
+    [SerializeField] private bool sweepEnabled = true;
+    [SerializeField] private float sweepAmplitudeDegrees = 45f;
+    [SerializeField] private float sweepCycleSeconds = 1.5f;
+    [SerializeField] private float sweepReturnSpeed = 30f;
+
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
     [SerializeField] private float baselineHeight = 0f;
 
+    [Header("Stim Mode")]
+    [SerializeField] private float stimMultiplier = 2f;
+    [SerializeField] private float stimDuration = 5f;
+    [SerializeField] private float stimCooldown = 5f;
+
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
+    [SerializeField] private ParticleSystem stimModeVFX;
+    [SerializeField] private ParticleSystem stimCooldownVFX;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
     private IEnemy target;
@@ -50,11 +63,30 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private bool isCoolingDown = false;
     private Flame activeFlame;
 
+    private bool isSweeping;
+    private float sweepBaseYaw;
+    private float sweepTime;
+    private Coroutine sweepReturnRoutine;
+
     public float DamagePerPulse => flameDamagePerPulse;
     public float FlamePulseInterval => flamePulseInterval;
     public float FlameDuration => flameDuration;
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
+
+    private bool stimActive = false;
+    private bool stimCoolingDown = false;
+    private float stimTimer;
+    private float stimCooldownTimer;
+    public bool StimActive() => stimActive;
+    public bool StimCoolingDown() => stimCoolingDown;
+    public bool CanActivateStim() => !stimActive && !stimCoolingDown;
+
+    private float baseFlameDamagePerPulse;
+    private float baseFlamePulseInterval;
+    private float baseCritChance;
+    private float baseCritMultiplier;
+    private float baseRange;
 
     private GameObject towerOverlayGO;
     private TowerOverlay towerOverlay;
@@ -72,7 +104,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
-    public Faction GetFaction() => Faction.TheBrassArmy;
+    private Faction currentFaction;
+    public Faction GetFaction() => currentFaction;
 
     private void OnDrawGizmosSelected()
     {
@@ -99,6 +132,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private void Awake()
     {
+        currentFaction = Faction.OverpressureCollective;
+
         Canvas canvas = FindFirstObjectByType<Canvas>();
 
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
@@ -155,10 +190,49 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         if (underPlayerRotation) return;
 
+        HandleStimUpdate();
+
+        if (stimCoolingDown) return;
+
         if (!isCoolingDown && enemiesInRange.Count > 0 && activeFlame != null)
         {
             Shoot();
         }
+    }
+
+    private void HandleStimUpdate()
+    {
+        if (stimActive)
+        {
+            UpdateSweep();
+            stimTimer -= Time.deltaTime;
+            if (stimTimer <= 0f)
+                EndStim();
+        }
+        else if (stimCoolingDown)
+        {
+            stimCooldownTimer -= Time.deltaTime;
+            if (stimCooldownTimer <= 0f)
+            {
+                stimCoolingDown = false;
+                stimCooldownVFX.Stop(withChildren: true);
+            }
+        }
+    }
+
+    private void EndStim()
+    {
+        stimActive = false;
+        stimCoolingDown = true;
+        stimCooldownTimer = stimCooldown;
+
+        flameDamagePerPulse = baseFlameDamagePerPulse;
+        flamePulseInterval = baseFlamePulseInterval;
+        critChance = baseCritChance;
+        critMultiplier = baseCritMultiplier;
+
+        stimModeVFX.Stop(withChildren: true);
+        stimCooldownVFX.Play();
     }
 
     private void LateUpdate()
@@ -203,6 +277,82 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         yield return new WaitForSeconds(cooldownDuration);
         isCoolingDown = false;
+    }
+
+    private void BeginSweep()
+    {
+        isSweeping = true;
+        sweepTime = 0f;
+        sweepBaseYaw = flamethrowerHead.transform.eulerAngles.y;
+    
+        if (sweepReturnRoutine != null)
+        {
+            StopCoroutine(sweepReturnRoutine);
+            sweepReturnRoutine = null;
+        }
+    }
+
+    private void EndSweep()
+    {
+        if (!isSweeping) return;
+        isSweeping = false;
+
+        if (sweepReturnRoutine != null)
+            StopCoroutine(sweepReturnRoutine);
+
+        sweepReturnRoutine = StartCoroutine(ReturnHeadToBaseYaw());
+    }
+
+    private IEnumerator ReturnHeadToBaseYaw()
+    {
+        float currentYaw = flamethrowerHead.transform.eulerAngles.y;
+
+        while (true)
+        {
+            if (isSweeping)
+            {
+                sweepReturnRoutine = null;
+                yield break;
+            }
+
+            float targetYaw = sweepBaseYaw;
+            float delta = Mathf.DeltaAngle(currentYaw, targetYaw);
+
+            if (Mathf.Abs(delta) < 0.05f)
+            {
+                currentYaw = targetYaw;
+                Vector3 doneE = flamethrowerHead.transform.eulerAngles;
+                doneE.y = currentYaw;
+                flamethrowerHead.transform.eulerAngles = doneE;
+                break;
+            }
+
+            float step = Mathf.Sign(delta) * Mathf.Min(Mathf.Abs(delta), sweepReturnSpeed * Time.deltaTime);
+            currentYaw += step;
+
+            Vector3 e = flamethrowerHead.transform.eulerAngles;
+            e.y = currentYaw;
+            flamethrowerHead.transform.eulerAngles = e;
+
+            yield return null;
+        }
+
+        sweepReturnRoutine = null;
+    }
+
+    private void UpdateSweep()
+    {
+        if (!sweepEnabled) return;
+
+        sweepTime += Time.deltaTime;
+        if (sweepCycleSeconds <= 0f) return;
+
+        float phase = (sweepTime / sweepCycleSeconds) * Mathf.PI * 2f;
+        float offset = sweepAmplitudeDegrees * Mathf.Sin(phase);
+
+        Vector3 e = flamethrowerHead.transform.eulerAngles;
+        e.y = sweepBaseYaw + offset;
+        flamethrowerHead.transform.eulerAngles = e;
     }
 
     public void RegisterInRange(IEnemy e)
@@ -335,6 +485,55 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         Assert.IsNotNull(f);
         CalculateBaseFlameDamagePerPulse = f;
+    }
+
+    public void ActivateStim()
+    {
+        if (stimActive || stimCoolingDown) return;
+
+        stimActive = true;
+        stimTimer = stimDuration;
+        stimCoolingDown = false;
+
+        baseFlameDamagePerPulse = flameDamagePerPulse;
+        baseFlamePulseInterval = flamePulseInterval;
+        baseCritChance = critChance;
+        baseCritMultiplier = critMultiplier;
+
+        flameDamagePerPulse *= stimMultiplier;
+        flamePulseInterval /= stimMultiplier;
+        critChance *= Mathf.Clamp01(critChance * stimMultiplier);
+        critMultiplier *= stimMultiplier;
+
+        stimModeVFX.Play();
+
+        StartCoroutine(StimFireLoop());
+    }
+
+    private IEnumerator StimFireLoop()
+    {
+        isCoolingDown = false;
+        isSweeping = false;
+
+        if (activeFlame == null)
+            yield break;
+
+        if (!activeFlame.IsActive)
+        {
+            activeFlame.gameObject.SetActive(true);
+            activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
+        }
+
+        if (sweepEnabled)
+            BeginSweep();
+
+        while (stimActive)
+            yield return null;
+
+        activeFlame.StopFlame();
+        activeFlame.gameObject.SetActive(false);
+        if (sweepEnabled)
+            EndSweep();
     }
 
     private void OnDestroy()

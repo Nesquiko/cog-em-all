@@ -1,6 +1,8 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 public class FactionCard : MonoBehaviour
@@ -11,15 +13,19 @@ public class FactionCard : MonoBehaviour
     [SerializeField] private Image symbolImage;
     [SerializeField] private TMP_Text levelText;
     [SerializeField] private Button button;
-    [SerializeField] private UITexts uiTexts;
+    [SerializeField] private FactionData factionData;
 
     public event Action<Faction> OnSelect;
 
     private void Awake()
     {
-        factionName.text = uiTexts.GetFactionName(faction);
+        Assert.AreEqual(factionData.faction, faction);
+        factionName.text = factionData.displayName;
         button.onClick.RemoveAllListeners();
         button.onClick.AddListener(() => OnSelect?.Invoke(faction));
+
+        image.sprite = factionData.mainImage;
+        symbolImage.sprite = factionData.symbol;
     }
 
     public void SetLevel(int level)

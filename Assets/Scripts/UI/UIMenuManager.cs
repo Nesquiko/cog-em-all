@@ -21,11 +21,18 @@ public class UIMenuManager : MonoBehaviour
     [SerializeField] private GameObject towersPanel;
     [SerializeField] private FactionSkillTreeUI skillTreeUI;
 
+    [SerializeField] private FactionDataCatalog factionDataCatalog;
+
     private Panel currentPanel;
 
     private void Awake()
     {
         saveContext = SaveContextDontDestroy.GetOrCreateDev();
+    }
+
+    private void Start()
+    {
+        ShowOverview();
     }
 
     public void ShowFactions()
@@ -61,16 +68,11 @@ public class UIMenuManager : MonoBehaviour
             _ => throw new ArgumentOutOfRangeException(nameof(save.lastPlayedFaction), save.lastPlayedFaction, "Unhandled faction"),
         };
 
-        overviewPanel.Initialize(lastPlayedFactionSave);
+        overviewPanel.Initialize(lastPlayedFactionSave, factionDataCatalog.FromType(lastPlayedFaction));
         ShowPanel(Panel.Overview);
     }
 
     public void ShowTowers() => ShowPanel(Panel.Towers);
-
-    private void Start()
-    {
-        ShowOverview();
-    }
 
     private void ShowPanel(Panel toShow)
     {

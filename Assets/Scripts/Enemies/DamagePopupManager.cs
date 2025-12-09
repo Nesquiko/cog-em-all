@@ -9,6 +9,8 @@ public class DamagePopupManager : MonoBehaviour
     [SerializeField] private int distanceUpdateEveryFrames = 5;
     [SerializeField] private float popupHeightOffset = 10f;
 
+    [SerializeField] private PauseManager pauseManager;
+
     private ObjectPool<DamagePopup> pool;
     private readonly List<DamagePopup> activePopups = new();
     private Camera mainCamera;
@@ -67,6 +69,8 @@ public class DamagePopupManager : MonoBehaviour
 
     private void Update()
     {
+        if (pauseManager.Paused) return;
+
         frameCounter++;
         float deltaTime = Time.deltaTime;
 

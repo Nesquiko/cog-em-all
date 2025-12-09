@@ -1,5 +1,8 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -14,30 +17,102 @@ public class SkillPlacementSystem : MonoBehaviour
     [SerializeField] private HUDPanelUI HUDPanelUI;
     [SerializeField] private TowerSelectionManager towerSelectionManager;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
-    
+
     [Header("Skills")]
     [SerializeField] private GameObject[] skillPrefabs;
+    [SerializeField] private GameObject[] factionSpecificSkillPrefabs;
     [SerializeField] private SkillButton[] skillButtons;
+    [SerializeField] private GameObject airshipDropPoint;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
     [SerializeField] private Material ghostInvalidMaterial;
+
+    [SerializeField] private LayerMask enemyMask;
+    [SerializeField] private CursorSettings cursorSettings;
 
     private GameObject skillPrefab;
     private GameObject ghostInstance;
     private Camera mainCamera;
     private bool isPlacing;
     private bool canPlace;
+    private IEnemy currentHoveredEnemy;
+
+    private readonly Dictionary<int, GameObject> hotkeyToPrefab = new();
+    private readonly Dictionary<int, SkillButton> hotkeyToButton = new();
 
     private int currentHotkeyIndex = -1;
+    private SkillActivationMode currentMode;
 
     public event Action<ISkill> OnUseSkill;
 
     public bool IsPlacing => isPlacing;
 
+    private Faction currentFaction;
+    private HashSet<FactionSpecificSkill> activeFactionSpecificSkills;
+
     private void Awake()
     {
         mainCamera = Camera.main;
+
+        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
+        {
+            FactionSpecificSkill.AirshipAirstrike,
+            FactionSpecificSkill.AirshipFreezeZone,
+            FactionSpecificSkill.AirshipDisableZone,
+            FactionSpecificSkill.MarkEnemy,
+            FactionSpecificSkill.SuddenDeath,
+        };
+
+        SetupFactionSpecificSkills();
+    }
+
+    private void SetupFactionSpecificSkills()
+    {
+        hotkeyToPrefab[5] = skillPrefabs[0];
+        hotkeyToPrefab[6] = skillPrefabs[1];
+        hotkeyToPrefab[7] = skillPrefabs[2];
+        for (int i = 0; i < 3; i++)
+            hotkeyToButton[i + 5] = skillButtons[i];
+
+        switch (currentFaction)
+        {
+            case Faction.TheBrassArmy:
+                if (activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipAirstrike))
+                    AssignAirshipSkill(factionSpecificSkillPrefabs[0], AirshipSkillType.Airstrike);
+                break;
+
+            case Faction.TheValveboundSeraphs:
+                if (activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipFreezeZone))
+                    AssignAirshipSkill(factionSpecificSkillPrefabs[1], AirshipSkillType.FreezeZone);
+                if (activeFactionSpecificSkills.Contains(FactionSpecificSkill.MarkEnemy))
+                    AssignSecondarySkill(factionSpecificSkillPrefabs[3]);
+                break;
+
+            case Faction.OverpressureCollective:
+                if (activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipDisableZone))
+                    AssignAirshipSkill(factionSpecificSkillPrefabs[2], AirshipSkillType.DisableZone);
+                if (activeFactionSpecificSkills.Contains(FactionSpecificSkill.SuddenDeath))
+                    AssignSecondarySkill(factionSpecificSkillPrefabs[4]);
+                break;
+        }
+    }
+
+    private void AssignAirshipSkill(GameObject prefab, AirshipSkillType type)
+    {
+        if (prefab == null) return;
+        hotkeyToPrefab[8] = prefab;
+        var button = skillButtons[3];
+        hotkeyToButton[8] = button;
+    }
+
+    private void AssignSecondarySkill(GameObject prefab)
+    {
+        if (prefab == null) return;
+        hotkeyToPrefab[9] = prefab;
+        var button = skillButtons[4];
+        hotkeyToButton[9] = button;
     }
 
     private void Update()
@@ -48,9 +123,13 @@ public class SkillPlacementSystem : MonoBehaviour
 
         if (!isPlacing)
         {
-            if (hotkeyPressed != -1)
+            if (hotkeyPressed != -1 && hotkeyToPrefab.TryGetValue(hotkeyPressed, out var prefab))
             {
-                BeginPlacement(skillPrefabs[hotkeyPressed], hotkeyPressed);
+                BeginPlacement(prefab, hotkeyPressed);
+            }
+            if (hotkeyPressed != -1 && !hotkeyToPrefab.ContainsKey(hotkeyPressed))
+            {
+                Debug.LogWarning($"No prefab assigned to hotkey {hotkeyPressed}.");
             }
             return;
         }
@@ -62,9 +141,9 @@ public class SkillPlacementSystem : MonoBehaviour
                 CancelPlacement();
                 return;
             }
-            else
+            else if (hotkeyToPrefab.TryGetValue(hotkeyPressed, out var prefab))
             {
-                BeginPlacement(skillPrefabs[hotkeyPressed], hotkeyPressed);  // will be skillPrefabs
+                BeginPlacement(prefab, hotkeyPressed);
                 return;
             }
         }
@@ -72,6 +151,17 @@ public class SkillPlacementSystem : MonoBehaviour
         if (Keyboard.current.fKey.wasPressedThisFrame || Keyboard.current.escapeKey.wasPressedThisFrame)
         {
             CancelPlacement();
+            return;
+        }
+
+        HandlePlacementUpdate();
+    }
+
+    private void HandlePlacementUpdate()
+    {
+        if (currentMode == SkillActivationMode.Raycast)
+        {
+            HandleRaycastUpdate();
             return;
         }
 
@@ -109,6 +199,42 @@ public class SkillPlacementSystem : MonoBehaviour
         }
     }
 
+    private void HandleRaycastUpdate()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        if (Physics.Raycast(ray, out var hit, 500f))
+        {
+            if (hit.collider.TryGetComponent<EnemyAttackTrigger>(out var enemyAttackTrigger))
+            {
+                Cursor.SetCursor(cursorSettings.hoverCursor, cursorSettings.hotspot, CursorMode.Auto);
+                var enemy = enemyAttackTrigger.GetComponentInParent<IEnemy>();
+                Debug.Log(enemy);
+                if (enemy != currentHoveredEnemy)
+                {
+                    currentHoveredEnemy?.ApplyHighlight(false);
+                    enemy.ApplyHighlight(true);
+                }
+                currentHoveredEnemy = enemy;
+
+                if (Mouse.current.leftButton.wasPressedThisFrame)
+                {
+                    if (currentHoveredEnemy == null)
+                    {
+                        Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
+                        return;
+                    }
+                    currentHoveredEnemy?.ApplyHighlight(false);
+                    currentHoveredEnemy.Mark();
+                    CancelPlacement();
+                    StartCoroutine(EnableSelectionNextFrame());
+                }
+                return;
+            }
+        }
+        currentHoveredEnemy?.ApplyHighlight(false);
+        Cursor.SetCursor(cursorSettings.defaultCursor, Vector2.zero, CursorMode.Auto);
+    }
+
     private (Vector3 position, Vector3 tangent) GetClosestPointOnRoad(Vector3 samplePoint)
     {
         if (road == null)
@@ -142,15 +268,72 @@ public class SkillPlacementSystem : MonoBehaviour
 
         towerSelectionManager.DisableSelection();
 
-        skillPrefab = prefab;
-        isPlacing = true;
+        if (hotkeyIndex != -1 && hotkeyToPrefab.TryGetValue(hotkeyIndex, out var realPrefab))
+            skillPrefab = realPrefab;
+        else
+            skillPrefab = prefab;
+
         currentHotkeyIndex = hotkeyIndex;
 
-        ghostInstance = Instantiate(skillPrefab);
-        SkillTypes skillType = ghostInstance.GetComponent<ISkill>().SkillType();
+        if (!skillPrefab.TryGetComponent<ISkill>(out var skill)) return;
 
-        HUDPanelUI.ShowPlacementInfo(skillType);
+        currentMode = skill.ActivationMode();
 
+        HUDPanelUI.ShowPlacementInfo(skill.SkillType());
+
+        switch (currentMode)
+        {
+            case SkillActivationMode.Placement:
+            case SkillActivationMode.Airship:
+                CreateGhost(skillPrefab);
+                isPlacing = true;
+                break;
+
+            case SkillActivationMode.Raycast:
+                isPlacing = true;
+                break;
+
+            case SkillActivationMode.Instant:
+                TriggerInstantSkill();
+                break;
+        }
+    }
+
+    private void PlaceSkill(Vector3 position, Quaternion rotation)
+    {
+        if (!isPlacing || skillPrefab == null) return;
+
+        if (!skillPrefab.TryGetComponent<ISkill>(out var skill)) return;
+
+        switch (skill.ActivationMode())
+        {
+            case SkillActivationMode.Placement:
+                var staticSkill = Instantiate(skillPrefab, position, rotation);
+                if (!staticSkill.TryGetComponent<ISkillPlaceable>(out var placeable)) break;
+                placeable.Initialize();
+                var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
+                var progress = circle.GetComponent<BuildProgress>();
+                progress.Initialize(staticSkill, disableObjectBehaviors: false);
+                break;
+
+            case SkillActivationMode.Airship:
+                if (!skillPrefab.TryGetComponent<AirshipSkill>(out var airshipSkill)) break;
+                Vector3 startPosition = airshipDropPoint.transform.position;
+                airshipSkill.Initialize(
+                    startPos: startPosition,
+                    targetPos: position
+                );
+                break;
+        }
+
+        OnUseSkill?.Invoke(skill);
+        CancelPlacement();
+        StartCoroutine(EnableSelectionNextFrame());
+    }
+
+    private void CreateGhost(GameObject prefab)
+    {
+        ghostInstance = Instantiate(prefab);
         int ghostLayer = LayerMask.NameToLayer("PlacementGhost");
         ghostInstance.layer = ghostLayer;
         foreach (Transform t in ghostInstance.GetComponentsInChildren<Transform>(true))
@@ -159,23 +342,38 @@ public class SkillPlacementSystem : MonoBehaviour
         ApplyGhostMaterial(ghostValidMaterial);
     }
 
-    private void PlaceSkill(Vector3 position, Quaternion rotation)
+    private void TryActivateRaycastSkill()
     {
-        if (skillPrefab == null || !isPlacing) return;
-
-        GameObject skillGO = Instantiate(skillPrefab, position, rotation);
-        if (skillGO.TryGetComponent<ISkillPlaceable>(out var skill))
-            skill.Initialize();
-
-        OnUseSkill?.Invoke(skill);
-
-        var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
-        var progress = circle.GetComponent<BuildProgress>();
-        progress.Initialize(skillGO, disableObjectBehaviors: false);
-
         CancelPlacement();
 
-        StartCoroutine(EnableSelectionNextFrame());
+        if (!skillPrefab.TryGetComponent<MarkEnemy>(out var markEnemy)) return;
+        markEnemy.BeginAim();
+
+        /*
+        var skill = skillPrefab.GetComponent<MarkEnemy>();
+        skill.TryActivate();
+        OnUseSkill?.Invoke(skill);*/
+        Debug.Log("Deploying a raycast skill");
+    }
+
+    private void TriggerInstantSkill()
+    {
+        /*
+        // TODO: sudden death
+        var skill = skillPrefab.GetComponent<ISkill>();
+        OnUseSkill?.Invoke(skill);*/
+        Debug.Log("Deploying an instant skill");
+    }
+
+    public void CancelPlacement()
+    {
+        isPlacing = false;
+        currentHotkeyIndex = -1;
+
+        if (ghostInstance != null) Destroy(ghostInstance);
+        ghostInstance = null;
+        skillPrefab = null;
+        HUDPanelUI.HidePlacementInfo();
     }
 
     private IEnumerator EnableSelectionNextFrame()
@@ -184,24 +382,19 @@ public class SkillPlacementSystem : MonoBehaviour
         towerSelectionManager.EnableSelection();
     }
 
-    public void CancelPlacement()
-    {
-        isPlacing = false;
-        skillPrefab = null;
-        currentHotkeyIndex = -1;
-
-        if (ghostInstance != null) Destroy(ghostInstance);
-        ghostInstance = null;
-
-        HUDPanelUI.HidePlacementInfo();
-    }
-
     private int GetPressedSkillHotkey()
     {
-        if (Keyboard.current.digit5Key.wasPressedThisFrame && skillButtons[0].CanPlaceSkill) return 0;
-        if (Keyboard.current.digit6Key.wasPressedThisFrame && skillButtons[1].CanPlaceSkill) return 1;
-        if (Keyboard.current.digit7Key.wasPressedThisFrame && skillButtons[2].CanPlaceSkill) return 2;
+        if (Keyboard.current.digit5Key.wasPressedThisFrame && CanUseHotkey(5)) return 5;
+        if (Keyboard.current.digit6Key.wasPressedThisFrame && CanUseHotkey(6)) return 6;
+        if (Keyboard.current.digit7Key.wasPressedThisFrame && CanUseHotkey(7)) return 7;
+        if (Keyboard.current.digit8Key.wasPressedThisFrame && CanUseHotkey(8)) return 8;
+        if (Keyboard.current.digit9Key.wasPressedThisFrame && CanUseHotkey(9)) return 9;
         return -1;
+    }
+
+    private bool CanUseHotkey(int index)
+    {
+        return hotkeyToButton.TryGetValue(index, out var button) && button.CanPlaceSkill;
     }
 
     private void SetGhostMode(GameObject obj, bool enable)

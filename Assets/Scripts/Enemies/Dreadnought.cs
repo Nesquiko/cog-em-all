@@ -19,6 +19,8 @@ public class Dreadnought : MonoBehaviour, IEnemy
     [Header("VFX")]
     [SerializeField] private ParticleSystem shieldVFX;
 
+    [SerializeField] private Renderer[] highlightRenderers;
+
     // IEnemy fields
     public EnemyType Type => EnemyType.Dreadnought;
     public event Action<IEnemy> OnDeath;
@@ -26,6 +28,10 @@ public class Dreadnought : MonoBehaviour, IEnemy
     public float HealthPointsNormalized => behaviour.HealthPointsNormalized;
     public float Speed { get => behaviour.Speed; set => behaviour.Speed = value; }
     public Transform Transform => transform;
+    public bool Marked
+    {
+        get => behaviour.Marked;
+    }
 
     private void Awake()
     {
@@ -40,6 +46,13 @@ public class Dreadnought : MonoBehaviour, IEnemy
 
     private void Update()
     {
+        if (behaviour.BuffsDisabled)
+        {
+            if (shieldActive)
+                BreakShield();
+            return;
+        }
+
         if (!shieldActive)
         {
             nextShieldTimer += Time.deltaTime;
@@ -53,6 +66,7 @@ public class Dreadnought : MonoBehaviour, IEnemy
 
     private void ActivateShield()
     {
+        if (behaviour.BuffsDisabled) return;
         shieldHealthPoints = behaviour.MaxHealthPoints * shieldHealthFraction;
         shieldActive = true;
         shieldVFX.Play();
@@ -104,11 +118,40 @@ public class Dreadnought : MonoBehaviour, IEnemy
     public void ApplyEffect(EnemyStatusEffect effect)
     {
         behaviour.ApplyEffect(effect);
+
+        if (effect.type == EffectType.DisabledBuffs)
+        {
+            if (shieldActive)
+                BreakShield();
+
+            nextShieldTimer = 0f;
+        }
     }
 
     public void RemoveEffect(EffectType type)
     {
         behaviour.RemoveEffect(type);
+
+        if (type == EffectType.DisabledBuffs)
+            nextShieldTimer = 0f;
     }
 
+    public void ApplyHighlight(bool apply)
+    {
+        Debug.Log($"Applying highlight to {Type}, {apply}");
+        if (apply)
+            behaviour.ApplyHighlight(highlightRenderers);
+        else
+            behaviour.ClearHighlight(highlightRenderers);
+    }
+
+    public void Mark()
+    {
+        behaviour.Mark();
+    }
+
+    public void Unmark()
+    {
+        behaviour.Unmark();
+    }
 }

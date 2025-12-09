@@ -10,6 +10,7 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
     public SkillTypes SkillType() => skillType;
     public float GetCooldown() => 5f;
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
+    public SkillActivationMode ActivationMode() => SkillActivationMode.Placement;
     public Transform Transform() => transform;
     public DamageSourceType Type() => DamageSourceType.Wall;
 
