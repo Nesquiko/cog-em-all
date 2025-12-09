@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UI;
 
 [Serializable]
@@ -12,27 +13,33 @@ public struct EnemyInfo
 
 public class OverviewManager : MonoBehaviour
 {
-    [Header("Faction Info")]
-    [SerializeField] private int factionLevel;
-
     [Header("Operation Info")]
     [SerializeField, Range(0f, 1f)] private float operationDifficulty;
     [SerializeField] private EnemyInfo[] operationEnemies;
 
     [Header("References")]
     [SerializeField] private TextMeshProUGUI factionLevelLabel;
+    [SerializeField] private Image factionSymbol;
     [SerializeField] private Image[] difficultyFillImages;
     [SerializeField] private GameObject enemiesPanel;
     [SerializeField] private GameObject enemyEntryPrefab;
 
     [SerializeField] private OperationModifiers operationModifiers;
 
-    public void Initialize(FactionSaveState lastPlayedFaction)
+    private int factionLevel = 0;
+    private FactionData factionData;
+
+
+    public void Initialize(FactionSaveState lastPlayedFaction, FactionData factionData)
     {
+        Assert.IsNotNull(lastPlayedFaction);
+        Assert.IsNotNull(factionData);
         factionLevel = lastPlayedFaction.level;
+        this.factionData = factionData;
+        UpdateVisuals();
     }
 
-    private void Start()
+    private void UpdateVisuals()
     {
         DisplayFaction();
         DisplayDifficulty();
@@ -42,6 +49,8 @@ public class OverviewManager : MonoBehaviour
     private void DisplayFaction()
     {
         factionLevelLabel.text = $"Level {factionLevel}";
+        Assert.IsNotNull(factionSymbol);
+        factionSymbol.sprite = factionData.symbol;
     }
 
     private void DisplayDifficulty()

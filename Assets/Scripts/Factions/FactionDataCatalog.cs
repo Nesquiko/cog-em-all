@@ -8,16 +8,11 @@ public class FactionDataCatalog : ScriptableObject
     [SerializeField, Tooltip("List of all factions and their data")]
     private List<FactionData> factions = new();
 
-    private readonly Dictionary<Faction, FactionData> catalog;
+    private readonly Dictionary<Faction, FactionData> catalog = new();
 
     public int FactionCount => factions.Count;
 
     private void OnEnable()
-    {
-        RebuildCatalog();
-    }
-
-    private void OnValidate()
     {
         RebuildCatalog();
     }

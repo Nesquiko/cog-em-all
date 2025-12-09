@@ -78,10 +78,3 @@ public class FactionSkillTreeUI : MonoBehaviour
         }
     }
 }
-
-
-// public void SaveCurrentState()
-// {
-//     // TODO: luky -> tu mi uloz skillNodes do jsonu (toto sa vola ked odidem zo skilltree panelu)
-//     Debug.Log($"[{faction}] Save current state: {skillNodes}");
-// }

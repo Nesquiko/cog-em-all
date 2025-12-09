@@ -140,7 +140,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The Brass Army
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -574,7 +574,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Level 5
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1001,14 +1001,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 5560419167908967092}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af1003cb4f7b61946bd8fab8b5b09723, type: 3}
+  m_Script: {fileID: 11500000, guid: 4d3a85798c383cc5ca377bdb74598581, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FactionCard
-  factionData: {fileID: 0}
-  titleText: {fileID: 1248711559378456856}
-  mainImage: {fileID: 1852302975114401778}
+  faction: 0
+  factionName: {fileID: 1248711559378456856}
+  image: {fileID: 1852302975114401778}
   symbolImage: {fileID: 817008230949906927}
   levelText: {fileID: 4741085183872186290}
+  button: {fileID: 4796390804211368702}
+  uiTexts: {fileID: 11400000, guid: 111937b9e35cbfa56a4693c13181a71a, type: 2}
 --- !u!222 &3562221765113541185
 CanvasRenderer:
   m_ObjectHideFlags: 0

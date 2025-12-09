@@ -35,8 +35,12 @@ public class SkillTree : MonoBehaviour
 
     private void Start()
     {
+        // first calculate how many skill points there should be
         availableSkillPoints = CalculateAvailableSkillPoints();
+        // apply saved active skills
         assignedSkillPoints = AssignSkillPoints(addActions: true);
+        // recalculate after using skill points on saved active skills
+        availableSkillPoints = CalculateAvailableSkillPoints();
         UpdateVisual();
     }
 
@@ -52,7 +56,11 @@ public class SkillTree : MonoBehaviour
             {
                 var nodeTransform = rank.transform.GetChild(i);
 
-                if (!nodeTransform.TryGetComponent<SkillTreeNodeButton>(out var button)) continue;
+                if (!nodeTransform.TryGetComponent<SkillTreeNodeButton>(out var button))
+                {
+                    Debug.LogWarning($"there is no button component on node {nodeTransform.GetInstanceID()}");
+                    continue;
+                }
 
                 int activeRanks = 0;
                 skillNodes.TryGetValue(button.SkillSlug, out activeRanks);
