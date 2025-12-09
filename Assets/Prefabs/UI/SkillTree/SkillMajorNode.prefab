@@ -214,7 +214,6 @@ MonoBehaviour:
   button: {fileID: 3068088195512795185}
   unlockedOverlay: {fileID: 1069624166710032180}
   lockedOverlay: {fileID: 9122049105896022271}
-  borderImage: {fileID: 3270733496187092237}
   type: 1
   rectTransform: {fileID: 1265226375158241525}
   prerequisities:
@@ -228,6 +227,7 @@ MonoBehaviour:
   rankState: {fileID: 4161257950266898634}
   rankIndicatorPrefab: {fileID: 641675701585049535, guid: aa6a586f1e5626e4ba62ee1e6c804ec1, type: 3}
   rankText: {fileID: 6014657372133722040}
+  skillTree: {fileID: 0}
   tooltip: {fileID: 6564967224260593617}
   tooltipTitle: {fileID: 1230011822446825071}
   tooltipDescription: {fileID: 876872203204334379}
@@ -539,11 +539,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2064271422251257381, guid: 548d657a79ea21b41879598ae6aa8fc7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 160
       objectReference: {fileID: 0}
     - target: {fileID: 2064271422251257381, guid: 548d657a79ea21b41879598ae6aa8fc7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 120
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2064271422251257381, guid: 548d657a79ea21b41879598ae6aa8fc7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x

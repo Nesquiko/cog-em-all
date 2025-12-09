@@ -3,62 +3,87 @@ using UnityEngine;
 
 public class UIMenuManager : MonoBehaviour
 {
-    [Header("Content Panels")]
-    [SerializeField] private GameObject factionsPanel;
-    [SerializeField] private GameObject overviewPanel;
-    [SerializeField] private GameObject towersPanel;
-    [SerializeField] private GameObject skillTreePanel;
 
-    private GameObject currentPanel;
-    private Faction currentFaction;
-    private FactionSkillTreeUI factionSkillTreeUI;
+    public enum Panel
+    {
+        // skips 0, because on init the currentPanel will be 0, which means "dont show anything"
+        Overview = 1,
+        Factions = 2,
+        Towers = 3,
+        SkillTree = 4
+    }
+
+    private SaveContextDontDestroy saveContext;
+
+    [Header("Content Panels")]
+    [SerializeField] private FactionsPanel factionsPanel;
+    [SerializeField] private OverviewManager overviewPanel;
+    [SerializeField] private GameObject towersPanel;
+    [SerializeField] private FactionSkillTreeUI skillTreeUI;
+
+    private Panel currentPanel;
 
     private void Awake()
     {
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu chcem fakciu
-        factionSkillTreeUI = skillTreePanel.GetComponent<FactionSkillTreeUI>();
+        saveContext = SaveContextDontDestroy.GetOrCreateDev();
     }
+
+    public void ShowFactions()
+    {
+        factionsPanel.Initialize(saveContext.CurrentSave, ShowSkillTree);
+        ShowPanel(Panel.Factions);
+    }
+
+    public void ShowSkillTree(Faction faction)
+    {
+        skillTreeUI.Initialize(faction, saveContext.CurrentSave);
+        saveContext.CurrentSave.lastPlayedFaction = (SaveData.PlayedFaction)faction;
+        SaveSystem.UpdateSave(saveContext.CurrentSave);
+        ShowPanel(Panel.SkillTree);
+    }
+
+    public void ShowOverview()
+    {
+        var save = saveContext.CurrentSave;
+
+        if (save.lastPlayedFaction == SaveData.PlayedFaction.None)
+        {
+            ShowFactions();
+            return;
+        }
+        var lastPlayedFaction = save.LastPlayedFaction;
+
+        var lastPlayedFactionSave = lastPlayedFaction switch
+        {
+            Faction.TheBrassArmy => save.brassArmySave,
+            Faction.TheValveboundSeraphs => save.seraphsSave,
+            Faction.OverpressureCollective => save.overpressuSave,
+            _ => throw new ArgumentOutOfRangeException(nameof(save.lastPlayedFaction), save.lastPlayedFaction, "Unhandled faction"),
+        };
+
+        overviewPanel.Initialize(lastPlayedFactionSave);
+        ShowPanel(Panel.Overview);
+    }
+
+    public void ShowTowers() => ShowPanel(Panel.Towers);
 
     private void Start()
     {
-        ShowPanel(overviewPanel);
+        ShowOverview();
     }
 
-    public void HandleFactionCardClick(int index)
+    private void ShowPanel(Panel toShow)
     {
-        SetCurrentFaction(index);
-        ShowPanel(skillTreePanel);
-    }
+        if (currentPanel == Panel.SkillTree && toShow != Panel.SkillTree)
+            skillTreeUI.SaveSkillTrees();
 
-    private void SetCurrentFaction(int index)
-    {
-        // TODO: luky -> here im setting current faction
-        currentFaction = index switch
-        {
-            0 => Faction.TheBrassArmy,
-            1 => Faction.TheValveboundSeraphs,
-            2 => Faction.OverpressureCollective,
-            _ => Faction.TheBrassArmy,
-        };
-    }
+        if (currentPanel == toShow) return;
 
-    public void ShowPanel(GameObject panelToShow)
-    {
-        if (currentPanel == skillTreePanel && panelToShow != skillTreePanel)
-            factionSkillTreeUI.SaveSkillTrees();
+        factionsPanel.gameObject.SetActive(toShow == Panel.Factions);
+        overviewPanel.gameObject.SetActive(toShow == Panel.Overview);
+        towersPanel.SetActive(toShow == Panel.Towers);
+        skillTreeUI.gameObject.SetActive(toShow == Panel.SkillTree);
 
-        if (currentPanel == panelToShow) return;
-
-        factionsPanel.SetActive(panelToShow == factionsPanel);
-        overviewPanel.SetActive(panelToShow == overviewPanel);
-        towersPanel.SetActive(panelToShow == towersPanel);
-        skillTreePanel.SetActive(panelToShow == skillTreePanel);
-
-        if (panelToShow == skillTreePanel)
-        {
-            factionSkillTreeUI.Initialize(currentFaction);
-        }
-
-        currentPanel = panelToShow;
+        currentPanel = toShow;
     }
 }
