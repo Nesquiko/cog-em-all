@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -10,13 +9,23 @@ public class Bomber : MonoBehaviour, IEnemy
 {
     private EnemyBehaviour behaviour;
 
+    [SerializeField] private GameObject model;
+    [SerializeField] private GameObject healthBar;
+
     [Header("Dash")]
     [SerializeField] private float dashCooldown = 5f;
     [SerializeField] private float dashDuration = 0.1f;
     [SerializeField] private float dashSpeedMultiplier = 4f;
 
+    [Header("Friendly Fire")]
+    [SerializeField] private bool friendlyFireActive = true;
+    [SerializeField] private float explosionRadius = 5f;
+    [SerializeField] private float explosionDamageFactor = 0.5f;
+    [SerializeField] private LayerMask enemyMask;
+
     [Header("VFX")]
     [SerializeField] private ParticleSystem dashVFX;
+    [SerializeField] private ParticleSystem explosionVFX;
 
     [SerializeField] private Renderer[] highlightRenderers;
 
@@ -97,7 +106,37 @@ public class Bomber : MonoBehaviour, IEnemy
 
     private void Explode(IDamageable target)
     {
+        explosionVFX.transform.SetParent(null);
+        explosionVFX.Play();
+
         target.TakeDamage(behaviour.AttackDamage, this);
+
+        Destroy(model);
+        Destroy(healthBar);
+
+        if (friendlyFireActive)
+        {
+            Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius, enemyMask);
+            foreach (Collider hit in hits)
+            {
+                if (hit.gameObject == gameObject) continue;
+
+                IEnemy enemy = hit.GetComponentInParent<IEnemy>();
+                if (enemy != null)
+                {
+                    float damage = behaviour.AttackDamage * explosionDamageFactor;
+                    enemy.TakeDamage(damage, DamageSourceType.Bomber);
+                }
+            }
+        }
+
+        StartCoroutine(ForceDieAfter(2f));
+    }
+
+    private IEnumerator ForceDieAfter(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        behaviour.ForceDie();
     }
 
     // IEnemy functions
@@ -138,7 +177,6 @@ public class Bomber : MonoBehaviour, IEnemy
 
     public void ApplyHighlight(bool apply)
     {
-        Debug.Log($"Applying highlight to {Type}, {apply}");
         if (apply)
             behaviour.ApplyHighlight(highlightRenderers);
         else

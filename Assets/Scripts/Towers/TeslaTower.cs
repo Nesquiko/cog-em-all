@@ -38,10 +38,17 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float heightRangeMultiplier = 0.05f;
     [SerializeField] private float baselineHeight = 0f;
 
+    [Header("Stun First Enemy")]
+    [SerializeField] private bool stunFirstEnemy = true;
+
     [Header("Stim Mode")]
     [SerializeField] private float stimMultiplier = 2f;
     [SerializeField] private float stimDuration = 5f;
     [SerializeField] private float stimCooldown = 5f;
+
+    [Header("Double Beam")]
+    [SerializeField] private bool doubleBeamActive = true;
+    [SerializeField] private float damageFactor = 0.75f;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -213,15 +220,71 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
-    private void Shoot(IEnemy enemy)
+    private List<IEnemy> GetValidTargets(int count)
     {
+        List<IEnemy> validTargets = new();
+
+        foreach (var enemy in enemiesInRange.Values)
+        {
+            if (enemy == null) continue;
+            if (enemy.HealthPointsNormalized <= 0) continue;
+            if (validTargets.Contains(enemy)) continue;
+
+            if (enemy.Marked)
+                validTargets.Add(enemy);
+
+            if (validTargets.Count >= count)
+                break;
+        }
+
+        foreach (var enemy in enemiesInRange.Values)
+        {
+            if (enemy == null) continue;
+            if (enemy.HealthPointsNormalized <= 0) continue;
+            if (validTargets.Contains(enemy)) continue;
+
+            validTargets.Add(enemy);
+
+            if (validTargets.Count >= count)
+                break;
+        }
+
+        return validTargets;
+    }
+
+    private void Shoot(IEnemy primaryEnemy)
+    {
+        if (stimActive && doubleBeamActive)
+        {
+            var targets = GetValidTargets(2);
+            if (targets.Count == 0) return;
+
+            foreach (var t in targets)
+            {
+                FireBeamAtTarget(t);
+            }
+        }
+        else
+        {
+            if (primaryEnemy == null) return;
+            FireBeamAtTarget(primaryEnemy);
+        }
+    }
+
+    private void FireBeamAtTarget(IEnemy enemy)
+    {
+        if (enemy == null) return;
+
         GameObject beamGO = Instantiate(beamPrefab, firePoint.position, Quaternion.identity);
         Beam beam = beamGO.GetComponent<Beam>();
 
         bool isCritical = UnityEngine.Random.value < critChance;
-        float damage = CalculateBaseBeamDamage?.Invoke(beamDamage) ?? beamDamage;
+        float damage = (CalculateBaseBeamDamage?.Invoke(beamDamage) ?? beamDamage) * ((stimActive && doubleBeamActive) ? damageFactor : 1f);
         if (isCritical) damage *= critMultiplier;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
+
+        if (stimActive && stunFirstEnemy)
+            enemy.ApplyEffect(EnemyStatusEffect.Stun);
     }
 
     public void Select()

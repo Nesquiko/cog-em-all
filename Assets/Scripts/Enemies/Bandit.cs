@@ -150,7 +150,6 @@ public class Bandit : MonoBehaviour, IEnemy
 
     public void ApplyHighlight(bool apply)
     {
-        Debug.Log($"Applying highlight to {Type}, {apply}");
         if (apply)
             behaviour.ApplyHighlight(highlightRenderers);
         else

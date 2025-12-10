@@ -52,6 +52,7 @@ public enum EffectType
     ArmorShredded,
     Frozen,
     DisabledBuffs,
+    Stunned,
 }
 
 [Serializable]
@@ -197,7 +198,7 @@ public class EnemyStatusEffect
         duration: Mathf.Infinity,
         tickDamage: 0f,
         tickInterval: 0f,
-        speedMultiplier: 0,
+        speedMultiplier: 0f,
         persistent: true,
         negative: true
     );
@@ -209,6 +210,16 @@ public class EnemyStatusEffect
         tickInterval: 0f,
         speedMultiplier: 1f,
         persistent: true,
+        negative: true
+    );
+
+    public static EnemyStatusEffect Stun => new(
+        type: EffectType.Stunned,
+        duration: 3f,
+        tickDamage: 0f,
+        tickInterval: 0f,
+        speedMultiplier: 0f,
+        persistent: false,
         negative: true
     );
 }

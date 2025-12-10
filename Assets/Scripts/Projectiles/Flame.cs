@@ -28,8 +28,6 @@ public class Flame : MonoBehaviour, IDamageSource
         range = flameRange;
         transform.localScale = new(range, range, range);
         flameVFX.transform.localScale = new(range / flameVFXScaleFactor, range / flameVFXScaleFactor, range / flameVFXScaleFactor);
-        var main = flameVFX.main;
-        main.duration = Mathf.Max(0f, owner.FlameDuration - 1f);
     }
 
     public void UpdateRange(float newRange)
@@ -71,7 +69,7 @@ public class Flame : MonoBehaviour, IDamageSource
             fireRoutine = null;
         }
 
-        flameVFX.Stop(withChildren: true, stopBehavior: ParticleSystemStopBehavior.StopEmittingAndClear);
+        flameVFX.Stop(withChildren: true);
 
         foreach (var oil in oilsInRange)
             if (oil != null)
@@ -82,16 +80,11 @@ public class Flame : MonoBehaviour, IDamageSource
     {
         yield return new WaitForSeconds(burnDelay);
 
-        float duration = 0f;
         float tickTimer = 0f;
 
         while (isActive)
         {
-            duration += Time.deltaTime;
             tickTimer += Time.deltaTime;
-
-            if (!owner.StimActive() && duration >= owner.FlameDuration - burnDelay)
-                break;
 
             if (tickTimer >= owner.FlamePulseInterval)
             {
@@ -102,7 +95,6 @@ public class Flame : MonoBehaviour, IDamageSource
             yield return null;
         }
 
-        isActive = false;
         fireRoutine = null;
     }
 

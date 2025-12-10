@@ -52,6 +52,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private float stimDuration = 5f;
     [SerializeField] private float stimCooldown = 5f;
 
+    [Header("Double Payload")]
+    [SerializeField] private bool doublePayloadActive = true;
+    [SerializeField] private float secondPayloadDelay = 0.3f;
+    [SerializeField] private float damageFactor = 0.75f;
+
     [Header("Recoil")]
     [SerializeField] private float recoilDistance = 0.5f;
     [SerializeField] private float recoilSpeed = 20f;
@@ -264,15 +269,36 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Shoot(IEnemy enemy)
     {
+        StartCoroutine(ShootRoutine(enemy));
+    }
+
+    private IEnumerator ShootRoutine(IEnemy enemy)
+    {
+        FireSingleShell(enemy);
+
+        if (stimActive && doublePayloadActive)
+        {
+            yield return new WaitForSeconds(secondPayloadDelay);
+            FireSingleShell(enemy);
+        }
+    }
+
+    private void FireSingleShell(IEnemy enemy)
+    {
+        if (enemy == null) return;
+
         GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
         Shell shell = shellGO.GetComponent<Shell>();
         shell.Initialize(this);
-        if (recoilRoutine != null) StopCoroutine(recoilRoutine);
+
+        if (recoilRoutine != null)
+            StopCoroutine(recoilRoutine);
         recoilRoutine = StartCoroutine(RecoilKick());
 
         bool isCritical = UnityEngine.Random.value < critChance;
-        float dmg = CalculateBaseShellDamage?.Invoke(shellDamage) ?? shellDamage;
-        if (isCritical) dmg *= critMultiplier;
+        float dmg = (CalculateBaseShellDamage?.Invoke(shellDamage) ?? shellDamage) * ((stimActive && doublePayloadActive) ? damageFactor : 1f);
+        if (isCritical)
+            dmg *= critMultiplier;
 
         shell.Launch(enemy.Transform.position, dmg, isCritical, arcHeight);
     }

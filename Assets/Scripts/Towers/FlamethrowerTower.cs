@@ -35,12 +35,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
-    [Header("Sweep")]
-    [SerializeField] private bool sweepEnabled = true;
-    [SerializeField] private float sweepAmplitudeDegrees = 45f;
-    [SerializeField] private float sweepCycleSeconds = 1.5f;
-    [SerializeField] private float sweepReturnSpeed = 30f;
-
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
@@ -50,6 +44,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private float stimMultiplier = 2f;
     [SerializeField] private float stimDuration = 5f;
     [SerializeField] private float stimCooldown = 5f;
+
+    [Header("Sweep")]
+    [SerializeField] private bool sweepEnabled = true;
+    [SerializeField] private float sweepAmplitudeDegrees = 45f;
+    [SerializeField] private float sweepCycleSeconds = 1.5f;
+    [SerializeField] private float sweepReturnSpeed = 30f;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem upgradeVFX;
@@ -190,33 +190,11 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         if (underPlayerRotation) return;
 
-        HandleStimUpdate();
-
-        if (stimCoolingDown) return;
+        if (stimActive || stimCoolingDown) return;
 
         if (!isCoolingDown && enemiesInRange.Count > 0 && activeFlame != null)
         {
             Shoot();
-        }
-    }
-
-    private void HandleStimUpdate()
-    {
-        if (stimActive)
-        {
-            UpdateSweep();
-            stimTimer -= Time.deltaTime;
-            if (stimTimer <= 0f)
-                EndStim();
-        }
-        else if (stimCoolingDown)
-        {
-            stimCooldownTimer -= Time.deltaTime;
-            if (stimCooldownTimer <= 0f)
-            {
-                stimCoolingDown = false;
-                stimCooldownVFX.Stop(withChildren: true);
-            }
         }
     }
 
@@ -232,7 +210,31 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         critMultiplier = baseCritMultiplier;
 
         stimModeVFX.Stop(withChildren: true);
+
+        if (activeFlame != null)
+        {
+            activeFlame.StopFlame();
+            activeFlame.gameObject.SetActive(false);
+        }
+
+        if (sweepEnabled)
+            EndSweep();
+
         stimCooldownVFX.Play();
+
+        StartCoroutine(StimCooldownRoutine());
+    }
+
+    private IEnumerator StimCooldownRoutine()
+    {
+        while (stimCooldownTimer > 0f)
+        {
+            stimCooldownTimer -= Time.deltaTime;
+            yield return null;
+        }
+
+        stimCoolingDown = false;
+        stimCooldownVFX.Stop(withChildren: true);
     }
 
     private void LateUpdate()
@@ -507,33 +509,27 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         stimModeVFX.Play();
 
-        StartCoroutine(StimFireLoop());
-    }
-
-    private IEnumerator StimFireLoop()
-    {
         isCoolingDown = false;
-        isSweeping = false;
-
-        if (activeFlame == null)
-            yield break;
-
-        if (!activeFlame.IsActive)
+        if (activeFlame != null)
         {
             activeFlame.gameObject.SetActive(true);
-            activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
+            if (!activeFlame.IsActive)
+                activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
         }
 
-        if (sweepEnabled)
-            BeginSweep();
+        StartCoroutine(StimLoop());
+    }
 
-        while (stimActive)
+    private IEnumerator StimLoop()
+    {
+        while (stimTimer > 0f)
+        {
+            stimTimer -= Time.deltaTime;
+            UpdateSweep();
             yield return null;
+        }
 
-        activeFlame.StopFlame();
-        activeFlame.gameObject.SetActive(false);
-        if (sweepEnabled)
-            EndSweep();
+        EndStim();
     }
 
     private void OnDestroy()

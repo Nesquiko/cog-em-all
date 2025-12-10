@@ -51,6 +51,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private float stimDuration = 5f;
     [SerializeField] private float stimCooldown = 5f;
 
+    [Header("Progressive Increase")]
+    [SerializeField] private bool progressiveIncreaseActive = true;
+    [SerializeField] private float stimMultiplierMultiplier = 1.5f;
+
     [Header("Recoil")]
     [SerializeField, Min(1)] private int barrelsPerGun = 8;
     [SerializeField] private float recoilDistance = 0.2f;
@@ -97,6 +101,12 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private float baseCritMultiplier;
     private float baseFireRate;
     private float baseRange;
+
+    private float currentBulletDamage;
+    private float currentCritChance;
+    private float currentCritMultiplier;
+    private float currentFireRate;
+    private float currentRange;
 
     private bool shootFromLeftFirePoint = true;
 
@@ -210,6 +220,26 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         if (stimActive)
         {
+            if (progressiveIncreaseActive)
+            {
+                float elapsed = stimDuration - stimTimer;
+                float progress = Mathf.Clamp01(elapsed / stimDuration);
+                progress = Mathf.SmoothStep(0f, 1f, progress);
+
+                float dynamicMultiplier = Mathf.Lerp(stimMultiplier, stimMultiplier * stimMultiplierMultiplier, progress);
+
+                bulletDamage = baseBulletDamage * dynamicMultiplier;
+                critChance = Mathf.Clamp01(baseCritChance * dynamicMultiplier);
+                critMultiplier = baseCritMultiplier * dynamicMultiplier;
+                fireRate = baseFireRate * dynamicMultiplier;
+                range = baseRange * dynamicMultiplier;
+
+                capsuleCollider.radius = EffectiveRange(range);
+                SetRangeProjector(EffectiveRange(range));
+
+                var emission = stimModeVFX.emission;
+                emission.rateOverTime = Mathf.Lerp(10, 150, progress);
+            }
             stimTimer -= Time.deltaTime;
             if (stimTimer <= 0f)
                 EndStim();

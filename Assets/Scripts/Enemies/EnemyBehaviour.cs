@@ -194,7 +194,6 @@ public class EnemyBehaviour : MonoBehaviour
         if (OnSuicide != null)
         {
             OnSuicide.Invoke(damageableTarget);
-            Die();
             yield break;
         }
 
@@ -352,9 +351,7 @@ public class EnemyBehaviour : MonoBehaviour
             case EffectType.DebrisSlowed:
             case EffectType.Frozen:
             case EffectType.Accelerated:
-                if (smoothRecoveryRoutine != null)
-                    StopCoroutine(smoothRecoveryRoutine);
-                smoothRecoveryRoutine = StartCoroutine(SmoothRestoreSpeed());
+                speed = originalSpeed;
                 break;
             case EffectType.DisabledBuffs:
                 buffsDisabled = false;
@@ -385,9 +382,12 @@ public class EnemyBehaviour : MonoBehaviour
                 break;
             case EffectType.Slowed:
             case EffectType.Accelerated:
+            case EffectType.Stunned:
                 speed = originalSpeed * effect.speedMultiplier;
                 yield return new WaitForSeconds(effect.duration);
-                speed = originalSpeed;
+                if (smoothRecoveryRoutine != null)
+                    StopCoroutine(smoothRecoveryRoutine);
+                smoothRecoveryRoutine = StartCoroutine(SmoothRestoreSpeed());
                 break;
         }
 
@@ -499,4 +499,6 @@ public class EnemyBehaviour : MonoBehaviour
         gearDropManager.SpawnGears(transform.position, 1);
         Destroy(gameObject);
     }
+
+    public void ForceDie() => Die();
 }

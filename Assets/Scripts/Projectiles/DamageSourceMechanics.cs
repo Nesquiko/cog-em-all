@@ -8,6 +8,7 @@ public enum DamageSourceType
     Mine,
     Effect,
     Airstrike,
+    Bomber,
 }
 
 public interface IDamageSource

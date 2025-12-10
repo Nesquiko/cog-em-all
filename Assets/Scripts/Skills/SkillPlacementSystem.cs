@@ -342,20 +342,6 @@ public class SkillPlacementSystem : MonoBehaviour
         ApplyGhostMaterial(ghostValidMaterial);
     }
 
-    private void TryActivateRaycastSkill()
-    {
-        CancelPlacement();
-
-        if (!skillPrefab.TryGetComponent<MarkEnemy>(out var markEnemy)) return;
-        markEnemy.BeginAim();
-
-        /*
-        var skill = skillPrefab.GetComponent<MarkEnemy>();
-        skill.TryActivate();
-        OnUseSkill?.Invoke(skill);*/
-        Debug.Log("Deploying a raycast skill");
-    }
-
     private void TriggerInstantSkill()
     {
         /*
