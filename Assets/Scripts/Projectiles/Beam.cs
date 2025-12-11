@@ -9,6 +9,7 @@ public class Beam : MonoBehaviour, IDamageSource
     [Header("References")]
     [SerializeField] private LineRenderer lineRenderer;
     [SerializeField] private LayerMask enemyMask;
+    [SerializeField] private GameObject executedPopupPrefab;
 
     private TeslaTower owner;
     private Transform firePoint;
@@ -33,15 +34,86 @@ public class Beam : MonoBehaviour, IDamageSource
     {
         if (initialTarget == null)
         {
-            Destroy(gameObject);
+            StartCoroutine(StraightBeamRoutine());
+            return;
+        }
+
+        if (!initialTarget.TryGetComponent<IEnemy>(out _))
+        {
+            StartCoroutine(StraightBeamRoutine());
             return;
         }
 
         StartCoroutine(ChainRoutine());
     }
 
+    private IEnumerator StraightBeamRoutine()
+    {
+        lineRenderer.positionCount = 2;
+        Vector3 start = firePoint != null ? firePoint.position : transform.position;
+        Vector3 end = start + (firePoint != null ? firePoint.forward : transform.forward) * 100f;
+
+        DamageEnemiesAlongLine(start, end);
+
+        float t = 0f;
+        while (t < 0.05f)
+        {
+            lineRenderer.SetPosition(0, start);
+            lineRenderer.SetPosition(1, end);
+            t += Time.deltaTime;
+            yield return null;
+        }
+
+        Destroy(gameObject);
+    }
+
+    private void DamageEnemiesAlongLine(Vector3 start, Vector3 end)
+    {
+        Vector3 dir = end - start;
+        float dist = dir.magnitude;
+        dir.Normalize();
+
+        if (Physics.Raycast(start, dir, out RaycastHit hit, dist, enemyMask))
+        {
+            IEnemy enemy = hit.collider.GetComponentInParent<IEnemy>();
+            if (enemy != null)
+            {
+                DealDamageOrExecute(enemy, damage);
+                StartCoroutine(ChainFromEnemy(enemy));
+            }
+        }
+    }
+
+    private IEnumerator ChainFromEnemy(IEnemy first)
+    {
+        List<IEnemy> chainTargets = BuildChain(first.Transform, owner.BeamMaxChains - 1);
+        Vector3 currentPos = first.Transform.position;
+
+        foreach (var enemy in chainTargets)
+        {
+            if (enemy == null) continue;
+
+            lineRenderer.positionCount = 2;
+            lineRenderer.SetPosition(0, currentPos);
+            lineRenderer.SetPosition(1, enemy.Transform.position);
+
+            DealDamageOrExecute(enemy, damage * 0.5f);
+            currentPos = enemy.Transform.position;
+
+            yield return new WaitForSeconds(owner.BeamStayTimeOnHit);
+        }
+
+        Destroy(gameObject);
+    }
+
     private IEnumerator ChainRoutine()
     {
+        if (!initialTarget.TryGetComponent<IEnemy>(out var firstEnemy))
+        {
+            yield return StraightBeamRoutine();
+            yield break;
+        }
+
         List<IEnemy> chainTargets = BuildChain(initialTarget, owner.BeamMaxChains - 1)
             .Where(e => e != null)
             .ToList();
@@ -86,7 +158,7 @@ public class Beam : MonoBehaviour, IDamageSource
 
                 yield return null;
             }
-            nextEnemy?.TakeDamage(damage, Type(), crit);
+            DealDamageOrExecute(nextEnemy, damage);
 
             yield return new WaitForSeconds(owner.BeamStayTimeOnHit);
 
@@ -143,5 +215,22 @@ public class Beam : MonoBehaviour, IDamageSource
         }
 
         return closest;
+    }
+
+    private void DealDamageOrExecute(IEnemy enemy, float dmg)
+    {
+        if (enemy == null) return;
+
+        if (owner.ExecuteActive && enemy.HealthPointsNormalized <= owner.ExecuteThreshold)
+        {
+            //Vector3 popupPosition = enemy.Transform.position;
+            //popupPosition.y += 5f;
+            //var ex = Instantiate(executedPopupPrefab, popupPosition, Quaternion.identity);
+            //Destroy(ex, 5f);
+            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true);
+            return;
+        }
+
+        enemy.TakeDamage(dmg, Type(), crit);
     }
 }

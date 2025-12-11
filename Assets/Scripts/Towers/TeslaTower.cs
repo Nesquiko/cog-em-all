@@ -5,7 +5,7 @@ using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CapsuleCollider))]
-public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerStimulable
+public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerControllable, ITowerStimulable
 {
     [Header("Stats")]
     [SerializeField] private float beamDamage = 30f;
@@ -28,6 +28,14 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [Header("UI References")]
     [SerializeField] private TowerOverlayCatalog towerOverlayCatalog;
     [SerializeField] private CursorSettings cursorSettings;
+
+    [Header("Tower Control Mode")]
+    [SerializeField] private Transform controlPoint;
+    [SerializeField] private float sensitivity = 0.075f;
+
+    [Header("Execution")]
+    [SerializeField] private bool executeActive = true;
+    [SerializeField, Range(0.05f, 1f)] private float executeThreshold = 0.3f;
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
@@ -74,6 +82,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private float baseFireRate;
     private float baseRange;
 
+    private bool underPlayerControl;
+    private float yaw;
+    private float pitch;
+
     private GameObject towerOverlayGO;
     private TowerOverlay towerOverlay;
 
@@ -85,12 +97,16 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     public float BeamChainRadius => beamChainRadius;
     public int BeamMaxChains => beamMaxChains;
     public float BeamStayTimeOnHit => beamStayTimeOnHit;
+    public bool ExecuteActive => underPlayerControl && executeActive;
+    public float ExecuteThreshold => executeThreshold;
 
     public TowerTypes TowerType() => TowerTypes.Tesla;
 
     public int CurrentLevel() => currentLevel;
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
+
+    public Transform GetControlPoint() => controlPoint;
 
     private Faction currentFaction;
     public Faction GetFaction() => currentFaction;
@@ -102,7 +118,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private void Awake()
     {
-        currentFaction = Faction.OverpressureCollective;
+        currentFaction = Faction.TheBrassArmy;  // TODO: luky -> fakcia
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
@@ -143,6 +159,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private void Update()
     {
+        if (underPlayerControl) return;
+
         HandleStimUpdate();
         if (stimCoolingDown) return;
 
@@ -318,6 +336,67 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         {
             TowerMechanics.ClearHighlight(highlightRenderers);
         }
+    }
+
+    public void OnPlayerTakeControl(bool active)
+    {
+        underPlayerControl = active;
+        fireCooldown = 0f;
+
+        if (active)
+        {
+            target = null;
+
+            Vector3 euler = transform.rotation.eulerAngles;
+            yaw = euler.y;
+            pitch = euler.x;
+
+            if (controlPoint != null)
+                controlPoint.rotation = transform.rotation;
+        }
+    }
+
+    public void HandlePlayerAim(Vector2 mouseDelta)
+    {
+        yaw += mouseDelta.x * sensitivity;
+        pitch -= mouseDelta.y * sensitivity;
+        pitch = Mathf.Clamp(pitch, -45f, 45f);
+
+        Quaternion lookRot = Quaternion.Euler(pitch, yaw, 0f);
+
+        if (controlPoint != null)
+            controlPoint.rotation = lookRot;
+    }
+
+    public void HandlePlayerFire()
+    {
+        fireCooldown -= Time.deltaTime;
+        if (fireCooldown <= 0f)
+        {
+            ShootManual();
+            fireCooldown = 1f / fireRate;
+        }
+    }
+
+    private void ShootManual()
+    {
+        firePoint.forward = controlPoint.forward;
+
+        Vector3 aimPoint = firePoint.position + firePoint.forward * 100f;
+        GameObject fakeTarget = new("TeslaManualAimTarget");
+        fakeTarget.transform.position = aimPoint;
+
+        GameObject beamGO = Instantiate(beamPrefab, firePoint.position, Quaternion.LookRotation(firePoint.forward, Vector3.up));
+        Beam beam = beamGO.GetComponent<Beam>();
+
+        bool isCritical = UnityEngine.Random.value < critChance;
+        float baseBeamDamage = CalculateBaseBeamDamage?.Invoke(beamDamage) ?? beamDamage;
+        float dmg = baseBeamDamage * (isCritical ? critMultiplier : 1f);
+        beam.Initialize(this, firePoint.transform, fakeTarget.transform, dmg, isCritical);
+
+        if (controlPoint.TryGetComponent<CameraRecoil>(out var recoil)) recoil.PlayRecoil();
+
+        Destroy(fakeTarget, 2f);
     }
 
     public void SellAndDestroy()

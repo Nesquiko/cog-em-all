@@ -26,6 +26,7 @@ public class Dreadnought : MonoBehaviour, IEnemy
     public event Action<IEnemy> OnDeath;
     public int OnKillGearsReward => behaviour.OnKillGearsReward;
     public float HealthPointsNormalized => behaviour.HealthPointsNormalized;
+    public float HealthPoints => behaviour.HealthPoints;
     public float Speed { get => behaviour.Speed; set => behaviour.Speed = value; }
     public Transform Transform => transform;
     public bool Marked

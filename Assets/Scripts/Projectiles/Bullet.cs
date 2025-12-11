@@ -19,20 +19,14 @@ public class Bullet : MonoBehaviour, IDamageSource
         damage = dmg;
         crit = isCrit;
         flightDirection = (target.position - transform.position).normalized;
-    }
 
-    private void Start()
-    {
-        Destroy(gameObject, owner.BulletLifetime);
+        float maxDistance = owner.InfiniteRange ? owner.ManualBulletRange : owner.TowerRange;
+        float lifetime = maxDistance / owner.BulletSpeed;
+        Destroy(gameObject, lifetime);
     }
 
     private void Update()
     {
-        if (target != null)
-        {
-            flightDirection = (target.position - transform.position).normalized;
-        }
-
         transform.position += owner.BulletSpeed * Time.deltaTime * flightDirection;
         transform.rotation = Quaternion.LookRotation(flightDirection);
         transform.Rotate(90f, 0f, 0f);

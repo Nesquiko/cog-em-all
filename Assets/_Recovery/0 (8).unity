@@ -2746,11 +2746,11 @@ PrefabInstance:
     - target: {fileID: 4804839545236141888, guid: 719bbe8ca2fbbf04fa8fd11408a4f857, type: 3}
       propertyPath: 'factionSpecificSkillPrefabs.Array.data[3]'
       value: 
-      objectReference: {fileID: 5157639234088474056, guid: d03dcab067971264c84f8a274fc03af9, type: 3}
+      objectReference: {fileID: 5157639234088474056, guid: 3b06468e10b3bab43a7df95e9b7efa75, type: 3}
     - target: {fileID: 4804839545236141888, guid: 719bbe8ca2fbbf04fa8fd11408a4f857, type: 3}
       propertyPath: 'factionSpecificSkillPrefabs.Array.data[4]'
       value: 
-      objectReference: {fileID: 5157639234088474056, guid: 9174da232f3262e479c3144d7d6d0373, type: 3}
+      objectReference: {fileID: 3763980083327337614, guid: 16a5256d607acf14b981f1b9dfeeafb5, type: 3}
     - target: {fileID: 4812674696945707097, guid: 719bbe8ca2fbbf04fa8fd11408a4f857, type: 3}
       propertyPath: m_Name
       value: Systems
@@ -3162,6 +3162,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1550348059327287728, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1777597950250214491, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: pauseManager
       value: 
@@ -3274,6 +3278,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2185455175545364377, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2205812766704636661, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: skillPlacementSystem
       value: 
@@ -3350,6 +3358,14 @@ PrefabInstance:
       propertyPath: skillPlacementSystem
       value: 
       objectReference: {fileID: 2036624459}
+    - target: {fileID: 4194152594364903486, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4226105754539908267, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4411788105209194267, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3426,6 +3442,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5632507568824586775, guid: cefae6128805776438276a1085b0216b, type: 3}
+      propertyPath: skillPrefab
+      value: 
+      objectReference: {fileID: 5157639234088474056, guid: 3b06468e10b3bab43a7df95e9b7efa75, type: 3}
     - target: {fileID: 5632507568824586775, guid: cefae6128805776438276a1085b0216b, type: 3}
       propertyPath: skillPlacementSystem
       value: 
@@ -3601,10 +3621,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4322446043985884560, guid: cefae6128805776438276a1085b0216b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 8362696552140826650}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cefae6128805776438276a1085b0216b, type: 3}
 --- !u!223 &8362696552140826647 stripped
 Canvas:
@@ -3616,23 +3633,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 338297872855664360, guid: cefae6128805776438276a1085b0216b, type: 3}
   m_PrefabInstance: {fileID: 8362696552140826646}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &8362696552140826649 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4322446043985884560, guid: cefae6128805776438276a1085b0216b, type: 3}
-  m_PrefabInstance: {fileID: 8362696552140826646}
-  m_PrefabAsset: {fileID: 0}
---- !u!225 &8362696552140826650
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8362696552140826649}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 0
-  m_BlocksRaycasts: 0
-  m_IgnoreParentGroups: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

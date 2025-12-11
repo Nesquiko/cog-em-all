@@ -35,6 +35,7 @@ class Orchestrator : MonoBehaviour
     [Header("Player resources")]
     [SerializeField] private int passiveIncome = 10;
     [SerializeField] private float passiveTick = 5f;
+    [SerializeField, Range(1f, 2f)] private float gearRewardMultiplier = 1f;
 
     private OperationStatistics operationStatistics;
 
@@ -89,8 +90,15 @@ class Orchestrator : MonoBehaviour
 
     private void OnUseSkill(ISkill skill)
     {
-        SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
+        if (skill.ActivationMode() == SkillActivationMode.Instant && skill is SuddenDeath suddenDeath)
+        {
+            HUDPanelUI.ShowSuddenDeathOverlay();
+            gearRewardMultiplier = suddenDeath.GearRewardMultiplier;
+            nexus.MakeVolatile();
+        }
         HUDPanelUI.StartSkillCooldown(skill);
+
+        SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
         SpendGears(skillData.cost);
     }
 
@@ -183,7 +191,7 @@ class Orchestrator : MonoBehaviour
 
     public void AddGears(int amount)
     {
-        gears += amount;
+        gears += Mathf.FloorToInt(amount * gearRewardMultiplier);
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
         UpdateSkillButtons();

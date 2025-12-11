@@ -58,6 +58,8 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private GameObject minimapImage;
     [SerializeField] private string minimapBackgroundTag;
     [SerializeField] private string maximizedMinimapTag;
+    [SerializeField] private GameObject suddenDeathOverlay;
+    [SerializeField, Range(1f, 3f)] private float suddenDeathOverlayDuration = 2.5f;
 
     private GameObject minimapBackground;
     private GameObject maximizedMinimap;
@@ -79,7 +81,7 @@ public class HUDPanelUI : MonoBehaviour
         minimapBackground = GameObject.FindGameObjectWithTag(minimapBackgroundTag);
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,
@@ -337,5 +339,42 @@ public class HUDPanelUI : MonoBehaviour
         }
 
         minimapMaximized = maximized;
+    }
+
+    public void ShowSuddenDeathOverlay()
+    {
+        StartCoroutine(SuddenDeathOverlay());
+    }
+
+    private IEnumerator SuddenDeathOverlay()
+    {
+        CanvasGroup cg = suddenDeathOverlay.GetComponent<CanvasGroup>();
+        suddenDeathOverlay.SetActive(true);
+
+        float totalDuration = suddenDeathOverlayDuration;
+        float fadeDuration = totalDuration * 0.25f;
+        float holdDuration = totalDuration - 2 * fadeDuration;
+
+        float t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            cg.alpha = Mathf.SmoothStep(0f, 1f, t / fadeDuration);
+            yield return null;
+        }
+
+        cg.alpha = 1f;
+        yield return new WaitForSeconds(holdDuration);
+
+        t = 0f;
+        while (t < fadeDuration)
+        {
+            t += Time.deltaTime;
+            cg.alpha = Mathf.Lerp(1f, 0f, t / fadeDuration);
+            yield return null;
+        }
+
+        cg.alpha = 0f;
+        suddenDeathOverlay.SetActive(false);
     }
 }

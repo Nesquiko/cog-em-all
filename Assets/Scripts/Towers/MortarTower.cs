@@ -129,7 +129,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Awake()
     {
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> aktualna fakcia
+        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> aktualna fakcia
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);

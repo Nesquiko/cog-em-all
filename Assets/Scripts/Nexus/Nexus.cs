@@ -71,4 +71,10 @@ public class Nexus : MonoBehaviour, IDamageable
     }
 
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
+
+    public void MakeVolatile()
+    {
+        healthPoints = 1f;
+        OnHealthChanged?.Invoke(this);
+    }
 }

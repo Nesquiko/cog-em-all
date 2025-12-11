@@ -55,7 +55,7 @@ public class SkillPlacementSystem : MonoBehaviour
     {
         mainCamera = Camera.main;
 
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> tu mi musi prist aktualna fakcia
+        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
         activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
         {
             FactionSpecificSkill.AirshipAirstrike,
@@ -208,7 +208,6 @@ public class SkillPlacementSystem : MonoBehaviour
             {
                 Cursor.SetCursor(cursorSettings.hoverCursor, cursorSettings.hotspot, CursorMode.Auto);
                 var enemy = enemyAttackTrigger.GetComponentInParent<IEnemy>();
-                Debug.Log(enemy);
                 if (enemy != currentHoveredEnemy)
                 {
                     currentHoveredEnemy?.ApplyHighlight(false);
@@ -344,11 +343,12 @@ public class SkillPlacementSystem : MonoBehaviour
 
     private void TriggerInstantSkill()
     {
-        /*
-        // TODO: sudden death
-        var skill = skillPrefab.GetComponent<ISkill>();
-        OnUseSkill?.Invoke(skill);*/
-        Debug.Log("Deploying an instant skill");
+        var skillGO = Instantiate(skillPrefab);
+        var suddenDeath = skillGO.GetComponent<SuddenDeath>();
+        if (suddenDeath.Activate())
+            OnUseSkill?.Invoke(suddenDeath);
+        CancelPlacement();
+        StartCoroutine(EnableSelectionNextFrame());
     }
 
     public void CancelPlacement()

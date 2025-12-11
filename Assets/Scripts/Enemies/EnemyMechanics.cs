@@ -21,6 +21,7 @@ public interface IEnemy
     EnemyType Type { get; }
     int OnKillGearsReward { get; }
     float HealthPointsNormalized { get; }
+    float HealthPoints { get; }
     float Speed { get; set; }
 
     Transform Transform { get; }

@@ -37,6 +37,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private Transform controlPoint;
     [SerializeField] private float sensitivity = 0.75f;
 
+    [Header("Infinite Range")]
+    [SerializeField] private bool infiniteRangeActive = true;
+    [SerializeField] private float manualBulletRange = 1000f;
+
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
@@ -102,12 +106,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private float baseFireRate;
     private float baseRange;
 
-    private float currentBulletDamage;
-    private float currentCritChance;
-    private float currentCritMultiplier;
-    private float currentFireRate;
-    private float currentRange;
-
     private bool shootFromLeftFirePoint = true;
 
     private bool underPlayerControl;
@@ -123,6 +121,9 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public float BulletLifetime => bulletLifetime;
     public float BulletSpeed => bulletSpeed;
+    public bool InfiniteRange => underPlayerControl && infiniteRangeActive;
+    public float ManualBulletRange => manualBulletRange;
+    public float TowerRange => EffectiveRange(range);
 
     public TowerTypes TowerType() => TowerTypes.Gatling;
 
@@ -142,7 +143,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     private void Awake()
     {
-        currentFaction = Faction.OverpressureCollective;  // TODO: luky -> aktualna fakcia
+        currentFaction = Faction.TheBrassArmy;  // TODO: luky -> aktualna fakcia
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
@@ -431,7 +432,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         if (active)
         {
-            StartCoroutine(FadeGatlingSeat(fadeOut: true, delayBefore: 1f));
+            if (gatlingSeat != null) StartCoroutine(FadeGatlingSeat(fadeOut: true, delayBefore: 1f));
 
             target = null;
 
@@ -444,7 +445,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         }
         else
         {
-            StartCoroutine(FadeGatlingSeat(fadeOut: false, delayBefore: 0f));
+            if (gatlingSeat != null) StartCoroutine(FadeGatlingSeat(fadeOut: false, delayBefore: 0f));
         }
     }
 
@@ -510,13 +511,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private void ShootManual()
     {
         var gun = shootFromLeftFirePoint ? gatlingGunL : gatlingGunR;
-        var firepoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
+        var firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
 
-        Vector3 aimPoint = firepoint.position + firepoint.forward * 100f;
-        GameObject fakeTarget = new();
+        Vector3 aimPoint = firePoint.position + firePoint.forward * 100f;
+        GameObject fakeTarget = new("GatlingManualAimTarget");
         fakeTarget.transform.position = aimPoint;
 
-        GameObject bulletGO = Instantiate(bulletPrefab, firepoint.position, Quaternion.LookRotation(firepoint.forward, Vector3.up));
+        GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.LookRotation(firePoint.forward, Vector3.up));
         Bullet bullet = bulletGO.GetComponent<Bullet>();
 
         bool isCritical = UnityEngine.Random.value < critChance;

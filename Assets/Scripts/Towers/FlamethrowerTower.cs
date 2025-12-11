@@ -132,7 +132,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private void Awake()
     {
-        currentFaction = Faction.OverpressureCollective;
+        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> fakcia
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
 

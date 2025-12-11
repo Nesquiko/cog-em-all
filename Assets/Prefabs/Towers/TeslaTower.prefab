@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2209986753277405797
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6958036638579947074}
+  m_Layer: 8
+  m_Name: TeslaControlPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6958036638579947074
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2209986753277405797}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.34666666, z: 0}
+  m_LocalScale: {x: 0.013333333, y: 0.013333333, z: 0.013333333}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1877231566665989536}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2879299013220785248
 GameObject:
   m_ObjectHideFlags: 0
@@ -104,14 +135,19 @@ MonoBehaviour:
   - {fileID: 0}
   towerOverlayCatalog: {fileID: 11400000, guid: 388409edb51f9274ba3dc4a7b4c33da0, type: 2}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+  controlPoint: {fileID: 6958036638579947074}
+  sensitivity: 0.075
   currentLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
   baselineHeight: 0
+  stunFirstEnemy: 1
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
+  doubleBeamActive: 1
+  damageFactor: 0.75
   upgradeVFX: {fileID: 36816324828968498}
   stimModeVFX: {fileID: 1337974542168246834}
   stimCooldownVFX:
@@ -469,15 +505,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: e09dea93c46a6c84eafc04c4c1df239a, type: 3}
       propertyPath: m_LocalScale.x
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e09dea93c46a6c84eafc04c4c1df239a, type: 3}
       propertyPath: m_LocalScale.y
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e09dea93c46a6c84eafc04c4c1df239a, type: 3}
       propertyPath: m_LocalScale.z
-      value: 100
+      value: 75
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e09dea93c46a6c84eafc04c4c1df239a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -526,6 +562,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e09dea93c46a6c84eafc04c4c1df239a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6958036638579947074}
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: e09dea93c46a6c84eafc04c4c1df239a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3321809094281806116}
