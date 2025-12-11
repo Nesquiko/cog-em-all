@@ -35,6 +35,9 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    [Header("Burn on Hit")]
+    [SerializeField] private bool burnOnHitActive = true;
+
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
@@ -73,6 +76,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     public float FlameDuration => flameDuration;
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
+    public bool BurnOnHitActive => burnOnHitActive;
 
     private bool stimActive = false;
     private bool stimCoolingDown = false;
@@ -86,7 +90,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private float baseFlamePulseInterval;
     private float baseCritChance;
     private float baseCritMultiplier;
-    private float baseRange;
 
     private GameObject towerOverlayGO;
     private TowerOverlay towerOverlay;
@@ -104,8 +107,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
-    private Faction currentFaction;
-    public Faction GetFaction() => currentFaction;
+    private OperationDataDontDestroy operationData;
 
     private void OnDrawGizmosSelected()
     {
@@ -132,11 +134,11 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private void Awake()
     {
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> fakcia
+        operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
 
-        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(operationData.Faction, TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();

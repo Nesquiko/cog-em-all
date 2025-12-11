@@ -42,6 +42,12 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    [Header("Slow on Hit")]
+    [SerializeField] private bool slowOnHitActive = true;
+
+    [Header("Bleed on Hit")]
+    [SerializeField] private bool bleedOnHitActive = true;
+
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
@@ -99,6 +105,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public float ShellSplashRadius => shellSplashRadius;
     public float ShellLifetime => shellLifetime;
+    public bool SlowOnHitActive => slowOnHitActive;
+    public bool BleedOnHitActive => bleedOnHitActive;
 
     public TowerTypes TowerType() => TowerTypes.Mortar;
 
@@ -106,8 +114,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
 
-    private Faction currentFaction;
-    public Faction GetFaction() => currentFaction;
+    private OperationDataDontDestroy operationData;
 
     private void OnDrawGizmosSelected()
     {
@@ -129,10 +136,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void Awake()
     {
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> aktualna fakcia
+        operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(operationData.Faction, TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();

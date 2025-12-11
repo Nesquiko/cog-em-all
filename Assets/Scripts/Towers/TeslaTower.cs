@@ -41,6 +41,9 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    [Header("Disable Buffs on Hit")]
+    [SerializeField] private bool disableBuffsOnHitActive = true;
+
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
@@ -99,6 +102,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     public float BeamStayTimeOnHit => beamStayTimeOnHit;
     public bool ExecuteActive => underPlayerControl && executeActive;
     public float ExecuteThreshold => executeThreshold;
+    public bool DisableBuffsOnHitActive => disableBuffsOnHitActive;
 
     public TowerTypes TowerType() => TowerTypes.Tesla;
 
@@ -108,8 +112,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public Transform GetControlPoint() => controlPoint;
 
-    private Faction currentFaction;
-    public Faction GetFaction() => currentFaction;
+    private OperationDataDontDestroy operationData;
 
     void OnDrawGizmosSelected()
     {
@@ -118,10 +121,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private void Awake()
     {
-        currentFaction = Faction.TheBrassArmy;  // TODO: luky -> fakcia
+        operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(operationData.Faction, TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();

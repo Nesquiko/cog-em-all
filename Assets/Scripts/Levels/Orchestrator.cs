@@ -129,6 +129,7 @@ class Orchestrator : MonoBehaviour
         UpdateSkillButtons();
 
         waveCounterInfo.SetCounter(0, level.waves.Count);
+        waveCounterInfo.SetGameSpeed(1f);
 
         var gearsRoutine = StartCoroutine(PassiveGearsIncomeRoutine(economyMods));
 
@@ -266,6 +267,13 @@ class Orchestrator : MonoBehaviour
         }
 
         Time.timeScale = 0f;
+    }
+
+    public void ToggleGameSpeed()
+    {
+        float newSpeed = Time.timeScale == 1f ? 2f : 1f;
+        waveCounterInfo.SetGameSpeed(newSpeed);
+        Time.timeScale = newSpeed;
     }
 
     private void OnDestroy()

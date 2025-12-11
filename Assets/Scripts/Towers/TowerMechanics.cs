@@ -30,7 +30,6 @@ public interface ITower
     int CurrentLevel();
     void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
-    Faction GetFaction();
 }
 
 public interface ITowerSelectable : ITower

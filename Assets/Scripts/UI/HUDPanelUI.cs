@@ -73,23 +73,16 @@ public class HUDPanelUI : MonoBehaviour
 
     private bool airstrikeActive, freezeZoneActive, disableZoneActive, markEnemyActive, suddenDeathActive;
 
-    private Faction currentFaction;
     private HashSet<FactionSpecificSkill> activeFactionSpecificSkills;
+    private OperationDataDontDestroy operationData;
 
     private void Awake()
     {
         minimapBackground = GameObject.FindGameObjectWithTag(minimapBackgroundTag);
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
-        activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
-        {
-            FactionSpecificSkill.AirshipAirstrike,
-            FactionSpecificSkill.AirshipFreezeZone,
-            FactionSpecificSkill.AirshipDisableZone,
-            FactionSpecificSkill.MarkEnemy,
-            FactionSpecificSkill.SuddenDeath,
-        };
+        operationData = OperationDataDontDestroy.GetOrReadDev();
+        activeFactionSpecificSkills = operationData.GetFactionSpecificSkills();
 
         airshipAirstrikeButton = airshipAirstrikeSkill.GetComponentInChildren<SkillButton>();
         airshipFreezeZoneButton = airshipFreezeZoneSkill.GetComponentInChildren<SkillButton>();
@@ -124,7 +117,7 @@ public class HUDPanelUI : MonoBehaviour
         foreach (var skill in factionSpecificSkills)
             skill.SetActive(false);
 
-        switch (currentFaction)
+        switch (operationData.Faction)
         {
             case Faction.TheBrassArmy:
                 airshipAirstrikeSkill.SetActive(true);

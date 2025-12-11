@@ -9,6 +9,7 @@ public enum DamageSourceType
     Effect,
     Airstrike,
     Bomber,
+    IceShatter,
 }
 
 public interface IDamageSource

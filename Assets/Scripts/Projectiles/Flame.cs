@@ -112,7 +112,7 @@ public class Flame : MonoBehaviour, IDamageSource
         {
             bool isCritical = UnityEngine.Random.value < critChance;
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
-            enemy.TakeDamage(damage, Type(), isCritical, effect: EnemyStatusEffect.Burn);
+            enemy.TakeDamage(damage, Type(), isCritical, effect: owner.BurnOnHitActive ? EnemyStatusEffect.Burn : null);
         }
     }
 

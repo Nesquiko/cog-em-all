@@ -27,6 +27,9 @@ public class Bullet : MonoBehaviour, IDamageSource
 
     private void Update()
     {
+        if (target != null)
+            flightDirection = (target.position - transform.position).normalized;
+
         transform.position += owner.BulletSpeed * Time.deltaTime * flightDirection;
         transform.rotation = Quaternion.LookRotation(flightDirection);
         transform.Rotate(90f, 0f, 0f);
@@ -36,7 +39,7 @@ public class Bullet : MonoBehaviour, IDamageSource
     {
         if (other.TryGetComponent<IEnemy>(out var enemy))
         {
-            enemy.TakeDamage(damage, Type(), crit, effect: EnemyStatusEffect.Bleed);
+            enemy.TakeDamage(damage, Type(), crit, effect: owner.SlowOnHitActive ? EnemyStatusEffect.Slow : null);
             Destroy(gameObject);
         }
 

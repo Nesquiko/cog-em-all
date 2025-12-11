@@ -32,6 +32,8 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
 
     [SerializeField] private SkillModifierCatalog skillModifierCatalog;
 
+    private readonly HashSet<FreezeZone> freezeZonesInRange = new();
+
     private bool armed;
     private bool triggered;
 
@@ -91,11 +93,26 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!armed || triggered) return;
-        if (!other.TryGetComponent<IEnemy>(out var _)) return;
+        if (other.TryGetComponent<FreezeZone>(out var freezeZone))
+        {
+            freezeZonesInRange.Add(freezeZone);
+        }
 
-        triggered = true;
-        StartCoroutine(TriggerExplosion());
+        if (!armed || triggered) return;
+        
+        if (other.TryGetComponent<IEnemy>(out var _))
+        {
+            triggered = true;
+            StartCoroutine(TriggerExplosion());
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.TryGetComponent<FreezeZone>(out var freezeZone))
+        {
+            freezeZonesInRange.Remove(freezeZone);
+        }
     }
 
     private IEnumerator TriggerExplosion()
@@ -150,6 +167,17 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
         {
             if (hit.TryGetComponent<IEnemy>(out var e))
                 e.TakeDamage(explosionDamage, Type());
+        }
+
+        foreach (var zone in freezeZonesInRange)
+        {
+            if (zone == null) continue;
+
+            float distance = Vector3.Distance(transform.position, zone.transform.position);
+            if (distance <= explosionRadius)
+            {
+                zone.ShatterTheIce(explosionDamage);
+            }
         }
     }
 }

@@ -48,23 +48,16 @@ public class SkillPlacementSystem : MonoBehaviour
 
     public bool IsPlacing => isPlacing;
 
-    private Faction currentFaction;
     private HashSet<FactionSpecificSkill> activeFactionSpecificSkills;
+
+    private OperationDataDontDestroy operationData;
 
     private void Awake()
     {
         mainCamera = Camera.main;
 
-        currentFaction = Faction.TheValveboundSeraphs;  // TODO: luky -> tu mi musi prist aktualna fakcia
-        activeFactionSpecificSkills = new()  // TODO: luky -> tu mi musia prist zo skill tree skilly, ktore mam povolit
-        {
-            FactionSpecificSkill.AirshipAirstrike,
-            FactionSpecificSkill.AirshipFreezeZone,
-            FactionSpecificSkill.AirshipDisableZone,
-            FactionSpecificSkill.MarkEnemy,
-            FactionSpecificSkill.SuddenDeath,
-        };
-
+        operationData = OperationDataDontDestroy.GetOrReadDev();
+        activeFactionSpecificSkills = operationData.GetFactionSpecificSkills();
         SetupFactionSpecificSkills();
     }
 
@@ -76,7 +69,7 @@ public class SkillPlacementSystem : MonoBehaviour
         for (int i = 0; i < 3; i++)
             hotkeyToButton[i + 5] = skillButtons[i];
 
-        switch (currentFaction)
+        switch (operationData.Faction)
         {
             case Faction.TheBrassArmy:
                 if (activeFactionSpecificSkills.Contains(FactionSpecificSkill.AirshipAirstrike))

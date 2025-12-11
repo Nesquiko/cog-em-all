@@ -87,7 +87,10 @@ public class Shell : MonoBehaviour, IDamageSource
         {
             if (c.TryGetComponent<IEnemy>(out var e) && damaged.Add(e))
             {
-                e.TakeDamage(damage, Type(), crit, effect: EnemyStatusEffect.Slow);
+                EnemyStatusEffect effect = null;
+                if (owner.SlowOnHitActive) effect = EnemyStatusEffect.Slow;
+                else if (owner.BleedOnHitActive) effect = EnemyStatusEffect.Bleed;
+                e.TakeDamage(damage, Type(), crit, effect: effect);
             }
         }
 

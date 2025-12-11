@@ -1,5 +1,3 @@
-using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +5,7 @@ public class FreezeZone : MonoBehaviour
 {
     [SerializeField] private float freezeRadius = 15f;
     [SerializeField] private float duration = 10f;
+    [SerializeField, Range(1f, 10f)] private float mineDamageMultiplier = 3f;
     [SerializeField] private EnemyStatusEffect freeze;
     [SerializeField] private LayerMask enemyMask;
     [SerializeField] private ParticleSystem freezeExplosionVFX;
@@ -14,6 +13,7 @@ public class FreezeZone : MonoBehaviour
     [SerializeField] private SphereCollider sphereCollider;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
+    private bool exploded = false;
 
     public void Initialize()
     {
@@ -23,6 +23,27 @@ public class FreezeZone : MonoBehaviour
         freezeVFX.Play();
 
         Destroy(gameObject, duration);
+    }
+
+    public void ShatterTheIce(float mineDamage)
+    {
+        if (exploded) return;
+        exploded = true;
+
+        freezeExplosionVFX.Play();
+        freezeVFX.Stop(withChildren: true);
+
+        Collider[] hits = Physics.OverlapSphere(transform.position, freezeRadius, enemyMask);
+        foreach (Collider hit in hits)
+        {
+            if (hit.TryGetComponent<IEnemy>(out var enemy))
+            {
+                float shatterDamage = mineDamage * mineDamageMultiplier;
+                enemy.TakeDamage(shatterDamage, DamageSourceType.IceShatter, false);
+            }
+        }
+
+        Destroy(gameObject, 0.5f);
     }
 
     public void OnTriggerEnter(Collider other)

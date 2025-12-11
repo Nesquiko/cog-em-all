@@ -223,11 +223,7 @@ public class Beam : MonoBehaviour, IDamageSource
 
         if (owner.ExecuteActive && enemy.HealthPointsNormalized <= owner.ExecuteThreshold)
         {
-            //Vector3 popupPosition = enemy.Transform.position;
-            //popupPosition.y += 5f;
-            //var ex = Instantiate(executedPopupPrefab, popupPosition, Quaternion.identity);
-            //Destroy(ex, 5f);
-            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true);
+            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true, effect: owner.DisableBuffsOnHitActive ? EnemyStatusEffect.DisableBuffs : null);
             return;
         }
 

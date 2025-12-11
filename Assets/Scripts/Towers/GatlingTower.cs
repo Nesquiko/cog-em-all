@@ -45,6 +45,9 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    [Header("Slow on Hit")]
+    [SerializeField] private bool slowOnHitActive = true;
+
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
     [SerializeField] private float heightRangeMultiplier = 0.05f;
@@ -124,6 +127,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public bool InfiniteRange => underPlayerControl && infiniteRangeActive;
     public float ManualBulletRange => manualBulletRange;
     public float TowerRange => EffectiveRange(range);
+    public bool SlowOnHitActive => slowOnHitActive;
 
     public TowerTypes TowerType() => TowerTypes.Gatling;
 
@@ -133,8 +137,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public Transform GetControlPoint() => controlPoint;
 
-    private Faction currentFaction;
-    public Faction GetFaction() => currentFaction;
+    private OperationDataDontDestroy operationData;
 
     private void OnDrawGizmosSelected()
     {
@@ -143,10 +146,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     private void Awake()
     {
-        currentFaction = Faction.TheBrassArmy;  // TODO: luky -> aktualna fakcia
+        operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(GetFaction(), TowerType()), canvas.transform, true);
+        towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(operationData.Faction, TowerType()), canvas.transform, true);
         towerOverlay = towerOverlayGO.GetComponent<TowerOverlay>();
         towerOverlay.Initialize(gameObject);
         towerOverlay.Hide();
