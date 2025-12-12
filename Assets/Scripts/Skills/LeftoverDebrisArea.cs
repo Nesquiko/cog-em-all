@@ -4,24 +4,24 @@ using UnityEngine;
 
 public class LeftoverDebrisArea : MonoBehaviour
 {
-    [SerializeField] private GameObject visual;
-    [SerializeField] private SphereCollider sphereCollider;
+    [SerializeField] private GameObject debris;
+    [SerializeField] private GameObject reinforcedDebris;
+    [SerializeField] private GameObject spikedDebris;
+    [SerializeField] private BoxCollider boxCollider;
 
-    private float debrisAreaRange;
     private float debrisDuration;
     private EnemyStatusEffect debrisSlow;
 
     private readonly Dictionary<int, IEnemy> enemiesInRange = new();
 
-    public void Initialize(LeftoverDebrisModifier modifier)
+    public void Initialize(LeftoverDebrisModifier modifier, bool reinforced, bool spiked)
     {
-        debrisAreaRange = modifier.debrisAreaRange;
         debrisDuration = modifier.debrisDuration;
         debrisSlow = modifier.debrisSlow;
 
-        float visualY = visual.transform.localScale.y;
-        visual.transform.localScale = new(debrisAreaRange, visualY, debrisAreaRange);
-        sphereCollider.radius = debrisAreaRange / 2f;
+        debris.SetActive(true);
+        reinforcedDebris.SetActive(reinforced);
+        spikedDebris.SetActive(spiked);
 
         Destroy(gameObject, debrisDuration);
     }

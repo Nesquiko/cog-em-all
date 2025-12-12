@@ -1,4 +1,3 @@
-using NUnit.Framework.Internal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -41,6 +40,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+    [SerializeField] private GameObject level2;
+    [SerializeField] private GameObject level3;
 
     [Header("Slow on Hit")]
     [SerializeField] private bool slowOnHitActive = true;
@@ -453,6 +454,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         towerSelectionManager.DeselectCurrent();
 
         currentLevel = data.Level;
+        if (currentLevel == 2) level2.SetActive(true);
+        if (currentLevel == 3) level3.SetActive(true);
 
         shellDamage = data.shellDamage;
         shellSplashRadius = data.shellSplashRadius;

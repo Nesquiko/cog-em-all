@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96832409f8e81e89c92e0525798a1c66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OperationDataDontDestroy
-  faction: 1
+  faction: 2
   modifiers: []
   references:
     version: 2

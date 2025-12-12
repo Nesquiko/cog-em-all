@@ -15,6 +15,7 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
     [Header("Settings")]
     [SerializeField] private float armDelay = 1.0f;
     [SerializeField] private float triggerDelay = 1.0f;
+    [SerializeField] private float triggerRadius = 2.5f;
     [SerializeField] private float explosionRadius = 15.0f;
     [SerializeField] private float explosionDamage = 200.0f;
     [SerializeField] private int explosionCount = 1;
@@ -26,6 +27,12 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
     [SerializeField] private Material screwArmedMaterial;
     [SerializeField] private GameObject minimapIndicator;
     [SerializeField] private Vector3 minimapIndicatorScale;
+    [SerializeField] private SphereCollider triggerCollider;
+
+    [Header("Modifiers")]
+    [SerializeField] private GameObject mine2x;
+    [SerializeField] private GameObject mineQuick;
+    [SerializeField] private GameObject mineWide;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem mineExplosion;
@@ -48,6 +55,8 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
 
     private void Awake()
     {
+        triggerCollider.radius = triggerRadius;
+
         activeMineModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
 
         InitializeModifiers();
@@ -63,13 +72,17 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
         wideDestructionActive = activeMineModifiers.Contains(SkillModifiers.WideDestruction);
         quickFuseActive = activeMineModifiers.Contains(SkillModifiers.QuickFuse);
 
+        mine2x.SetActive(doubleTheBoomActive);
+        mineWide.SetActive(wideDestructionActive);
+        mineQuick.SetActive(quickFuseActive);
+
         if (doubleTheBoomActive)
         {
             explosionCount = doubleTheBoomModifier.explosionCount;
             explosionDamage *= doubleTheBoomModifier.damageFractionPerExplosion;
-        } 
+        }
         if (wideDestructionActive)
-        {
+        {    
             explosionRadius = wideDestructionModifier.explosionRadius;
         }
         if (quickFuseActive)
@@ -89,6 +102,23 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
     {
         yield return new WaitForSeconds(armDelay);
         armed = true;
+
+        yield return new WaitForSeconds(0.05f);
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position, 
+            triggerRadius, 
+            enemyMask,
+            QueryTriggerInteraction.Collide
+        );
+        foreach (var hit in hits)
+        {
+            if (hit.TryGetComponent<IEnemy>(out var _))
+            {
+                triggered = true;
+                StartCoroutine(TriggerExplosion());
+                break;
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)

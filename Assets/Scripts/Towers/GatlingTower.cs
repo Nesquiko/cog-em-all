@@ -44,6 +44,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
+    [SerializeField] private GameObject level2;
+    [SerializeField] private GameObject level3;
+    [SerializeField] private GameObject level3Gear1;
+    [SerializeField] private GameObject level3Gear2;
+    [SerializeField] private float gearSpinSpeed = 180f;
 
     [Header("Slow on Hit")]
     [SerializeField] private bool slowOnHitActive = true;
@@ -567,6 +572,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         towerSelectionManager.DeselectCurrent();
 
         currentLevel = data.Level;
+        if (currentLevel == 2) level2.SetActive(true);
+        if (currentLevel == 3)
+        {
+            level3.SetActive(true);
+            StartCoroutine(SpinLevel3Gear(level3Gear1.transform));
+            StartCoroutine(SpinLevel3Gear(level3Gear2.transform));
+        }
 
         bulletDamage = data.bulletDamage;
         bulletSpeed = data.bulletSpeed;
@@ -578,6 +590,15 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         capsuleCollider.radius = EffectiveRange(range);
         SetRangeProjector(EffectiveRange(range));
+    }
+
+    private IEnumerator SpinLevel3Gear(Transform gear)
+    {
+        while (true)
+        {
+            gear.Rotate(Vector3.right, gearSpinSpeed * Time.deltaTime, Space.Self);
+            yield return null;
+        }
     }
 
     public void SetDamageCalculation(Func<float, float> f)

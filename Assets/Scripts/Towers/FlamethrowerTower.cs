@@ -65,6 +65,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private bool underPlayerRotation = false;
     private bool isCoolingDown = false;
     private Flame activeFlame;
+    private bool hasFired = false;
 
     private bool isSweeping;
     private float sweepBaseYaw;
@@ -84,7 +85,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private float stimCooldownTimer;
     public bool StimActive() => stimActive;
     public bool StimCoolingDown() => stimCoolingDown;
-    public bool CanActivateStim() => !stimActive && !stimCoolingDown;
+    public bool CanActivateStim() => !stimActive && !stimCoolingDown && (isCoolingDown || !hasFired);
 
     private float baseFlameDamagePerPulse;
     private float baseFlamePulseInterval;
@@ -253,6 +254,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         if (isCoolingDown || activeFlame == null) return;
 
+        if (!hasFired) hasFired = true;
+
         activeFlame.gameObject.SetActive(true);
         activeFlame.Initialize(this, EffectiveRange(range));
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
@@ -274,6 +277,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private IEnumerator CooldownRoutine(float duration)
     {
         isCoolingDown = true;
+        // adjust buttons here
         yield return new WaitForSeconds(duration);
 
         activeFlame.StopFlame();
@@ -281,6 +285,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         yield return new WaitForSeconds(cooldownDuration);
         isCoolingDown = false;
+        // and here
     }
 
     private void BeginSweep()

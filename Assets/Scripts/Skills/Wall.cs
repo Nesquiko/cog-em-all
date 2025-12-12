@@ -22,8 +22,9 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
     [SerializeField] private Vector3 wallHealthBarScale;
     [SerializeField] private Vector3 minimapIndicatorScale;
 
-    [Header("VFX")]
-    [SerializeField] private ParticleSystem wallExplosion;
+    [Header("Modifiers")]
+    [SerializeField] private GameObject wallReinforced;
+    [SerializeField] private GameObject wallSpiked;
 
     [SerializeField] private SkillModifierCatalog skillModifierCatalog;
 
@@ -66,6 +67,9 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
         sharpThornsActive = activeWallModifiers.Contains(SkillModifiers.SharpThorns);
         leftoverDebrisActive = activeWallModifiers.Contains(SkillModifiers.LeftoverDebris);
 
+        wallReinforced.SetActive(steelReinforcementActive);
+        wallSpiked.SetActive(sharpThornsActive);
+        
         if (steelReinforcementActive)
         {
             maxHealthPoints *= steelReinforcementModifier.healthPointsMultiplier;
@@ -112,8 +116,6 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
         healthPoints = 0;
         OnDestroyed?.Invoke(this);
 
-        // wallExplosion.Play(withChildren: true);  // walls can explode after destruction (skill tree item?)
-
         yield return new WaitForSeconds(0.1f);
 
         Destroy(wallModel);
@@ -124,7 +126,7 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
             GameObject areaGO = Instantiate(leftoverDebrisModifier.debrisAreaPrefab, transform.position, Quaternion.identity);
             if (areaGO.TryGetComponent<LeftoverDebrisArea>(out var area))
             {
-                area.Initialize(leftoverDebrisModifier);
+                area.Initialize(leftoverDebrisModifier, reinforced: steelReinforcementActive, spiked: sharpThornsActive);
             }
         }
 
