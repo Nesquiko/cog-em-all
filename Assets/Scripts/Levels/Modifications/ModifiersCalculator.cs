@@ -258,7 +258,6 @@ public static class ModifiersCalculator
                         usages[SkillTypes.AirshipDisableZone] = 1;
                         break;
                 }
-
             }
         }
 
@@ -275,6 +274,34 @@ public static class ModifiersCalculator
         }
 
         return usages;
+    }
+
+
+    public static Dictionary<TowerTypes, int> UnlockedTowerLevels(List<Modifier> modifiers)
+    {
+        Dictionary<TowerTypes, int> unlockedTowerLevels = new();
+        // Gatling is enabled by default
+        unlockedTowerLevels[TowerTypes.Gatling] = 1;
+
+
+        foreach (var m in modifiers)
+        {
+            if (m is not UnlockTowerTypeModifier unlock) continue;
+            unlockedTowerLevels[unlock.toUnlock] = 1;
+        }
+
+        foreach (var m in modifiers)
+        {
+            if (m is not UnlockTowerUpgradeModifier levelUnlock) continue;
+            if (!unlockedTowerLevels.ContainsKey(levelUnlock.applyTo))
+            {
+                Debug.LogWarning($"trying to allow level {levelUnlock.allowLevel} on locked tower ${levelUnlock.applyTo}");
+                continue;
+            }
+            unlockedTowerLevels[levelUnlock.applyTo] = levelUnlock.allowLevel;
+        }
+
+        return unlockedTowerLevels;
     }
 
     private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks)

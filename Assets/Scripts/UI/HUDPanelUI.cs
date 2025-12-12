@@ -28,6 +28,8 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private TowerButton mortarButton;
     [SerializeField] private TowerButton flamethrowerButton;
 
+    private Dictionary<TowerTypes, int> unlockedTowerLevels = new();
+
     [Header("Skill Buttons")]
     [SerializeField] private SkillButton wallButton;
     [SerializeField] private SkillButton oilSpillButton;
@@ -84,9 +86,15 @@ public class HUDPanelUI : MonoBehaviour
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
         operationData = OperationDataDontDestroy.GetOrReadDev();
-        // TODO kili you can use the usagePerAbility dictionary, it also contains airship things (they are set to const 1)
+        // TODO kili you can use the usagePerAbility dictionary, it also contains airship things, sudden death and mark enemy (their usage counts are not 0)
         usagePerAbility = ModifiersCalculator.UsagePerAbility(operationData.Modifiers);
         activeFactionSpecificSkills = operationData.GetFactionSpecificSkills();
+
+
+        // TODO kili I do not know if this is in right spot, but here is how you get which towers (and to which upgrade level) are enabled
+        //      Based on if they are enabled (unlockedTowerLevels.ContainsKey) disable tower buttons, and then I guess in tower overlay
+        //      enable upgrade button based on the allowed level.
+        unlockedTowerLevels = ModifiersCalculator.UnlockedTowerLevels(operationData.Modifiers);
 
         airshipAirstrikeButton = airshipAirstrikeSkill.GetComponentInChildren<SkillButton>();
         airshipFreezeZoneButton = airshipFreezeZoneSkill.GetComponentInChildren<SkillButton>();

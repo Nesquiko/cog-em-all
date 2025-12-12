@@ -299,7 +299,7 @@ MonoBehaviour:
         description: Designate a single enemy for judgment, marking it so that all
           towers prioritize and focus their fire on that target until it is destroyed.
         type: 2
-        toUnlock: 3
+        toUnlock: 6
     - rid: 7348732237428031566
       type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -424,7 +424,7 @@ MonoBehaviour:
           income is boosted to 150%, but a single enemy damaging the base will immediately
           destroy it and you will fail the operation."
         type: 2
-        toUnlock: 4
+        toUnlock: 7
     - rid: 7348732237428031582
       type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
       data:
@@ -781,5 +781,5 @@ MonoBehaviour:
         modifiedAttribute: 8
         changeType: 0
         change: 1
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 2
