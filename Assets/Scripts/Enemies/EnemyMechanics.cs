@@ -39,6 +39,8 @@ public interface IEnemy
     bool Marked { get; }
     void Mark();
     void Unmark();
+
+    void DEV_MakeUnkillable();
 }
 
 public enum EffectType

@@ -13,7 +13,8 @@ public class OperationDataDontDestroy : MonoBehaviour
     [SerializeReference] private List<Modifier> modifiers = new();
     public List<Modifier> Modifiers => modifiers;
 
-    public HashSet<FactionSpecificSkill> GetFactionSpecificSkills() => new() { // TODO: luky
+    public HashSet<FactionSpecificSkill> GetFactionSpecificSkills() => new() {
+        // TODO: luky
         FactionSpecificSkill.AirshipAirstrike,
         FactionSpecificSkill.AirshipFreezeZone,
         FactionSpecificSkill.AirshipDisableZone,
@@ -202,19 +203,24 @@ public class OperationDataDontDestroyEditor : Editor
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Current Modifiers", EditorStyles.boldLabel);
 
-        var modifiers = data.Modifiers;
-        if (modifiers == null)
-        {
-            return;
-        }
-
-        for (var i = 0; i < modifiers.Count; i++)
+        for (var i = 0; i < data.Modifiers.Count; i++)
         {
             EditorGUILayout.BeginHorizontal();
 
-            var modifier = modifiers[i];
-            var label = modifier != null ? modifier.slug : "<null>";
-            EditorGUILayout.LabelField(label, GUILayout.MinWidth(100));
+            var modifier = data.Modifiers[i];
+
+            var slug = string.IsNullOrWhiteSpace(modifier.slug) ? "<no-slug>" : modifier.slug;
+            var modName = string.IsNullOrWhiteSpace(modifier.name) ? "<no-name>" : modifier.name;
+
+            EditorGUILayout.BeginVertical(GUILayout.MinWidth(100));
+            EditorGUILayout.LabelField($"{slug} — {modName}", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(
+                string.IsNullOrWhiteSpace(modifier.description)
+                    ? "<no-description>"
+                    : modifier.description,
+                EditorStyles.wordWrappedMiniLabel
+            );
+            EditorGUILayout.EndVertical();
 
             if (modifier is IRankedModifier ranked)
             {
@@ -224,6 +230,7 @@ public class OperationDataDontDestroyEditor : Editor
                 // small "Ranks" label + compact int field
                 EditorGUILayout.LabelField("Ranks", GUILayout.Width(40));
                 int newRanks = EditorGUILayout.IntField(current, GUILayout.Width(40));
+                EditorGUILayout.LabelField($"/ {max}", GUILayout.Width(35));
 
                 newRanks = Mathf.Clamp(newRanks, 0, max);
                 if (newRanks != current)
@@ -240,7 +247,7 @@ public class OperationDataDontDestroyEditor : Editor
             if (GUILayout.Button("Remove", GUILayout.Width(60)))
             {
                 Undo.RecordObject(data, "Remove Modifier");
-                modifiers.RemoveAt(i);
+                data.Modifiers.RemoveAt(i);
                 EditorUtility.SetDirty(data);
                 break;
             }
@@ -258,7 +265,7 @@ public class OperationDataDontDestroyEditor : Editor
         string label,
         string[] options,
         ref int index,
-        System.Collections.Generic.List<Modifier> sourceList,
+        List<Modifier> sourceList,
         OperationDataDontDestroy data
     )
     {
@@ -296,6 +303,10 @@ public class OperationDataDontDestroyEditor : Editor
                 else if (!data.Modifiers.Contains(modifier))
                 {
                     Undo.RecordObject(data, "Add Modifier");
+                    if (modifier is IRankedModifier ranked)
+                    {
+                        ranked.SetCurrentRanks(1);
+                    }
                     data.Modifiers.Add(modifier);
                     EditorUtility.SetDirty(data);
                 }

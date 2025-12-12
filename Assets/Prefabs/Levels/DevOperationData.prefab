@@ -48,4 +48,18 @@ MonoBehaviour:
   modifiers: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7348732483175710792
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Chain Reach
+        slug: chain_reach
+        description: Tesla Tower beam chain length by +1 per rank, allowing its lightning
+          to jump to more additional enemies.
+        type: 0
+        applyTo: 1
+        modifiedAttribute: 6
+        changeType: 0
+        change: 1
+        currentRanks: 1
+        maxRanks: 3

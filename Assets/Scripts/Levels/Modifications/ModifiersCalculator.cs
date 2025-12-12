@@ -56,14 +56,14 @@ public static class ModifiersCalculator
                     towerDamagePipeline.Add((tower, baseDmg) =>
                     {
                         if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return baseDmg;
-                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseDmg);
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseDmg, towerMod.currentRanks);
                     });
                     break;
                 case TowerAttribute.CritChange:
                     towerCritChancePipeline.Add((tower, baseCritChance) =>
                     {
                         if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return baseCritChance;
-                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseCritChance);
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseCritChance, towerMod.currentRanks);
                     });
                     break;
 
@@ -98,7 +98,10 @@ public static class ModifiersCalculator
             if (m is EconomyModifier ecoMod)
             {
                 if (ecoMod.category != EconomyAttributes.PerEnemyKillGears) continue;
-                enemyRewardPipeline.Add((reward) => { return Mathf.FloorToInt(ApplyChangeType(ecoMod.changeType, ecoMod.change, reward)); });
+                enemyRewardPipeline.Add((reward) =>
+                {
+                    return Mathf.FloorToInt(ApplyChangeType(ecoMod.changeType, ecoMod.change, reward, 1));
+                });
                 continue;
             }
 
@@ -110,7 +113,7 @@ public static class ModifiersCalculator
                     enemySpeedPipeline.Add((enemy, speed) =>
                     {
                         if (!EnemyModifier.AppliesTo(enemyMod, enemy.Type)) return speed;
-                        return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed);
+                        return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed, 1);
                     });
                     break;
                 default:
@@ -155,10 +158,10 @@ public static class ModifiersCalculator
             switch (ecoMod.category)
             {
                 case EconomyAttributes.PassiveGearsAmount:
-                    passiveAmount = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveAmount);
+                    passiveAmount = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveAmount, 1);
                     break;
                 case EconomyAttributes.PassiveGearsTick:
-                    passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick);
+                    passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick, 1);
                     break;
             }
         }
@@ -169,19 +172,15 @@ public static class ModifiersCalculator
         );
     }
 
-    public static float ApplyChangeType(ChangeType changeType, float change, float value)
+    private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks)
     {
-        switch (changeType)
+        return changeType switch
         {
-            case ChangeType.Add:
-                return value + change;
-            case ChangeType.Mult:
-                return value * change;
-            case ChangeType.Replace:
-                return change;
-            default:
-                throw new ArgumentException($"Unsupported changeType '{nameof(changeType)}' in ApplyChangeType.");
-        }
+            ChangeType.Add => value + ranks * change,
+            ChangeType.Mult => value * Mathf.Pow(change, ranks),
+            ChangeType.Replace => change,
+            _ => throw new ArgumentException($"Unsupported changeType '{nameof(changeType)}' in ApplyChangeType."),
+        };
     }
 
 }

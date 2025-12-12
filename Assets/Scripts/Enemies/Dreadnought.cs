@@ -91,6 +91,11 @@ public class Dreadnought : MonoBehaviour, IEnemy
         };
     }
 
+    public void DEV_MakeUnkillable()
+    {
+        behaviour.DEV_isUnkillable = true;
+    }
+
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
         if (shieldActive)

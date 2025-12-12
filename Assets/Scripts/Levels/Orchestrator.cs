@@ -180,6 +180,10 @@ class Orchestrator : MonoBehaviour
     private void OnEnemySpawn(IEnemy spawned, EnemyMods enemyMods)
     {
         spawned.Speed = enemyMods.CalculateEnemyMovementSpeed(spawned, spawned.Speed);
+        if (level.devSettings.unkillableEnemies)
+        {
+            spawned.DEV_MakeUnkillable();
+        }
         enemiesLive += 1;
     }
 

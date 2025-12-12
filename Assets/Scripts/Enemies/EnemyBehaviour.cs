@@ -38,6 +38,7 @@ public class EnemyBehaviour : MonoBehaviour
     public float HealthPoints => healthPoints;
     public float HealthPointsNormalized => healthPoints / maxHealthPoints;
     public bool IsFullHealth => Mathf.Approximately(healthPoints, maxHealthPoints);
+    public bool DEV_isUnkillable = false;
     public event Action OnDeath;
 
     [Header("Attack Animation")]
@@ -125,7 +126,10 @@ public class EnemyBehaviour : MonoBehaviour
             totalMultiplier += shredStacks * EnemyStatusEffect.ArmorShred.damageMultiplierPerStack;
         }
 
-        healthPoints -= damage * totalMultiplier;
+        if (!DEV_isUnkillable)
+        {
+            healthPoints -= damage * totalMultiplier;
+        }
         if (!healthBar.ActiveSelf) healthBar.SetActive(true);
 
         damagePopupManager.ShowPopup(transform.position, damage, isCritical);
@@ -280,7 +284,7 @@ public class EnemyBehaviour : MonoBehaviour
                 buffsDisabled = true;
                 storedBuffs.Clear();
                 List<EffectType> toRemove = new();
-                foreach (var(t, _) in activeEffects)
+                foreach (var (t, _) in activeEffects)
                     if (!EnemyStatusEffect.IsNegative(t))
                         toRemove.Add(t);
                 foreach (var t in toRemove)

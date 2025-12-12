@@ -151,6 +151,11 @@ public class Bomber : MonoBehaviour, IEnemy
         };
     }
 
+    public void DEV_MakeUnkillable()
+    {
+        behaviour.DEV_isUnkillable = true;
+    }
+
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
         behaviour.TakeDamage(damage, sourceType, isCritical, effect);

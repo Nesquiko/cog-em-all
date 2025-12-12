@@ -1,13 +1,16 @@
 using UnityEngine.Splines;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-[System.Serializable]
+[Serializable]
 public class SerializableLevel
 {
     public PlayerResources playerResources;
-    public List<Wave> waves = new List<Wave>();
-    public List<Spline> pathSplines = new List<Spline>();
+    public List<Wave> waves = new();
+    public List<Spline> pathSplines = new();
+
+    public DevSettings devSettings;
 
     public static string ToJson(SerializableLevel lvl)
     {
@@ -20,7 +23,7 @@ public class SerializableLevel
     }
 }
 
-[System.Serializable]
+[Serializable]
 public class Wave
 {
     /// <summary> 
@@ -39,7 +42,7 @@ public class Wave
     public List<SpawnGroup> spawnGroups;
 }
 
-[System.Serializable]
+[Serializable]
 public class SpawnGroup
 {
     /// <summary> 
@@ -63,7 +66,7 @@ public class SpawnGroup
     public float pauseAfterLastSpawnSeconds = 0f;
 }
 
-[System.Serializable]
+[Serializable]
 public class PatternEntry
 {
     /// <summary> 
@@ -82,7 +85,7 @@ public class PatternEntry
     public float spawnRateSeconds = 0f;
 }
 
-[System.Serializable]
+[Serializable]
 public class PlayerResources
 {
 
@@ -90,4 +93,11 @@ public class PlayerResources
     /// intial number of gears at the start of a level
     /// </summary> 
     public int initialGears = 0;
+}
+
+
+[Serializable]
+public class DevSettings
+{
+    public bool unkillableEnemies;
 }

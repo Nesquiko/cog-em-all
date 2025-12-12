@@ -34,7 +34,7 @@ public class Bandit : MonoBehaviour, IEnemy
     public Transform Transform => transform;
 
     public bool Marked
-    {    
+    {
         get => behaviour.Marked;
     }
 
@@ -122,6 +122,11 @@ public class Bandit : MonoBehaviour, IEnemy
             onDeath(this);
             OnDeath?.Invoke(this);
         };
+    }
+
+    public void DEV_MakeUnkillable()
+    {
+        behaviour.DEV_isUnkillable = true;
     }
 
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)

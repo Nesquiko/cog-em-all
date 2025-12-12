@@ -172,6 +172,10 @@ public class LevelEditorInspector : Editor
         DrawPlayerResourcesEditor();
 
         GUILayout.Space(10);
+        EditorGUILayout.LabelField("Dev Settings", EditorStyles.boldLabel);
+        DrawDevSettingsEditor();
+
+        GUILayout.Space(10);
         EditorGUILayout.LabelField("Waves Editor", EditorStyles.boldLabel);
         EditorGUILayout.Space(3);
 
@@ -340,8 +344,7 @@ public class LevelEditorInspector : Editor
                 group.pauseAfterLastSpawnSeconds = EditorGUILayout.FloatField("Pause After Group (s)", Mathf.Max(0f, group.pauseAfterLastSpawnSeconds));
 
                 // Pattern
-                if (group.pattern == null)
-                    group.pattern = new List<PatternEntry>();
+                group.pattern ??= new List<PatternEntry>();
 
                 EditorGUILayout.Space(2);
                 EditorGUILayout.LabelField("Pattern", EditorStyles.miniBoldLabel);
@@ -495,6 +498,41 @@ public class LevelEditorInspector : Editor
         if (!Mathf.Approximately(newInitialGears, temp.playerResources.initialGears))
         {
             temp.playerResources.initialGears = newInitialGears;
+
+            string afterJson = SerializableLevel.ToJson(temp);
+            if (afterJson != beforeJson)
+            {
+                level.LoadFromJson(afterJson);
+                EditorUtility.SetDirty(level);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
+                    UnityEngine.SceneManagement.SceneManager.GetActiveScene()
+                );
+            }
+        }
+
+        EditorGUILayout.EndVertical();
+    }
+
+    private void DrawDevSettingsEditor()
+    {
+        string beforeJson = level.ToJson();
+        SerializableLevel temp = SerializableLevel.FromJson(beforeJson) ?? new SerializableLevel();
+
+        temp.devSettings ??= new DevSettings();
+
+        EditorGUILayout.BeginVertical("box");
+
+        bool newUnkillable = EditorGUILayout.Toggle(
+            new GUIContent(
+                "Unkillable Enemies",
+                "If enabled, enemies should not be killable (dev/testing)."
+            ),
+            temp.devSettings.unkillableEnemies
+        );
+
+        if (newUnkillable != temp.devSettings.unkillableEnemies)
+        {
+            temp.devSettings.unkillableEnemies = newUnkillable;
 
             string afterJson = SerializableLevel.ToJson(temp);
             if (afterJson != beforeJson)
