@@ -105,6 +105,7 @@ public static class ModifiersCalculator
                     break;
 
                 case TowerAttribute.ChainLength:
+                case TowerAttribute.MaxAppliedStacks:
                     break;
 
                 default:
@@ -132,6 +133,20 @@ public static class ModifiersCalculator
         }
 
         tesla.SetAdditionalChainReach(additionalChains);
+    }
+
+    public static void ModifyGatlin(GatlingTower gatling, List<Modifier> modifiers)
+    {
+        var additionalRendingStacks = 0;
+        foreach (var m in modifiers)
+        {
+            if (m is not TowerModifier towerMod) continue;
+            else if (towerMod.modifiedAttribute != TowerAttribute.MaxAppliedStacks) continue;
+
+            additionalRendingStacks += towerMod.currentRanks * (int)towerMod.change;
+        }
+
+        gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
     }
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)

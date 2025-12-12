@@ -39,7 +39,11 @@ public class Bullet : MonoBehaviour, IDamageSource
     {
         if (other.TryGetComponent<IEnemy>(out var enemy))
         {
-            enemy.TakeDamage(damage, Type(), crit, effect: owner.SlowOnHitActive ? EnemyStatusEffect.Slow : null);
+            EnemyStatusEffect effect = null;
+            if (owner.SlowOnHitActive) effect = EnemyStatusEffect.Slow;
+            else if (owner.ArmorRendingActive) effect = EnemyStatusEffect.ArmorShred(owner.MaxArmorRendingStacks);
+
+            enemy.TakeDamage(damage, Type(), crit, effect);
             Destroy(gameObject);
         }
 

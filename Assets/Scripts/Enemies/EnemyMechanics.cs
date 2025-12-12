@@ -187,7 +187,9 @@ public class EnemyStatusEffect
         negative: true
     );
 
-    public static EnemyStatusEffect ArmorShred => new(
+    public const int ArmorShredDefaultMaxStacks = 2;
+    public const float DamageMultiplerPerStack = .05f;
+    public static EnemyStatusEffect ArmorShred(int maxStacks = ArmorShredDefaultMaxStacks) => new(
         type: EffectType.ArmorShredded,
         duration: 5f,
         tickDamage: 0f,
@@ -195,8 +197,8 @@ public class EnemyStatusEffect
         persistent: false,
         negative: true,
         stackable: true,
-        maxStacks: 2,
-        damageMultiplierPerStack: 0.05f
+        maxStacks: ArmorShredDefaultMaxStacks,
+        damageMultiplierPerStack: DamageMultiplerPerStack
     );
 
     public static EnemyStatusEffect Freeze => new(

@@ -123,7 +123,7 @@ public class EnemyBehaviour : MonoBehaviour
         float totalMultiplier = 1f;
         if (source == DamageSourceType.Bullet && stackCounts.TryGetValue(EffectType.ArmorShredded, out int shredStacks))
         {
-            totalMultiplier += shredStacks * EnemyStatusEffect.ArmorShred.damageMultiplierPerStack;
+            totalMultiplier += shredStacks * EnemyStatusEffect.DamageMultiplerPerStack;
         }
 
         if (!DEV_isUnkillable)

@@ -51,7 +51,12 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private float gearSpinSpeed = 180f;
 
     [Header("Slow on Hit")]
-    [SerializeField] private bool slowOnHitActive = true;
+    [SerializeField] private bool slowOnHitActive = false;
+
+    [Header("Armor rending")]
+    [SerializeField] private bool armorRendingActive = false;
+    [SerializeField] private int maxArmourRendingStacks = EnemyStatusEffect.ArmorShredDefaultMaxStacks;
+    public int MaxArmorRendingStacks => maxArmourRendingStacks;
 
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
@@ -134,6 +139,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public float ManualBulletRange => manualBulletRange;
     public float TowerRange => EffectiveRange(range);
     public bool SlowOnHitActive => slowOnHitActive;
+    public bool ArmorRendingActive => armorRendingActive;
 
     public TowerTypes TowerType() => TowerTypes.Gatling;
 
@@ -650,5 +656,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
         enemiesInRange.Clear();
+    }
+
+    public void SetMaxRendingStacks(int max)
+    {
+        maxArmourRendingStacks = max;
     }
 }
