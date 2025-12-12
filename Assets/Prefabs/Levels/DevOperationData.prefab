@@ -49,17 +49,16 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 7348732483175710792
+    - rid: 7348732483175710793
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
       data:
-        name: Chain Reach
-        slug: chain_reach
-        description: Tesla Tower beam chain length by +1 per rank, allowing its lightning
-          to jump to more additional enemies.
+        name: Rapid Loading
+        slug: rapid_loading
+        description: Mortar Tower attack rate increased by 10% per rank.
         type: 0
-        applyTo: 1
-        modifiedAttribute: 6
-        changeType: 0
-        change: 1
-        currentRanks: 3
-        maxRanks: 3
+        applyTo: 2
+        modifiedAttribute: 1
+        changeType: 1
+        change: 1.1
+        currentRanks: 2
+        maxRanks: 2

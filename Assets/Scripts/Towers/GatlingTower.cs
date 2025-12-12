@@ -126,6 +126,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseBulletDamage;
+    private Func<float, float> CalculateFireRate;
 
     public float BulletLifetime => bulletLifetime;
     public float BulletSpeed => bulletSpeed;
@@ -240,7 +241,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
                 bulletDamage = baseBulletDamage * dynamicMultiplier;
                 critChance = Mathf.Clamp01(baseCritChance * dynamicMultiplier);
                 critMultiplier = baseCritMultiplier * dynamicMultiplier;
-                fireRate = baseFireRate * dynamicMultiplier;
+                fireRate = CalculateFireRate(baseFireRate) * dynamicMultiplier;
                 range = baseRange * dynamicMultiplier;
 
                 capsuleCollider.radius = EffectiveRange(range);
@@ -274,7 +275,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bulletDamage = baseBulletDamage;
         critChance = baseCritChance;
         critMultiplier = baseCritMultiplier;
-        fireRate = baseFireRate;
+        fireRate = CalculateFireRate(baseFireRate);
         range = baseRange;
 
         capsuleCollider.radius = EffectiveRange(range);
@@ -583,7 +584,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bulletDamage = data.bulletDamage;
         bulletSpeed = data.bulletSpeed;
         bulletLifetime = data.bulletLifetime;
-        fireRate = data.fireRate;
+        fireRate = CalculateFireRate(data.fireRate);
         range = data.range;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
@@ -607,6 +608,13 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         CalculateBaseBulletDamage = f;
     }
 
+    public void SetFireRateCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateFireRate = f;
+        fireRate = CalculateFireRate(fireRate);
+    }
+
     public void ActivateStim()
     {
         if (stimActive || stimCoolingDown) return;
@@ -624,7 +632,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bulletDamage *= stimMultiplier;
         critChance *= Mathf.Clamp01(critChance * stimMultiplier);
         critMultiplier *= stimMultiplier;
-        fireRate *= stimMultiplier;
+        fireRate = CalculateFireRate(fireRate) * stimMultiplier;
         range *= stimMultiplier;
 
         capsuleCollider.radius = EffectiveRange(range);

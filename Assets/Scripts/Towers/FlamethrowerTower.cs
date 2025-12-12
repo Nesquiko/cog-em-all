@@ -293,7 +293,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         isSweeping = true;
         sweepTime = 0f;
         sweepBaseYaw = flamethrowerHead.transform.eulerAngles.y;
-    
+
         if (sweepReturnRoutine != null)
         {
             StopCoroutine(sweepReturnRoutine);
@@ -494,6 +494,10 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         Assert.IsNotNull(f);
         CalculateBaseFlameDamagePerPulse = f;
+    }
+    public void SetFireRateCalculation(Func<float, float> f)
+    {
+        Debug.LogWarning("flamethrower doesn't have fire rate");
     }
 
     public void ActivateStim()

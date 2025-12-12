@@ -74,6 +74,7 @@ class Orchestrator : MonoBehaviour
     private void OnPlaceTower(ITower tower)
     {
         tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
+        tower.SetFireRateCalculation((fireRate) => towerMods.CalculateTowerFireRate(tower, fireRate));
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
         SpendGears(towerData.Cost);
 

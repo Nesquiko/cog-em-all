@@ -31,10 +31,15 @@ public struct EnemyMods
 public struct TowerMods
 {
     public readonly Func<ITower, float, float> CalculateTowerProjectileDamage;
+    public readonly Func<ITower, float, float> CalculateTowerFireRate;
 
-    public TowerMods(Func<ITower, float, float> towerProjectileDamageCalculation)
+    public TowerMods(
+        Func<ITower, float, float> towerProjectileDamageCalculation,
+        Func<ITower, float, float> towerFireRateCalculation
+    )
     {
         CalculateTowerProjectileDamage = towerProjectileDamageCalculation;
+        CalculateTowerFireRate = towerFireRateCalculation;
     }
 }
 
@@ -45,8 +50,8 @@ public static class ModifiersCalculator
     {
         var towerDamagePipeline = new List<Func<ITower, float, float>>();
         var towerCritChancePipeline = new List<Func<ITower, float, float>>();
+        var towerFireRatePipeline = new List<Func<ITower, float, float>>();
 
-        // var teslaAdditionalChains = new List<Func<TeslaTower, int, int>>();
 
         foreach (var m in modifiers)
         {
@@ -68,6 +73,13 @@ public static class ModifiersCalculator
                         return ApplyChangeType(towerMod.changeType, towerMod.change, baseCritChance, towerMod.currentRanks);
                     });
                     break;
+                case TowerAttribute.FireRate:
+                    towerFireRatePipeline.Add((tower, baseFireRate) =>
+                    {
+                        if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return baseFireRate;
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseFireRate, towerMod.currentRanks);
+                    });
+                    break;
                 case TowerAttribute.ChainLength:
                     break;
 
@@ -87,7 +99,18 @@ public static class ModifiersCalculator
         if (towerDamagePipeline.Count == 0)
             baseDamagePipeline = (tower, speed) => speed;
 
-        return new TowerMods(baseDamagePipeline);
+        Func<ITower, float, float> fireRatePipeline = (enemy, baseDmg) =>
+        {
+            float acc = baseDmg;
+            for (int i = 0; i < towerFireRatePipeline.Count; i++)
+                acc = towerFireRatePipeline[i](enemy, acc);
+            return acc;
+        };
+
+        if (towerFireRatePipeline.Count == 0)
+            fireRatePipeline = (tower, fireRate) => fireRate;
+
+        return new TowerMods(baseDamagePipeline, fireRatePipeline);
 
     }
 
@@ -104,6 +127,20 @@ public static class ModifiersCalculator
 
         tesla.SetAdditionalChainReach(additionalChains);
     }
+
+    // public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
+    // {
+    //     var additionalChains = 0;
+    //     foreach (var m in modifiers)
+    //     {
+    //         if (m is not TowerModifier towerMod) continue;
+    //         else if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) continue;
+
+    //         additionalChains += towerMod.currentRanks * (int)towerMod.change;
+    //     }
+
+    //     tesla.SetAdditionalChainReach(additionalChains);
+    // }
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)
     {

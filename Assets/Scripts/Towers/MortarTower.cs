@@ -103,6 +103,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseShellDamage;
+    private Func<float, float> CalculateFireRate;
 
     public float ShellSplashRadius => shellSplashRadius;
     public float ShellLifetime => shellLifetime;
@@ -234,7 +235,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         shellSplashRadius = baseShellSplashRadius;
         critChance = baseCritChance;
         critMultiplier = baseCritMultiplier;
-        fireRate = baseFireRate;
+        fireRate = CalculateFireRate(baseFireRate);
         maxRange = baseMaxRange;
 
         outerCollider.radius = EffectiveRange(maxRange);
@@ -460,7 +461,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         shellDamage = data.shellDamage;
         shellSplashRadius = data.shellSplashRadius;
         shellLifetime = data.shellLifetime;
-        fireRate = data.fireRate;
+        fireRate = CalculateFireRate(data.fireRate);
         minRange = data.minRange;
         maxRange = data.maxRange;
         critChance = data.critChance;
@@ -479,6 +480,13 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     {
         Assert.IsNotNull(f);
         CalculateBaseShellDamage = f;
+    }
+
+    public void SetFireRateCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateFireRate = f;
+        fireRate = CalculateFireRate(fireRate);
     }
 
     public void ActivateStim()
@@ -500,7 +508,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         shellSplashRadius *= stimMultiplier;
         critChance *= Mathf.Clamp01(critChance * stimMultiplier);
         critMultiplier *= stimMultiplier;
-        fireRate *= stimMultiplier;
+        fireRate = CalculateFireRate(fireRate) * stimMultiplier;
         maxRange *= stimMultiplier;
 
         outerCollider.radius = EffectiveRange(maxRange);

@@ -703,7 +703,7 @@ MonoBehaviour:
         modifiedAttribute: 1
         changeType: 1
         change: 1.1
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 2
     - rid: 7348732250137296967
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}

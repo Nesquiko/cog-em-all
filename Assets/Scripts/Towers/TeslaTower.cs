@@ -96,6 +96,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseBeamDamage;
+    private Func<float, float> CalculateFireRate;
 
     public float BeamSpeed => beamSpeed;
     public float BeamChainRadius => beamChainRadius;
@@ -431,7 +432,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beamChainRadius = data.beamChainRadius;
         beamChains = data.beamMaxChains;
         beamStayTimeOnHit = data.beamStayTimeOnHit;
-        fireRate = data.fireRate;
+        fireRate = CalculateFireRate(data.fireRate);
         range = data.range;
         critChance = data.critChance;
         critMultiplier = data.critMultiplier;
@@ -444,6 +445,13 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     {
         Assert.IsNotNull(f);
         CalculateBaseBeamDamage = f;
+    }
+
+    public void SetFireRateCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateFireRate = f;
+        fireRate = CalculateFireRate(fireRate);
     }
 
     public void ActivateStim()
@@ -465,7 +473,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beamChainRadius *= stimMultiplier;
         critChance *= Mathf.Clamp01(critChance * stimMultiplier);
         critMultiplier *= stimMultiplier;
-        fireRate *= stimMultiplier;
+        fireRate = CalculateFireRate(fireRate) * stimMultiplier;
         range *= stimMultiplier;
 
         capsuleCollider.radius = EffectiveRange(range);
