@@ -12,6 +12,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private float flameDamagePerPulse = 20f;
     [SerializeField] private float flamePulseInterval = 0.25f;
     [SerializeField] private float flameDuration = 3f;
+    private Func<float, float> CalculateFlameDuration;
     [SerializeField] private float range = 10f;
     [SerializeField] private float flameAngle = 60f;
     [SerializeField] private float cooldownDuration = 2f;
@@ -74,7 +75,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public float DamagePerPulse => flameDamagePerPulse;
     public float FlamePulseInterval => flamePulseInterval;
-    public float FlameDuration => flameDuration;
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
     public bool BurnOnHitActive => burnOnHitActive;
@@ -260,7 +260,13 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.Initialize(this, EffectiveRange(range));
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
-        StartCoroutine(CooldownRoutine(flameDuration));
+        StartCoroutine(CooldownRoutine(CalculateFlameDuration(flameDuration)));
+    }
+
+    public void SetFlameDurationCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateFlameDuration = f;
     }
 
     public List<IEnemy> GetCurrentEnemiesInRange()
@@ -497,7 +503,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     }
     public void SetFireRateCalculation(Func<float, float> f)
     {
-        Debug.LogWarning("flamethrower doesn't have fire rate");
+        // flamethrower doesn't have fire rate
     }
 
     public void ActivateStim()

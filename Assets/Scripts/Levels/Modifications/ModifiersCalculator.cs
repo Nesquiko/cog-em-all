@@ -32,14 +32,17 @@ public struct TowerMods
 {
     public readonly Func<ITower, float, float> CalculateTowerProjectileDamage;
     public readonly Func<ITower, float, float> CalculateTowerFireRate;
+    public readonly Func<FlamethrowerTower, float, float> CalculateFlamethrowerFireDuration;
 
     public TowerMods(
         Func<ITower, float, float> towerProjectileDamageCalculation,
-        Func<ITower, float, float> towerFireRateCalculation
+        Func<ITower, float, float> towerFireRateCalculation,
+        Func<FlamethrowerTower, float, float> flamethrowerFireDuration
     )
     {
         CalculateTowerProjectileDamage = towerProjectileDamageCalculation;
         CalculateTowerFireRate = towerFireRateCalculation;
+        CalculateFlamethrowerFireDuration = flamethrowerFireDuration;
     }
 }
 
@@ -51,6 +54,8 @@ public static class ModifiersCalculator
         var towerDamagePipeline = new List<Func<ITower, float, float>>();
         var towerCritChancePipeline = new List<Func<ITower, float, float>>();
         var towerFireRatePipeline = new List<Func<ITower, float, float>>();
+
+        var flamethrowerFireDurationPipeline = new List<Func<FlamethrowerTower, float, float>>();
 
 
         foreach (var m in modifiers)
@@ -80,6 +85,14 @@ public static class ModifiersCalculator
                         return ApplyChangeType(towerMod.changeType, towerMod.change, baseFireRate, towerMod.currentRanks);
                     });
                     break;
+                case TowerAttribute.FireTime:
+                    flamethrowerFireDurationPipeline.Add((flamethrower, baseFireDuration) =>
+                    {
+                        if (!TowerModifier.AppliesTo(towerMod, TowerTypes.Flamethrower)) return baseFireDuration;
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, baseFireDuration, towerMod.currentRanks);
+                    });
+                    break;
+
                 case TowerAttribute.ChainLength:
                     break;
 
@@ -88,30 +101,11 @@ public static class ModifiersCalculator
             }
         }
 
-        Func<ITower, float, float> baseDamagePipeline = (enemy, baseDmg) =>
-        {
-            float acc = baseDmg;
-            for (int i = 0; i < towerDamagePipeline.Count; i++)
-                acc = towerDamagePipeline[i](enemy, acc);
-            return acc;
-        };
+        Func<ITower, float, float> baseDamagePipeline = Compose(towerDamagePipeline);
+        Func<ITower, float, float> fireRatePipeline = Compose(towerFireRatePipeline);
+        Func<FlamethrowerTower, float, float> flamethrowerFireDuration = Compose(flamethrowerFireDurationPipeline);
 
-        if (towerDamagePipeline.Count == 0)
-            baseDamagePipeline = (tower, speed) => speed;
-
-        Func<ITower, float, float> fireRatePipeline = (enemy, baseDmg) =>
-        {
-            float acc = baseDmg;
-            for (int i = 0; i < towerFireRatePipeline.Count; i++)
-                acc = towerFireRatePipeline[i](enemy, acc);
-            return acc;
-        };
-
-        if (towerFireRatePipeline.Count == 0)
-            fireRatePipeline = (tower, fireRate) => fireRate;
-
-        return new TowerMods(baseDamagePipeline, fireRatePipeline);
-
+        return new TowerMods(baseDamagePipeline, fireRatePipeline, flamethrowerFireDuration);
     }
 
     public static void ModifyTesla(TeslaTower tesla, List<Modifier> modifiers)
@@ -127,20 +121,6 @@ public static class ModifiersCalculator
 
         tesla.SetAdditionalChainReach(additionalChains);
     }
-
-    // public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
-    // {
-    //     var additionalChains = 0;
-    //     foreach (var m in modifiers)
-    //     {
-    //         if (m is not TowerModifier towerMod) continue;
-    //         else if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) continue;
-
-    //         additionalChains += towerMod.currentRanks * (int)towerMod.change;
-    //     }
-
-    //     tesla.SetAdditionalChainReach(additionalChains);
-    // }
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)
     {
@@ -238,4 +218,19 @@ public static class ModifiersCalculator
         };
     }
 
+    public static Func<TCtx, TValue, TValue> Compose<TCtx, TValue>(
+       IReadOnlyList<Func<TCtx, TValue, TValue>> steps
+   )
+    {
+        if (steps == null || steps.Count == 0)
+            return static (_, x) => x;
+
+        return (ctx, start) =>
+        {
+            var acc = start;
+            for (var i = 0; i < steps.Count; i++)
+                acc = steps[i](ctx, acc);
+            return acc;
+        };
+    }
 }

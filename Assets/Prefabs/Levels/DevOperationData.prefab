@@ -48,17 +48,4 @@ MonoBehaviour:
   modifiers: []
   references:
     version: 2
-    RefIds:
-    - rid: 7348732483175710793
-      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
-      data:
-        name: Rapid Loading
-        slug: rapid_loading
-        description: Mortar Tower attack rate increased by 10% per rank.
-        type: 0
-        applyTo: 2
-        modifiedAttribute: 1
-        changeType: 1
-        change: 1.1
-        currentRanks: 2
-        maxRanks: 2
+    RefIds: []

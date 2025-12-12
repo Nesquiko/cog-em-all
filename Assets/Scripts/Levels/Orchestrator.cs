@@ -83,6 +83,9 @@ class Orchestrator : MonoBehaviour
             case TeslaTower tesla:
                 ModifiersCalculator.ModifyTesla(tesla, modifiers);
                 break;
+            case FlamethrowerTower flamethrower:
+                flamethrower.SetFlameDurationCalculation((fireDuration) => towerMods.CalculateFlamethrowerFireDuration(flamethrower, fireDuration));
+                break;
         }
     }
 
