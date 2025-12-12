@@ -98,7 +98,7 @@ MonoBehaviour:
         modifiedAttribute: 0
         changeType: 1
         change: 1.1
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 1
     - rid: 2945730877504618564
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
@@ -112,8 +112,8 @@ MonoBehaviour:
         applyTo: -1
         modifiedAttribute: 3
         changeType: 3
-        change: 2
-        currentRanks: 0
+        change: 0.02
+        currentRanks: 1
         maxRanks: 1
     - rid: 2945730877504618565
       type: {class: EconomyModifier, ns: , asm: Assembly-CSharp}
@@ -673,10 +673,10 @@ MonoBehaviour:
         description: ' Gatling Tower attack rate increased by 10% per rank.'
         type: 0
         applyTo: 0
-        modifiedAttribute: 0
+        modifiedAttribute: 1
         changeType: 1
         change: 1.1
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 2
     - rid: 7348732250137296965
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}

@@ -156,7 +156,7 @@ MonoBehaviour:
   bulletLifetime: 3
   fireRate: 6
   range: 50
-  critChance: 0.15
+  critChance: 0.05
   critMultiplier: 2
   bulletPrefab: {fileID: 8737179034312321847, guid: 6c48efdf8227d8043acb3c2834df7dba, type: 3}
   gatlingHead: {fileID: 7919098233082295474}
@@ -182,6 +182,8 @@ MonoBehaviour:
   level3Gear2: {fileID: 9150739086088636786}
   gearSpinSpeed: 180
   slowOnHitActive: 1
+  armorRendingActive: 0
+  maxArmourRendingStacks: 2
   hillRangeSkillActive: 1
   heightRangeMultiplier: 0.05
   baselineHeight: 0

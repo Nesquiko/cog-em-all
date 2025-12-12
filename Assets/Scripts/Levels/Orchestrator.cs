@@ -13,6 +13,8 @@ class Orchestrator : MonoBehaviour
     private int wavesSpawned = 0;
     private int enemiesLive = 0;
 
+    private Dictionary<int, ITower> towers = new();
+
     [SerializeField] private TowerDataCatalog towerDataCatalog;
     [SerializeField] private SkillDataCatalog skillDataCatalog;
 
@@ -73,7 +75,17 @@ class Orchestrator : MonoBehaviour
 
     private void OnPlaceTower(ITower tower)
     {
+
         tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
+
+        towers[tower.InstanceID()] = tower;
+        tower.SetCritChangeCalculation((baseCritChange) => towerMods.CalculateTowerCritChance(tower, baseCritChange));
+        foreach (var other in towers.Values)
+        {
+            other.RecalctCritChance();
+        }
+
+
         tower.SetFireRateCalculation((fireRate) => towerMods.CalculateTowerFireRate(tower, fireRate));
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
         SpendGears(towerData.Cost);
@@ -103,6 +115,7 @@ class Orchestrator : MonoBehaviour
     {
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
         AddGears(towerData.SellPrice);
+        towers.Remove(tower.InstanceID());
     }
 
     private void OnUpgradeTower(int upgradeCost)
@@ -143,7 +156,7 @@ class Orchestrator : MonoBehaviour
         modifiers = operationData.Modifiers;
         var economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
         var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
-        towerMods = ModifiersCalculator.CalculateTowerMods(modifiers);
+        towerMods = ModifiersCalculator.CalculateTowerMods(modifiers, () => towers.Count);
 
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);

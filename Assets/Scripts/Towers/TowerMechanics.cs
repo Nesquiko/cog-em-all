@@ -26,6 +26,7 @@ public enum TowerAttribute
 
 public interface ITower
 {
+    int InstanceID();
     TowerTypes TowerType();
     int CurrentLevel();
     void ApplyUpgrade(TowerDataBase data);
@@ -33,6 +34,8 @@ public interface ITower
     void SetFireRateCalculation(Func<float, float> f);
     void SetDotDuration(float burnDuration);
     void ActivateGainRangeOnHill();
+    void SetCritChangeCalculation(Func<float, float> f);
+    void RecalctCritChance();
 }
 
 public interface ITowerSelectable : ITower

@@ -132,6 +132,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     private Func<float, float> CalculateBaseBulletDamage;
     private Func<float, float> CalculateFireRate;
+    private Func<float, float> CalculateCritChance;
 
     public float BulletLifetime => bulletLifetime;
     public float BulletSpeed => bulletSpeed;
@@ -407,6 +408,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         }
     }
 
+    public int InstanceID() => gameObject.GetInstanceID();
+
     public void Select()
     {
         ShowRange(true);
@@ -592,7 +595,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bulletLifetime = data.bulletLifetime;
         fireRate = CalculateFireRate(data.fireRate);
         range = data.range;
-        critChance = data.critChance;
+        critChance = CalculateCritChance(data.critChance);
         critMultiplier = data.critMultiplier;
 
         capsuleCollider.radius = EffectiveRange(range);
@@ -624,6 +627,18 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public void SetDotDuration(float duration)
     {
         // gatling doesn't have dot
+    }
+
+    public void RecalctCritChance()
+    {
+        critChance = CalculateCritChance(critChance);
+    }
+
+    public void SetCritChangeCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateCritChance = f;
+        critChance = CalculateCritChance(critChance);
     }
 
     public void ActivateStim()

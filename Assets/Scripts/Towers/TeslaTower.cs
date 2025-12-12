@@ -97,6 +97,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private Func<float, float> CalculateBaseBeamDamage;
     private Func<float, float> CalculateFireRate;
+    private Func<float, float> CalculateCritChance;
 
     public float BeamSpeed => beamSpeed;
     public float BeamChainRadius => beamChainRadius;
@@ -315,6 +316,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
             enemy.ApplyEffect(EnemyStatusEffect.Stun);
     }
 
+    public int InstanceID() => gameObject.GetInstanceID();
+
     public void Select()
     {
         ShowRange(true);
@@ -434,7 +437,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beamStayTimeOnHit = data.beamStayTimeOnHit;
         fireRate = CalculateFireRate(data.fireRate);
         range = data.range;
-        critChance = data.critChance;
+        critChance = CalculateCritChance(data.critChance);
         critMultiplier = data.critMultiplier;
 
         capsuleCollider.radius = EffectiveRange(range);
@@ -452,6 +455,18 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         Assert.IsNotNull(f);
         CalculateFireRate = f;
         fireRate = CalculateFireRate(fireRate);
+    }
+
+    public void SetCritChangeCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateCritChance = f;
+        critChance = CalculateCritChance(critChance);
+    }
+
+    public void RecalctCritChance()
+    {
+        critChance = CalculateCritChance(critChance);
     }
 
     public void SetDotDuration(float duration)

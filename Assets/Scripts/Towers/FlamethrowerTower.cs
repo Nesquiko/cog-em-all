@@ -103,6 +103,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private TowerSelectionManager towerSelectionManager;
 
     private Func<float, float> CalculateBaseFlameDamagePerPulse;
+    private Func<float, float> CalculateCritChance;
 
     public TowerTypes TowerType() => TowerTypes.Flamethrower;
 
@@ -398,6 +399,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
+    public int InstanceID() => gameObject.GetInstanceID();
+
     public void Select()
     {
         ShowRange(true);
@@ -497,7 +500,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         range = data.range;
         flameAngle = data.flameAngle;
         cooldownDuration = data.cooldownDuration;
-        critChance = data.critChance;
+        critChance = CalculateCritChance(data.critChance);
         critMultiplier = data.critMultiplier;
 
         activeFlame.UpdateRange(EffectiveRange(range));
@@ -513,6 +516,19 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     {
         // flamethrower doesn't have fire rate
     }
+
+    public void SetCritChangeCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateCritChance = f;
+        critChance = CalculateCritChance(critChance);
+    }
+
+    public void RecalctCritChance()
+    {
+        critChance = CalculateCritChance(critChance);
+    }
+
 
     public void ActivateStim()
     {

@@ -120,11 +120,11 @@ MonoBehaviour:
   beamDamage: 30
   beamSpeed: 1000
   beamChainRadius: 10
-  beamMaxChains: 3
+  beamChains: 1
   beamStayTimeOnHit: 0.05
   fireRate: 1
   range: 50
-  critChance: 0.15
+  critChance: 0.05
   critMultiplier: 2
   beamPrefab: {fileID: 7145407031557086552, guid: a51bdf214f7354c4b82598c4328c147d, type: 3}
   firePoint: {fileID: 3321809094281806116}
@@ -141,6 +141,7 @@ MonoBehaviour:
   executeThreshold: 0.3
   currentLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
+  disableBuffsOnHitActive: 1
   hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
   baselineHeight: 0

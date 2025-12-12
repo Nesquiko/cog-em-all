@@ -105,6 +105,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private Func<float, float> CalculateBaseShellDamage;
     private Func<float, float> CalculateFireRate;
+    private Func<float, float> CalculateCritChance;
 
     public float ShellSplashRadius => shellSplashRadius;
     public float ShellLifetime => shellLifetime;
@@ -405,6 +406,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         barrel.localPosition = barrelDefaultPosition;
     }
 
+    public int InstanceID() => gameObject.GetInstanceID();
+
     public void Select()
     {
         ShowRange(outerRangeProjector, true);
@@ -466,7 +469,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         fireRate = CalculateFireRate(data.fireRate);
         minRange = data.minRange;
         maxRange = data.maxRange;
-        critChance = data.critChance;
+        critChance = CalculateCritChance(data.critChance);
         critMultiplier = data.critMultiplier;
         rotationSpeed = data.rotationSpeed;
         launchSpeed = data.launchSpeed;
@@ -489,6 +492,18 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         Assert.IsNotNull(f);
         CalculateFireRate = f;
         fireRate = CalculateFireRate(fireRate);
+    }
+
+    public void SetCritChangeCalculation(Func<float, float> f)
+    {
+        Assert.IsNotNull(f);
+        CalculateCritChance = f;
+        critChance = CalculateCritChance(critChance);
+    }
+
+    public void RecalctCritChance()
+    {
+        critChance = CalculateCritChance(critChance);
     }
 
     public void SetDotDuration(float duration)
