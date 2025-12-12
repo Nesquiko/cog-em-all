@@ -11,7 +11,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float beamDamage = 30f;
     [SerializeField] private float beamSpeed = 1000;
     [SerializeField] private float beamChainRadius = 10f;
-    [SerializeField] private int beamMaxChains = 3;
+    [SerializeField] private int beamChains = 1;
+    private int additionalBeamChains = 0;
     [SerializeField] private float beamStayTimeOnHit = 0.05f;
     [SerializeField] private float fireRate = 1f;
     [SerializeField] private float range = 30f;
@@ -98,7 +99,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public float BeamSpeed => beamSpeed;
     public float BeamChainRadius => beamChainRadius;
-    public int BeamMaxChains => beamMaxChains;
+    public int BeamMaxChains => beamChains + additionalBeamChains;
     public float BeamStayTimeOnHit => beamStayTimeOnHit;
     public bool ExecuteActive => underPlayerControl && executeActive;
     public float ExecuteThreshold => executeThreshold;
@@ -140,6 +141,11 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         Assert.IsNotNull(rangeProjector);
         ShowRange(false);
         SetRangeProjector(EffectiveRange(range));
+    }
+
+    public void SetAdditionalChainReach(int chainReach)
+    {
+        additionalBeamChains = chainReach;
     }
 
     private float EffectiveRange(float r)
@@ -423,7 +429,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beamDamage = data.beamDamage;
         beamSpeed = data.beamSpeed;
         beamChainRadius = data.beamChainRadius;
-        beamMaxChains = data.beamMaxChains;
+        beamChains = data.beamMaxChains;
         beamStayTimeOnHit = data.beamStayTimeOnHit;
         fireRate = data.fireRate;
         range = data.range;

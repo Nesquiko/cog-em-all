@@ -44,6 +44,7 @@ class Orchestrator : MonoBehaviour
     public int Gears => gears;
 
     private TowerMods towerMods = new();
+    private List<Modifier> modifiers = new();
 
     private void Awake()
     {
@@ -75,6 +76,13 @@ class Orchestrator : MonoBehaviour
         tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
         SpendGears(towerData.Cost);
+
+        switch (tower)
+        {
+            case TeslaTower tesla:
+                ModifiersCalculator.ModifyTesla(tesla, modifiers);
+                break;
+        }
     }
 
     private void OnSellTower(ITower tower)
@@ -118,7 +126,7 @@ class Orchestrator : MonoBehaviour
         this.level = level;
 
         var fact = operationData.Faction;
-        var modifiers = operationData.Modifiers;
+        modifiers = operationData.Modifiers;
         var economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
         var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
         towerMods = ModifiersCalculator.CalculateTowerMods(modifiers);

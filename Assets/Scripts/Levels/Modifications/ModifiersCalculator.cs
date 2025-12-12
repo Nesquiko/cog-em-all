@@ -46,6 +46,8 @@ public static class ModifiersCalculator
         var towerDamagePipeline = new List<Func<ITower, float, float>>();
         var towerCritChancePipeline = new List<Func<ITower, float, float>>();
 
+        // var teslaAdditionalChains = new List<Func<TeslaTower, int, int>>();
+
         foreach (var m in modifiers)
         {
             if (m is not TowerModifier towerMod) continue;
@@ -66,6 +68,8 @@ public static class ModifiersCalculator
                         return ApplyChangeType(towerMod.changeType, towerMod.change, baseCritChance, towerMod.currentRanks);
                     });
                     break;
+                case TowerAttribute.ChainLength:
+                    break;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(towerMod.modifiedAttribute), towerMod.modifiedAttribute, "Unsupported modified attritbute.");
@@ -85,6 +89,20 @@ public static class ModifiersCalculator
 
         return new TowerMods(baseDamagePipeline);
 
+    }
+
+    public static void ModifyTesla(TeslaTower tesla, List<Modifier> modifiers)
+    {
+        var additionalChains = 0;
+        foreach (var m in modifiers)
+        {
+            if (m is not TowerModifier towerMod) continue;
+            else if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) continue;
+
+            additionalChains += towerMod.currentRanks * (int)towerMod.change;
+        }
+
+        tesla.SetAdditionalChainReach(additionalChains);
     }
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)
