@@ -45,21 +45,112 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OperationDataDontDestroy
   faction: 2
-  modifiers: []
+  modifiers:
+  - rid: 7348732483175710797
+  - rid: 7348732483175710798
+  - rid: 7348732483175710799
+  - rid: 7348732483175710800
+  - rid: 7348732483175710801
+  - rid: 7348732483175710802
+  - rid: 7348732483175710803
+  - rid: 7348732483175710804
+  - rid: 7348732483175710805
   references:
     version: 2
     RefIds:
-    - rid: 7348732483175710795
-      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+    - rid: 7348732483175710797
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
       data:
-        name: Persistent Burn
-        slug: persistent_burn
-        description: Increases Flamethrower burn duration by 10% per rank, causing
-          enemies to suffer burning damage for longer after being hit.
-        type: 0
-        applyTo: 3
-        modifiedAttribute: 7
-        changeType: 1
-        change: 1.1
-        currentRanks: 1
-        maxRanks: 2
+        name: Wall
+        slug: wall
+        description: Grants access to the Wall, allowing you to place temporary barricades
+          directly on enemy paths to block their advance and force them to attack
+          and break through before proceeding.
+        type: 2
+        toUnlock: 0
+    - rid: 7348732483175710798
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Oil Spill
+        slug: oil_spill
+        description: Grants access to the Oil Spill, allowing you to coat a section
+          of the path in slick fuel that significantly slows enemies moving through
+          it.
+        type: 2
+        toUnlock: 1
+    - rid: 7348732483175710799
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine
+        slug: mine
+        description: Grants access to the Mine, letting you plant hidden explosives
+          on the path that arm when stepped on, then detonate after a short fuse
+          to damage nearby enemies.
+        type: 2
+        toUnlock: 2
+    - rid: 7348732483175710800
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Additional Barricades
+        slug: additional_barricades
+        description: Increases the maximum number of Wall charges by +2 per rank,
+          allowing you to deploy more barricades on the battlefield during operation.
+        type: 2
+        addTo: 0
+        maxRanks: 3
+        numOfUsages: 2
+        currentRanks: 3
+    - rid: 7348732483175710801
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Reserve Barrels
+        slug: reserve_barrels
+        description: ' Increases the maximum number of Oil Spill charges by +2 per
+          rank, letting you deploy more slowing oil pools across the battlefield.'
+        type: 2
+        addTo: 1
+        maxRanks: 3
+        numOfUsages: 2
+        currentRanks: 3
+    - rid: 7348732483175710802
+      type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine Stockpile
+        slug: mine_stockpile
+        description: ' Increases the maximum number of Mine charges by +2 per rank,
+          allowing you to seed more explosive traps along enemy paths.'
+        type: 2
+        addTo: 2
+        maxRanks: 3
+        numOfUsages: 2
+        currentRanks: 3
+    - rid: 7348732483175710803
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Iron Rain
+        slug: iron_rain
+        description: Call in a Brass Army airship to blanket a targeted area in a
+          devastating bombardment, pelting enemies below with a concentrated storm
+          of explosive ordnance.
+        type: 2
+        unlocks: 1
+    - rid: 7348732483175710804
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Cryo Strike
+        slug: cryo_strike
+        description: An airship deploys a concentrated cryogenic charge that blankets
+          a targeted area in freezing vapor, stunning all enemies caught within the
+          blast.
+        type: 2
+        unlocks: 2
+    - rid: 7348732483175710805
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Nullwave Strike
+        slug: nullwave_strike
+        description: An overpressure airstrike floods a targeted area with disruptive
+          waves that completely disable enemy abilities, but foes emerging from the
+          zone are fully restored.
+        type: 2
+        unlocks: 3

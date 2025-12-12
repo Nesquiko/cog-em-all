@@ -219,6 +219,49 @@ public static class ModifiersCalculator
         );
     }
 
+    public static Dictionary<SkillTypes, int> UsagePerAbility(List<Modifier> modifiers)
+    {
+        Dictionary<SkillTypes, int> usages = new();
+        foreach (var m in modifiers)
+        {
+            if (m is AbilityUnlock abilityUnlock)
+            {
+                usages[abilityUnlock.toUnlock] = AbilityUnlock.OnUnlockUsages;
+            }
+            else if (m is BaseUnlock baseUnlock)
+            {
+
+                switch (baseUnlock.unlocks)
+                {
+                    case BaseUnlocks.AirShipAirStrike:
+                        usages[SkillTypes.AirshipAirstrike] = 1;
+                        break;
+                    case BaseUnlocks.AirShipFreeze:
+                        usages[SkillTypes.AirshipFreezeZone] = 1;
+                        break;
+                    case BaseUnlocks.AirShipDisableEnemyAbilitiesZone:
+                        usages[SkillTypes.AirshipDisableZone] = 1;
+                        break;
+                }
+
+            }
+        }
+
+        foreach (var m in modifiers)
+        {
+            if (m is not AbilityAddUsages addUsages) continue;
+
+            if (!usages.ContainsKey(addUsages.addTo))
+            {
+                Debug.LogWarning($"trying to add usages not unlocked ability ${addUsages.addTo}");
+                continue;
+            }
+            usages[addUsages.addTo] += addUsages.CurrentRanks() * addUsages.numOfUsages;
+        }
+
+        return usages;
+    }
+
     private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks)
     {
         return changeType switch

@@ -730,7 +730,7 @@ MonoBehaviour:
         modifiedAttribute: 7
         changeType: 1
         change: 1.1
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 2
     - rid: 7348732250137296970
       type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
@@ -743,7 +743,7 @@ MonoBehaviour:
         addTo: 0
         maxRanks: 3
         numOfUsages: 2
-        currentRanks: 0
+        currentRanks: 1
     - rid: 7348732250137296971
       type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
       data:
@@ -755,7 +755,7 @@ MonoBehaviour:
         addTo: 1
         maxRanks: 3
         numOfUsages: 2
-        currentRanks: 0
+        currentRanks: 1
     - rid: 7348732250137296972
       type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
       data:
@@ -767,7 +767,7 @@ MonoBehaviour:
         addTo: 2
         maxRanks: 3
         numOfUsages: 2
-        currentRanks: 0
+        currentRanks: 1
     - rid: 7348732250137296974
       type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
       data:

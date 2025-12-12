@@ -208,6 +208,7 @@ public class BaseUnlock : Modifier
 [Serializable]
 public class AbilityUnlock : Modifier
 {
+    public const int OnUnlockUsages = 2;
     public SkillTypes toUnlock;
 }
 

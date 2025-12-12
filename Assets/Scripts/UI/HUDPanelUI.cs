@@ -76,12 +76,16 @@ public class HUDPanelUI : MonoBehaviour
     private HashSet<FactionSpecificSkill> activeFactionSpecificSkills;
     private OperationDataDontDestroy operationData;
 
+    private Dictionary<SkillTypes, int> usagePerAbility = new();
+
     private void Awake()
     {
         minimapBackground = GameObject.FindGameObjectWithTag(minimapBackgroundTag);
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
         operationData = OperationDataDontDestroy.GetOrReadDev();
+        // TODO kili you can use the usagePerAbility dictionary, it also contains airship things (they are set to const 1)
+        usagePerAbility = ModifiersCalculator.UsagePerAbility(operationData.Modifiers);
         activeFactionSpecificSkills = operationData.GetFactionSpecificSkills();
 
         airshipAirstrikeButton = airshipAirstrikeSkill.GetComponentInChildren<SkillButton>();
@@ -169,7 +173,7 @@ public class HUDPanelUI : MonoBehaviour
         if (skillModifierCatalog.skillModifierIndices.TryGetValue(skillType, out int[] indices))
         {
             HashSet<SkillModifiers> activeModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
-        
+
             foreach (int i in indices)
             {
                 if (i < 0 || i >= modifiers.Length) continue;
@@ -324,7 +328,7 @@ public class HUDPanelUI : MonoBehaviour
 
         minimapImage.SetActive(!maximized);
         minimapBackground.SetActive(!maximized);
-        
+
         if (maximizedMinimap.transform.childCount > 0)
         {
             GameObject firstChild = maximizedMinimap.transform.GetChild(0).gameObject;
