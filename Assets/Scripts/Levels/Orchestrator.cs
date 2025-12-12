@@ -78,6 +78,11 @@ class Orchestrator : MonoBehaviour
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
         SpendGears(towerData.Cost);
 
+        if (ModifiersCalculator.IsGainRangeOnHillActive(modifiers))
+        {
+            tower.ActivateGainRangeOnHill();
+        }
+
         switch (tower)
         {
             case TeslaTower tesla:

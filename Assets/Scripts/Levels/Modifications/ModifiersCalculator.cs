@@ -51,7 +51,6 @@ public struct TowerMods
 
 public static class ModifiersCalculator
 {
-
     public static TowerMods CalculateTowerMods(List<Modifier> modifiers)
     {
         var towerDamagePipeline = new List<Func<ITower, float, float>>();
@@ -329,5 +328,14 @@ public static class ModifiersCalculator
                 acc = steps[i](ctx, acc);
             return acc;
         };
+    }
+
+    public static bool IsGainRangeOnHillActive(List<Modifier> modifiers)
+    {
+        foreach (var m in modifiers)
+        {
+            if (m is UnlockTowerAbilityModifier unlock && unlock.unlock == TowerUnlocks.OnHillRangeIncrease) return true;
+        }
+        return false;
     }
 }

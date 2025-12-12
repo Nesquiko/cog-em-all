@@ -32,6 +32,7 @@ public interface ITower
     void SetDamageCalculation(Func<float, float> f);
     void SetFireRateCalculation(Func<float, float> f);
     void SetDotDuration(float burnDuration);
+    void ActivateGainRangeOnHill();
 }
 
 public interface ITowerSelectable : ITower

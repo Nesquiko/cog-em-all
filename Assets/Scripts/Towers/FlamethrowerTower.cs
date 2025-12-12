@@ -562,4 +562,9 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         TowerMechanics.UnsubscribeAll(enemiesInRange, HandleEnemyDeath);
         enemiesInRange.Clear();
     }
+
+    public void ActivateGainRangeOnHill()
+    {
+        hillRangeSkillActive = true;
+    }
 }
