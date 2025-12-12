@@ -78,6 +78,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     public float CritChance => critChance;
     public float CritMultiplier => critMultiplier;
     public bool BurnOnHitActive => burnOnHitActive;
+    private float burnDuration = EnemyStatusEffect.BurnDefaultDuration;
+    public float BurnDuration => burnDuration;
 
     private bool stimActive = false;
     private bool stimCoolingDown = false;
@@ -165,7 +167,13 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
         activeFlame = flame.GetComponent<Flame>();
         activeFlame.Initialize(this, EffectiveRange(range));
+        activeFlame.SetBurnDuration(burnDuration);
         flame.SetActive(false);
+    }
+
+    public void SetDotDuration(float burnDuration)
+    {
+        this.burnDuration = burnDuration;
     }
 
     private float EffectiveRange(float r)

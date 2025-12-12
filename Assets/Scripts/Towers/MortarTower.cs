@@ -48,6 +48,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     [Header("Bleed on Hit")]
     [SerializeField] private bool bleedOnHitActive = true;
+    [SerializeField] private float bleedDuration = EnemyStatusEffect.BleedDefaultDuration;
 
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
@@ -109,6 +110,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     public float ShellLifetime => shellLifetime;
     public bool SlowOnHitActive => slowOnHitActive;
     public bool BleedOnHitActive => bleedOnHitActive;
+    public float BleedDuration => bleedDuration;
 
     public TowerTypes TowerType() => TowerTypes.Mortar;
 
@@ -487,6 +489,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         Assert.IsNotNull(f);
         CalculateFireRate = f;
         fireRate = CalculateFireRate(fireRate);
+    }
+
+    public void SetDotDuration(float duration)
+    {
+        bleedDuration = duration;
     }
 
     public void ActivateStim()

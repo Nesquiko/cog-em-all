@@ -454,6 +454,11 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         fireRate = CalculateFireRate(fireRate);
     }
 
+    public void SetDotDuration(float duration)
+    {
+        // tesla doesn't have dot
+    }
+
     public void ActivateStim()
     {
         if (stimActive || stimCoolingDown) return;

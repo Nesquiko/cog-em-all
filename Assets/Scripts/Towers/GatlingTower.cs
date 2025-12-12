@@ -615,6 +615,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         fireRate = CalculateFireRate(fireRate);
     }
 
+    public void SetDotDuration(float duration)
+    {
+        // gatling doesn't have dot
+    }
+
     public void ActivateStim()
     {
         if (stimActive || stimCoolingDown) return;

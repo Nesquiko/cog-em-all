@@ -85,6 +85,7 @@ class Orchestrator : MonoBehaviour
                 break;
             case FlamethrowerTower flamethrower:
                 flamethrower.SetFlameDurationCalculation((fireDuration) => towerMods.CalculateFlamethrowerFireDuration(flamethrower, fireDuration));
+                flamethrower.SetDotDuration(towerMods.CalculateDOTDuration(flamethrower, flamethrower.BurnDuration));
                 break;
         }
     }

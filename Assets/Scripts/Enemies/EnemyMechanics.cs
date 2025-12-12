@@ -108,18 +108,21 @@ public class EnemyStatusEffect
         };
     }
 
-    public static EnemyStatusEffect Burn => new(
+    public const float BurnDefaultDuration = 5f;
+
+    public static EnemyStatusEffect Burn(float duration = BurnDefaultDuration) => new(
         type: EffectType.Burning,
-        duration: 5f,
+        duration: duration,
         tickDamage: 5f,
         tickInterval: 0.5f,
         persistent: false,
         negative: true
     );
 
-    public static EnemyStatusEffect Bleed => new(
+    public const float BleedDefaultDuration = 4f;
+    public static EnemyStatusEffect Bleed(float duration = BleedDefaultDuration) => new(
         type: EffectType.Bleeding,
-        duration: 4f,
+        duration: duration,
         tickDamage: 2.5f,
         tickInterval: 0.5f,
         persistent: false,

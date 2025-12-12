@@ -31,6 +31,7 @@ public interface ITower
     void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
     void SetFireRateCalculation(Func<float, float> f);
+    void SetDotDuration(float burnDuration);
 }
 
 public interface ITowerSelectable : ITower

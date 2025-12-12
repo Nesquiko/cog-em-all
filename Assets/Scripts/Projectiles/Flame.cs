@@ -17,6 +17,7 @@ public class Flame : MonoBehaviour, IDamageSource
     private readonly HashSet<OilSpill> oilsInRange = new();
 
     private FlamethrowerTower owner;
+    private float burnDuration = EnemyStatusEffect.BurnDefaultDuration;
 
     public bool IsActive => isActive;
 
@@ -112,8 +113,13 @@ public class Flame : MonoBehaviour, IDamageSource
         {
             bool isCritical = UnityEngine.Random.value < critChance;
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
-            enemy.TakeDamage(damage, Type(), isCritical, effect: owner.BurnOnHitActive ? EnemyStatusEffect.Burn : null);
+            enemy.TakeDamage(damage, Type(), isCritical, effect: owner.BurnOnHitActive ? EnemyStatusEffect.Burn(burnDuration) : null);
         }
+    }
+
+    public void SetBurnDuration(float burnDuration)
+    {
+        this.burnDuration = burnDuration;
     }
 
     private void OnTriggerEnter(Collider other)

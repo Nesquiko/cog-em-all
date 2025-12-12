@@ -48,4 +48,18 @@ MonoBehaviour:
   modifiers: []
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7348732483175710795
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Persistent Burn
+        slug: persistent_burn
+        description: Increases Flamethrower burn duration by 10% per rank, causing
+          enemies to suffer burning damage for longer after being hit.
+        type: 0
+        applyTo: 3
+        modifiedAttribute: 7
+        changeType: 1
+        change: 1.1
+        currentRanks: 1
+        maxRanks: 2
