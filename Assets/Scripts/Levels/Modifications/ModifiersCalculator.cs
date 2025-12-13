@@ -205,7 +205,7 @@ public static class ModifiersCalculator
         dotTower.SetDotEnabled(dotEnabled);
     }
 
-    public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)
+    public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers, Func<int> ActiveTowersCount)
     {
 
         var enemyRewardPipeline = new List<Func<int, int>>();
@@ -231,6 +231,12 @@ public static class ModifiersCalculator
                     enemySpeedPipeline.Add((enemy, speed) =>
                     {
                         if (!EnemyModifier.AppliesTo(enemyMod, enemy.Type)) return speed;
+
+                        if (enemyMod.changeType == ChangeType.PerPlacedTowerAddPercentage)
+                        {
+                            return speed + (enemyMod.change * ActiveTowersCount() * speed);
+                        }
+
                         return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed, 1);
                     });
                     break;

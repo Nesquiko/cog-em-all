@@ -165,7 +165,7 @@ class Orchestrator : MonoBehaviour
         var fact = operationData.Faction;
         modifiers = operationData.Modifiers;
         economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
-        var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
+        var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers, () => towers.Count);
         towerMods = ModifiersCalculator.CalculateTowerMods(modifiers, () => towers.Count);
 
         gears = level.playerResources.initialGears;

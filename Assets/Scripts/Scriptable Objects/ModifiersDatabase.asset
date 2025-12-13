@@ -139,7 +139,7 @@ MonoBehaviour:
         modifiedAttribute: 2
         changeType: 1
         change: 1.15
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 1
     - rid: 2945730885520719942
       type: {class: EnemyModifier, ns: , asm: Assembly-CSharp}
@@ -152,7 +152,7 @@ MonoBehaviour:
         applyTo: -1
         modifiedAttribute: 0
         changeType: 3
-        change: -1
+        change: -0.01
     - rid: 2945730885520719943
       type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
       data:
