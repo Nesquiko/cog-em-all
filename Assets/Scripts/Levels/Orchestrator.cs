@@ -46,6 +46,8 @@ class Orchestrator : MonoBehaviour
     public int Gears => gears;
 
     private TowerMods towerMods = new();
+    private EconomyMods economyMods = new();
+
     private List<Modifier> modifiers = new();
 
     private void Awake()
@@ -120,6 +122,7 @@ class Orchestrator : MonoBehaviour
 
     private void OnUpgradeTower(int upgradeCost)
     {
+        upgradeCost = (int)(economyMods.towerUpgradeCostRatio * upgradeCost);
         SpendGears(upgradeCost);
     }
 
@@ -154,7 +157,7 @@ class Orchestrator : MonoBehaviour
 
         var fact = operationData.Faction;
         modifiers = operationData.Modifiers;
-        var economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
+        economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
         var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
         towerMods = ModifiersCalculator.CalculateTowerMods(modifiers, () => towers.Count);
 

@@ -7,11 +7,13 @@ public struct EconomyMods
 {
     public readonly float passiveGearsAmount;
     public readonly float passiveGearsTick;
+    public readonly float towerUpgradeCostRatio;
 
-    public EconomyMods(float passiveGearsAmount, float passiveGearsTick)
+    public EconomyMods(float passiveGearsAmount, float passiveGearsTick, float towerUpgradeCostRatio)
     {
         this.passiveGearsAmount = passiveGearsAmount;
         this.passiveGearsTick = passiveGearsTick;
+        this.towerUpgradeCostRatio = towerUpgradeCostRatio;
     }
 }
 
@@ -219,6 +221,7 @@ public static class ModifiersCalculator
         Assert.IsNotNull(modifiers);
         float passiveAmount = basePassiveGearsPerTickAmount;
         float passiveTick = basePassiveTickAmount;
+        float towerUpgradeCostRatio = 1f;
 
         foreach (var m in modifiers)
         {
@@ -232,12 +235,17 @@ public static class ModifiersCalculator
                 case EconomyAttributes.PassiveGearsTick:
                     passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick, 1);
                     break;
+                case EconomyAttributes.TowersUpgradeDiscount:
+                    towerUpgradeCostRatio = ApplyChangeType(ecoMod.changeType, ecoMod.change, towerUpgradeCostRatio, 1);
+                    break;
+
             }
         }
 
         return new EconomyMods(
             passiveGearsAmount: passiveAmount,
-            passiveGearsTick: passiveTick
+            passiveGearsTick: passiveTick,
+            towerUpgradeCostRatio: towerUpgradeCostRatio
         );
     }
 
