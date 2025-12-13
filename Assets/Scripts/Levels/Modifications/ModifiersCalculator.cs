@@ -199,6 +199,22 @@ public static class ModifiersCalculator
         if (manualModeEnabled) gatling.EnableControlMode();
     }
 
+    public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
+    {
+        bool isSlowOnHitEnabled = false;
+        foreach (var m in modifiers)
+        {
+            switch (m)
+            {
+                case UnlockTowerAbilityModifier abilityUnlock:
+                    isSlowOnHitEnabled = isSlowOnHitEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitSlow;
+                    break;
+            }
+        }
+
+        if (isSlowOnHitEnabled) mortar.EnableSlowOnhit();
+    }
+
     public static void ModifyDOTTower(IAppliesDOT dotTower, List<Modifier> modifiers)
     {
         bool dotEnabled = false;

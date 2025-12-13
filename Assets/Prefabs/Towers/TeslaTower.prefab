@@ -137,7 +137,7 @@ MonoBehaviour:
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   controlPoint: {fileID: 6958036638579947074}
   sensitivity: 0.075
-  executeActive: 1
+  executeActive: 0
   executeThreshold: 0.3
   currentLevel: 1
   maxAllowedLevel: 1
@@ -150,7 +150,7 @@ MonoBehaviour:
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  doubleBeamActive: 1
+  doubleBeamActive: 0
   damageFactor: 0.75
   upgradeVFX: {fileID: 36816324828968498}
   stimModeVFX: {fileID: 1337974542168246834}

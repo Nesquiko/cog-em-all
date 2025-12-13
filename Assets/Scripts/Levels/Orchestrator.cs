@@ -116,6 +116,7 @@ class Orchestrator : MonoBehaviour
 
             case MortarTower mortar:
                 ModifiersCalculator.ModifyDOTTower(mortar, modifiers);
+                ModifiersCalculator.ModifyMortar(mortar, modifiers);
                 break;
         }
     }

@@ -293,7 +293,7 @@ MonoBehaviour:
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  doublePayloadActive: 1
+  doublePayloadActive: 0
   secondPayloadDelay: 0.3
   damageFactor: 0.75
   recoilDistance: 0.01

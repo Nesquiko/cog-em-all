@@ -172,7 +172,7 @@ MonoBehaviour:
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   controlPoint: {fileID: 4400268234209531989}
   sensitivity: 0.05
-  infiniteRangeActive: 1
+  infiniteRangeActive: 0
   manualBulletRange: 1000
   currentLevel: 1
   maxAllowedLevel: 1
@@ -185,7 +185,7 @@ MonoBehaviour:
   slowOnHitActive: 0
   armorRendingActive: 0
   maxArmourRendingStacks: 2
-  hillRangeSkillActive: 1
+  hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
   baselineHeight: 0
   stimMultiplier: 2

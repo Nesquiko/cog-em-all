@@ -169,7 +169,7 @@ MonoBehaviour:
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  sweepEnabled: 1
+  sweepEnabled: 0
   sweepAmplitudeDegrees: 30
   sweepCycleSeconds: 1.5
   sweepReturnSpeed: 30

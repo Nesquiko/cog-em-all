@@ -508,6 +508,9 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     public void SetDotEnabled(bool enabled) => bleedOnHitActive = enabled;
     public void SetDotDuration(float duration) => bleedDuration = duration;
 
+
+    public void EnableSlowOnhit() => slowOnHitActive = true;
+
     public void ActivateStim()
     {
         if (stimActive || stimCoolingDown) return;
