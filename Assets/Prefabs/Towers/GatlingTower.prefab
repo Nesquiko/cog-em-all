@@ -191,7 +191,7 @@ MonoBehaviour:
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  progressiveIncreaseActive: 1
+  progressiveIncreaseActive: 0
   stimMultiplierMultiplier: 1.5
   barrelsPerGun: 8
   recoilDistance: 0.005

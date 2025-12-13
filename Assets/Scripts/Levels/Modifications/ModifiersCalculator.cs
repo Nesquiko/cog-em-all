@@ -202,6 +202,8 @@ public static class ModifiersCalculator
         bool isArmorRendingActive = false;
         int additionalRendingStacks = 0;
         bool manualModeEnabled = false;
+        bool enableExponentialStim = false;
+
         foreach (var m in modifiers)
         {
             switch (m)
@@ -218,12 +220,19 @@ public static class ModifiersCalculator
                     isArmorRendingActive = isArmorRendingActive || abilityUnlock.unlock == TowerUnlocks.ArmorShreding;
                     manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
                     break;
+
+                case StimModeModifier stimModifier:
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, gatling.TowerType())) break;
+
+                    enableExponentialStim = enableExponentialStim || stimModifier.modifies == StimModeModifiers.ExponentialStim;
+                    break;
             }
         }
 
         gatling.SetRendingEnabled(isArmorRendingActive);
         gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
         if (manualModeEnabled) gatling.EnableControlMode();
+        if (enableExponentialStim) gatling.EnableProgressiveStim();
     }
 
     public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)

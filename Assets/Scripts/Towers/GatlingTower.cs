@@ -70,7 +70,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     [SerializeField] private float stimCooldown = 5f;
 
     [Header("Progressive Increase")]
-    [SerializeField] private bool progressiveIncreaseActive = true;
+    [SerializeField] private bool progressiveIncreaseActive = false;
+    public void EnableProgressiveStim() => progressiveIncreaseActive = true;
     [SerializeField] private float stimMultiplierMultiplier = 1.5f;
 
     [Header("Recoil")]
@@ -315,7 +316,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     }
 
     private void HandleDamageDealt(float damage) => OnDamageDealt?.Invoke(TowerType(), damage);
-    
+
     private void HandleEnemyKilled() => OnEnemyKilled?.Invoke(TowerType());
 
     private void Shoot(IEnemy enemy)
