@@ -1,31 +1,40 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
 public struct EconomyMods
 {
+
+    public readonly Func<int, int> CalculateEnemyReward;
+
     public readonly float passiveGearsAmount;
     public readonly float passiveGearsTick;
     public readonly float towerUpgradeCostRatio;
+    public readonly float nexusOnHitSpendGears;
 
-    public EconomyMods(float passiveGearsAmount, float passiveGearsTick, float towerUpgradeCostRatio)
+    public EconomyMods(
+        Func<int, int> enemyRewardCalculation,
+        float passiveGearsAmount,
+        float passiveGearsTick,
+        float towerUpgradeCostRatio,
+        float nexusOnHitSpendGears
+        )
     {
+        this.CalculateEnemyReward = enemyRewardCalculation;
         this.passiveGearsAmount = passiveGearsAmount;
         this.passiveGearsTick = passiveGearsTick;
         this.towerUpgradeCostRatio = towerUpgradeCostRatio;
+        this.nexusOnHitSpendGears = nexusOnHitSpendGears;
     }
 }
 
 public struct EnemyMods
 {
-    public readonly Func<int, int> CalculateEnemyReward;
     public readonly Func<IEnemy, float, float> CalculateEnemyMovementSpeed;
 
-    public EnemyMods(Func<int, int> enemyRewardCalculation, Func<IEnemy, float, float> enemySpeedCalculation)
+    public EnemyMods(Func<IEnemy, float, float> enemySpeedCalculation)
     {
-        CalculateEnemyReward = enemyRewardCalculation;
         CalculateEnemyMovementSpeed = enemySpeedCalculation;
     }
 }
@@ -229,22 +238,10 @@ public static class ModifiersCalculator
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers, Func<int> ActiveTowersCount)
     {
-
-        var enemyRewardPipeline = new List<Func<int, int>>();
         var enemySpeedPipeline = new List<Func<IEnemy, float, float>>();
 
         foreach (var m in modifiers)
         {
-            if (m is EconomyModifier ecoMod)
-            {
-                if (ecoMod.category != EconomyAttributes.PerEnemyKillGears) continue;
-                enemyRewardPipeline.Add((reward) =>
-                {
-                    return Mathf.FloorToInt(ApplyChangeType(ecoMod.changeType, ecoMod.change, reward, 1));
-                });
-                continue;
-            }
-
             if (m is not EnemyModifier enemyMod) continue;
 
             switch (enemyMod.modifiedAttribute)
@@ -267,28 +264,10 @@ public static class ModifiersCalculator
             }
         }
 
-        Func<int, int> rewardPipeline = reward =>
-        {
-            int acc = reward;
-            for (int i = 0; i < enemyRewardPipeline.Count; i++)
-                acc = enemyRewardPipeline[i](acc);
-            return acc;
-        };
 
-        if (enemyRewardPipeline.Count == 0) rewardPipeline = reward => reward;
+        Func<IEnemy, float, float> speedPipeline = Compose(enemySpeedPipeline);
 
-        Func<IEnemy, float, float> speedPipeline = (enemy, baseSpeed) =>
-        {
-            float acc = baseSpeed;
-            for (int i = 0; i < enemySpeedPipeline.Count; i++)
-                acc = enemySpeedPipeline[i](enemy, acc);
-            return acc;
-        };
-
-        if (enemySpeedPipeline.Count == 0)
-            speedPipeline = (enemy, speed) => speed;
-
-        return new EnemyMods(enemyRewardCalculation: rewardPipeline, enemySpeedCalculation: speedPipeline);
+        return new EnemyMods(enemySpeedCalculation: speedPipeline);
     }
 
     public static EconomyMods CalculateEconomyMods(float basePassiveTickAmount, float basePassiveGearsPerTickAmount, List<Modifier> modifiers)
@@ -297,30 +276,62 @@ public static class ModifiersCalculator
         float passiveAmount = basePassiveGearsPerTickAmount;
         float passiveTick = basePassiveTickAmount;
         float towerUpgradeCostRatio = 1f;
+        float nexusOnHitSpendGears = 0;
+        var enemyRewardPipeline = new List<Func<int, int>>();
 
         foreach (var m in modifiers)
         {
-            if (m is not EconomyModifier ecoMod) continue;
-
-            switch (ecoMod.category)
+            if (m is EconomyModifier ecoMod)
             {
-                case EconomyAttributes.PassiveGearsAmount:
-                    passiveAmount = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveAmount, 1);
-                    break;
-                case EconomyAttributes.PassiveGearsTick:
-                    passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick, 1);
-                    break;
-                case EconomyAttributes.TowersUpgradeDiscount:
-                    towerUpgradeCostRatio = ApplyChangeType(ecoMod.changeType, ecoMod.change, towerUpgradeCostRatio, 1);
-                    break;
+                switch (ecoMod.category)
+                {
+                    case EconomyAttributes.PassiveGearsAmount:
+                        passiveAmount = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveAmount, 1);
+                        break;
+                    case EconomyAttributes.PassiveGearsTick:
+                        passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick, 1);
+                        break;
+                    case EconomyAttributes.TowersUpgradeDiscount:
+                        towerUpgradeCostRatio = ApplyChangeType(ecoMod.changeType, ecoMod.change, towerUpgradeCostRatio, 1);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ecoMod.category), ecoMod.category, "Unsupported economy category modifier.");
+                }
+            }
+            else if (m is EconomyDoubleEdgedMofifier doubleEdgedMofifier)
+            {
+                var benefit = doubleEdgedMofifier.benefit;
+                switch (benefit.category)
+                {
+                    case EconomyAttributes.PerEnemyKillGears:
+                        if (benefit.category != EconomyAttributes.PerEnemyKillGears) continue;
+                        enemyRewardPipeline.Add((reward) => Mathf.FloorToInt(ApplyChangeType(benefit.changeType, benefit.change, reward)));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(benefit.category), benefit.category, "Unsupported economy benefit category modifier.");
+                }
 
+                var disadvantage = doubleEdgedMofifier.disadvantage;
+                switch (disadvantage.category)
+                {
+                    case EconomyAttributes.BaseOnHitDeduction:
+                        nexusOnHitSpendGears = ApplyChangeType(disadvantage.changeType, disadvantage.change, nexusOnHitSpendGears);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(benefit.category), benefit.category, "Unsupported economy disadvantage category modifier.");
+                }
             }
         }
 
+
+        Func<int, int> rewardPipeline = Compose(enemyRewardPipeline);
+
         return new EconomyMods(
+            enemyRewardCalculation: rewardPipeline,
             passiveGearsAmount: passiveAmount,
             passiveGearsTick: passiveTick,
-            towerUpgradeCostRatio: towerUpgradeCostRatio
+            towerUpgradeCostRatio: towerUpgradeCostRatio,
+            nexusOnHitSpendGears
         );
     }
 
@@ -411,7 +422,7 @@ public static class ModifiersCalculator
         return unlockedTowerLevels;
     }
 
-    private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks)
+    private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks = 1)
     {
         return changeType switch
         {
@@ -434,6 +445,22 @@ public static class ModifiersCalculator
             var acc = start;
             for (var i = 0; i < steps.Count; i++)
                 acc = steps[i](ctx, acc);
+            return acc;
+        };
+    }
+
+    public static Func<TValue, TValue> Compose<TValue>(
+       IReadOnlyList<Func<TValue, TValue>> steps
+   )
+    {
+        if (steps == null || steps.Count == 0)
+            return static (x) => x;
+
+        return (start) =>
+        {
+            var acc = start;
+            for (var i = 0; i < steps.Count; i++)
+                acc = steps[i](acc);
             return acc;
         };
     }

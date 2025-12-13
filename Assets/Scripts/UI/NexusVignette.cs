@@ -36,7 +36,7 @@ public class NexusVignette : MonoBehaviour
         vignette.alpha = Mathf.Lerp(vignette.alpha, targetAlpha, Time.deltaTime * fadeSpeed);
     }
 
-    private void HandleHealthChange(Nexus n)
+    private void HandleHealthChange(Nexus n, float change)
     {
         float normalized = n.HealthPointsNormalized();
 

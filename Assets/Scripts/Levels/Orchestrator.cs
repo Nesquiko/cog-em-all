@@ -153,7 +153,7 @@ class Orchestrator : MonoBehaviour
         OperationEnd(cleared: false);
     }
 
-    private void OnNexusHealthChange(Nexus nexus)
+    private void OnNexusHealthChange(Nexus nexus, float change)
     {
         menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized());
     }
@@ -237,7 +237,7 @@ class Orchestrator : MonoBehaviour
 
     private void OnEnemyKilled(IEnemy killed, EnemyMods enemyMods)
     {
-        int reward = enemyMods.CalculateEnemyReward(killed.OnKillGearsReward);
+        int reward = economyMods.CalculateEnemyReward(killed.OnKillGearsReward);
         AddGears(reward);
         enemiesLive -= 1;
     }
