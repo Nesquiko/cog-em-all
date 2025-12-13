@@ -12,6 +12,11 @@ public class Nexus : MonoBehaviour, IDamageable
     [SerializeField] private ParticleSystem nexusExplosion;
     [SerializeField] private NexusVignette nexusVignette;
 
+    [Header("Healing")]
+    [SerializeField] private bool isHealing = false;
+    [SerializeField] private float healingPerSecond = 10f;
+    private Coroutine healingCoroutine;
+
     private bool isDying;
 
     private float healthPoints;
@@ -30,6 +35,8 @@ public class Nexus : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke(this, 0);
 
         nexusVignette.Initialize(this);
+
+        healingCoroutine = StartCoroutine(HealingLoop());
     }
 
     public void TakeDamage(float damage, IEnemy attacker)
@@ -75,6 +82,25 @@ public class Nexus : MonoBehaviour, IDamageable
     public void MakeVolatile()
     {
         healthPoints = 1f;
-        OnHealthChanged?.Invoke(this, maxHealthPoints - 1f);
+        OnHealthChanged?.Invoke(this, 0);
+    }
+
+    public void SetIsHealing(bool isHealing) => this.isHealing = isHealing;
+
+    private IEnumerator HealingLoop()
+    {
+        var wait = new WaitForSecondsRealtime(1f);
+
+        while (true)
+        {
+            yield return wait;
+
+            if (isDying) continue;
+            if (!isHealing) continue;
+            if (IsFullHealth) continue;
+
+            healthPoints = Mathf.Min(maxHealthPoints, healthPoints + healingPerSecond);
+            OnHealthChanged?.Invoke(this, healingPerSecond);
+        }
     }
 }

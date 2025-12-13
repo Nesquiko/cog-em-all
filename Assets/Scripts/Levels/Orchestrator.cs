@@ -49,6 +49,8 @@ class Orchestrator : MonoBehaviour
     public int Gears => gears;
 
     private TowerMods towerMods = new();
+    private EconomyMods economyMods = new();
+
     private List<Modifier> modifiers = new();
 
     private void Awake()
@@ -93,6 +95,8 @@ class Orchestrator : MonoBehaviour
             other.RecalctCritChance();
         }
 
+        tower.SetRange(towerMods.CalculateTowerRange(tower, tower.Range()));
+
         tower.SetFireRateCalculation((fireRate) => towerMods.CalculateTowerFireRate(tower, fireRate));
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
         SpendGears(towerData.Cost);
@@ -107,13 +111,20 @@ class Orchestrator : MonoBehaviour
             case TeslaTower tesla:
                 ModifiersCalculator.ModifyTesla(tesla, modifiers);
                 break;
+
             case FlamethrowerTower flamethrower:
+                ModifiersCalculator.ModifyDOTTower(flamethrower, modifiers);
                 flamethrower.SetFlameDurationCalculation((fireDuration) => towerMods.CalculateFlamethrowerFireDuration(flamethrower, fireDuration));
                 flamethrower.SetDotDuration(towerMods.CalculateDOTDuration(flamethrower, flamethrower.BurnDuration));
                 break;
 
             case GatlingTower gatling:
                 ModifiersCalculator.ModifyGatling(gatling, modifiers);
+                break;
+
+            case MortarTower mortar:
+                ModifiersCalculator.ModifyDOTTower(mortar, modifiers);
+                ModifiersCalculator.ModifyMortar(mortar, modifiers);
                 break;
         }
     }
@@ -142,6 +153,7 @@ class Orchestrator : MonoBehaviour
 
     private void OnUpgradeTower(int upgradeCost)
     {
+        upgradeCost = (int)(economyMods.towerUpgradeCostRatio * upgradeCost);
         SpendGears(upgradeCost);
     }
 
@@ -153,10 +165,14 @@ class Orchestrator : MonoBehaviour
             gearRewardMultiplier = suddenDeath.GearRewardMultiplier;
             nexus.MakeVolatile();
         }
+
         HUDPanelUI.StartSkillCooldown(skill);
 
-        SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
-        SpendGears(skillData.cost);
+        if (economyMods.placeableAbilitiesCostGears)
+        {
+            SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
+            SpendGears(skillData.cost);
+        }
     }
 
     private void OnNexusDestroyed(Nexus nexus)
@@ -164,10 +180,10 @@ class Orchestrator : MonoBehaviour
         OperationEnd(cleared: false);
     }
 
-    private void OnNexusHealthChange(Nexus nexus, float damage)
+    private void OnNexusHealthChange(Nexus nexus, float change)
     {
         menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized());
-        operationStatistics.damageTaken += (int)damage;
+        operationStatistics.damageTaken += (int)change;
     }
 
     private void InitializeStatistics()
@@ -187,9 +203,11 @@ class Orchestrator : MonoBehaviour
 
         var fact = operationData.Faction;
         modifiers = operationData.Modifiers;
-        var economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
-        var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers);
+        economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
+        var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers, () => towers.Count);
         towerMods = ModifiersCalculator.CalculateTowerMods(modifiers, () => towers.Count);
+
+        ModifiersCalculator.ModifyNexus(nexus, modifiers);
 
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);
@@ -261,7 +279,7 @@ class Orchestrator : MonoBehaviour
 
     private void OnEnemyKilled(IEnemy killed, EnemyMods enemyMods)
     {
-        int reward = enemyMods.CalculateEnemyReward(killed.OnKillGearsReward);
+        int reward = economyMods.CalculateEnemyReward(killed.OnKillGearsReward);
         AddGears(reward);
         enemiesLive -= 1;
 

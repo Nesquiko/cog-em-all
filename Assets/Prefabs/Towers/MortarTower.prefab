@@ -284,8 +284,8 @@ MonoBehaviour:
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   level2: {fileID: 1185311847403378359}
   level3: {fileID: 6632032466233783268}
-  slowOnHitActive: 1
-  bleedOnHitActive: 1
+  slowOnHitActive: 0
+  bleedOnHitActive: 0
   bleedDuration: 4
   hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
@@ -293,7 +293,7 @@ MonoBehaviour:
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  doublePayloadActive: 1
+  doublePayloadActive: 0
   secondPayloadDelay: 0.3
   damageFactor: 0.75
   recoilDistance: 0.01

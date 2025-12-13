@@ -7,7 +7,11 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
     [SerializeField] private SkillTypes skillType = SkillTypes.OilSpill;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 90f, 0f);
     public SkillTypes SkillType() => skillType;
-    public float GetCooldown() => 5f;
+
+    [SerializeField] private float cooldownReduction = 0;
+    public void SetCooldownReduction(float value) => cooldownReduction = value;
+    public float GetCooldown() => ISkill.DefaultCooldown * (1 - cooldownReduction);
+
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
     public SkillActivationMode ActivationMode() => SkillActivationMode.Placement;
 

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -47,10 +48,10 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
     private void Awake()
     {
-        InitializeUsages();
-
         canvasGroup = GetComponent<CanvasGroup>();
         originalScale = transform.localScale;
+
+        InitializeUsages();
 
         foreach (var img in cooldownImages)
             img.fillAmount = 0f;
@@ -64,11 +65,12 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
         {
             maxUsages = -1;
             remainingUsages = -1;
+            Enable(false, permanently: true);
             return;
         }
+
         maxUsages = max;
         remainingUsages = max;
-
         CreateUsageIndicators();
     }
 
@@ -82,7 +84,7 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
         if (infiniteUsageSkills.Contains(skillType)) return;
 
         if (maxUsages <= 0) return;
-    
+
         for (int i = 0; i < maxUsages; i++)
         {
             GameObject indicator = Instantiate(

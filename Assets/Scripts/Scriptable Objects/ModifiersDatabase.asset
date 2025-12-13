@@ -139,7 +139,7 @@ MonoBehaviour:
         modifiedAttribute: 2
         changeType: 1
         change: 1.15
-        currentRanks: 0
+        currentRanks: 1
         maxRanks: 1
     - rid: 2945730885520719942
       type: {class: EnemyModifier, ns: , asm: Assembly-CSharp}
@@ -152,7 +152,7 @@ MonoBehaviour:
         applyTo: -1
         modifiedAttribute: 0
         changeType: 3
-        change: -1
+        change: -0.01
     - rid: 2945730885520719943
       type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
       data:
@@ -191,12 +191,12 @@ MonoBehaviour:
         unlockOn: -1
         unlock: 0
     - rid: 2945730885520719946
-      type: {class: AbilityNoCooldownCost100Gears, ns: , asm: Assembly-CSharp}
+      type: {class: AbilityNoCooldownCostGears, ns: , asm: Assembly-CSharp}
       data:
         name: Instant Cast Costly Act
         slug: instant_cast_costly_act
         description: Active can now be used with no cooldown and unleashed in rapid
-          succession, but each activation consumes 100 Gears.
+          succession, but each activation consumes Gears.
         type: 0
     - rid: 7348732237428031488
       type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}

@@ -33,7 +33,6 @@ public interface ITower
     void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
     void SetFireRateCalculation(Func<float, float> f);
-    void SetDotDuration(float burnDuration);
     void ActivateGainRangeOnHill();
     void SetCritChangeCalculation(Func<float, float> f);
     void RecalctCritChance();
@@ -41,6 +40,14 @@ public interface ITower
     event Action<TowerTypes, float> OnDamageDealt;
     event Action<TowerTypes> OnEnemyKilled;
     event Action<TowerTypes> OnUpgrade;
+    float Range();
+    void SetRange(float range);
+}
+
+public interface IAppliesDOT
+{
+    void SetDotEnabled(bool enabled);
+    void SetDotDuration(float burnDuration);
 }
 
 public interface ITowerSelectable : ITower

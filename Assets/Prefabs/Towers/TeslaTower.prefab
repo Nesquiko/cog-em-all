@@ -137,19 +137,20 @@ MonoBehaviour:
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   controlPoint: {fileID: 6958036638579947074}
   sensitivity: 0.075
-  executeActive: 1
+  executeActive: 0
   executeThreshold: 0.3
   currentLevel: 1
+  maxAllowedLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
-  disableBuffsOnHitActive: 1
+  disableBuffsOnHitActive: 0
   hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
   baselineHeight: 0
-  stunFirstEnemy: 1
+  stunFirstEnemy: 0
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  doubleBeamActive: 1
+  doubleBeamActive: 0
   damageFactor: 0.75
   upgradeVFX: {fileID: 36816324828968498}
   stimModeVFX: {fileID: 1337974542168246834}

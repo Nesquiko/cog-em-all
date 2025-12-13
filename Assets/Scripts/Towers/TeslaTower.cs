@@ -35,7 +35,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float sensitivity = 0.075f;
 
     [Header("Execution")]
-    [SerializeField] private bool executeActive = true;
+    [SerializeField] private bool executeActive = false;
     [SerializeField, Range(0.05f, 1f)] private float executeThreshold = 0.3f;
 
     [Header("Upgrades")]
@@ -44,7 +44,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Disable Buffs on Hit")]
-    [SerializeField] private bool disableBuffsOnHitActive = true;
+    [SerializeField] private bool disableBuffsOnHitActive = false;
 
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
@@ -52,7 +52,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float baselineHeight = 0f;
 
     [Header("Stun First Enemy")]
-    [SerializeField] private bool stunFirstEnemy = true;
+    [SerializeField] private bool stunFirstEnemy = false;
 
     [Header("Stim Mode")]
     [SerializeField] private float stimMultiplier = 2f;
@@ -60,7 +60,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float stimCooldown = 5f;
 
     [Header("Double Beam")]
-    [SerializeField] private bool doubleBeamActive = true;
+    [SerializeField] private bool doubleBeamActive = false;
+    public void EnableDoubleBeam() => doubleBeamActive = true;
     [SerializeField] private float damageFactor = 0.75f;
 
     [Header("VFX")]
@@ -151,9 +152,12 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         SetRangeProjector(EffectiveRange(range));
     }
 
-    public void SetAdditionalChainReach(int chainReach)
+    public void SetAdditionalChainReach(int chainReach) => additionalBeamChains = chainReach;
+
+    public void EnableControlMode()
     {
-        additionalBeamChains = chainReach;
+        executeActive = true;
+        towerOverlay.EnableControlMode();
     }
 
     private float EffectiveRange(float r)
@@ -325,7 +329,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beam.OnEnemyKilled += HandleEnemyKilled;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
 
-        if (stimActive && stunFirstEnemy)
+        if (stimActive || stunFirstEnemy)
             enemy.ApplyEffect(EnemyStatusEffect.Stun);
     }
 
@@ -479,15 +483,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         critChance = CalculateCritChance(critChance);
     }
 
-    public void RecalctCritChance()
-    {
-        critChance = CalculateCritChance(critChance);
-    }
-
-    public void SetDotDuration(float duration)
-    {
-        // tesla doesn't have dot
-    }
+    public void RecalctCritChance() => critChance = CalculateCritChance(critChance);
 
     public void ActivateStim()
     {
@@ -523,8 +519,13 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         enemiesInRange.Clear();
     }
 
-    public void ActivateGainRangeOnHill()
-    {
-        hillRangeSkillActive = true;
-    }
+    public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+
+    public float Range() => range;
+    public void SetRange(float range) => this.range = range;
+
+    public void EnableStunFirst() => stunFirstEnemy = true;
+
+    public void EnableDisableBuffs() => disableBuffsOnHitActive = true;
+
 }

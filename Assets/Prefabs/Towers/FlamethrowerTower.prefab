@@ -160,15 +160,16 @@ MonoBehaviour:
   towerRotationOverlayPrefab: {fileID: 1850511929951099344, guid: ec045bdaeac92144b9aadf17124af12b, type: 3}
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
   currentLevel: 1
+  maxAllowedLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
-  burnOnHitActive: 1
+  burnOnHitActive: 0
   hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
   baselineHeight: 0
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5
-  sweepEnabled: 1
+  sweepEnabled: 0
   sweepAmplitudeDegrees: 30
   sweepCycleSeconds: 1.5
   sweepReturnSpeed: 30

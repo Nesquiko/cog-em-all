@@ -45,6 +45,7 @@ public enum SkillActivationMode
 
 public interface ISkill
 {
+    public const float DefaultCooldown = 5f;
     SkillTypes SkillType();
     SkillActivationMode ActivationMode();
     float GetCooldown();
@@ -53,6 +54,7 @@ public interface ISkill
 public interface ISkillPlaceable : ISkill
 {
     void Initialize();
+    void SetCooldownReduction(float value);
     Quaternion PlacementRotationOffset();
 }
 

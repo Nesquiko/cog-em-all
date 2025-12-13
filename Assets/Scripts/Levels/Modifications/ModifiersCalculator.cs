@@ -5,24 +5,39 @@ using UnityEngine.Assertions;
 
 public struct EconomyMods
 {
+
+    public readonly Func<int, int> CalculateEnemyReward;
+
     public readonly float passiveGearsAmount;
     public readonly float passiveGearsTick;
+    public readonly float towerUpgradeCostRatio;
+    public readonly float nexusOnHitSpendGears;
+    public readonly bool placeableAbilitiesCostGears;
 
-    public EconomyMods(float passiveGearsAmount, float passiveGearsTick)
+    public EconomyMods(
+        Func<int, int> enemyRewardCalculation,
+        float passiveGearsAmount,
+        float passiveGearsTick,
+        float towerUpgradeCostRatio,
+        float nexusOnHitSpendGears,
+        bool placeableAbilitiesCostGears
+        )
     {
+        this.CalculateEnemyReward = enemyRewardCalculation;
         this.passiveGearsAmount = passiveGearsAmount;
         this.passiveGearsTick = passiveGearsTick;
+        this.towerUpgradeCostRatio = towerUpgradeCostRatio;
+        this.nexusOnHitSpendGears = nexusOnHitSpendGears;
+        this.placeableAbilitiesCostGears = placeableAbilitiesCostGears;
     }
 }
 
 public struct EnemyMods
 {
-    public readonly Func<int, int> CalculateEnemyReward;
     public readonly Func<IEnemy, float, float> CalculateEnemyMovementSpeed;
 
-    public EnemyMods(Func<int, int> enemyRewardCalculation, Func<IEnemy, float, float> enemySpeedCalculation)
+    public EnemyMods(Func<IEnemy, float, float> enemySpeedCalculation)
     {
-        CalculateEnemyReward = enemyRewardCalculation;
         CalculateEnemyMovementSpeed = enemySpeedCalculation;
     }
 }
@@ -34,13 +49,15 @@ public struct TowerMods
     public readonly Func<ITower, float, float> CalculateTowerFireRate;
     public readonly Func<FlamethrowerTower, float, float> CalculateFlamethrowerFireDuration;
     public readonly Func<ITower, float, float> CalculateDOTDuration;
+    public readonly Func<ITower, float, float> CalculateTowerRange;
 
     public TowerMods(
         Func<ITower, float, float> towerProjectileDamageCalculation,
         Func<ITower, float, float> towerCritChanceCalculation,
         Func<ITower, float, float> towerFireRateCalculation,
         Func<FlamethrowerTower, float, float> flamethrowerFireDuration,
-        Func<ITower, float, float> dotDurationPipeline
+        Func<ITower, float, float> dotDurationPipeline,
+        Func<ITower, float, float> rangeCalculation
     )
     {
         CalculateTowerProjectileDamage = towerProjectileDamageCalculation;
@@ -48,6 +65,7 @@ public struct TowerMods
         CalculateTowerFireRate = towerFireRateCalculation;
         CalculateFlamethrowerFireDuration = flamethrowerFireDuration;
         CalculateDOTDuration = dotDurationPipeline;
+        CalculateTowerRange = rangeCalculation;
     }
 }
 
@@ -59,6 +77,7 @@ public static class ModifiersCalculator
         var towerCritChancePipeline = new List<Func<ITower, float, float>>();
         var towerFireRatePipeline = new List<Func<ITower, float, float>>();
         var towerDOTDurationPipeline = new List<Func<ITower, float, float>>();
+        var towerRangePipeline = new List<Func<ITower, float, float>>();
 
         var flamethrowerFireDurationPipeline = new List<Func<FlamethrowerTower, float, float>>();
 
@@ -69,6 +88,13 @@ public static class ModifiersCalculator
 
             switch (towerMod.modifiedAttribute)
             {
+                case TowerAttribute.Range:
+                    towerRangePipeline.Add((tower, range) =>
+                    {
+                        if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return range;
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, range, towerMod.currentRanks);
+                    });
+                    break;
                 case TowerAttribute.Damage:
                     towerDamagePipeline.Add((tower, baseDmg) =>
                     {
@@ -124,56 +150,125 @@ public static class ModifiersCalculator
         Func<ITower, float, float> fireRatePipeline = Compose(towerFireRatePipeline);
         Func<FlamethrowerTower, float, float> flamethrowerFireDuration = Compose(flamethrowerFireDurationPipeline);
         Func<ITower, float, float> dotDurationPipeline = Compose(towerDOTDurationPipeline);
+        Func<ITower, float, float> rangePipeline = Compose(towerRangePipeline);
 
-        return new TowerMods(baseDamagePipeline, critChancePipeline, fireRatePipeline, flamethrowerFireDuration, dotDurationPipeline);
+        return new TowerMods(baseDamagePipeline, critChancePipeline, fireRatePipeline, flamethrowerFireDuration, dotDurationPipeline, rangePipeline);
     }
 
     public static void ModifyTesla(TeslaTower tesla, List<Modifier> modifiers)
     {
-        var additionalChains = 0;
+        int additionalChains = 0;
+        bool manualModeEnabled = false;
+        bool stunFirstEnemyEnabled = false;
+        bool disableBuffsOnHitEnabled = false;
+        bool enableDoubleBeam = false;
+
         foreach (var m in modifiers)
         {
-            if (m is not TowerModifier towerMod) continue;
-            else if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) continue;
+            switch (m)
+            {
+                case TowerModifier towerMod:
+                    if (!TowerModifier.AppliesTo(towerMod, tesla.TowerType()) || towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
 
-            additionalChains += towerMod.currentRanks * (int)towerMod.change;
+                    additionalChains += towerMod.currentRanks * (int)towerMod.change;
+                    break;
+                case UnlockTowerAbilityModifier abilityUnlock:
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, tesla.TowerType())) break;
+
+                    manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
+                    stunFirstEnemyEnabled = stunFirstEnemyEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitStun;
+                    disableBuffsOnHitEnabled = disableBuffsOnHitEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitRemoveEnemyAbilities;
+                    break;
+                case StimModeModifier stimModifier:
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, tesla.TowerType())) break;
+
+                    enableDoubleBeam = enableDoubleBeam || stimModifier.modifies == StimModeModifiers.DoublePayload;
+                    break;
+
+            }
         }
 
         tesla.SetAdditionalChainReach(additionalChains);
+        if (manualModeEnabled) tesla.EnableControlMode();
+        if (stunFirstEnemyEnabled) tesla.EnableStunFirst();
+        if (disableBuffsOnHitEnabled) tesla.EnableDisableBuffs();
+        if (enableDoubleBeam) tesla.EnableDoubleBeam();
     }
 
     public static void ModifyGatling(GatlingTower gatling, List<Modifier> modifiers)
     {
-        var additionalRendingStacks = 0;
+        bool isArmorRendingActive = false;
+        int additionalRendingStacks = 0;
+        bool manualModeEnabled = false;
         foreach (var m in modifiers)
         {
-            if (m is not TowerModifier towerMod) continue;
-            else if (towerMod.modifiedAttribute != TowerAttribute.MaxAppliedStacks) continue;
+            switch (m)
+            {
+                case TowerModifier towerMod:
+                    if (!TowerModifier.AppliesTo(towerMod, gatling.TowerType()) || towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
 
-            additionalRendingStacks += towerMod.currentRanks * (int)towerMod.change;
+                    additionalRendingStacks += towerMod.currentRanks * (int)towerMod.change;
+                    break;
+
+                case UnlockTowerAbilityModifier abilityUnlock:
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, gatling.TowerType())) break;
+
+                    isArmorRendingActive = isArmorRendingActive || abilityUnlock.unlock == TowerUnlocks.ArmorShreding;
+                    manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
+                    break;
+            }
         }
 
+        gatling.SetRendingEnabled(isArmorRendingActive);
         gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
+        if (manualModeEnabled) gatling.EnableControlMode();
     }
 
-    public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)
+    public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
     {
+        bool isSlowOnHitEnabled = false;
+        bool enableDoublePayload = false;
 
-        var enemyRewardPipeline = new List<Func<int, int>>();
+        foreach (var m in modifiers)
+        {
+            switch (m)
+            {
+                case UnlockTowerAbilityModifier abilityUnlock:
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, mortar.TowerType())) break;
+
+                    isSlowOnHitEnabled = isSlowOnHitEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitSlow;
+                    break;
+
+                case StimModeModifier stimModifier:
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, mortar.TowerType())) break;
+
+                    enableDoublePayload = enableDoublePayload || stimModifier.modifies == StimModeModifiers.DoublePayload;
+                    break;
+            }
+        }
+
+        if (isSlowOnHitEnabled) mortar.EnableSlowOnhit();
+        if (enableDoublePayload) mortar.EnableDoublePayload();
+    }
+
+    public static void ModifyDOTTower(IAppliesDOT dotTower, List<Modifier> modifiers)
+    {
+        bool dotEnabled = false;
+        foreach (var m in modifiers)
+        {
+            dotEnabled = m is UnlockTowerAbilityModifier abilityUnlock && abilityUnlock.unlock == TowerUnlocks.OnHitDot;
+            if (dotEnabled) break;
+        }
+
+        dotTower.SetDotEnabled(dotEnabled);
+    }
+
+    public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers, Func<int> ActiveTowersCount)
+    {
         var enemySpeedPipeline = new List<Func<IEnemy, float, float>>();
 
         foreach (var m in modifiers)
         {
-            if (m is EconomyModifier ecoMod)
-            {
-                if (ecoMod.category != EconomyAttributes.PerEnemyKillGears) continue;
-                enemyRewardPipeline.Add((reward) =>
-                {
-                    return Mathf.FloorToInt(ApplyChangeType(ecoMod.changeType, ecoMod.change, reward, 1));
-                });
-                continue;
-            }
-
             if (m is not EnemyModifier enemyMod) continue;
 
             switch (enemyMod.modifiedAttribute)
@@ -182,6 +277,12 @@ public static class ModifiersCalculator
                     enemySpeedPipeline.Add((enemy, speed) =>
                     {
                         if (!EnemyModifier.AppliesTo(enemyMod, enemy.Type)) return speed;
+
+                        if (enemyMod.changeType == ChangeType.PerPlacedTowerAddPercentage)
+                        {
+                            return speed + (enemyMod.change * ActiveTowersCount() * speed);
+                        }
+
                         return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed, 1);
                     });
                     break;
@@ -190,28 +291,10 @@ public static class ModifiersCalculator
             }
         }
 
-        Func<int, int> rewardPipeline = reward =>
-        {
-            int acc = reward;
-            for (int i = 0; i < enemyRewardPipeline.Count; i++)
-                acc = enemyRewardPipeline[i](acc);
-            return acc;
-        };
 
-        if (enemyRewardPipeline.Count == 0) rewardPipeline = reward => reward;
+        Func<IEnemy, float, float> speedPipeline = Compose(enemySpeedPipeline);
 
-        Func<IEnemy, float, float> speedPipeline = (enemy, baseSpeed) =>
-        {
-            float acc = baseSpeed;
-            for (int i = 0; i < enemySpeedPipeline.Count; i++)
-                acc = enemySpeedPipeline[i](enemy, acc);
-            return acc;
-        };
-
-        if (enemySpeedPipeline.Count == 0)
-            speedPipeline = (enemy, speed) => speed;
-
-        return new EnemyMods(enemyRewardCalculation: rewardPipeline, enemySpeedCalculation: speedPipeline);
+        return new EnemyMods(enemySpeedCalculation: speedPipeline);
     }
 
     public static EconomyMods CalculateEconomyMods(float basePassiveTickAmount, float basePassiveGearsPerTickAmount, List<Modifier> modifiers)
@@ -219,25 +302,69 @@ public static class ModifiersCalculator
         Assert.IsNotNull(modifiers);
         float passiveAmount = basePassiveGearsPerTickAmount;
         float passiveTick = basePassiveTickAmount;
+        float towerUpgradeCostRatio = 1f;
+        float nexusOnHitSpendGears = 0;
+        var enemyRewardPipeline = new List<Func<int, int>>();
+        bool placeableAbilitiesCostGears = false;
 
         foreach (var m in modifiers)
         {
-            if (m is not EconomyModifier ecoMod) continue;
-
-            switch (ecoMod.category)
+            if (m is EconomyModifier ecoMod)
             {
-                case EconomyAttributes.PassiveGearsAmount:
-                    passiveAmount = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveAmount, 1);
-                    break;
-                case EconomyAttributes.PassiveGearsTick:
-                    passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick, 1);
-                    break;
+                switch (ecoMod.category)
+                {
+                    case EconomyAttributes.PassiveGearsAmount:
+                        passiveAmount = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveAmount, 1);
+                        break;
+                    case EconomyAttributes.PassiveGearsTick:
+                        passiveTick = ApplyChangeType(ecoMod.changeType, ecoMod.change, passiveTick, 1);
+                        break;
+                    case EconomyAttributes.TowersUpgradeDiscount:
+                        towerUpgradeCostRatio = ApplyChangeType(ecoMod.changeType, ecoMod.change, towerUpgradeCostRatio, 1);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(ecoMod.category), ecoMod.category, "Unsupported economy category modifier.");
+                }
+            }
+            else if (m is EconomyDoubleEdgedMofifier doubleEdgedMofifier)
+            {
+                var benefit = doubleEdgedMofifier.benefit;
+                switch (benefit.category)
+                {
+                    case EconomyAttributes.PerEnemyKillGears:
+                        if (benefit.category != EconomyAttributes.PerEnemyKillGears) continue;
+                        enemyRewardPipeline.Add((reward) => Mathf.FloorToInt(ApplyChangeType(benefit.changeType, benefit.change, reward)));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(benefit.category), benefit.category, "Unsupported economy benefit category modifier.");
+                }
+
+                var disadvantage = doubleEdgedMofifier.disadvantage;
+                switch (disadvantage.category)
+                {
+                    case EconomyAttributes.BaseOnHitDeduction:
+                        nexusOnHitSpendGears = ApplyChangeType(disadvantage.changeType, disadvantage.change, nexusOnHitSpendGears);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(benefit.category), benefit.category, "Unsupported economy disadvantage category modifier.");
+                }
+            }
+            else if (m is AbilityNoCooldownCostGears)
+            {
+                placeableAbilitiesCostGears = true;
             }
         }
 
+
+        Func<int, int> rewardPipeline = Compose(enemyRewardPipeline);
+
         return new EconomyMods(
+            enemyRewardCalculation: rewardPipeline,
             passiveGearsAmount: passiveAmount,
-            passiveGearsTick: passiveTick
+            passiveGearsTick: passiveTick,
+            towerUpgradeCostRatio: towerUpgradeCostRatio,
+            nexusOnHitSpendGears,
+            placeableAbilitiesCostGears
         );
     }
 
@@ -328,7 +455,7 @@ public static class ModifiersCalculator
         return unlockedTowerLevels;
     }
 
-    private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks)
+    private static float ApplyChangeType(ChangeType changeType, float change, float value, int ranks = 1)
     {
         return changeType switch
         {
@@ -355,6 +482,22 @@ public static class ModifiersCalculator
         };
     }
 
+    public static Func<TValue, TValue> Compose<TValue>(
+       IReadOnlyList<Func<TValue, TValue>> steps
+   )
+    {
+        if (steps == null || steps.Count == 0)
+            return static (x) => x;
+
+        return (start) =>
+        {
+            var acc = start;
+            for (var i = 0; i < steps.Count; i++)
+                acc = steps[i](acc);
+            return acc;
+        };
+    }
+
     public static bool IsGainRangeOnHillActive(List<Modifier> modifiers)
     {
         foreach (var m in modifiers)
@@ -362,5 +505,29 @@ public static class ModifiersCalculator
             if (m is UnlockTowerAbilityModifier unlock && unlock.unlock == TowerUnlocks.OnHillRangeIncrease) return true;
         }
         return false;
+    }
+
+    public static void ModifyNexus(Nexus nexus, List<Modifier> modifiers)
+    {
+        for (int i = 0; i < modifiers.Count; i++)
+        {
+            if (modifiers[i] is BaseUnlock unlock &&
+                unlock.unlocks == BaseUnlocks.HealthRegen)
+            {
+                nexus.SetIsHealing(true);
+                return;
+            }
+        }
+
+        nexus.SetIsHealing(false);
+    }
+
+    public static float CooldownReduction(List<Modifier> modifiers)
+    {
+        foreach (var m in modifiers)
+        {
+            if (m is AbilityNoCooldownCostGears) return 1f;
+        }
+        return 0f;
     }
 }

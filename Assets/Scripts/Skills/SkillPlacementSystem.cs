@@ -52,6 +52,7 @@ public class SkillPlacementSystem : MonoBehaviour
 
     private OperationDataDontDestroy operationData;
     private Dictionary<SkillTypes, int> usagePerAbility = new();
+    private float cooldownReduction = 0;
 
     private void Awake()
     {
@@ -61,6 +62,7 @@ public class SkillPlacementSystem : MonoBehaviour
         usagePerAbility = ModifiersCalculator.UsagePerAbility(operationData.Modifiers);
 
         activeFactionSpecificSkills = ModifiersCalculator.GetFactionSpecificSkills(usagePerAbility);
+        cooldownReduction = ModifiersCalculator.CooldownReduction(operationData.Modifiers);
         SetupFactionSpecificSkills();
     }
 
@@ -255,7 +257,7 @@ public class SkillPlacementSystem : MonoBehaviour
         Vector3 tangent = ((Vector3)road.EvaluateTangent(bestT)).normalized;
         return (closestPosition, tangent);
     }
-    
+
     public void BeginPlacement(GameObject prefab, int hotkeyIndex = -1)
     {
         towerPlacementSystem.CancelPlacement();
@@ -320,6 +322,9 @@ public class SkillPlacementSystem : MonoBehaviour
                 );
                 break;
         }
+
+        if (skill is ISkillPlaceable placeableSkill)
+            placeableSkill.SetCooldownReduction(cooldownReduction);
 
         OnUseSkill?.Invoke(skill);
         CancelPlacement();

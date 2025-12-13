@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -225,6 +226,7 @@ public class Beam : MonoBehaviour, IDamageSource
     {
         if (enemy == null) return;
 
+        var effect = owner.DisableBuffsOnHitActive ? EnemyStatusEffect.DisableBuffs : null;
         if (owner.ExecuteActive && enemy.HealthPointsNormalized <= owner.ExecuteThreshold)
         {
             OnDamageDealt?.Invoke(enemy.HealthPoints + 1f);

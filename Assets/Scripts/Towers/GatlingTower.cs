@@ -638,11 +638,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         fireRate = CalculateFireRate(fireRate);
     }
 
-    public void SetDotDuration(float duration)
-    {
-        // gatling doesn't have dot
-    }
-
     public void RecalctCritChance()
     {
         critChance = CalculateCritChance(critChance);
@@ -687,13 +682,19 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         enemiesInRange.Clear();
     }
 
-    public void SetMaxRendingStacks(int max)
+    public void SetRendingEnabled(bool enabled) => armorRendingActive = enabled;
+
+    public void SetMaxRendingStacks(int max) => maxArmourRendingStacks = max;
+
+    public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+
+    public void EnableControlMode()
     {
-        maxArmourRendingStacks = max;
+        infiniteRangeActive = true;
+        towerOverlay.EnableControlMode();
     }
 
-    public void ActivateGainRangeOnHill()
-    {
-        hillRangeSkillActive = true;
-    }
+
+    public float Range() => range;
+    public void SetRange(float range) => this.range = range;
 }

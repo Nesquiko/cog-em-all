@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class TowerOverlay : MonoBehaviour
 {
     [SerializeField] private GameObject takeControlButton;
+    [SerializeField] private bool isTakeControlEnabled = false;
     [SerializeField] private GameObject stimModeButton;
     [SerializeField] private GameObject upgradeButton;
     [SerializeField] private GameObject sellButton;
@@ -44,6 +45,12 @@ public class TowerOverlay : MonoBehaviour
     {
         towerGO = t;
         tower = towerGO.GetComponent<ITower>();
+    }
+
+    public void EnableControlMode()
+    {
+        isTakeControlEnabled = true;
+        AdjustTakeControlButton();
     }
 
     private void Awake()
@@ -118,16 +125,7 @@ public class TowerOverlay : MonoBehaviour
         }
 
         // Controllable
-        if (takeControlButton != null)
-        {
-            bool takeControlEnabled = towerGO.TryGetComponent<ITowerControllable>(out _);
-            takeControlButton.GetComponent<Button>().interactable = takeControlEnabled;
-            takeControlCanvasGroup.alpha = takeControlEnabled ? 1f : 0.5f;
-            takeControlCanvasGroup.interactable = takeControlEnabled;
-            takeControlScaleOnHover.enabled = takeControlEnabled;
-            takeControlCursorPointer.enabled = takeControlEnabled;
-            takeControlTooltipOnButton.enabled = takeControlEnabled;
-        }
+        if (takeControlButton != null) AdjustTakeControlButton();
 
         // Rotateable
         if (rotateButton != null)
@@ -163,7 +161,7 @@ public class TowerOverlay : MonoBehaviour
 
     public void OnTakeControlClicked()
     {
-        if (takeControlButton == null || !towerGO.TryGetComponent<ITowerControllable>(out var tower)) return;
+        if (takeControlButton == null || !isTakeControlEnabled || !towerGO.TryGetComponent<ITowerControllable>(out var tower)) return;
         towerControlManager.TakeControl(tower);
     }
 
@@ -230,5 +228,17 @@ public class TowerOverlay : MonoBehaviour
         stimModeScaleOnHover.enabled = enable;
         stimModeCursorPointer.enabled = enable;
         stimModeTooltipOnButton.enabled = enable;
+    }
+
+    private void AdjustTakeControlButton()
+    {
+        bool takeControlEnabled = towerGO.TryGetComponent<ITowerControllable>(out _) && isTakeControlEnabled;
+        takeControlButton.GetComponent<Button>().interactable = takeControlEnabled;
+        takeControlCanvasGroup.alpha = takeControlEnabled ? 1f : 0.5f;
+        takeControlCanvasGroup.interactable = takeControlEnabled;
+        takeControlScaleOnHover.enabled = takeControlEnabled;
+        takeControlCursorPointer.enabled = takeControlEnabled;
+        takeControlTooltipOnButton.enabled = takeControlEnabled;
+
     }
 }

@@ -7,7 +7,11 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
     [SerializeField] private SkillTypes skillType = SkillTypes.Mine;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
     public SkillTypes SkillType() => skillType;
-    public float GetCooldown() => 5f;
+
+    [SerializeField] private float cooldownReduction = 0;
+    public void SetCooldownReduction(float value) => cooldownReduction = value;
+    public float GetCooldown() => ISkill.DefaultCooldown * (1 - cooldownReduction);
+
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
     public SkillActivationMode ActivationMode() => SkillActivationMode.Placement;
     public DamageSourceType Type() => DamageSourceType.Mine;
@@ -82,7 +86,7 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
             explosionDamage *= doubleTheBoomModifier.damageFractionPerExplosion;
         }
         if (wideDestructionActive)
-        {    
+        {
             explosionRadius = wideDestructionModifier.explosionRadius;
         }
         if (quickFuseActive)
@@ -105,8 +109,8 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
 
         yield return new WaitForSeconds(0.05f);
         Collider[] hits = Physics.OverlapSphere(
-            transform.position, 
-            triggerRadius, 
+            transform.position,
+            triggerRadius,
             enemyMask,
             QueryTriggerInteraction.Collide
         );
@@ -129,7 +133,7 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
         }
 
         if (!armed || triggered) return;
-        
+
         if (other.TryGetComponent<IEnemy>(out var _))
         {
             triggered = true;
