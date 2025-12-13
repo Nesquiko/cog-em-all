@@ -86,14 +86,9 @@ public class HUDPanelUI : MonoBehaviour
         maximizedMinimap = GameObject.FindGameObjectWithTag(maximizedMinimapTag);
 
         operationData = OperationDataDontDestroy.GetOrReadDev();
-        // TODO kili you can use the usagePerAbility dictionary, it also contains airship things, sudden death and mark enemy (their usage counts are not 0)
         usagePerAbility = ModifiersCalculator.UsagePerAbility(operationData.Modifiers);
-        activeFactionSpecificSkills = operationData.GetFactionSpecificSkills();
+        activeFactionSpecificSkills = ModifiersCalculator.GetFactionSpecificSkills(usagePerAbility);
 
-
-        // TODO kili I do not know if this is in right spot, but here is how you get which towers (and to which upgrade level) are enabled
-        //      Based on if they are enabled (unlockedTowerLevels.ContainsKey) disable tower buttons, and then I guess in tower overlay
-        //      enable upgrade button based on the allowed level.
         unlockedTowerLevels = ModifiersCalculator.UnlockedTowerLevels(operationData.Modifiers);
 
         airshipAirstrikeButton = airshipAirstrikeSkill.GetComponentInChildren<SkillButton>();
@@ -114,7 +109,20 @@ public class HUDPanelUI : MonoBehaviour
         towerButtonsPanel.SetActive(true);
         placementInfoPanel.SetActive(false);
 
+        EnableTowerButtons();
         ShowAndEnableFactionSpecificSkills();
+    }
+
+    private void EnableTowerButtons()
+    {
+        bool gatlingUnlocked = unlockedTowerLevels.ContainsKey(TowerTypes.Gatling);
+        gatlingButton.Enable(gatlingUnlocked, permanently: !gatlingUnlocked);
+        bool teslaUnlocked = unlockedTowerLevels.ContainsKey(TowerTypes.Tesla);
+        teslaButton.Enable(teslaUnlocked, permanently: !teslaUnlocked);
+        bool mortarUnlocked = unlockedTowerLevels.ContainsKey(TowerTypes.Mortar);
+        mortarButton.Enable(mortarUnlocked, permanently: !mortarUnlocked);
+        bool flamethrowerUnlocked = unlockedTowerLevels.ContainsKey(TowerTypes.Flamethrower);
+        flamethrowerButton.Enable(flamethrowerUnlocked, permanently: !flamethrowerUnlocked);
     }
 
     private void ShowAndEnableFactionSpecificSkills()
@@ -245,27 +253,35 @@ public class HUDPanelUI : MonoBehaviour
         switch (skill.SkillType())
         {
             case SkillTypes.Wall:
+                wallButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(wallButton, skill.GetCooldown()));
                 break;
             case SkillTypes.OilSpill:
+                oilSpillButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(oilSpillButton, skill.GetCooldown()));
                 break;
             case SkillTypes.Mine:
+                mineButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(mineButton, skill.GetCooldown()));
                 break;
             case SkillTypes.AirshipAirstrike:
+                airshipAirstrikeButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(airshipAirstrikeButton, skill.GetCooldown()));
                 break;
             case SkillTypes.AirshipFreezeZone:
+                airshipFreezeZoneButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(airshipFreezeZoneButton, skill.GetCooldown()));
                 break;
             case SkillTypes.AirshipDisableZone:
+                airshipDisableZoneButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(airshipDisableZoneButton, skill.GetCooldown()));
                 break;
             case SkillTypes.MarkEnemy:
+                markEnemyButton.ConsumeUsage();
                 StartCoroutine(RunSkillCooldown(markEnemyButton, skill.GetCooldown()));
                 break;
             case SkillTypes.SuddenDeath:
+                suddenDeathButton.ConsumeUsage();
                 suddenDeathButton.Enable(false, permanently: true);
                 break;
         }

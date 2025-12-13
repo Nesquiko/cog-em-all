@@ -284,6 +284,23 @@ public static class ModifiersCalculator
     }
 
 
+    public static HashSet<FactionSpecificSkill> GetFactionSpecificSkills(Dictionary<SkillTypes, int> usages)
+    {
+        HashSet<FactionSpecificSkill> result = new();
+        if (usages.ContainsKey(SkillTypes.AirshipAirstrike))
+            result.Add(FactionSpecificSkill.AirshipAirstrike);
+        if (usages.ContainsKey(SkillTypes.AirshipFreezeZone))
+            result.Add(FactionSpecificSkill.AirshipFreezeZone);
+        if (usages.ContainsKey(SkillTypes.AirshipDisableZone))
+            result.Add(FactionSpecificSkill.AirshipDisableZone);
+        if (usages.ContainsKey(SkillTypes.MarkEnemy))
+            result.Add(FactionSpecificSkill.MarkEnemy);
+        if (usages.ContainsKey(SkillTypes.SuddenDeath))
+            result.Add(FactionSpecificSkill.SuddenDeath);
+        return result;
+    }
+
+
     public static Dictionary<TowerTypes, int> UnlockedTowerLevels(List<Modifier> modifiers)
     {
         Dictionary<TowerTypes, int> unlockedTowerLevels = new();

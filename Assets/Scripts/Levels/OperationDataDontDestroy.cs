@@ -13,15 +13,6 @@ public class OperationDataDontDestroy : MonoBehaviour
     [SerializeReference] private List<Modifier> modifiers = new();
     public List<Modifier> Modifiers => modifiers;
 
-    public HashSet<FactionSpecificSkill> GetFactionSpecificSkills() => new() {
-        // TODO: luky
-        FactionSpecificSkill.AirshipAirstrike,
-        FactionSpecificSkill.AirshipFreezeZone,
-        FactionSpecificSkill.AirshipDisableZone,
-        FactionSpecificSkill.MarkEnemy,
-        FactionSpecificSkill.SuddenDeath,
-    };
-
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);

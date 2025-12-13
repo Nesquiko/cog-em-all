@@ -40,6 +40,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private int maxAllowedLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Disable Buffs on Hit")]
@@ -110,8 +111,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     public TowerTypes TowerType() => TowerTypes.Tesla;
 
     public int CurrentLevel() => currentLevel;
-
-    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
+    public int MaxAllowedLevel() => maxAllowedLevel;
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel(), MaxAllowedLevel());
 
     public Transform GetControlPoint() => controlPoint;
 
@@ -125,6 +126,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     private void Awake()
     {
         operationData = OperationDataDontDestroy.GetOrReadDev();
+        maxAllowedLevel = TowerMechanics.GetMaxAllowedLevel(TowerType());
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(operationData.Faction, TowerType()), canvas.transform, true);

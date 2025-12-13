@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -34,6 +35,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private int maxAllowedLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Burn on Hit")]
@@ -108,8 +110,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     public TowerTypes TowerType() => TowerTypes.Flamethrower;
 
     public int CurrentLevel() => currentLevel;
-
-    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
+    public int MaxAllowedLevel() => maxAllowedLevel;
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel(), MaxAllowedLevel());
 
     private OperationDataDontDestroy operationData;
 
@@ -139,6 +141,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private void Awake()
     {
         operationData = OperationDataDontDestroy.GetOrReadDev();
+        maxAllowedLevel = TowerMechanics.GetMaxAllowedLevel(TowerType());
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
 
@@ -278,21 +281,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         CalculateFlameDuration = f;
     }
 
-    public List<IEnemy> GetCurrentEnemiesInRange()
-    {
-        List<IEnemy> currentEnemies = new();
-        foreach (var enemy in enemiesInRange.Values)
-        {
-            if (enemy == null) continue;
-            currentEnemies.Add(enemy);
-        }
-        return currentEnemies;
-    }
+    public List<IEnemy> GetCurrentEnemiesInRange() => enemiesInRange.Values.Where(e => e != null).ToList();
 
     private IEnumerator CooldownRoutine(float duration)
     {
         isCoolingDown = true;
-        // adjust buttons here
+        towerOverlay.AdjustOverlayButtons();
         yield return new WaitForSeconds(duration);
 
         activeFlame.StopFlame();
@@ -300,7 +294,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         yield return new WaitForSeconds(cooldownDuration);
         isCoolingDown = false;
-        // and here
+        towerOverlay.AdjustOverlayButtons();
     }
 
     private void BeginSweep()

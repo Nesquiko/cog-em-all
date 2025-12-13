@@ -91,12 +91,12 @@ public class TowerOverlay : MonoBehaviour
         AdjustOverlayButtons();
     }
 
-    private void AdjustOverlayButtons()
+    public void AdjustOverlayButtons()
     {
         // Upgradeable
         if (upgradeButton != null)
         {
-            bool upgradeEnabled = towerGO.TryGetComponent<ITower>(out var tower) && towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel());
+            bool upgradeEnabled = towerGO.TryGetComponent<ITower>(out var tower) && towerDataCatalog.CanUpgrade(tower.TowerType(), tower.CurrentLevel(), tower.MaxAllowedLevel());
             upgradeButton.GetComponent<Button>().interactable = upgradeEnabled;
             upgradeCanvasGroup.alpha = upgradeEnabled ? 1f : 0.5f;
             upgradeCanvasGroup.interactable = upgradeEnabled;

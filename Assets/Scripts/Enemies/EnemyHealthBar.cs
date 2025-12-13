@@ -8,7 +8,7 @@ public class EnemyHealthBar : MonoBehaviour
 
     private Vector3 initialScale;
 
-    public bool ActiveSelf => gameObject.activeSelf;
+    public bool ActiveSelf => gameObject != null && gameObject.activeSelf;
 
     void Start()
     {

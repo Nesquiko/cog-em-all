@@ -51,13 +51,16 @@ public class SkillPlacementSystem : MonoBehaviour
     private HashSet<FactionSpecificSkill> activeFactionSpecificSkills;
 
     private OperationDataDontDestroy operationData;
+    private Dictionary<SkillTypes, int> usagePerAbility = new();
 
     private void Awake()
     {
         mainCamera = Camera.main;
 
         operationData = OperationDataDontDestroy.GetOrReadDev();
-        activeFactionSpecificSkills = operationData.GetFactionSpecificSkills();
+        usagePerAbility = ModifiersCalculator.UsagePerAbility(operationData.Modifiers);
+
+        activeFactionSpecificSkills = ModifiersCalculator.GetFactionSpecificSkills(usagePerAbility);
         SetupFactionSpecificSkills();
     }
 

@@ -51,10 +51,57 @@ MonoBehaviour:
   - rid: 7348732483175710821
   - rid: 7348732483175710822
   - rid: 7348732483175710823
-  - rid: 7348732483175710824
+  - rid: 240750458701086789
+  - rid: 240750458701086790
+  - rid: 240750458701086798
+  - rid: 240750458701086799
   references:
     version: 2
     RefIds:
+    - rid: 240750458701086789
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar
+        slug: mortar
+        description: Grants access to the Mortar, a long-range artillery platform
+          that lobs explosive shells to devastate enemies in a wide area along distant
+          paths.
+        type: 2
+        toUnlock: 2
+    - rid: 240750458701086790
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Ballistic Superiority
+        slug: ballistic_superiority
+        description: The Brass Army's rigorous gunnery drills and precision forged
+          barrels permanently increase Gatling Tower damage by 10%.
+        type: 0
+        applyTo: 0
+        modifiedAttribute: 0
+        changeType: 1
+        change: 1.1
+        currentRanks: 0
+        maxRanks: 1
+    - rid: 240750458701086798
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Nullwave Strike
+        slug: nullwave_strike
+        description: An overpressure airstrike floods a targeted area with disruptive
+          waves that completely disable enemy abilities, but foes emerging from the
+          zone are fully restored.
+        type: 2
+        unlocks: 3
+    - rid: 240750458701086799
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Sudden Death
+        slug: sudden_death
+        description: "Lock the operation into a high\u2011stakes state where Gear
+          income is boosted to 150%, but a single enemy damaging the base will immediately
+          destroy it and you will fail the operation."
+        type: 2
+        toUnlock: 7
     - rid: 7348732483175710819
       type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
       data:
@@ -66,7 +113,7 @@ MonoBehaviour:
         addTo: 0
         maxRanks: 3
         numOfUsages: 2
-        currentRanks: 3
+        currentRanks: 0
     - rid: 7348732483175710820
       type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
       data:
@@ -78,7 +125,7 @@ MonoBehaviour:
         addTo: 1
         maxRanks: 3
         numOfUsages: 2
-        currentRanks: 3
+        currentRanks: 0
     - rid: 7348732483175710821
       type: {class: AbilityAddUsages, ns: , asm: Assembly-CSharp}
       data:
@@ -90,7 +137,7 @@ MonoBehaviour:
         addTo: 2
         maxRanks: 3
         numOfUsages: 2
-        currentRanks: 3
+        currentRanks: 0
     - rid: 7348732483175710822
       type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
       data:
@@ -111,13 +158,3 @@ MonoBehaviour:
           it.
         type: 2
         toUnlock: 1
-    - rid: 7348732483175710824
-      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
-      data:
-        name: Mine
-        slug: mine
-        description: Grants access to the Mine, letting you plant hidden explosives
-          on the path that arm when stepped on, then detonate after a short fuse
-          to damage nearby enemies.
-        type: 2
-        toUnlock: 2

@@ -43,6 +43,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     [Header("Upgrades")]
     [SerializeField] private int currentLevel = 1;
+    [SerializeField] private int maxAllowedLevel = 1;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
     [SerializeField] private GameObject level2;
     [SerializeField] private GameObject level3;
@@ -145,8 +146,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public TowerTypes TowerType() => TowerTypes.Gatling;
 
     public int CurrentLevel() => currentLevel;
-
-    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel());
+    public int MaxAllowedLevel() => maxAllowedLevel;
+    public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel(), MaxAllowedLevel());
 
     public Transform GetControlPoint() => controlPoint;
 
@@ -160,6 +161,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     private void Awake()
     {
         operationData = OperationDataDontDestroy.GetOrReadDev();
+        maxAllowedLevel = TowerMechanics.GetMaxAllowedLevel(TowerType());
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
         towerOverlayGO = Instantiate(towerOverlayCatalog.FromFactionAndTowerType(operationData.Faction, TowerType()), canvas.transform, true);

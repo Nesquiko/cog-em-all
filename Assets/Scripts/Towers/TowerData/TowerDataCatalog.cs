@@ -85,8 +85,9 @@ public class TowerDataCatalog : ScriptableObject
         return FromTypeAndLevel(type, level) as TData;
     }
 
-    public bool CanUpgrade(TowerTypes type, int currentLevel)
+    public bool CanUpgrade(TowerTypes type, int currentLevel, int maxAllowedLevel)
     {
+        if (currentLevel + 1 > maxAllowedLevel) return false;
         if (!catalog.TryGetValue(type, out var data)) return false;
         return data.CanUpgrade(currentLevel);
     }
@@ -104,8 +105,9 @@ public class TowerDataCatalog : ScriptableObject
 
         TowerTypes type = tower.TowerType();
         int currentLevel = tower.CurrentLevel();
+        int maxAllowedLevel = tower.MaxAllowedLevel();
 
-        if (!CanUpgrade(type, currentLevel)) return false;
+        if (!CanUpgrade(type, currentLevel, maxAllowedLevel)) return false;
 
         int nextLevel = currentLevel + 1;
         TowerDataBase nextLevelData = FromTypeAndLevel(type, nextLevel);

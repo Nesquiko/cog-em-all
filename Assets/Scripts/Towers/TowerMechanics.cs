@@ -29,6 +29,7 @@ public interface ITower
     int InstanceID();
     TowerTypes TowerType();
     int CurrentLevel();
+    int MaxAllowedLevel();
     void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
     void SetFireRateCalculation(Func<float, float> f);
@@ -279,5 +280,12 @@ public static class TowerMechanics
                 material.SetColor(EmissionColorID, defaultEmissionColor);
             }
         }
+    }
+
+    public static int GetMaxAllowedLevel(TowerTypes type)
+    {
+        OperationDataDontDestroy operationData = OperationDataDontDestroy.GetOrReadDev();
+        Dictionary<TowerTypes, int> unlockedTowerLevels = ModifiersCalculator.UnlockedTowerLevels(operationData.Modifiers);
+        return unlockedTowerLevels.GetValueOrDefault(type, 1);
     }
 }
