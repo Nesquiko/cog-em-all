@@ -175,13 +175,14 @@ MonoBehaviour:
   infiniteRangeActive: 1
   manualBulletRange: 1000
   currentLevel: 1
+  maxAllowedLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   level2: {fileID: 4422688299798069689}
   level3: {fileID: 7381872628780169154}
   level3Gear1: {fileID: 5997629224435059383}
   level3Gear2: {fileID: 9150739086088636786}
   gearSpinSpeed: 180
-  slowOnHitActive: 1
+  slowOnHitActive: 0
   armorRendingActive: 0
   maxArmourRendingStacks: 2
   hillRangeSkillActive: 1

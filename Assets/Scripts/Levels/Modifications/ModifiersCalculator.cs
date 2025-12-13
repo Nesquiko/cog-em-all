@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -155,15 +156,25 @@ public static class ModifiersCalculator
 
     public static void ModifyGatling(GatlingTower gatling, List<Modifier> modifiers)
     {
-        var additionalRendingStacks = 0;
+        bool isArmorRendingActive = false;
+        int additionalRendingStacks = 0;
         foreach (var m in modifiers)
         {
-            if (m is not TowerModifier towerMod) continue;
-            else if (towerMod.modifiedAttribute != TowerAttribute.MaxAppliedStacks) continue;
+            switch (m)
+            {
+                case TowerModifier towerMod:
+                    if (towerMod.modifiedAttribute != TowerAttribute.MaxAppliedStacks) continue;
 
-            additionalRendingStacks += towerMod.currentRanks * (int)towerMod.change;
+                    additionalRendingStacks += towerMod.currentRanks * (int)towerMod.change;
+                    break;
+
+                case UnlockTowerAbilityModifier abilityUnlock:
+                    isArmorRendingActive = abilityUnlock.unlock == TowerUnlocks.ArmorShreding;
+                    break;
+            }
         }
 
+        gatling.SetRendingEnabled(isArmorRendingActive);
         gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
     }
 
