@@ -8,7 +8,11 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
     [SerializeField] private SkillTypes skillType = SkillTypes.Wall;
     [SerializeField] private Quaternion placementRotationOffset = Quaternion.Euler(0f, 0f, 0f);
     public SkillTypes SkillType() => skillType;
-    public float GetCooldown() => 5f;
+
+    [SerializeField] private float cooldownReduction = 0;
+    public void SetCooldownReduction(float value) => cooldownReduction = value;
+    public float GetCooldown() => ISkill.DefaultCooldown * (1 - cooldownReduction);
+
     public Quaternion PlacementRotationOffset() => placementRotationOffset;
     public SkillActivationMode ActivationMode() => SkillActivationMode.Placement;
     public Transform Transform() => transform;
@@ -69,7 +73,7 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
 
         wallReinforced.SetActive(steelReinforcementActive);
         wallSpiked.SetActive(sharpThornsActive);
-        
+
         if (steelReinforcementActive)
         {
             maxHealthPoints *= steelReinforcementModifier.healthPointsMultiplier;

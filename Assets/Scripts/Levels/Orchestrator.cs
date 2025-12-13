@@ -142,10 +142,14 @@ class Orchestrator : MonoBehaviour
             gearRewardMultiplier = suddenDeath.GearRewardMultiplier;
             nexus.MakeVolatile();
         }
+
         HUDPanelUI.StartSkillCooldown(skill);
 
-        SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
-        SpendGears(skillData.cost);
+        if (economyMods.placeableAbilitiesCostGears)
+        {
+            SkillData skillData = skillDataCatalog.FromType(skill.SkillType());
+            SpendGears(skillData.cost);
+        }
     }
 
     private void OnNexusDestroyed(Nexus nexus)

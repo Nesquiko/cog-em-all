@@ -237,7 +237,7 @@ public class AbilityModifierUnlock : Modifier
 [Serializable]
 // I know this isn't generic, but there isn't another modifier for "double edged" behaviour on abilities,
 // so I am betting on my future self, that I will not come up with something like this...
-public class AbilityNoCooldownCost100Gears : Modifier { }
+public class AbilityNoCooldownCostGears : Modifier { }
 
 public enum StimModeModifiers
 {
@@ -644,7 +644,7 @@ public class ModifiersDatabaseEditor : Editor
                     Add(modifsListProp, new EconomyDoubleEdgedMofifier());
 
                 if (GUILayout.Button("Ability: No CD, 100 Gears"))
-                    Add(modifsListProp, new AbilityNoCooldownCost100Gears());
+                    Add(modifsListProp, new AbilityNoCooldownCostGears());
 
                 if (GUILayout.Button("Stim Mode Modifier"))
                     Add(modifsListProp, new StimModeModifier());

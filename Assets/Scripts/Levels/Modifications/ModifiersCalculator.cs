@@ -12,13 +12,15 @@ public struct EconomyMods
     public readonly float passiveGearsTick;
     public readonly float towerUpgradeCostRatio;
     public readonly float nexusOnHitSpendGears;
+    public readonly bool placeableAbilitiesCostGears;
 
     public EconomyMods(
         Func<int, int> enemyRewardCalculation,
         float passiveGearsAmount,
         float passiveGearsTick,
         float towerUpgradeCostRatio,
-        float nexusOnHitSpendGears
+        float nexusOnHitSpendGears,
+        bool placeableAbilitiesCostGears
         )
     {
         this.CalculateEnemyReward = enemyRewardCalculation;
@@ -26,6 +28,7 @@ public struct EconomyMods
         this.passiveGearsTick = passiveGearsTick;
         this.towerUpgradeCostRatio = towerUpgradeCostRatio;
         this.nexusOnHitSpendGears = nexusOnHitSpendGears;
+        this.placeableAbilitiesCostGears = placeableAbilitiesCostGears;
     }
 }
 
@@ -278,6 +281,7 @@ public static class ModifiersCalculator
         float towerUpgradeCostRatio = 1f;
         float nexusOnHitSpendGears = 0;
         var enemyRewardPipeline = new List<Func<int, int>>();
+        bool placeableAbilitiesCostGears = false;
 
         foreach (var m in modifiers)
         {
@@ -321,6 +325,10 @@ public static class ModifiersCalculator
                         throw new ArgumentOutOfRangeException(nameof(benefit.category), benefit.category, "Unsupported economy disadvantage category modifier.");
                 }
             }
+            else if (m is AbilityNoCooldownCostGears)
+            {
+                placeableAbilitiesCostGears = true;
+            }
         }
 
 
@@ -331,7 +339,8 @@ public static class ModifiersCalculator
             passiveGearsAmount: passiveAmount,
             passiveGearsTick: passiveTick,
             towerUpgradeCostRatio: towerUpgradeCostRatio,
-            nexusOnHitSpendGears
+            nexusOnHitSpendGears,
+            placeableAbilitiesCostGears
         );
     }
 
@@ -487,5 +496,14 @@ public static class ModifiersCalculator
         }
 
         nexus.SetIsHealing(false);
+    }
+
+    public static float CooldownReduction(List<Modifier> modifiers)
+    {
+        foreach (var m in modifiers)
+        {
+            if (m is AbilityNoCooldownCostGears) return 1f;
+        }
+        return 0f;
     }
 }
