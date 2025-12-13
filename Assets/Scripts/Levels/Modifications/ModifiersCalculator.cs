@@ -178,15 +178,16 @@ public static class ModifiersCalculator
         gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
     }
 
-    public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
+    public static void ModifyDOTTower(IAppliesDOT dotTower, List<Modifier> modifiers)
     {
-        bool bleedEnabled = false;
+        bool dotEnabled = false;
         foreach (var m in modifiers)
         {
-            bleedEnabled = m is UnlockTowerAbilityModifier abilityUnlock && abilityUnlock.unlock == TowerUnlocks.OnHitDot;
+            dotEnabled = m is UnlockTowerAbilityModifier abilityUnlock && abilityUnlock.unlock == TowerUnlocks.OnHitDot;
+            if (dotEnabled) break;
         }
 
-        mortar.SetDotEnabled(bleedEnabled);
+        dotTower.SetDotEnabled(dotEnabled);
     }
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)

@@ -104,6 +104,7 @@ class Orchestrator : MonoBehaviour
                 break;
 
             case FlamethrowerTower flamethrower:
+                ModifiersCalculator.ModifyDOTTower(flamethrower, modifiers);
                 flamethrower.SetFlameDurationCalculation((fireDuration) => towerMods.CalculateFlamethrowerFireDuration(flamethrower, fireDuration));
                 flamethrower.SetDotDuration(towerMods.CalculateDOTDuration(flamethrower, flamethrower.BurnDuration));
                 break;
@@ -113,7 +114,7 @@ class Orchestrator : MonoBehaviour
                 break;
 
             case MortarTower mortar:
-                ModifiersCalculator.ModifyMortar(mortar, modifiers);
+                ModifiersCalculator.ModifyDOTTower(mortar, modifiers);
                 break;
         }
     }
