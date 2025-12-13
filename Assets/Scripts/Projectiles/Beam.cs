@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -221,12 +222,13 @@ public class Beam : MonoBehaviour, IDamageSource
     {
         if (enemy == null) return;
 
+        var effect = owner.DisableBuffsOnHitActive ? EnemyStatusEffect.DisableBuffs : null;
         if (owner.ExecuteActive && enemy.HealthPointsNormalized <= owner.ExecuteThreshold)
         {
-            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true, effect: owner.DisableBuffsOnHitActive ? EnemyStatusEffect.DisableBuffs : null);
+            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true, effect);
             return;
         }
 
-        enemy.TakeDamage(dmg, Type(), crit);
+        enemy.TakeDamage(dmg, Type(), crit, effect);
     }
 }

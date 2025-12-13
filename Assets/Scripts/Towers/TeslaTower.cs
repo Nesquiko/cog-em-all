@@ -512,4 +512,6 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public void EnableStunFirst() => stunFirstEnemy = true;
 
+    public void EnableDisableBuffs() => disableBuffsOnHitActive = true;
+
 }

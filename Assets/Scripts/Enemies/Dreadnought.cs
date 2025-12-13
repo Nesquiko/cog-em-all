@@ -98,6 +98,8 @@ public class Dreadnought : MonoBehaviour, IEnemy
 
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
+        if (effect?.type == EffectType.DisabledBuffs) BreakShield();
+
         if (shieldActive)
         {
             shieldHealthPoints -= damage;
