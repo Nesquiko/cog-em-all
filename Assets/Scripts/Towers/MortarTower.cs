@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
-public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerStimulable
+public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerStimulable, IAppliesDOT
 {
     [Header("Stats")]
     [SerializeField] private float shellDamage = 120f;
@@ -45,10 +45,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private GameObject level3;
 
     [Header("Slow on Hit")]
-    [SerializeField] private bool slowOnHitActive = true;
+    [SerializeField] private bool slowOnHitActive = false;
 
     [Header("Bleed on Hit")]
-    [SerializeField] private bool bleedOnHitActive = true;
+    [SerializeField] private bool bleedOnHitActive = false;
     [SerializeField] private float bleedDuration = EnemyStatusEffect.BleedDefaultDuration;
 
     [Header("Range on Hill")]
@@ -503,15 +503,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         critChance = CalculateCritChance(critChance);
     }
 
-    public void RecalctCritChance()
-    {
-        critChance = CalculateCritChance(critChance);
-    }
+    public void RecalctCritChance() => critChance = CalculateCritChance(critChance);
 
-    public void SetDotDuration(float duration)
-    {
-        bleedDuration = duration;
-    }
+    public void SetDotEnabled(bool enabled) => bleedOnHitActive = enabled;
+    public void SetDotDuration(float duration) => bleedDuration = duration;
 
     public void ActivateStim()
     {

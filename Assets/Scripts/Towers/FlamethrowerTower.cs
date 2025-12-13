@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
 
-public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable, ITowerStimulable
+public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellable, ITowerRotateable, ITowerStimulable, IAppliesDOT
 {
     [Header("Stats")]
     [SerializeField] private float flameDamagePerPulse = 20f;
@@ -39,7 +39,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
     [Header("Burn on Hit")]
-    [SerializeField] private bool burnOnHitActive = true;
+    [SerializeField] private bool burnOnHitActive = false;
 
     [Header("Range on Hill")]
     [SerializeField] private bool hillRangeSkillActive = false;
@@ -175,10 +175,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         flame.SetActive(false);
     }
 
-    public void SetDotDuration(float burnDuration)
-    {
-        this.burnDuration = burnDuration;
-    }
+    public void SetDotEnabled(bool enabled) => burnOnHitActive = enabled;
+    public void SetDotDuration(float burnDuration) => this.burnDuration = burnDuration;
 
     private float EffectiveRange(float r)
     {

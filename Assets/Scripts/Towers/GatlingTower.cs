@@ -626,11 +626,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         fireRate = CalculateFireRate(fireRate);
     }
 
-    public void SetDotDuration(float duration)
-    {
-        // gatling doesn't have dot
-    }
-
     public void RecalctCritChance()
     {
         critChance = CalculateCritChance(critChance);

@@ -465,15 +465,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         critChance = CalculateCritChance(critChance);
     }
 
-    public void RecalctCritChance()
-    {
-        critChance = CalculateCritChance(critChance);
-    }
-
-    public void SetDotDuration(float duration)
-    {
-        // tesla doesn't have dot
-    }
+    public void RecalctCritChance() => critChance = CalculateCritChance(critChance);
 
     public void ActivateStim()
     {

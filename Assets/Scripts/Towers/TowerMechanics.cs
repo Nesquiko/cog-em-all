@@ -33,10 +33,15 @@ public interface ITower
     void ApplyUpgrade(TowerDataBase data);
     void SetDamageCalculation(Func<float, float> f);
     void SetFireRateCalculation(Func<float, float> f);
-    void SetDotDuration(float burnDuration);
     void ActivateGainRangeOnHill();
     void SetCritChangeCalculation(Func<float, float> f);
     void RecalctCritChance();
+}
+
+public interface IAppliesDOT
+{
+    void SetDotEnabled(bool enabled);
+    void SetDotDuration(float burnDuration);
 }
 
 public interface ITowerSelectable : ITower

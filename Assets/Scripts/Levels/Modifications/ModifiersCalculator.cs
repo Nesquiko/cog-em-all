@@ -153,7 +153,7 @@ public static class ModifiersCalculator
         if (manualModeEnabled) tesla.EnableControlMode();
     }
 
-    public static void ModifyGatlin(GatlingTower gatling, List<Modifier> modifiers)
+    public static void ModifyGatling(GatlingTower gatling, List<Modifier> modifiers)
     {
         var additionalRendingStacks = 0;
         foreach (var m in modifiers)
@@ -165,6 +165,17 @@ public static class ModifiersCalculator
         }
 
         gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
+    }
+
+    public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
+    {
+        bool bleedEnabled = false;
+        foreach (var m in modifiers)
+        {
+            bleedEnabled = m is UnlockTowerAbilityModifier abilityUnlock && abilityUnlock.unlock == TowerUnlocks.OnHitDot;
+        }
+
+        mortar.SetDotEnabled(bleedEnabled);
     }
 
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers)
