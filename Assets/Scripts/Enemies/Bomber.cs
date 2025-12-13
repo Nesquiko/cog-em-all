@@ -18,7 +18,8 @@ public class Bomber : MonoBehaviour, IEnemy
     [SerializeField] private float dashSpeedMultiplier = 4f;
 
     [Header("Friendly Fire")]
-    [SerializeField] private bool friendlyFireActive = true;
+    [SerializeField] private bool friendlyFireActive = false;
+    public void EnableFriendlyFire() => friendlyFireActive = true;
     [SerializeField] private float explosionRadius = 5f;
     [SerializeField] private float explosionDamageFactor = 0.5f;
     [SerializeField] private LayerMask enemyMask;
@@ -37,10 +38,7 @@ public class Bomber : MonoBehaviour, IEnemy
     public float HealthPoints => behaviour.HealthPoints;
     public float Speed { get => behaviour.Speed; set => behaviour.Speed = value; }
     public Transform Transform => transform;
-    public bool Marked
-    {
-        get => behaviour.Marked;
-    }
+    public bool Marked => behaviour.Marked;
 
     private bool isDashing;
 
@@ -151,10 +149,7 @@ public class Bomber : MonoBehaviour, IEnemy
         };
     }
 
-    public void DEV_MakeUnkillable()
-    {
-        behaviour.DEV_isUnkillable = true;
-    }
+    public void DEV_MakeUnkillable() => behaviour.DEV_isUnkillable = true;
 
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {

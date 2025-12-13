@@ -61,7 +61,7 @@ MonoBehaviour:
   dashCooldown: 5
   dashDuration: 0.15
   dashSpeedMultiplier: 3
-  friendlyFireActive: 1
+  friendlyFireActive: 0
   explosionRadius: 5
   explosionDamageFactor: 0.5
   enemyMask:

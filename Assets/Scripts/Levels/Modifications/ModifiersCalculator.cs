@@ -35,10 +35,12 @@ public struct EconomyMods
 public struct EnemyMods
 {
     public readonly Func<IEnemy, float, float> CalculateEnemyMovementSpeed;
+    public readonly bool enableBomberFriendlyfire;
 
-    public EnemyMods(Func<IEnemy, float, float> enemySpeedCalculation)
+    public EnemyMods(Func<IEnemy, float, float> enemySpeedCalculation, bool enableBomberFriendlyfire)
     {
         CalculateEnemyMovementSpeed = enemySpeedCalculation;
+        this.enableBomberFriendlyfire = enableBomberFriendlyfire;
     }
 }
 
@@ -266,35 +268,42 @@ public static class ModifiersCalculator
     public static EnemyMods CalculateEnemyMods(List<Modifier> modifiers, Func<int> ActiveTowersCount)
     {
         var enemySpeedPipeline = new List<Func<IEnemy, float, float>>();
+        bool enableBomberFriendlyfire = false;
 
         foreach (var m in modifiers)
         {
-            if (m is not EnemyModifier enemyMod) continue;
-
-            switch (enemyMod.modifiedAttribute)
+            switch (m)
             {
-                case EnemyAttributes.MovementSpeed:
-                    enemySpeedPipeline.Add((enemy, speed) =>
-                    {
-                        if (!EnemyModifier.AppliesTo(enemyMod, enemy.Type)) return speed;
-
-                        if (enemyMod.changeType == ChangeType.PerPlacedTowerAddPercentage)
-                        {
-                            return speed + (enemyMod.change * ActiveTowersCount() * speed);
-                        }
-
-                        return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed, 1);
-                    });
+                case EnemyAbilityUnlock unlock:
+                    enableBomberFriendlyfire = enableBomberFriendlyfire || unlock.toUnlock == EnemyAbilities.BomberOnDeathFriendlyFire;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(enemyMod.modifiedAttribute), enemyMod.modifiedAttribute, "Unsupported modified attritbute.");
+                case EnemyModifier enemyMod:
+                    switch (enemyMod.modifiedAttribute)
+                    {
+                        case EnemyAttributes.MovementSpeed:
+                            enemySpeedPipeline.Add((enemy, speed) =>
+                            {
+                                if (!EnemyModifier.AppliesTo(enemyMod, enemy.Type)) return speed;
+
+                                if (enemyMod.changeType == ChangeType.PerPlacedTowerAddPercentage)
+                                {
+                                    return speed + (enemyMod.change * ActiveTowersCount() * speed);
+                                }
+
+                                return ApplyChangeType(enemyMod.changeType, enemyMod.change, speed, 1);
+                            });
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(enemyMod.modifiedAttribute), enemyMod.modifiedAttribute, "Unsupported modified attritbute.");
+                    }
+                    break;
             }
         }
 
 
         Func<IEnemy, float, float> speedPipeline = Compose(enemySpeedPipeline);
 
-        return new EnemyMods(enemySpeedCalculation: speedPipeline);
+        return new EnemyMods(enemySpeedCalculation: speedPipeline, enableBomberFriendlyfire);
     }
 
     public static EconomyMods CalculateEconomyMods(float basePassiveTickAmount, float basePassiveGearsPerTickAmount, List<Modifier> modifiers)

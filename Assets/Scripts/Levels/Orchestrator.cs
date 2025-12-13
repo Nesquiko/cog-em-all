@@ -275,6 +275,9 @@ class Orchestrator : MonoBehaviour
         enemiesLive += 1;
 
         operationStatistics.totalEnemies++;
+
+        if (enemyMods.enableBomberFriendlyfire && spawned is Bomber bomber)
+            bomber.EnableFriendlyFire();
     }
 
     private void OnEnemyKilled(IEnemy killed, EnemyMods enemyMods)
@@ -345,7 +348,7 @@ class Orchestrator : MonoBehaviour
         StartCoroutine(LerpTimeScale(5f));
 
         towerSelectionManager.DisableSelection();
-        
+
         operationStatistics.cleared = cleared;
         operationStatistics.duration = Time.time - operationStartTime;
         operationResultUI.Initialize(operationStatistics);
