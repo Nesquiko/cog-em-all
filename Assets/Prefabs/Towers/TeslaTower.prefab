@@ -140,12 +140,13 @@ MonoBehaviour:
   executeActive: 1
   executeThreshold: 0.3
   currentLevel: 1
+  maxAllowedLevel: 1
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
-  disableBuffsOnHitActive: 1
+  disableBuffsOnHitActive: 0
   hillRangeSkillActive: 0
   heightRangeMultiplier: 0.05
   baselineHeight: 0
-  stunFirstEnemy: 1
+  stunFirstEnemy: 0
   stimMultiplier: 2
   stimDuration: 5
   stimCooldown: 5

@@ -147,6 +147,7 @@ public static class ModifiersCalculator
     {
         int additionalChains = 0;
         bool manualModeEnabled = false;
+        bool stunFirstEnemyEnabled = false;
         foreach (var m in modifiers)
         {
             switch (m)
@@ -158,12 +159,14 @@ public static class ModifiersCalculator
                     break;
                 case UnlockTowerAbilityModifier abilityUnlock:
                     manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
+                    stunFirstEnemyEnabled = stunFirstEnemyEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitStun;
                     break;
             }
         }
 
         tesla.SetAdditionalChainReach(additionalChains);
         if (manualModeEnabled) tesla.EnableControlMode();
+        if (stunFirstEnemyEnabled) tesla.EnableStunFirst();
     }
 
     public static void ModifyGatling(GatlingTower gatling, List<Modifier> modifiers)
