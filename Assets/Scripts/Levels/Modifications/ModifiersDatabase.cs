@@ -13,14 +13,6 @@ public enum Faction
     OverpressureCollective = 2,
 }
 
-[Obsolete("For now this enum is useless, maybe the modifiers are expressive enough without this. First implement the logic for modifiers, then remove this if it is useless.")]
-public enum ModifierType
-{
-    Buff,
-    Debuff,
-    Unlock
-}
-
 public enum ChangeType
 {
     Add = 0,       // adds flat value (e.g., +1 gear)
@@ -36,7 +28,6 @@ public abstract class Modifier
     public string name;
     public string slug;
     [TextArea] public string description;
-    public ModifierType type;
 }
 
 public interface IRankedModifier
