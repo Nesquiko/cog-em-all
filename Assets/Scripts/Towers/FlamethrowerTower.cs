@@ -52,7 +52,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private float stimCooldown = 5f;
 
     [Header("Sweep")]
-    [SerializeField] private bool sweepEnabled = true;
+    [SerializeField] private bool sweepEnabled = false;
+    public void EnableSweep() => sweepEnabled = true;
     [SerializeField] private float sweepAmplitudeDegrees = 45f;
     [SerializeField] private float sweepCycleSeconds = 1.5f;
     [SerializeField] private float sweepReturnSpeed = 30f;

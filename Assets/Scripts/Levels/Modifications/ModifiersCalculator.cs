@@ -253,6 +253,25 @@ public static class ModifiersCalculator
         if (enableDoublePayload) mortar.EnableDoublePayload();
     }
 
+    public static void ModifyFlamethrower(FlamethrowerTower flamethrower, List<Modifier> modifiers)
+    {
+        bool enableSweep = false;
+
+        foreach (var m in modifiers)
+        {
+            switch (m)
+            {
+                case StimModeModifier stimModifier:
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, flamethrower.TowerType())) break;
+
+                    enableSweep = enableSweep || stimModifier.modifies == StimModeModifiers.FlamethrowerSweepLeftToRight;
+                    break;
+            }
+        }
+
+        if (enableSweep) flamethrower.EnableSweep();
+    }
+
     public static void ModifyDOTTower(IAppliesDOT dotTower, List<Modifier> modifiers)
     {
         bool dotEnabled = false;

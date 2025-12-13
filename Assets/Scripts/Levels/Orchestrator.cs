@@ -116,6 +116,7 @@ class Orchestrator : MonoBehaviour
                 ModifiersCalculator.ModifyDOTTower(flamethrower, modifiers);
                 flamethrower.SetFlameDurationCalculation((fireDuration) => towerMods.CalculateFlamethrowerFireDuration(flamethrower, fireDuration));
                 flamethrower.SetDotDuration(towerMods.CalculateDOTDuration(flamethrower, flamethrower.BurnDuration));
+                ModifiersCalculator.ModifyFlamethrower(flamethrower, modifiers);
                 break;
 
             case GatlingTower gatling:
