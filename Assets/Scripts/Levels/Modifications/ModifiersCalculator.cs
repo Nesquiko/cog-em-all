@@ -161,20 +161,30 @@ public static class ModifiersCalculator
         bool manualModeEnabled = false;
         bool stunFirstEnemyEnabled = false;
         bool disableBuffsOnHitEnabled = false;
+        bool enableDoubleBeam = false;
+
         foreach (var m in modifiers)
         {
             switch (m)
             {
                 case TowerModifier towerMod:
-                    if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
+                    if (!TowerModifier.AppliesTo(towerMod, TowerTypes.Tesla) || towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
 
                     additionalChains += towerMod.currentRanks * (int)towerMod.change;
                     break;
                 case UnlockTowerAbilityModifier abilityUnlock:
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, TowerTypes.Tesla)) break;
+
                     manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
                     stunFirstEnemyEnabled = stunFirstEnemyEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitStun;
                     disableBuffsOnHitEnabled = disableBuffsOnHitEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitRemoveEnemyAbilities;
                     break;
+                case StimModeModifier stimModifier:
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, TowerTypes.Tesla)) break;
+
+                    enableDoubleBeam = enableDoubleBeam || stimModifier.modifies == StimModeModifiers.DoublePayload;
+                    break;
+
             }
         }
 
@@ -182,6 +192,7 @@ public static class ModifiersCalculator
         if (manualModeEnabled) tesla.EnableControlMode();
         if (stunFirstEnemyEnabled) tesla.EnableStunFirst();
         if (disableBuffsOnHitEnabled) tesla.EnableDisableBuffs();
+        if (enableDoubleBeam) tesla.EnableDoubleBeam();
     }
 
     public static void ModifyGatling(GatlingTower gatling, List<Modifier> modifiers)

@@ -65,10 +65,10 @@ public class TowerModifier : Modifier, IRankedModifier
     public int currentRanks = 0;
     public int maxRanks = 1;
 
-    public static bool AppliesTo(TowerModifier mod, TowerTypes towerType)
-    {
-        return mod.applyTo == TowerModifierApplyTo.All || (TowerTypes)mod.applyTo == towerType;
-    }
+    public static bool AppliesTo(TowerModifier mod, TowerTypes towerType) => AppliesTo(mod.applyTo, towerType);
+
+    public static bool AppliesTo(TowerModifierApplyTo applyTo, TowerTypes towerType) =>
+        applyTo == TowerModifierApplyTo.All || (TowerTypes)applyTo == towerType;
 
     public void SetCurrentRanks(int value) => currentRanks = value;
     public int CurrentRanks() => currentRanks;
@@ -256,7 +256,7 @@ public enum StimModeModifiers
 [Serializable]
 public class StimModeModifier : Modifier
 {
-    public TowerTypes applyTo;
+    public TowerModifierApplyTo applyTo;
     public StimModeModifiers modifies;
 }
 

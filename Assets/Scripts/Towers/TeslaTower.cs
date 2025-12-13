@@ -61,6 +61,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     [Header("Double Beam")]
     [SerializeField] private bool doubleBeamActive = false;
+    public void EnableDoubleBeam() => doubleBeamActive = true;
     [SerializeField] private float damageFactor = 0.75f;
 
     [Header("VFX")]
