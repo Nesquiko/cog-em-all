@@ -120,6 +120,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     public int MaxAllowedLevel() => maxAllowedLevel;
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel(), MaxAllowedLevel());
 
+    public event Action<TowerTypes, float> OnDamageDealt;
+    public event Action<TowerTypes> OnEnemyKilled;
+    public event Action<TowerTypes> OnUpgrade;
+
     private OperationDataDontDestroy operationData;
 
     private void OnDrawGizmosSelected()
@@ -281,6 +285,10 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
+    private void HandleDamageDealt(float damage) => OnDamageDealt?.Invoke(TowerType(), damage);
+
+    private void HandleEnemyKilled() => OnEnemyKilled?.Invoke(TowerType());
+
     private void Shoot(IEnemy enemy)
     {
         StartCoroutine(ShootRoutine(enemy));
@@ -303,6 +311,9 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
         GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
         Shell shell = shellGO.GetComponent<Shell>();
+
+        shell.OnDamageDealt += HandleDamageDealt;
+        shell.OnEnemyKilled += HandleEnemyKilled;
         shell.Initialize(this);
 
         if (recoilRoutine != null)
@@ -481,6 +492,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         innerCollider.radius = EffectiveRange(data.minRange);
         SetRangeProjector(outerRangeProjector, EffectiveRange(data.maxRange));
         SetRangeProjector(innerRangeProjector, EffectiveRange(data.minRange));
+
+        OnUpgrade?.Invoke(TowerType());
     }
 
     public void SetDamageCalculation(Func<float, float> f)

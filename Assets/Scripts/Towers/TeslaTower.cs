@@ -116,6 +116,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public Transform GetControlPoint() => controlPoint;
 
+    public event Action<TowerTypes, float> OnDamageDealt;
+    public event Action<TowerTypes> OnEnemyKilled;
+    public event Action<TowerTypes> OnUpgrade;
+
     private OperationDataDontDestroy operationData;
 
     void OnDrawGizmosSelected()
@@ -251,6 +255,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
+    private void HandleDamageDealt(float damage) => OnDamageDealt?.Invoke(TowerType(), damage);
+
+    private void HandleEnemyKilled() => OnEnemyKilled?.Invoke(TowerType());
+
     private List<IEnemy> GetValidTargets(int count)
     {
         List<IEnemy> validTargets = new();
@@ -312,6 +320,9 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         bool isCritical = UnityEngine.Random.value < critChance;
         float damage = (CalculateBaseBeamDamage?.Invoke(beamDamage) ?? beamDamage) * ((stimActive && doubleBeamActive) ? damageFactor : 1f);
         if (isCritical) damage *= critMultiplier;
+
+        beam.OnDamageDealt += HandleDamageDealt;
+        beam.OnEnemyKilled += HandleEnemyKilled;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
 
         if (stimActive && stunFirstEnemy)
@@ -444,6 +455,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
         capsuleCollider.radius = EffectiveRange(range);
         SetRangeProjector(EffectiveRange(range));
+
+        OnUpgrade?.Invoke(TowerType());
     }
 
     public void SetDamageCalculation(Func<float, float> f)

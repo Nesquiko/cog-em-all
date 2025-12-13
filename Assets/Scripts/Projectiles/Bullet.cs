@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,6 +11,9 @@ public class Bullet : MonoBehaviour, IDamageSource
     private bool crit;
 
     public DamageSourceType Type() => DamageSourceType.Bullet;
+
+    public event Action<float> OnDamageDealt;
+    public event Action OnEnemyKilled;
 
     public void Initialize(GatlingTower ownerTower, Transform enemyTarget, float dmg, bool isCrit)
     {
@@ -43,7 +47,10 @@ public class Bullet : MonoBehaviour, IDamageSource
             if (owner.SlowOnHitActive) effect = EnemyStatusEffect.Slow;
             else if (owner.ArmorRendingActive) effect = EnemyStatusEffect.ArmorShred(owner.MaxArmorRendingStacks);
 
+            OnDamageDealt?.Invoke(damage);
+            if (enemy.HealthPoints < damage) OnEnemyKilled?.Invoke();
             enemy.TakeDamage(damage, Type(), crit, effect);
+            
             Destroy(gameObject);
         }
 

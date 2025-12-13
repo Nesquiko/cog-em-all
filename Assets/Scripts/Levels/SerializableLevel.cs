@@ -6,6 +6,8 @@ using System;
 [Serializable]
 public class SerializableLevel
 {
+    public string operationName;
+    public float operationDifficulty;
     public PlayerResources playerResources;
     public List<Wave> waves = new();
     public List<Spline> pathSplines = new();

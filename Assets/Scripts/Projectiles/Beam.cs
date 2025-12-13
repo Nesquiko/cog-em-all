@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,9 @@ public class Beam : MonoBehaviour, IDamageSource
     private bool crit;
 
     public DamageSourceType Type() => DamageSourceType.Beam;
+
+    public event Action<float> OnDamageDealt;
+    public event Action OnEnemyKilled;
 
     public void Initialize(TeslaTower ownerTower, Transform from, Transform to, float dmg, bool isCritical)
     {
@@ -223,10 +227,14 @@ public class Beam : MonoBehaviour, IDamageSource
 
         if (owner.ExecuteActive && enemy.HealthPointsNormalized <= owner.ExecuteThreshold)
         {
-            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true, effect: owner.DisableBuffsOnHitActive ? EnemyStatusEffect.DisableBuffs : null);
+            OnDamageDealt?.Invoke(enemy.HealthPoints + 1f);
+            OnEnemyKilled?.Invoke();
+            enemy.TakeDamage(enemy.HealthPoints + 1f, Type(), true);
             return;
         }
 
-        enemy.TakeDamage(dmg, Type(), crit);
+        OnDamageDealt?.Invoke(damage);
+        if (enemy.HealthPoints < dmg) OnEnemyKilled?.Invoke();
+        enemy.TakeDamage(dmg, Type(), crit, effect: owner.DisableBuffsOnHitActive ? EnemyStatusEffect.DisableBuffs : null);
     }
 }

@@ -23,6 +23,9 @@ public class Flame : MonoBehaviour, IDamageSource
 
     public DamageSourceType Type() => DamageSourceType.Flame;
 
+    public event Action<float> OnDamageDealt;
+    public event Action OnEnemyKilled;
+
     public void Initialize(FlamethrowerTower ownerTower, float flameRange)
     {
         owner = ownerTower;
@@ -113,6 +116,9 @@ public class Flame : MonoBehaviour, IDamageSource
         {
             bool isCritical = UnityEngine.Random.value < critChance;
             float damage = isCritical ? baseDamagePerPulse * critMultiplier : baseDamagePerPulse;
+
+            OnDamageDealt?.Invoke(damage);
+            if (enemy.HealthPoints < damage) OnEnemyKilled?.Invoke();
             enemy.TakeDamage(damage, Type(), isCritical, effect: owner.BurnOnHitActive ? EnemyStatusEffect.Burn(burnDuration) : null);
         }
     }

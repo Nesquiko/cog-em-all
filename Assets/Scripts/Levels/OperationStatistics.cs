@@ -26,6 +26,30 @@ public class OperationStatistics
     [Header("Towers")]
     public int[] towerKills;
 
+    public static OperationStatistics Empty()
+    {
+        return new()
+        {
+            cleared = false,
+            operationName = "",
+            duration = 0f,
+            totalWaves = 0,
+            clearedWaves = 0,
+
+            totalEnemies = 0,
+            killedEnemies = 0,
+            damageDealt = 0,
+            damageTaken = 0,
+
+            gearsEarned = 0,
+            gearsSpent = 0,
+            towersBuilt = 0,
+            towersUpgraded = 0,
+
+            towerKills = new int[4]
+        };
+    }
+
     public static OperationStatistics CreateDummyCleared()
     {
         var random = new System.Random();
@@ -33,7 +57,7 @@ public class OperationStatistics
         int totalWaves = random.Next(5, 15);
         int totalEnemies = random.Next(500, 1500); 
 
-        return new OperationStatistics {
+        return new() {
             cleared = true,
             operationName = "Operation Badwater Basin",
             duration = random.Next(300, 720),
@@ -67,7 +91,7 @@ public class OperationStatistics
         int totalWaves = random.Next(5, 15);
         int totalEnemies = random.Next(500, 1500);
 
-        return new OperationStatistics
+        return new()
         {
             cleared = false,
             operationName = "Operation Badwater Basin",

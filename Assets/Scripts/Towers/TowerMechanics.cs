@@ -37,6 +37,10 @@ public interface ITower
     void ActivateGainRangeOnHill();
     void SetCritChangeCalculation(Func<float, float> f);
     void RecalctCritChance();
+
+    event Action<TowerTypes, float> OnDamageDealt;
+    event Action<TowerTypes> OnEnemyKilled;
+    event Action<TowerTypes> OnUpgrade;
 }
 
 public interface ITowerSelectable : ITower

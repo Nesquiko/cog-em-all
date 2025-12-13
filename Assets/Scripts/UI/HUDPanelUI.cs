@@ -110,6 +110,7 @@ public class HUDPanelUI : MonoBehaviour
         placementInfoPanel.SetActive(false);
 
         EnableTowerButtons();
+        EnableSkillButtons();
         ShowAndEnableFactionSpecificSkills();
     }
 
@@ -123,6 +124,16 @@ public class HUDPanelUI : MonoBehaviour
         mortarButton.Enable(mortarUnlocked, permanently: !mortarUnlocked);
         bool flamethrowerUnlocked = unlockedTowerLevels.ContainsKey(TowerTypes.Flamethrower);
         flamethrowerButton.Enable(flamethrowerUnlocked, permanently: !flamethrowerUnlocked);
+    }
+
+    private void EnableSkillButtons()
+    {
+        bool wallUnlocked = usagePerAbility.ContainsKey(SkillTypes.Wall);
+        wallButton.Enable(wallUnlocked, permanently: !wallUnlocked);
+        bool oilSpillUnlocked = usagePerAbility.ContainsKey(SkillTypes.OilSpill);
+        oilSpillButton.Enable(oilSpillUnlocked, permanently: !oilSpillUnlocked);
+        bool mineUnlocked = usagePerAbility.ContainsKey(SkillTypes.Mine);
+        mineButton.Enable(mineUnlocked, permanently: !mineUnlocked);
     }
 
     private void ShowAndEnableFactionSpecificSkills()
@@ -167,6 +178,9 @@ public class HUDPanelUI : MonoBehaviour
         placementObjectNameLabel.text = towerData.DisplayName;
         placementObjectCostLabel.text = $"{level1Data.Cost} Gears";
 
+        foreach (var mod in modifiers)
+            mod.SetActive(false);
+
         activeModifiersLabel.text = "";
 
         towerButtonsPanel.SetActive(false);
@@ -188,7 +202,7 @@ public class HUDPanelUI : MonoBehaviour
 
         if (skillModifierCatalog.skillModifierIndices.TryGetValue(skillType, out int[] indices))
         {
-            HashSet<SkillModifiers> activeModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
+            HashSet<SkillModifiers> activeModifiers = SkillMechanics.ActiveModifiersFromSkillType(skillType);
 
             foreach (int i in indices)
             {
@@ -289,6 +303,7 @@ public class HUDPanelUI : MonoBehaviour
 
     private IEnumerator RunSkillCooldown(SkillButton button, float duration)
     {
+        if (!button.ShouldRunCooldown) yield break;
         button.SetCoolingDown(true);
 
         float t = 0f;

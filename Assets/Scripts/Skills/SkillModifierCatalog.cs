@@ -74,33 +74,6 @@ public class SkillModifierCatalog : ScriptableObject
         };
     }
 
-    // TODO: luky -> fill this with actual active modifiers
-    public HashSet<SkillModifiers> ActiveModifiersFromSkillType(SkillTypes type)
-    {
-        return type switch
-        {
-            SkillTypes.Wall => new()
-            {
-                SkillModifiers.SteelReinforcement,
-                SkillModifiers.SharpThorns,
-                SkillModifiers.LeftoverDebris,
-            },
-            SkillTypes.OilSpill => new()
-            {
-                SkillModifiers.SatansWrath,
-                SkillModifiers.GooeyGoo,
-                SkillModifiers.StickityStick,
-            },
-            SkillTypes.Mine => new()
-            {
-                SkillModifiers.DoubleTheBoom,
-                SkillModifiers.WideDestruction,
-                SkillModifiers.QuickFuse,
-            },
-            _ => null,
-        };
-    }
-
     public readonly Dictionary<SkillTypes, int[]> skillModifierIndices = new()
     {
         { SkillTypes.Wall, new[] { 0, 1, 2 } },

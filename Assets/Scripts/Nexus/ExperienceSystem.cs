@@ -78,4 +78,38 @@ public class ExperienceSystem : MonoBehaviour
         if (r < 0f) r = 0f;
         if (xpMultiplier < 1.0f) xpMultiplier = 1.0f;
     }
+
+    public float ComputeTotalXP()
+    {
+        float totalXP = 0f;
+        for (int i = 1; i < level; i++)
+            totalXP += GetDeltaXP(i);
+        return totalXP + XP;
+    }
+
+    public void InitializeFromTotalXP(float totalXP)
+    {
+        currentXP = 0f;
+        level = 1;
+
+        while (level < maxLevel)
+        {
+            float nextLevelXP = XPToNextLevel;
+            if (totalXP >= nextLevelXP)
+            {
+                totalXP -= nextLevelXP;
+                level++;
+            }
+            else
+            {
+                currentXP = totalXP;
+                break;
+            }
+        }
+
+        if (level >= maxLevel)
+            currentXP = 0f;
+
+        OnXPChanged?.Invoke(currentXP, XPToNextLevel);
+    }
 }

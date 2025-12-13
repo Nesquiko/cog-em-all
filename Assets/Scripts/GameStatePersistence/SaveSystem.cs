@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using GLTFast.Schema;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -84,6 +82,7 @@ public class FactionSaveState
     }
 
     public int level;
+    public float totalXP;
 
     [Serializable]
     public class SkillNodeEntry

@@ -38,8 +38,9 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
     private bool permanentlyDisabled = false;
 
     public bool CanPlaceSkill => isEnabled && !isCoolingDown && !permanentlyDisabled;
+    public bool ShouldRunCooldown => remainingUsages > 0 && !permanentlyDisabled;
 
-    HashSet<SkillTypes> infiniteUsageSkills = new()
+    private readonly HashSet<SkillTypes> infiniteUsageSkills = new()
     {
         SkillTypes.AirshipAirstrike, SkillTypes.AirshipFreezeZone, SkillTypes.AirshipDisableZone, SkillTypes.MarkEnemy, SkillTypes.SuddenDeath
     };

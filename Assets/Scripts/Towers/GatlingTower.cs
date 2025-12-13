@@ -151,6 +151,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public Transform GetControlPoint() => controlPoint;
 
+    public event Action<TowerTypes, float> OnDamageDealt;
+    public event Action<TowerTypes> OnEnemyKilled;
+    public event Action<TowerTypes> OnUpgrade;
+
     private OperationDataDontDestroy operationData;
 
     private void OnDrawGizmosSelected()
@@ -310,6 +314,10 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
+    private void HandleDamageDealt(float damage) => OnDamageDealt?.Invoke(TowerType(), damage);
+    
+    private void HandleEnemyKilled() => OnEnemyKilled?.Invoke(TowerType());
+
     private void Shoot(IEnemy enemy)
     {
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
@@ -320,6 +328,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         float dmg = CalculateBaseBulletDamage?.Invoke(bulletDamage) ?? bulletDamage;
         if (isCritical) dmg *= critMultiplier;
 
+        bullet.OnDamageDealt += HandleDamageDealt;
+        bullet.OnEnemyKilled += HandleEnemyKilled;
         bullet.Initialize(this, enemy.Transform, dmg, isCritical);
 
         HandleRecoil();
@@ -602,6 +612,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
         capsuleCollider.radius = EffectiveRange(range);
         SetRangeProjector(EffectiveRange(range));
+
+        OnUpgrade?.Invoke(TowerType());
     }
 
     private IEnumerator SpinLevel3Gear(Transform gear)

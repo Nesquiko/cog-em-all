@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Cinemachine;
@@ -12,8 +13,9 @@ class Orchestrator : MonoBehaviour
     private SerializableLevel level;
     private int wavesSpawned = 0;
     private int enemiesLive = 0;
+    private bool operationEnded = false;
 
-    private Dictionary<int, ITower> towers = new();
+    private readonly Dictionary<int, ITower> towers = new();
 
     [SerializeField] private TowerDataCatalog towerDataCatalog;
     [SerializeField] private SkillDataCatalog skillDataCatalog;
@@ -40,6 +42,7 @@ class Orchestrator : MonoBehaviour
     [SerializeField, Range(1f, 2f)] private float gearRewardMultiplier = 1f;
 
     private OperationStatistics operationStatistics;
+    private float operationStartTime;
 
     private int gears = 0;
 
@@ -67,7 +70,7 @@ class Orchestrator : MonoBehaviour
         Assert.IsTrue(wavesSpawned <= level.waves.Count);
         Assert.IsTrue(enemiesLive >= 0, $"enemies live is not greater or equal to 0, {enemiesLive}");
 
-        if (wavesSpawned == level.waves.Count && enemiesLive == 0)
+        if (wavesSpawned == level.waves.Count && enemiesLive == 0 && !operationEnded)
         {
             OperationEnd(cleared: true);
         }
@@ -75,6 +78,11 @@ class Orchestrator : MonoBehaviour
 
     private void OnPlaceTower(ITower tower)
     {
+        operationStatistics.towersBuilt++;
+
+        tower.OnDamageDealt += OnTowerDamageDealt;
+        tower.OnEnemyKilled += OnTowerEnemyKilled;
+        tower.OnUpgrade += OnTowerUpgrade;
 
         tower.SetDamageCalculation((baseDmg) => towerMods.CalculateTowerProjectileDamage(tower, baseDmg));
 
@@ -84,7 +92,6 @@ class Orchestrator : MonoBehaviour
         {
             other.RecalctCritChance();
         }
-
 
         tower.SetFireRateCalculation((fireRate) => towerMods.CalculateTowerFireRate(tower, fireRate));
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
@@ -106,9 +113,24 @@ class Orchestrator : MonoBehaviour
                 break;
 
             case GatlingTower gatling:
-                ModifiersCalculator.ModifyGatlin(gatling, modifiers);
+                ModifiersCalculator.ModifyGatling(gatling, modifiers);
                 break;
         }
+    }
+
+    private void OnTowerDamageDealt(TowerTypes towerType, float damage)
+    {
+        operationStatistics.damageDealt += Mathf.FloorToInt(damage);
+    }
+
+    private void OnTowerEnemyKilled(TowerTypes towerType)
+    {
+        operationStatistics.towerKills[(int)towerType]++;
+    }
+
+    private void OnTowerUpgrade(TowerTypes towerType)
+    {
+        operationStatistics.towersUpgraded++;
     }
 
     private void OnSellTower(ITower tower)
@@ -142,9 +164,20 @@ class Orchestrator : MonoBehaviour
         OperationEnd(cleared: false);
     }
 
-    private void OnNexusHealthChange(Nexus nexus)
+    private void OnNexusHealthChange(Nexus nexus, float damage)
     {
         menuPanelUI.UpdateNexusHealth(nexus.HealthPointsNormalized());
+        operationStatistics.damageTaken += (int)damage;
+    }
+
+    private void InitializeStatistics()
+    {
+        operationStartTime = Time.time;
+
+        operationStatistics = OperationStatistics.Empty();
+        operationStatistics.operationName = level.operationName;
+        operationStatistics.totalWaves = level.waves.Count;
+        operationStatistics.towerKills = new int[Enum.GetValues(typeof(TowerTypes)).Length];
     }
 
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer, OperationDataDontDestroy operationData)
@@ -167,6 +200,8 @@ class Orchestrator : MonoBehaviour
         waveCounterInfo.SetGameSpeed(1f);
 
         var gearsRoutine = StartCoroutine(PassiveGearsIncomeRoutine(economyMods));
+
+        InitializeStatistics();
 
         for (int w = 0; w < level.waves.Count; w++)
         {
@@ -220,6 +255,8 @@ class Orchestrator : MonoBehaviour
             spawned.DEV_MakeUnkillable();
         }
         enemiesLive += 1;
+
+        operationStatistics.totalEnemies++;
     }
 
     private void OnEnemyKilled(IEnemy killed, EnemyMods enemyMods)
@@ -227,6 +264,8 @@ class Orchestrator : MonoBehaviour
         int reward = enemyMods.CalculateEnemyReward(killed.OnKillGearsReward);
         AddGears(reward);
         enemiesLive -= 1;
+
+        operationStatistics.killedEnemies++;
     }
 
     public void AddGears(int amount)
@@ -235,6 +274,8 @@ class Orchestrator : MonoBehaviour
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
         UpdateSkillButtons();
+
+        if (amount > 0) operationStatistics.gearsEarned += amount;
     }
 
     public void SpendGears(int amount)
@@ -243,6 +284,8 @@ class Orchestrator : MonoBehaviour
         HUDPanelUI.UpdateGears(gears);
         UpdateTowerButtons();
         UpdateSkillButtons();
+
+        if (amount > 0) operationStatistics.gearsSpent += amount;
     }
 
     private void UpdateTowerButtons()
@@ -277,12 +320,16 @@ class Orchestrator : MonoBehaviour
 
     private void OperationEnd(bool cleared)
     {
+        operationEnded = true;
+
         brain.enabled = false;
 
         StartCoroutine(LerpTimeScale(5f));
 
         towerSelectionManager.DisableSelection();
-        operationStatistics = cleared ? OperationStatistics.CreateDummyCleared() : OperationStatistics.CreateDummyFailed();
+        
+        operationStatistics.cleared = cleared;
+        operationStatistics.duration = Time.time - operationStartTime;
         operationResultUI.Initialize(operationStatistics);
 
         HUDPanelUI.gameObject.SetActive(false);

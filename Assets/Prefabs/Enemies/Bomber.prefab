@@ -98,6 +98,7 @@ MonoBehaviour:
   maxHealthPoints: 50
   healthBar: {fileID: 190142121739465054}
   disableBuffsHealFraction: 0.1
+  DEV_isUnkillable: 0
   jumpHeight: 0.5
   forwardDistance: 0.4
   duration: 0.4
@@ -972,7 +973,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2fa44a0194a6f5141aaa9724a61a19c6, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8607221873085707923}
+      addedObject: {fileID: 8113212433469733740}
   m_SourcePrefab: {fileID: 100100000, guid: 2fa44a0194a6f5141aaa9724a61a19c6, type: 3}
 --- !u!137 &1856071532029836362 stripped
 SkinnedMeshRenderer:
@@ -999,7 +1000,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 2fa44a0194a6f5141aaa9724a61a19c6, type: 3}
   m_PrefabInstance: {fileID: 7869977736674359563}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &8607221873085707923
+--- !u!95 &8113212433469733740
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -1008,7 +1009,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7059021726347691098}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 2fa44a0194a6f5141aaa9724a61a19c6, type: 3}
   m_Controller: {fileID: 9100000, guid: 09e5dd8334599da43ac0ab38cc902cb3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0

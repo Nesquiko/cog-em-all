@@ -14,6 +14,8 @@ public class OverviewManager : MonoBehaviour
     [SerializeField] private Image factionSymbol;
     [SerializeField] private GameObject operationLayout;
     [SerializeField] private GameObject skillModifiers;
+    [SerializeField] private GameObject factionDisplay;
+    [SerializeField] private GameObject levelTree;
     [SerializeField] private TMP_Text toggleMainContentText;
     [SerializeField] private Image[] difficultyFillImages;
 
@@ -37,6 +39,8 @@ public class OverviewManager : MonoBehaviour
         this.factionData = factionData;
 
         currentMainContent = operationLayout;
+        factionDisplay.SetActive(true);
+        levelTree.SetActive(false);
 
         UpdateVisuals();
     }
@@ -45,7 +49,9 @@ public class OverviewManager : MonoBehaviour
     {
         currentMainContent = currentMainContent == operationLayout ? skillModifiers : operationLayout;
         operationLayout.SetActive(currentMainContent == operationLayout);
+        factionDisplay.SetActive(currentMainContent == operationLayout);
         skillModifiers.SetActive(currentMainContent == skillModifiers);
+        levelTree.SetActive(currentMainContent == skillModifiers);
 
         toggleMainContentText.text = currentMainContent == operationLayout ? "Skill Modifiers" : "Operation Layout";
     }

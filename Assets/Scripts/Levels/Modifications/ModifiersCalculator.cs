@@ -142,7 +142,7 @@ public static class ModifiersCalculator
         tesla.SetAdditionalChainReach(additionalChains);
     }
 
-    public static void ModifyGatlin(GatlingTower gatling, List<Modifier> modifiers)
+    public static void ModifyGatling(GatlingTower gatling, List<Modifier> modifiers)
     {
         var additionalRendingStacks = 0;
         foreach (var m in modifiers)

@@ -44,6 +44,8 @@ public class OperationResultUI : MonoBehaviour
     [SerializeField] private CinemachineBrain brain;
     [SerializeField] private TowerDataCatalog towerDataCatalog;
 
+    private OperationStatistics operationStatistics;
+
     private void Awake()
     {
         mainCamera = Camera.main;
@@ -52,16 +54,12 @@ public class OperationResultUI : MonoBehaviour
 
     private void SetTitle(bool cleared)
     {
-        this.title.text = cleared ? "OPERATION CLEARED" : "OPERATION FAILED";
+        title.text = cleared ? "OPERATION CLEARED" : "OPERATION FAILED";
 
-        if (ColorUtility.TryParseHtmlString(cleared ? "#88FFC1" : "#C00011", out UnityEngine.Color color))
-        {
-            this.title.color = color;
-        }
+        if (ColorUtility.TryParseHtmlString(cleared ? "#88FFC1" : "#C00011", out Color color))
+            title.color = color;
         else
-        {
-            this.title.color = UnityEngine.Color.black;
-        }
+            title.color = Color.black;
     }
 
     private string FormatDuration(float seconds) =>
@@ -151,16 +149,18 @@ public class OperationResultUI : MonoBehaviour
 
     public void Initialize(OperationStatistics statistics)
     {
-        SetTitle(statistics.cleared);
-        this.operationName.text = statistics.operationName;
-        this.duration.text = FormatDuration(statistics.duration);
-        this.waves.text = $"{statistics.clearedWaves} / {statistics.totalWaves}";
-        this.enemies.text = $"{statistics.killedEnemies} / {statistics.totalEnemies}";
-        this.damage.text = $"{statistics.damageDealt} / {statistics.damageTaken}";
-        this.gears.text = $"{statistics.gearsEarned} / {statistics.gearsSpent}";
-        this.towers.text = $"{statistics.towersBuilt} / {statistics.towersUpgraded}";
+        operationStatistics = statistics;
 
-        this.retryCanvasGroup.alpha = statistics.cleared ? 1f : 0f;
+        SetTitle(statistics.cleared);
+        operationName.text = statistics.operationName;
+        duration.text = FormatDuration(statistics.duration);
+        waves.text = $"{statistics.clearedWaves} / {statistics.totalWaves}";
+        enemies.text = $"{statistics.killedEnemies} / {statistics.totalEnemies}";
+        damage.text = $"{statistics.damageDealt} / {statistics.damageTaken}";
+        gears.text = $"{statistics.gearsEarned} / {statistics.gearsSpent}";
+        towers.text = $"{statistics.towersBuilt} / {statistics.towersUpgraded}";
+
+        retryCanvasGroup.alpha = statistics.cleared ? 0f : 1f;
 
         ShowTowerKills(statistics.towerKills);
         ShowTowerMVP(statistics.towerKills);
@@ -169,6 +169,7 @@ public class OperationResultUI : MonoBehaviour
 
     public void RetryOperation()
     {
+        if (operationStatistics.cleared) return;
         Time.timeScale = 1f;
         brain.enabled = true;
         SceneLoader.ReloadCurrentScene();

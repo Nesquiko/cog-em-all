@@ -113,6 +113,10 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     public int MaxAllowedLevel() => maxAllowedLevel;
     public bool CanUpgrade() => towerDataCatalog.CanUpgrade(TowerType(), CurrentLevel(), MaxAllowedLevel());
 
+    public event Action<TowerTypes, float> OnDamageDealt;
+    public event Action<TowerTypes> OnEnemyKilled;
+    public event Action<TowerTypes> OnUpgrade;
+
     private OperationDataDontDestroy operationData;
 
     private void OnDrawGizmosSelected()
@@ -170,6 +174,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Vector3 flamePosition = new(firePoint.position.x, 2f, firePoint.position.z);
         GameObject flame = Instantiate(flamePrefab, flamePosition, firePoint.rotation);
         activeFlame = flame.GetComponent<Flame>();
+        activeFlame.OnDamageDealt += HandleDamageDealt;
+        activeFlame.OnEnemyKilled += HandleEnemyKilled;
         activeFlame.Initialize(this, EffectiveRange(range));
         activeFlame.SetBurnDuration(burnDuration);
         flame.SetActive(false);
@@ -393,6 +399,10 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         target = TowerMechanics.HandleEnemyRemoval(deadEnemy, enemiesInRange, target);
     }
 
+    private void HandleDamageDealt(float damage) => OnDamageDealt?.Invoke(TowerType(), damage);
+
+    private void HandleEnemyKilled() => OnEnemyKilled?.Invoke(TowerType());
+
     public int InstanceID() => gameObject.GetInstanceID();
 
     public void Select()
@@ -499,6 +509,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         activeFlame.UpdateRange(EffectiveRange(range));
         SetRangeProjector(EffectiveRange(range));
+
+        OnUpgrade?.Invoke(TowerType());
     }
 
     public void SetDamageCalculation(Func<float, float> f)

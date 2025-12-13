@@ -22,12 +22,12 @@ public class Nexus : MonoBehaviour, IDamageable
     public Transform Transform() => transform;
 
     public event Action<Nexus> OnDestroyed;
-    public event Action<Nexus> OnHealthChanged;
+    public event Action<Nexus, float> OnHealthChanged;
 
     private void Awake()
     {
         healthPoints = maxHealthPoints;
-        OnHealthChanged?.Invoke(this);
+        OnHealthChanged?.Invoke(this, 0);
 
         nexusVignette.Initialize(this);
     }
@@ -42,7 +42,7 @@ public class Nexus : MonoBehaviour, IDamageable
             nexusHealthBar.SetActive(true);
         }
 
-        OnHealthChanged?.Invoke(this);
+        OnHealthChanged?.Invoke(this, damage);
 
         if (healthPoints <= 0f)
         {
@@ -75,6 +75,6 @@ public class Nexus : MonoBehaviour, IDamageable
     public void MakeVolatile()
     {
         healthPoints = 1f;
-        OnHealthChanged?.Invoke(this);
+        OnHealthChanged?.Invoke(this, maxHealthPoints - 1f);
     }
 }

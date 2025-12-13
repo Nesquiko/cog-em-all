@@ -1,4 +1,6 @@
 {
+  "operationName": "Operation Pilot",
+  "operationDifficulty": 0.4,
   "playerResources": { "initialGears": 1000 },
   "waves": [
     {

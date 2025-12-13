@@ -1,9 +1,11 @@
 using System;
+using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIMenuManager : MonoBehaviour
 {
-
     public enum Panel
     {
         // skips 0, because on init the currentPanel will be 0, which means "dont show anything"
@@ -23,9 +25,37 @@ public class UIMenuManager : MonoBehaviour
 
     private Panel currentPanel;
 
+    [Header("Tab Indicator")]
+    [SerializeField] private RectTransform indicator;
+    [SerializeField] private RectTransform factionsTabRoot;
+    [SerializeField] private RectTransform overviewTabRoot;
+    [SerializeField] private RectTransform towersTabRoot;
+    [SerializeField] private float indicatorMoveDuration = 0.25f;
+    [SerializeField] private AnimationCurve indicatorEase = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    private Coroutine indicatorMoveRoutine;
+
+    [Header("Experience")]
+    [SerializeField] private Image experienceBar;
+    [SerializeField] private TMP_Text expGained;
+    [SerializeField] private TMP_Text expNeeded;
+    [SerializeField] private ExperienceSystem experienceSystem;
+    [SerializeField] private float expFillDuration = 0.4f;
+
+    private Coroutine xpFillRoutine;
+
     private void Awake()
     {
         saveContext = SaveContextDontDestroy.GetOrCreateDev();
+        experienceSystem.OnXPChanged += HandleXPChanged;
+        experienceSystem.OnLevelUp += HandleLevelUp;
+
+        experienceSystem.InitializeFromTotalXP(saveContext.LastFactionSaveState().totalXP);
+    }
+
+    private void OnEnable()
+    {
+        experienceSystem.InitializeFromTotalXP(saveContext.LastFactionSaveState().totalXP);
     }
 
     private void Start()
@@ -74,5 +104,102 @@ public class UIMenuManager : MonoBehaviour
         skillTreeUI.gameObject.SetActive(toShow == Panel.SkillTree);
 
         currentPanel = toShow;
+
+        MoveIndicatorToPanel(toShow);
+    }
+
+    private void MoveIndicatorToPanel(Panel targetPanel)
+    {
+        RectTransform targetRoot = GetTabRoot(targetPanel);
+
+        if (indicatorMoveRoutine != null)
+            StopCoroutine(indicatorMoveRoutine);
+
+        indicatorMoveRoutine = StartCoroutine(MoveIndicatorCoroutine(targetRoot));
+    }
+
+    private IEnumerator MoveIndicatorCoroutine(RectTransform target)
+    {
+        Vector3 startPosition = indicator.position;
+        Vector3 endPosition = target.position;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / indicatorMoveDuration;
+            float easedT = indicatorEase.Evaluate(t);
+            indicator.position = Vector3.Lerp(startPosition, endPosition, easedT);
+            yield return null;
+        }
+
+        indicator.position = endPosition;
+        indicatorMoveRoutine = null;
+    }
+
+    private RectTransform GetTabRoot(Panel panel)
+    {
+        return panel switch
+        {
+            Panel.Overview => overviewTabRoot,
+            Panel.Factions => factionsTabRoot,
+            Panel.Towers => towersTabRoot,
+            Panel.SkillTree => factionsTabRoot,
+            _ => null,
+        };
+    }
+
+    private void HandleXPChanged(float currentXP, float xpToNextLevel)
+    {
+        float progress = Mathf.Clamp01(currentXP / xpToNextLevel);
+
+        if (xpFillRoutine != null) StopCoroutine(xpFillRoutine);
+
+        xpFillRoutine = StartCoroutine(AnimateXPBar(progress));
+
+        expGained.text = $"{currentXP:F0}";
+        expNeeded.text = $"{xpToNextLevel:F0}";
+
+        SaveFactionExperience();
+    }
+
+    private void SaveFactionExperience()
+    {
+        SaveData save = saveContext.CurrentSave;
+        FactionSaveState factionSave = save.LastPlayedFaction switch
+        {
+            Faction.TheBrassArmy => save.brassArmySave,
+            Faction.TheValveboundSeraphs => save.seraphsSave,
+            Faction.OverpressureCollective => save.overpressuSave,
+            _ => null,
+        };
+        if (factionSave == null) return;
+
+        factionSave.totalXP = experienceSystem.ComputeTotalXP();
+        factionSave.level = experienceSystem.Level;
+        SaveSystem.UpdateSave(save);
+    }
+
+    private IEnumerator AnimateXPBar(float targetFill)
+    {
+        float start = experienceBar.fillAmount;
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / expFillDuration;
+            experienceBar.fillAmount = Mathf.Lerp(start, targetFill, Mathf.SmoothStep(0f, 1f, t));
+            yield return null;
+        }
+        experienceBar.fillAmount = targetFill;
+    }
+
+    private void HandleLevelUp(int newLevel)
+    {
+        Debug.Log($"Leveled up, new level: {newLevel}");
+    }
+
+    private void OnDestroy()
+    {
+        experienceSystem.OnXPChanged -= HandleXPChanged;
+        experienceSystem.OnLevelUp -= HandleLevelUp;
     }
 }

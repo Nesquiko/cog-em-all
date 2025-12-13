@@ -13,9 +13,9 @@ class Spawner : MonoBehaviour
     [SerializeField] private Dreadnought dreadnoughtPrefab;
 
     [Header("Enemy spawn settings")]
-    [SerializeField] public GameObject spawnInThisGameObject;
-    [SerializeField] public Vector2 spawnTimeStaggerRange = new(0f, .005f);
-    [SerializeField] public Vector2 spawnLateralOffsetRange = new(-5f, 5f);
+    [SerializeField] private GameObject spawnInThisGameObject;
+    [SerializeField] private Vector2 spawnTimeStaggerRange = new(0f, .005f);
+    [SerializeField] private Vector2 spawnLateralOffsetRange = new(-5f, 5f);
 
     void Awake()
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,6 +23,9 @@ public class Shell : MonoBehaviour, IDamageSource
     private bool launched;
 
     public DamageSourceType Type() => DamageSourceType.Shell;
+
+    public event Action<float> OnDamageDealt;
+    public event Action OnEnemyKilled;
 
     private void OnDrawGizmosSelected()
     {
@@ -90,6 +94,9 @@ public class Shell : MonoBehaviour, IDamageSource
                 EnemyStatusEffect effect = null;
                 if (owner.SlowOnHitActive) effect = EnemyStatusEffect.Slow;
                 else if (owner.BleedOnHitActive) effect = EnemyStatusEffect.Bleed(owner.BleedDuration);
+
+                OnDamageDealt?.Invoke(damage);
+                if (e.HealthPoints < damage) OnEnemyKilled?.Invoke();
                 e.TakeDamage(damage, Type(), crit, effect: effect);
             }
         }

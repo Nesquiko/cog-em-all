@@ -38,7 +38,7 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
 
     private void Awake()
     {
-        activeOilSpillModifiers = skillModifierCatalog.ActiveModifiersFromSkillType(skillType);
+        activeOilSpillModifiers = SkillMechanics.ActiveModifiersFromSkillType(skillType);
 
         InitializeModifiers();
     }

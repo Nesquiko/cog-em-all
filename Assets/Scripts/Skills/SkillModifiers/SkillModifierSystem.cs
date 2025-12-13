@@ -16,9 +16,12 @@ public class SkillModifierSystem : MonoBehaviour
     public bool CanUseModifierPoint => availableModifierPoints > 0;
     public bool CanRefundModifierPoint => assignedModifierPoints > 0;
 
+    private SaveContextDontDestroy saveContext;
+
     private void Awake()
     {
-        factionLevel = 15;  // TODO: luky -> tu chcem faction level
+        saveContext = SaveContextDontDestroy.GetOrCreateDev();
+        factionLevel = saveContext.LastFactionSaveState().level;
         activeSkillModifiers = new()  // TODO: luky -> tu mi musia dojst modifiery ktore mam aktivne na abilitach
         {
             SkillModifiers.SteelReinforcement,
@@ -69,7 +72,6 @@ public class SkillModifierSystem : MonoBehaviour
 
     private void OnModifierButtonActivate(SkillModifiers modifier)
     {
-        Debug.Log($"Activated {modifier}");
         availableModifierPoints--;
         assignedModifierPoints++;
 
@@ -78,7 +80,6 @@ public class SkillModifierSystem : MonoBehaviour
 
     private void OnModifierButtonDeactivate(SkillModifiers modifier)
     {
-        Debug.Log($"Deactivated {modifier}");
         availableModifierPoints++;
         assignedModifierPoints--;
 

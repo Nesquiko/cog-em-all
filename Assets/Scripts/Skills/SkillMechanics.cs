@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum SkillTypes
@@ -58,4 +59,33 @@ public interface ISkillPlaceable : ISkill
 public interface IAirshipPayload
 {
     void DropFromAirship(Vector3 targetPosition, float dropDuration);
+}
+
+public static class SkillMechanics
+{
+    public static HashSet<SkillModifiers> ActiveModifiersFromSkillType(SkillTypes type)
+    {
+        return type switch
+        {
+            SkillTypes.Wall => new()
+            {
+                SkillModifiers.SteelReinforcement,
+                SkillModifiers.SharpThorns,
+                SkillModifiers.LeftoverDebris,
+            },
+            SkillTypes.OilSpill => new()
+            {
+                SkillModifiers.SatansWrath,
+                SkillModifiers.GooeyGoo,
+                SkillModifiers.StickityStick,
+            },
+            SkillTypes.Mine => new()
+            {
+                SkillModifiers.DoubleTheBoom,
+                SkillModifiers.WideDestruction,
+                SkillModifiers.QuickFuse,
+            },
+            _ => null,
+        };
+    }
 }
