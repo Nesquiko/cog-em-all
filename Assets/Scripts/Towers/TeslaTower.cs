@@ -147,10 +147,9 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         SetRangeProjector(EffectiveRange(range));
     }
 
-    public void SetAdditionalChainReach(int chainReach)
-    {
-        additionalBeamChains = chainReach;
-    }
+    public void SetAdditionalChainReach(int chainReach) => additionalBeamChains = chainReach;
+
+    public void EnableControlMode() => towerOverlay.EnableControlMode();
 
     private float EffectiveRange(float r)
     {

@@ -132,16 +132,25 @@ public static class ModifiersCalculator
 
     public static void ModifyTesla(TeslaTower tesla, List<Modifier> modifiers)
     {
-        var additionalChains = 0;
+        int additionalChains = 0;
+        bool manualModeEnabled = false;
         foreach (var m in modifiers)
         {
-            if (m is not TowerModifier towerMod) continue;
-            else if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) continue;
+            switch (m)
+            {
+                case TowerModifier towerMod:
+                    if (towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
 
-            additionalChains += towerMod.currentRanks * (int)towerMod.change;
+                    additionalChains += towerMod.currentRanks * (int)towerMod.change;
+                    break;
+                case UnlockTowerAbilityModifier abilityUnlock:
+                    manualModeEnabled = abilityUnlock.unlock == TowerUnlocks.ManualMode;
+                    break;
+            }
         }
 
         tesla.SetAdditionalChainReach(additionalChains);
+        if (manualModeEnabled) tesla.EnableControlMode();
     }
 
     public static void ModifyGatlin(GatlingTower gatling, List<Modifier> modifiers)
