@@ -36,6 +36,9 @@ public interface ITower
     void ActivateGainRangeOnHill();
     void SetCritChangeCalculation(Func<float, float> f);
     void RecalctCritChance();
+
+    float Range();
+    void SetRange(float range);
 }
 
 public interface IAppliesDOT

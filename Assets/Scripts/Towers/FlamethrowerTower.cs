@@ -571,8 +571,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         enemiesInRange.Clear();
     }
 
-    public void ActivateGainRangeOnHill()
-    {
-        hillRangeSkillActive = true;
-    }
+    public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+
+    public float Range() => range;
+    public void SetRange(float range) => this.range = range;
 }

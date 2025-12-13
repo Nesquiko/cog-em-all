@@ -37,13 +37,15 @@ public struct TowerMods
     public readonly Func<ITower, float, float> CalculateTowerFireRate;
     public readonly Func<FlamethrowerTower, float, float> CalculateFlamethrowerFireDuration;
     public readonly Func<ITower, float, float> CalculateDOTDuration;
+    public readonly Func<ITower, float, float> CalculateTowerRange;
 
     public TowerMods(
         Func<ITower, float, float> towerProjectileDamageCalculation,
         Func<ITower, float, float> towerCritChanceCalculation,
         Func<ITower, float, float> towerFireRateCalculation,
         Func<FlamethrowerTower, float, float> flamethrowerFireDuration,
-        Func<ITower, float, float> dotDurationPipeline
+        Func<ITower, float, float> dotDurationPipeline,
+        Func<ITower, float, float> rangeCalculation
     )
     {
         CalculateTowerProjectileDamage = towerProjectileDamageCalculation;
@@ -51,6 +53,7 @@ public struct TowerMods
         CalculateTowerFireRate = towerFireRateCalculation;
         CalculateFlamethrowerFireDuration = flamethrowerFireDuration;
         CalculateDOTDuration = dotDurationPipeline;
+        CalculateTowerRange = rangeCalculation;
     }
 }
 
@@ -62,6 +65,7 @@ public static class ModifiersCalculator
         var towerCritChancePipeline = new List<Func<ITower, float, float>>();
         var towerFireRatePipeline = new List<Func<ITower, float, float>>();
         var towerDOTDurationPipeline = new List<Func<ITower, float, float>>();
+        var towerRangePipeline = new List<Func<ITower, float, float>>();
 
         var flamethrowerFireDurationPipeline = new List<Func<FlamethrowerTower, float, float>>();
 
@@ -72,6 +76,13 @@ public static class ModifiersCalculator
 
             switch (towerMod.modifiedAttribute)
             {
+                case TowerAttribute.Range:
+                    towerRangePipeline.Add((tower, range) =>
+                    {
+                        if (!TowerModifier.AppliesTo(towerMod, tower.TowerType())) return range;
+                        return ApplyChangeType(towerMod.changeType, towerMod.change, range, towerMod.currentRanks);
+                    });
+                    break;
                 case TowerAttribute.Damage:
                     towerDamagePipeline.Add((tower, baseDmg) =>
                     {
@@ -127,8 +138,9 @@ public static class ModifiersCalculator
         Func<ITower, float, float> fireRatePipeline = Compose(towerFireRatePipeline);
         Func<FlamethrowerTower, float, float> flamethrowerFireDuration = Compose(flamethrowerFireDurationPipeline);
         Func<ITower, float, float> dotDurationPipeline = Compose(towerDOTDurationPipeline);
+        Func<ITower, float, float> rangePipeline = Compose(towerRangePipeline);
 
-        return new TowerMods(baseDamagePipeline, critChancePipeline, fireRatePipeline, flamethrowerFireDuration, dotDurationPipeline);
+        return new TowerMods(baseDamagePipeline, critChancePipeline, fireRatePipeline, flamethrowerFireDuration, dotDurationPipeline, rangePipeline);
     }
 
     public static void ModifyTesla(TeslaTower tesla, List<Modifier> modifiers)

@@ -542,8 +542,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         enemiesInRange.Clear();
     }
 
-    public void ActivateGainRangeOnHill()
-    {
-        hillRangeSkillActive = true;
-    }
+    public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+
+    public float Range() => maxRange;
+    public void SetRange(float range) => maxRange = range;
 }

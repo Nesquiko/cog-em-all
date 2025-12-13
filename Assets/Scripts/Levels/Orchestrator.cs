@@ -87,6 +87,7 @@ class Orchestrator : MonoBehaviour
             other.RecalctCritChance();
         }
 
+        tower.SetRange(towerMods.CalculateTowerRange(tower, tower.Range()));
 
         tower.SetFireRateCalculation((fireRate) => towerMods.CalculateTowerFireRate(tower, fireRate));
         TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());

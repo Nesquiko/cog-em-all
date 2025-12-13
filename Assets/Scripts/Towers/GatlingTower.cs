@@ -677,4 +677,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
 
     public void EnableControlMode() => towerOverlay.EnableControlMode();
+
+
+    public float Range() => range;
+    public void SetRange(float range) => this.range = range;
 }

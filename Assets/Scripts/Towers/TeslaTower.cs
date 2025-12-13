@@ -502,4 +502,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     }
 
     public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+
+    public float Range() => range;
+    public void SetRange(float range) => this.range = range;
+
 }
