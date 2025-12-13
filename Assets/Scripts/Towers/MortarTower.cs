@@ -311,6 +311,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         if (enemy == null) return;
 
         GameObject shellGO = Instantiate(shellPrefab, firePoint.position, firePoint.rotation);
+        SoundFXManager.Instance.PlaySoundFXClip(SoundFXType.Mortar, transform);
         Shell shell = shellGO.GetComponent<Shell>();
 
         shell.OnDamageDealt += HandleDamageDealt;

@@ -45,7 +45,67 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OperationDataDontDestroy
   faction: 2
-  modifiers: []
+  modifiers:
+  - rid: 240750478904000769
+  - rid: 240750478904000770
+  - rid: 240750478904000771
+  - rid: 240750478904000772
+  - rid: 240750478904000773
+  - rid: 240750478904000774
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 240750478904000769
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine
+        slug: mine
+        description: Grants access to the Mine, letting you plant hidden explosives
+          on the path that arm when stepped on, then detonate after a short fuse
+          to damage nearby enemies.
+        toUnlock: 2
+    - rid: 240750478904000770
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Oil Spill
+        slug: oil_spill
+        description: Grants access to the Oil Spill, allowing you to coat a section
+          of the path in slick fuel that significantly slows enemies moving through
+          it.
+        toUnlock: 1
+    - rid: 240750478904000771
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Wall
+        slug: wall
+        description: Grants access to the Wall, allowing you to place temporary barricades
+          directly on enemy paths to block their advance and force them to attack
+          and break through before proceeding.
+        toUnlock: 0
+    - rid: 240750478904000772
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower
+        slug: flamethrower
+        description: Grants access to the Flamethrower, a close-range weapon that
+          bathes enemies in burning fuel, dealing continuous damage over time to
+          anything caught in its cone.
+        toUnlock: 3
+    - rid: 240750478904000773
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar
+        slug: mortar
+        description: Grants access to the Mortar, a long-range artillery platform
+          that lobs explosive shells to devastate enemies in a wide area along distant
+          paths.
+        toUnlock: 2
+    - rid: 240750478904000774
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Tower
+        slug: tesla_tower
+        description: Grants access to the Tesla Tower, a short-range conduit that
+          channels chaining lightning to strike enemies and arc damage through clustered
+          targets.
+        toUnlock: 1

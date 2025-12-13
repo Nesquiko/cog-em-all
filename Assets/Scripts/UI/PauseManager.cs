@@ -14,6 +14,8 @@ public class PauseManager : MonoBehaviour
 
     [SerializeField] private TowerSelectionManager towerSelectionManager;
 
+    private SoundMixerManager soundMixerManager;
+
     private ConfirmationDialog confirmationDialog;
 
     private bool isPaused = false;
@@ -23,6 +25,8 @@ public class PauseManager : MonoBehaviour
     private void Awake()
     {
         confirmationDialog = confirmation.GetComponent<ConfirmationDialog>();
+
+        soundMixerManager = FindFirstObjectByType<SoundMixerManager>();
 
         damageDealtCheckbox.isOn = PlayerPrefs.GetInt("ShowDamageDealt") == 1;
         gearDropCheckbox.isOn = PlayerPrefs.GetInt("ShowGearDrops") == 1;
@@ -130,5 +134,20 @@ public class PauseManager : MonoBehaviour
     public void ToggleShowGearDrops(bool value)
     {
         PlayerPrefs.SetInt("ShowGearDrops", value ? 1 : 0);
+    }
+
+    public void SetMasterVolume(float level)
+    {
+        SoundMixerManager.Instance.SetMasterVolume(level);
+    }
+
+    public void SetSoundFXVolume(float level)
+    {
+        SoundMixerManager.Instance.SetSoundFXVolume(level);
+    }
+
+    public void SetMusicVolume(float level)
+    {
+        SoundMixerManager.Instance.SetMusicVolume(level);
     }
 }

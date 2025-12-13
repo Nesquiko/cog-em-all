@@ -323,6 +323,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
         GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        SoundFXManager.Instance.PlaySoundFXClip(SoundFXType.Gatling, transform);
         Bullet bullet = bulletGO.GetComponent<Bullet>();
 
         bool isCritical = UnityEngine.Random.value < critChance;
