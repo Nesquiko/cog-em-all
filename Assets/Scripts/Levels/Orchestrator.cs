@@ -13,7 +13,7 @@ class Orchestrator : MonoBehaviour
     private int wavesSpawned = 0;
     private int enemiesLive = 0;
 
-    private Dictionary<int, ITower> towers = new();
+    private readonly Dictionary<int, ITower> towers = new();
 
     [SerializeField] private TowerDataCatalog towerDataCatalog;
     [SerializeField] private SkillDataCatalog skillDataCatalog;
@@ -167,6 +167,8 @@ class Orchestrator : MonoBehaviour
         economyMods = ModifiersCalculator.CalculateEconomyMods(passiveTick, passiveIncome, modifiers);
         var enemyMods = ModifiersCalculator.CalculateEnemyMods(modifiers, () => towers.Count);
         towerMods = ModifiersCalculator.CalculateTowerMods(modifiers, () => towers.Count);
+
+        ModifiersCalculator.ModifyNexus(nexus, modifiers);
 
         gears = level.playerResources.initialGears;
         HUDPanelUI.UpdateGears(gears);

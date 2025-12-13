@@ -424,4 +424,19 @@ public static class ModifiersCalculator
         }
         return false;
     }
+
+    public static void ModifyNexus(Nexus nexus, List<Modifier> modifiers)
+    {
+        for (int i = 0; i < modifiers.Count; i++)
+        {
+            if (modifiers[i] is BaseUnlock unlock &&
+                unlock.unlocks == BaseUnlocks.HealthRegen)
+            {
+                nexus.SetIsHealing(true);
+                return;
+            }
+        }
+
+        nexus.SetIsHealing(false);
+    }
 }
