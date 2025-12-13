@@ -168,19 +168,19 @@ public static class ModifiersCalculator
             switch (m)
             {
                 case TowerModifier towerMod:
-                    if (!TowerModifier.AppliesTo(towerMod, TowerTypes.Tesla) || towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
+                    if (!TowerModifier.AppliesTo(towerMod, tesla.TowerType()) || towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
 
                     additionalChains += towerMod.currentRanks * (int)towerMod.change;
                     break;
                 case UnlockTowerAbilityModifier abilityUnlock:
-                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, TowerTypes.Tesla)) break;
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, tesla.TowerType())) break;
 
                     manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
                     stunFirstEnemyEnabled = stunFirstEnemyEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitStun;
                     disableBuffsOnHitEnabled = disableBuffsOnHitEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitRemoveEnemyAbilities;
                     break;
                 case StimModeModifier stimModifier:
-                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, TowerTypes.Tesla)) break;
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, tesla.TowerType())) break;
 
                     enableDoubleBeam = enableDoubleBeam || stimModifier.modifies == StimModeModifiers.DoublePayload;
                     break;
@@ -205,12 +205,14 @@ public static class ModifiersCalculator
             switch (m)
             {
                 case TowerModifier towerMod:
-                    if (towerMod.modifiedAttribute != TowerAttribute.MaxAppliedStacks) continue;
+                    if (!TowerModifier.AppliesTo(towerMod, gatling.TowerType()) || towerMod.modifiedAttribute != TowerAttribute.ChainLength) break;
 
                     additionalRendingStacks += towerMod.currentRanks * (int)towerMod.change;
                     break;
 
                 case UnlockTowerAbilityModifier abilityUnlock:
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, gatling.TowerType())) break;
+
                     isArmorRendingActive = isArmorRendingActive || abilityUnlock.unlock == TowerUnlocks.ArmorShreding;
                     manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
                     break;
@@ -225,17 +227,28 @@ public static class ModifiersCalculator
     public static void ModifyMortar(MortarTower mortar, List<Modifier> modifiers)
     {
         bool isSlowOnHitEnabled = false;
+        bool enableDoublePayload = false;
+
         foreach (var m in modifiers)
         {
             switch (m)
             {
                 case UnlockTowerAbilityModifier abilityUnlock:
+                    if (!TowerModifier.AppliesTo(abilityUnlock.unlockOn, mortar.TowerType())) break;
+
                     isSlowOnHitEnabled = isSlowOnHitEnabled || abilityUnlock.unlock == TowerUnlocks.OnHitSlow;
+                    break;
+
+                case StimModeModifier stimModifier:
+                    if (!TowerModifier.AppliesTo(stimModifier.applyTo, mortar.TowerType())) break;
+
+                    enableDoublePayload = enableDoublePayload || stimModifier.modifies == StimModeModifiers.DoublePayload;
                     break;
             }
         }
 
         if (isSlowOnHitEnabled) mortar.EnableSlowOnhit();
+        if (enableDoublePayload) mortar.EnableDoublePayload();
     }
 
     public static void ModifyDOTTower(IAppliesDOT dotTower, List<Modifier> modifiers)

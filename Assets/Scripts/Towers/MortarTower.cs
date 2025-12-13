@@ -62,7 +62,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private float stimCooldown = 5f;
 
     [Header("Double Payload")]
-    [SerializeField] private bool doublePayloadActive = true;
+    [SerializeField] private bool doublePayloadActive = false;
+    public void EnableDoublePayload() => doublePayloadActive = true;
     [SerializeField] private float secondPayloadDelay = 0.3f;
     [SerializeField] private float damageFactor = 0.75f;
 
