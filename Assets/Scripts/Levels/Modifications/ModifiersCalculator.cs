@@ -145,7 +145,7 @@ public static class ModifiersCalculator
                     additionalChains += towerMod.currentRanks * (int)towerMod.change;
                     break;
                 case UnlockTowerAbilityModifier abilityUnlock:
-                    manualModeEnabled = abilityUnlock.unlock == TowerUnlocks.ManualMode;
+                    manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
                     break;
             }
         }
@@ -158,6 +158,7 @@ public static class ModifiersCalculator
     {
         bool isArmorRendingActive = false;
         int additionalRendingStacks = 0;
+        bool manualModeEnabled = false;
         foreach (var m in modifiers)
         {
             switch (m)
@@ -169,13 +170,15 @@ public static class ModifiersCalculator
                     break;
 
                 case UnlockTowerAbilityModifier abilityUnlock:
-                    isArmorRendingActive = abilityUnlock.unlock == TowerUnlocks.ArmorShreding;
+                    isArmorRendingActive = isArmorRendingActive || abilityUnlock.unlock == TowerUnlocks.ArmorShreding;
+                    manualModeEnabled = manualModeEnabled || abilityUnlock.unlock == TowerUnlocks.ManualMode;
                     break;
             }
         }
 
         gatling.SetRendingEnabled(isArmorRendingActive);
         gatling.SetMaxRendingStacks(gatling.MaxArmorRendingStacks + additionalRendingStacks);
+        if (manualModeEnabled) gatling.EnableControlMode();
     }
 
     public static void ModifyDOTTower(IAppliesDOT dotTower, List<Modifier> modifiers)

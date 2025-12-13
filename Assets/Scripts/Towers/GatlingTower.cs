@@ -675,4 +675,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     public void SetMaxRendingStacks(int max) => maxArmourRendingStacks = max;
 
     public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+
+    public void EnableControlMode() => towerOverlay.EnableControlMode();
 }

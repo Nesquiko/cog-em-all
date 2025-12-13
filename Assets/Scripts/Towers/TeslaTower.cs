@@ -501,8 +501,5 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         enemiesInRange.Clear();
     }
 
-    public void ActivateGainRangeOnHill()
-    {
-        hillRangeSkillActive = true;
-    }
+    public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
 }
