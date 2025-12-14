@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -26,15 +27,14 @@ public class SkillModifierButton : MonoBehaviour, IPointerClickHandler, IPointer
     public SkillModifiers SkillModifier => skillModifier;
 
     public event Action<SkillModifiers> OnActivate;
+    public void ResetOnActivate() => OnActivate = null;
     public event Action<SkillModifiers> OnDeactivate;
+    public void ResetOnDeactivate() => OnDeactivate = null;
 
-    private OperationDataDontDestroy operationData;
-
-    public void Initialize()
+    public void Initialize(List<Modifier> modifiers)
     {
-        operationData = OperationDataDontDestroy.GetOrReadDev();
-        var usagePerAbility = ModifiersCalculator.UsagePerAbility(operationData.Modifiers);
-        if (!usagePerAbility.ContainsKey(skillType)) locked = true;
+        var usagePerAbility = ModifiersCalculator.UsagePerAbility(modifiers);
+        Lock(!usagePerAbility.ContainsKey(skillType));
 
         modifier = (ISkillModifier)skillModifierCatalog.FromSkillAndModifier(skillType, skillModifier);
 

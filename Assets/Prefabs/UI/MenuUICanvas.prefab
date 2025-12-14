@@ -1475,6 +1475,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5394688345944136281, guid: 49b0121d726f8ef4ab0b4f8b9138f932, type: 3}
+      propertyPath: skillModifiers
+      value: 
+      objectReference: {fileID: 6225804491939153953}
     - target: {fileID: 6515441928142185503, guid: 49b0121d726f8ef4ab0b4f8b9138f932, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1684,6 +1688,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 154bf96fa15af7c4eb7c55fa7ca242f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FactionSkillTreeUI
+--- !u!114 &6225804491939153953 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7062553965276761594, guid: 49b0121d726f8ef4ab0b4f8b9138f932, type: 3}
+  m_PrefabInstance: {fileID: 3775629860195108315}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3005f46bf72a03d4dbf1be1572a4708b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SkillModifierSystem
 --- !u!114 &8140437080452616359 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4944142323991860604, guid: 49b0121d726f8ef4ab0b4f8b9138f932, type: 3}

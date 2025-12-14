@@ -16,6 +16,8 @@ public class SaveContextDontDestroy : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void Save() => SaveSystem.UpdateSave(CurrentSave);
+
     public (Faction, FactionSaveState) LastFactionSaveState()
     {
         return CurrentSave.LastPlayedFaction switch

@@ -10,11 +10,9 @@ public class MusicManager : MonoBehaviour
     [SerializeField] private AudioResource valveboundSeraphsMusic;
     [SerializeField] private AudioResource overpressureCollectiveMusic;
 
-    private OperationDataDontDestroy operationData;
 
     private void Awake()
     {
-        operationData = OperationDataDontDestroy.GetOrReadDev();
         PlayMenuMusic();
     }
 
@@ -26,7 +24,9 @@ public class MusicManager : MonoBehaviour
 
     public void PlayGameMusic()
     {
-        Faction faction = operationData.Faction;
+        // DO NOT move getting this OperationDataDontDestroy, if it is called from elsewhere it might create a DEV
+        // operation data, even though it is normal game
+        Faction faction = OperationDataDontDestroy.GetOrReadDev().Faction;
 
         audioSource.resource = faction switch
         {

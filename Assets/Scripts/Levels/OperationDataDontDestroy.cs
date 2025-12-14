@@ -25,14 +25,14 @@ public class OperationDataDontDestroy : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Initialize(Faction faction, int level, List<Modifier> modifiers)
+    public void Initialize(Faction faction, int level, List<Modifier> modifiers, HashSet<SkillModifiers> abilityModifiers)
     {
         this.faction = faction;
         this.level = level;
         this.modifiers = modifiers;
+        this.abilityModifiers = abilityModifiers.ToList();
     }
 
-    public void SetAbilityModifiers(HashSet<SkillModifiers> modifiers) => abilityModifiers = modifiers.ToList();
 
     private const string DEV_OPERATION_DATA_PREFAB = "Assets/Prefabs/Levels/DevOperationData.prefab";
 
@@ -141,7 +141,7 @@ public class OperationDataDontDestroyEditor : Editor
         {
             Undo.RecordObject(data, "Change Faction");
             var modsCopy = data.Modifiers;
-            data.Initialize(newFaction, newLevel, modsCopy);
+            data.Initialize(newFaction, newLevel, modsCopy, new());
             EditorUtility.SetDirty(data);
         }
 

@@ -46,11 +46,16 @@ public class Level : MonoBehaviour
     {
         var operationData = OperationDataDontDestroy.GetOrReadDev();
 
-        Debug.Log($"operation with faction {operationData.Faction} with these slugs: " + string.Join(", ", operationData.Modifiers.Select(m =>
-        {
-            var ranks = m is IRankedModifier r ? r.CurrentRanks() : 1;
-            return $"{m.slug} (ranks: {ranks})";
-        })));
+        Debug.Log(
+            $"operation with faction {operationData.Faction} with these slugs: "
+            + string.Join(", ", operationData.Modifiers.Select(m =>
+            {
+                var ranks = m is IRankedModifier r ? r.CurrentRanks() : 1;
+                return $"{m.slug} (ranks: {ranks})";
+            }))
+            + " | abilityModifiers: "
+            + string.Join(", ", operationData.AbilityModifiersSet.Select(a => a.ToString())
+        ));
 
         LoadLevelFromFile(levelFileName);
         StartCoroutine(orchestrator.RunLevel(data, splineContainer, operationData));

@@ -52,15 +52,30 @@ public class FactionSkillTreeUI : MonoBehaviour
         {
             case Faction.TheBrassArmy:
                 var brassArmySkillTree = skillTreesByFaction[Faction.TheBrassArmy];
-                saveData.brassArmySave = new FactionSaveState(brassArmySkillTree.Level, brassArmySkillTree.SkillNodes);
+                saveData.brassArmySave = new FactionSaveState(
+                    brassArmySkillTree.Level,
+                    saveData.brassArmySave.totalXP,
+                    brassArmySkillTree.SkillNodes,
+                    saveData.brassArmySave.LastActiveAbilitModifiers
+                );
                 break;
             case Faction.TheValveboundSeraphs:
                 var seraphsSkillTree = skillTreesByFaction[Faction.TheValveboundSeraphs];
-                saveData.seraphsSave = new FactionSaveState(seraphsSkillTree.Level, seraphsSkillTree.SkillNodes);
+                saveData.seraphsSave = new FactionSaveState(
+                    seraphsSkillTree.Level,
+                    saveData.seraphsSave.totalXP,
+                    seraphsSkillTree.SkillNodes,
+                    saveData.seraphsSave.LastActiveAbilitModifiers
+                );
                 break;
             case Faction.OverpressureCollective:
                 var overpressureSkillTree = skillTreesByFaction[Faction.OverpressureCollective];
-                saveData.overpressuSave = new FactionSaveState(overpressureSkillTree.Level, overpressureSkillTree.SkillNodes);
+                saveData.overpressuSave = new FactionSaveState(
+                    overpressureSkillTree.Level,
+                    saveData.overpressuSave.totalXP,
+                    overpressureSkillTree.SkillNodes,
+                    saveData.overpressuSave.LastActiveAbilitModifiers
+                );
                 break;
 
         }

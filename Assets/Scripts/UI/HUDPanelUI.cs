@@ -200,9 +200,10 @@ public class HUDPanelUI : MonoBehaviour
 
         activeModifiersLabel.text = "";
 
+        operationData = OperationDataDontDestroy.GetOrReadDev();
         if (skillModifierCatalog.skillModifierIndices.TryGetValue(skillType, out int[] indices))
         {
-            HashSet<SkillModifiers> activeModifiers = SkillMechanics.ActiveModifiersFromSkillType(skillType);
+            HashSet<SkillModifiers> activeModifiers = SkillMechanics.ActiveModifiersFromSkillType(operationData, skillType);
 
             foreach (int i in indices)
             {

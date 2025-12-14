@@ -13,7 +13,7 @@ public class OverviewManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI factionLevelLabel;
     [SerializeField] private Image factionSymbol;
     [SerializeField] private GameObject operationLayout;
-    [SerializeField] private GameObject skillModifiers;
+    [SerializeField] private SkillModifierSystem skillModifiers;
     [SerializeField] private GameObject factionDisplay;
     [SerializeField] private GameObject levelTree;
     [SerializeField] private TMP_Text toggleMainContentText;
@@ -39,19 +39,25 @@ public class OverviewManager : MonoBehaviour
         this.factionData = factionData;
 
         currentMainContent = operationLayout;
+        operationLayout.SetActive(true);
         factionDisplay.SetActive(true);
         levelTree.SetActive(false);
+        skillModifiers.gameObject.SetActive(false);
 
         UpdateVisuals();
     }
 
     public void ToggleMainContent()
     {
-        currentMainContent = currentMainContent == operationLayout ? skillModifiers : operationLayout;
+        currentMainContent = currentMainContent == operationLayout ? skillModifiers.gameObject : operationLayout;
+
         operationLayout.SetActive(currentMainContent == operationLayout);
         factionDisplay.SetActive(currentMainContent == operationLayout);
-        skillModifiers.SetActive(currentMainContent == skillModifiers);
-        levelTree.SetActive(currentMainContent == skillModifiers);
+
+        skillModifiers.gameObject.SetActive(currentMainContent == skillModifiers.gameObject);
+        if (currentMainContent == skillModifiers.gameObject) skillModifiers.Initialize();
+
+        levelTree.SetActive(currentMainContent == skillModifiers.gameObject);
 
         toggleMainContentText.text = currentMainContent == operationLayout ? "Skill Modifiers" : "Operation Layout";
     }
@@ -84,14 +90,13 @@ public class OverviewManager : MonoBehaviour
 
     public void StartOperation()
     {
-        var go = new GameObject("Operation data");
-        var data = go.AddComponent<OperationDataDontDestroy>();
+        var operationData = OperationDataDontDestroy.GetOrReadDev();
 
         var modifiers = modifiersDatabase.GetModifiersBySlugs(saveContext.LastFactionSaveState().Item2.SkillNodes(filtered: true));
 
         var (lastPlayedFaction, lastPlayedFactionSave) = saveContext.LastFactionSaveState();
 
-        data.Initialize(lastPlayedFaction, lastPlayedFactionSave.level, modifiers);
+        operationData.Initialize(lastPlayedFaction, lastPlayedFactionSave.level, modifiers, lastPlayedFactionSave.LastActiveAbilitModifiers);
 
         SceneLoader.LoadScene("GameScene");
     }

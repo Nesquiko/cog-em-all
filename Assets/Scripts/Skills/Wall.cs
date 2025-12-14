@@ -56,7 +56,8 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
         healthPoints = maxHealthPoints;
         OnHealthChanged?.Invoke(this);
 
-        activeWallModifiers = SkillMechanics.ActiveModifiersFromSkillType(skillType);
+        var operationData = OperationDataDontDestroy.GetOrReadDev();
+        activeWallModifiers = SkillMechanics.ActiveModifiersFromSkillType(operationData, skillType);
 
         InitializeModifiers();
     }

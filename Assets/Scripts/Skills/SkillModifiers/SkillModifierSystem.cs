@@ -6,45 +6,43 @@ public class SkillModifierSystem : MonoBehaviour
 {
     [SerializeField] private TMP_Text modifierPointsText;
     [SerializeField] private SkillModifierButton[] modifierButtons;
+    [SerializeField] private ModifiersDatabase modifiersDatabase;
 
-    private int factionLevel;
     private int maxModifierPoints;
     private int assignedModifierPoints = 0;
     private int availableModifierPoints;
-    private OperationDataDontDestroy operationData;
 
     public bool CanUseModifierPoint => availableModifierPoints > 0;
     public bool CanRefundModifierPoint => assignedModifierPoints > 0;
 
     private SaveContextDontDestroy saveContext;
+    private FactionSaveState lastPlayedFaction;
 
-    private void Awake()
+    public void Initialize()
     {
         saveContext = SaveContextDontDestroy.GetOrCreateDev();
-        factionLevel = saveContext.LastFactionSaveState().Item2.level;
-        operationData = OperationDataDontDestroy.GetOrReadDev();
+        (_, lastPlayedFaction) = saveContext.LastFactionSaveState();
+        var modifiers = modifiersDatabase.GetModifiersBySlugs(lastPlayedFaction.SkillNodes(filtered: true));
 
-        maxModifierPoints = GetMaxModifierPointsFromLevel(factionLevel);
+        maxModifierPoints = GetMaxModifierPointsFromLevel(lastPlayedFaction.level);
         availableModifierPoints = maxModifierPoints;
 
         foreach (var modifierButton in modifierButtons)
         {
-            modifierButton.Initialize();
+            modifierButton.Initialize(modifiers);
 
+            modifierButton.ResetOnActivate();
             modifierButton.OnActivate += OnModifierButtonActivate;
+            modifierButton.ResetOnDeactivate();
             modifierButton.OnDeactivate += OnModifierButtonDeactivate;
 
-            bool shouldBeActive = operationData.AbilityModifiers.Contains(modifierButton.SkillModifier);
+            bool shouldBeActive = lastPlayedFaction.LastActiveAbilitModifiers.Contains(modifierButton.SkillModifier);
 
             if (shouldBeActive && !modifierButton.Locked)
             {
                 modifierButton.Activate(true);
                 assignedModifierPoints++;
                 availableModifierPoints--;
-            }
-            else if (modifierButton.Locked)
-            {
-                modifierButton.Activate(false);
             }
             else
             {
@@ -91,7 +89,8 @@ public class SkillModifierSystem : MonoBehaviour
             if (modifierButton.Activated) result.Add(modifierButton.SkillModifier);
         }
 
-        operationData.SetAbilityModifiers(result);
+        lastPlayedFaction.SetLastActiveAbilityModifier(result);
+        saveContext.Save();
     }
 
     private void OnDestroy()

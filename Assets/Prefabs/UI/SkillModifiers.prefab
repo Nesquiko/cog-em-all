@@ -337,6 +337,7 @@ MonoBehaviour:
   - {fileID: 8289157715842893968}
   - {fileID: 5499186064913179999}
   - {fileID: 5059814002493961340}
+  modifiersDatabase: {fileID: 11400000, guid: fdd9e17aaee68da908d671d07b945c5e, type: 2}
 --- !u!114 &4562945265713393667
 MonoBehaviour:
   m_ObjectHideFlags: 0

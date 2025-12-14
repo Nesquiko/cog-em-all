@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -70,29 +71,18 @@ public interface IAirshipPayload
 
 public static class SkillMechanics
 {
-    public static HashSet<SkillModifiers> ActiveModifiersFromSkillType(SkillTypes type)
+    public static HashSet<SkillModifiers> ActiveModifiersFromSkillType(OperationDataDontDestroy operationData, SkillTypes type)
     {
-        return type switch
+
+        var allowed = type switch
         {
-            SkillTypes.Wall => new()
-            {
-                SkillModifiers.SteelReinforcement,
-                SkillModifiers.SharpThorns,
-                SkillModifiers.LeftoverDebris,
-            },
-            SkillTypes.OilSpill => new()
-            {
-                SkillModifiers.SatansWrath,
-                SkillModifiers.GooeyGoo,
-                SkillModifiers.StickityStick,
-            },
-            SkillTypes.Mine => new()
-            {
-                SkillModifiers.DoubleTheBoom,
-                SkillModifiers.WideDestruction,
-                SkillModifiers.QuickFuse,
-            },
-            _ => null,
+            SkillTypes.Wall => new HashSet<SkillModifiers> { SkillModifiers.SteelReinforcement, SkillModifiers.SharpThorns, SkillModifiers.LeftoverDebris, },
+            SkillTypes.OilSpill => new HashSet<SkillModifiers> { SkillModifiers.SatansWrath, SkillModifiers.GooeyGoo, SkillModifiers.StickityStick, },
+            SkillTypes.Mine => new HashSet<SkillModifiers> { SkillModifiers.DoubleTheBoom, SkillModifiers.WideDestruction, SkillModifiers.QuickFuse, SkillModifiers.ShatterCharge, },
+            _ => throw new ArgumentOutOfRangeException(nameof(type), type, "SkillTypes must be Wall, OilSpill, or Mine.")
         };
+
+        allowed.IntersectWith(operationData.AbilityModifiersSet);
+        return allowed;
     }
 }

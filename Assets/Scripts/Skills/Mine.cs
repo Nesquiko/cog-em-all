@@ -61,7 +61,8 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
     {
         triggerCollider.radius = triggerRadius;
 
-        activeMineModifiers = SkillMechanics.ActiveModifiersFromSkillType(skillType);
+        var operationData = OperationDataDontDestroy.GetOrReadDev();
+        activeMineModifiers = SkillMechanics.ActiveModifiersFromSkillType(operationData, skillType);
 
         InitializeModifiers();
     }

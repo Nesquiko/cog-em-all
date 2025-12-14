@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
-
 
 
 [Serializable]
@@ -79,21 +79,29 @@ public class SaveData
 public class FactionSaveState
 {
     public const int FactionLevelMax = 15;
+    public const float FactionTotalXPMax = 56799;
+
+    public int level;
+    public float totalXP;
+
+    public List<SkillModifiers> lastActiveAbilitModifiers;
+    public HashSet<SkillModifiers> LastActiveAbilitModifiers => new(lastActiveAbilitModifiers);
 
     public FactionSaveState() { }
 
-    public FactionSaveState(int level, Dictionary<string, int> skillNodes)
+    public FactionSaveState(int level, float totalXP, Dictionary<string, int> skillNodes, HashSet<SkillModifiers> lastActiveAbilitModifiers)
     {
         this.level = level;
+        this.totalXP = totalXP;
         this.skillNodes = new();
+        this.lastActiveAbilitModifiers = lastActiveAbilitModifiers.ToList();
         foreach (var skillNode in skillNodes)
         {
             this.skillNodes.Add(new SkillNodeEntry { slug = skillNode.Key, rank = skillNode.Value });
         }
     }
 
-    public int level;
-    public float totalXP;
+    public void SetLastActiveAbilityModifier(HashSet<SkillModifiers> modifiers) => lastActiveAbilitModifiers = modifiers.ToList();
 
     [Serializable]
     public class SkillNodeEntry
@@ -185,9 +193,9 @@ public class SaveSystem : MonoBehaviour
         var data = new SaveData(
             name: saveName,
             lastPlayed: DateTime.UtcNow,
-            brassArmySave: new FactionSaveState(0, new()),
-            seraphsSave: new FactionSaveState(0, new()),
-            overpressuSave: new FactionSaveState(0, new())
+            brassArmySave: new FactionSaveState(1, 0, new(), new()),
+            seraphsSave: new FactionSaveState(1, 0, new(), new()),
+            overpressuSave: new FactionSaveState(1, 0, new(), new())
         );
 
         SaveToFile(data, SavesFolder);
@@ -229,9 +237,9 @@ public class SaveSystem : MonoBehaviour
         var devSaveData = new SaveData(
             name: DevSaveName,
             lastPlayed: DateTime.UtcNow,
-            brassArmySave: new FactionSaveState(FactionSaveState.FactionLevelMax, new()),
-            seraphsSave: new FactionSaveState(FactionSaveState.FactionLevelMax, new()),
-            overpressuSave: new FactionSaveState(FactionSaveState.FactionLevelMax, new())
+            brassArmySave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new()),
+            seraphsSave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new()),
+            overpressuSave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new())
         );
 
         SaveToFile(devSaveData, DevSavesFolder);
