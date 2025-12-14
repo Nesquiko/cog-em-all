@@ -52,7 +52,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9ffec37c94880e44a07dec0aeff3b30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OverviewManager
-  operationDifficulty: 0.67
+  levelName: level-1.json
+  operationName: {fileID: 351534495510253776}
   factionLevelLabel: {fileID: 967499637760159314}
   factionSymbol: {fileID: 6322809047159743260}
   operationLayout: {fileID: 7040373175840669871}

@@ -10,8 +10,8 @@ public class OperationDataDontDestroy : MonoBehaviour
     [SerializeField] private Faction faction;
     public Faction Faction => faction;
 
-    [SerializeField] private int level;
-    public int Level => level;
+    [SerializeField] private int factionLevel;
+    public int FactionLevel => factionLevel;
 
     [SerializeReference] private List<Modifier> modifiers = new();
     public List<Modifier> Modifiers => modifiers;
@@ -20,17 +20,25 @@ public class OperationDataDontDestroy : MonoBehaviour
     public List<SkillModifiers> AbilityModifiers => abilityModifiers;
     public HashSet<SkillModifiers> AbilityModifiersSet => new(abilityModifiers);
 
+    public const string TestingLevelFileName = "testing-level.json";
+
+    [Header("Level JSON (relative to Assets/Levels)")]
+    [SerializeField]
+    private string levelFileName = TestingLevelFileName;
+    public string LevelFileName => levelFileName;
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Initialize(Faction faction, int level, List<Modifier> modifiers, HashSet<SkillModifiers> abilityModifiers)
+    public void Initialize(Faction faction, int factionLevel, List<Modifier> modifiers, HashSet<SkillModifiers> abilityModifiers, string levelFileName = TestingLevelFileName)
     {
         this.faction = faction;
-        this.level = level;
+        this.factionLevel = factionLevel;
         this.modifiers = modifiers;
         this.abilityModifiers = abilityModifiers.ToList();
+        this.levelFileName = levelFileName;
     }
 
 
@@ -132,7 +140,7 @@ public class OperationDataDontDestroyEditor : Editor
         var newFaction = (Faction)EditorGUILayout.EnumPopup("Faction", data.Faction);
         int newLevel = EditorGUILayout.IntSlider(
             new GUIContent("Level"),
-            data.Level,
+            data.FactionLevel,
             0,
             FactionSaveState.FactionLevelMax
         );

@@ -16,10 +16,6 @@ public class Level : MonoBehaviour
     [SerializeField]
     private Orchestrator orchestrator;
 
-    [Header("Level JSON (relative to Assets/Levels)")]
-    [SerializeField]
-    private string levelFileName = "testing-level.json";
-
     private SerializableLevel data = new();
     private SplineContainer splineContainer;
     private SplineMeshTools.Core.SplineMesh splineMesh;
@@ -47,7 +43,7 @@ public class Level : MonoBehaviour
         var operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Debug.Log(
-            $"operation with faction {operationData.Faction} with these slugs: "
+            $"Level ${operationData.LevelFileName}: faction {operationData.Faction} with these slugs: "
             + string.Join(", ", operationData.Modifiers.Select(m =>
             {
                 var ranks = m is IRankedModifier r ? r.CurrentRanks() : 1;
@@ -57,7 +53,7 @@ public class Level : MonoBehaviour
             + string.Join(", ", operationData.AbilityModifiersSet.Select(a => a.ToString())
         ));
 
-        LoadLevelFromFile(levelFileName);
+        LoadLevelFromFile(operationData.LevelFileName);
         StartCoroutine(orchestrator.RunLevel(data, splineContainer, operationData));
     }
 
@@ -131,8 +127,7 @@ public class Level : MonoBehaviour
 
     private string GetLevelsFullPath(string fileName)
     {
-        // Relative to Assets/Levels
-        string projectAssets = Application.dataPath;
+        string projectAssets = Application.streamingAssetsPath;
         return Path.Combine(projectAssets, "Levels", fileName);
     }
 }
@@ -171,6 +166,10 @@ public class LevelEditorInspector : Editor
 
         GUILayout.Space(10);
         DrawSplineSyncButtons();
+
+        GUILayout.Space(10);
+        EditorGUILayout.LabelField("Operation", EditorStyles.boldLabel);
+        DrawOperationEditor();
 
         GUILayout.Space(10);
         EditorGUILayout.LabelField("Player Resources", EditorStyles.boldLabel);
@@ -214,11 +213,11 @@ public class LevelEditorInspector : Editor
 
         if (GUILayout.Button("Browse", GUILayout.Width(70)))
         {
-            string initialDir = Path.Combine(Application.dataPath, "Levels");
+            string initialDir = Path.Combine(Application.streamingAssetsPath, "Levels");
             string selectedPath = EditorUtility.OpenFilePanel("Select JSON file", initialDir, "json");
             if (!string.IsNullOrEmpty(selectedPath))
             {
-                string assetsPath = Application.dataPath.Replace('\\', '/');
+                string assetsPath = Application.streamingAssetsPath.Replace('\\', '/');
                 string levelsDir = (assetsPath + "/Levels/").Replace('\\', '/');
                 selectedPath = selectedPath.Replace('\\', '/');
 
@@ -406,7 +405,7 @@ public class LevelEditorInspector : Editor
 
     private string GetLevelsFullPath(string fileName)
     {
-        string projectAssets = Application.dataPath;
+        string projectAssets = Application.streamingAssetsPath;
         return Path.Combine(projectAssets, "Levels", fileName);
     }
 
@@ -484,6 +483,49 @@ public class LevelEditorInspector : Editor
         }
     }
 
+    private void DrawOperationEditor()
+    {
+        string beforeJson = level.ToJson();
+        SerializableLevel temp = SerializableLevel.FromJson(beforeJson) ?? new SerializableLevel();
+
+        EditorGUILayout.BeginVertical("box");
+
+        // Name
+        string newName = EditorGUILayout.TextField(
+            new GUIContent("Operation Name"),
+            temp.operationName ?? string.Empty
+        );
+
+        // Difficulty 0..1
+        float newDifficulty = EditorGUILayout.Slider(
+            new GUIContent("Operation Difficulty", "0 = easiest, 1 = hardest"),
+            Mathf.Clamp01(temp.operationDifficulty),
+            0f,
+            1f
+        );
+
+        bool changed =
+            newName != (temp.operationName ?? string.Empty)
+            || !Mathf.Approximately(newDifficulty, temp.operationDifficulty);
+
+        if (changed)
+        {
+            temp.operationName = newName;
+            temp.operationDifficulty = newDifficulty;
+
+            string afterJson = SerializableLevel.ToJson(temp);
+            if (afterJson != beforeJson)
+            {
+                level.LoadFromJson(afterJson);
+                EditorUtility.SetDirty(level);
+                UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(
+                    UnityEngine.SceneManagement.SceneManager.GetActiveScene()
+                );
+            }
+        }
+
+        EditorGUILayout.EndVertical();
+    }
 
     private void DrawPlayerResourcesEditor()
     {
