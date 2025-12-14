@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: T2
   m_EditorClassIdentifier: Assembly-CSharp::TeslaTowerData
   level: 2
-  cost: 400
-  sellPrice: 200
+  cost: 300
+  sellPrice: 150
   displayStats:
   - label: Beam damage
     value: 75

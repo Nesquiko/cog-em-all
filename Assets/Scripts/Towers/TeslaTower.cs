@@ -309,14 +309,14 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         }
         else
         {
-            if (primaryEnemy == null) return;
+            if (primaryEnemy.Equals(null)) return;
             FireBeamAtTarget(primaryEnemy);
         }
     }
 
     private void FireBeamAtTarget(IEnemy enemy)
     {
-        if (enemy == null) return;
+        if (enemy.Equals(null)) return;
 
         GameObject beamGO = Instantiate(beamPrefab, firePoint.position, Quaternion.identity);
         Beam beam = beamGO.GetComponent<Beam>();

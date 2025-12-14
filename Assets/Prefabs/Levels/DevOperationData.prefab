@@ -46,9 +46,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::OperationDataDontDestroy
   faction: 0
   factionLevel: 0
-  modifiers: []
+  modifiers:
+  - rid: 7348732530026348629
   abilityModifiers: 
   levelFileName: level-1.json
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7348732530026348629
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Tower
+        slug: tesla_tower
+        description: Grants access to the Tesla Tower, a short-range conduit that
+          channels chaining lightning to strike enemies and arc damage through clustered
+          targets.
+        toUnlock: 1
