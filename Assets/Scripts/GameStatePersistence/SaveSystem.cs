@@ -61,6 +61,17 @@ public class SaveData
         this.overpressuSave = overpressuSave;
     }
 
+    public static FactionSaveState LastFactionSaveState(SaveData save)
+    {
+        return save.LastPlayedFaction switch
+        {
+            Faction.TheBrassArmy => save.brassArmySave,
+            Faction.TheValveboundSeraphs => save.seraphsSave,
+            Faction.OverpressureCollective => save.overpressuSave,
+            _ => throw new ArgumentOutOfRangeException(nameof(save.lastPlayedFaction), save.lastPlayedFaction, "Unhandled faction"),
+        };
+    }
+
     public override string ToString() => JsonUtility.ToJson(this, prettyPrint: true);
 }
 

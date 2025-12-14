@@ -64,7 +64,7 @@ public class OverviewManager : MonoBehaviour
 
     private void DisplayFaction()
     {
-        factionLevelLabel.text = $"Level {saveContext.LastFactionSaveState().level}";
+        factionLevelLabel.text = $"Level {saveContext.LastFactionSaveState().Item2.level}";
         Assert.IsNotNull(factionSymbol);
         factionSymbol.sprite = factionData.symbol;
     }
@@ -87,8 +87,11 @@ public class OverviewManager : MonoBehaviour
         var go = new GameObject("Operation data");
         var data = go.AddComponent<OperationDataDontDestroy>();
 
-        var modifiers = modifiersDatabase.GetModifiersBySlugs(saveContext.LastFactionSaveState().SkillNodes(filtered: true));
-        data.Initialize(saveContext.CurrentSave.LastPlayedFaction, modifiers);
+        var modifiers = modifiersDatabase.GetModifiersBySlugs(saveContext.LastFactionSaveState().Item2.SkillNodes(filtered: true));
+
+        var (lastPlayedFaction, lastPlayedFactionSave) = saveContext.LastFactionSaveState();
+
+        data.Initialize(lastPlayedFaction, lastPlayedFactionSave.level, modifiers);
 
         SceneLoader.LoadScene("GameScene");
     }

@@ -21,7 +21,7 @@ public class SkillModifierSystem : MonoBehaviour
     private void Awake()
     {
         saveContext = SaveContextDontDestroy.GetOrCreateDev();
-        factionLevel = saveContext.LastFactionSaveState().level;
+        factionLevel = saveContext.LastFactionSaveState().Item2.level;
         activeSkillModifiers = new()  // TODO: luky -> tu mi musia dojst modifiery ktore mam aktivne na abilitach
         {
             SkillModifiers.SteelReinforcement,
@@ -56,7 +56,7 @@ public class SkillModifierSystem : MonoBehaviour
                 modifierButton.Activate(false);
             }
         }
-        
+
         UpdatePointsText();
     }
 

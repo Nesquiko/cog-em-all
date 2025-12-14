@@ -8,14 +8,14 @@ public class LevelTree : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdateCurrentLevel();        
+        UpdateCurrentLevel();
     }
 
     private void UpdateCurrentLevel()
     {
         saveContext = SaveContextDontDestroy.GetOrCreateDev();
 
-        int currentFactionLevel = saveContext.LastFactionSaveState().level;
+        int currentFactionLevel = saveContext.LastFactionSaveState().Item2.level;
 
         for (int i = 1; i <= currentLevelIndicators.Length; i++)
             currentLevelIndicators[i - 1].SetActive(i == currentFactionLevel);

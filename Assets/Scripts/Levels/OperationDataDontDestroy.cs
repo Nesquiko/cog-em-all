@@ -10,6 +10,9 @@ public class OperationDataDontDestroy : MonoBehaviour
     [SerializeField] private Faction faction;
     public Faction Faction => faction;
 
+    [SerializeField] private int level;
+    public int Level => level;
+
     [SerializeReference] private List<Modifier> modifiers = new();
     public List<Modifier> Modifiers => modifiers;
 
@@ -18,9 +21,10 @@ public class OperationDataDontDestroy : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void Initialize(Faction faction, List<Modifier> modifiers)
+    public void Initialize(Faction faction, int level, List<Modifier> modifiers)
     {
         this.faction = faction;
+        this.level = level;
         this.modifiers = modifiers;
     }
 
@@ -114,11 +118,18 @@ public class OperationDataDontDestroyEditor : Editor
 
         EditorGUI.BeginChangeCheck();
         var newFaction = (Faction)EditorGUILayout.EnumPopup("Faction", data.Faction);
+        int newLevel = EditorGUILayout.IntSlider(
+            new GUIContent("Level"),
+            data.Level,
+            0,
+            FactionSaveState.FactionLevelMax
+        );
+
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(data, "Change Faction");
             var modsCopy = data.Modifiers;
-            data.Initialize(newFaction, modsCopy);
+            data.Initialize(newFaction, newLevel, modsCopy);
             EditorUtility.SetDirty(data);
         }
 

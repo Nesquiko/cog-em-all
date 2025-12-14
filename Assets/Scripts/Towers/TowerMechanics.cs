@@ -100,7 +100,7 @@ public static class TowerMechanics
 
         foreach (var e in enemies.Values)
         {
-            if (e == null) continue;
+            if (IsEnemyNull(e)) continue;
             float dist = (e.Transform.position - towerPosition).sqrMagnitude;
             if (dist < minDist)
             {
@@ -118,7 +118,7 @@ public static class TowerMechanics
         float bestDistSq = float.MaxValue;
         foreach (var e in enemies.Values)
         {
-            if (e == null || !e.Marked) continue;
+            if (IsEnemyNull(e) || !e.Marked) continue;
             float d = (e.Transform.position - towerPosition).sqrMagnitude;
             if (d < bestDistSq)
             {
@@ -299,4 +299,6 @@ public static class TowerMechanics
         Dictionary<TowerTypes, int> unlockedTowerLevels = ModifiersCalculator.UnlockedTowerLevels(operationData.Modifiers);
         return unlockedTowerLevels.GetValueOrDefault(type, 1);
     }
+
+    public static bool IsEnemyNull(IEnemy e) => e.Equals(null) || e.Transform.Equals(null);
 }

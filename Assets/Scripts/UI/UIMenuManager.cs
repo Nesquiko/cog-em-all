@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -50,12 +51,12 @@ public class UIMenuManager : MonoBehaviour
         experienceSystem.OnXPChanged += HandleXPChanged;
         experienceSystem.OnLevelUp += HandleLevelUp;
 
-        experienceSystem.InitializeFromTotalXP(saveContext.LastFactionSaveState().totalXP);
+        experienceSystem.InitializeFromTotalXP(saveContext.LastFactionSaveState().Item2.totalXP);
     }
 
     private void OnEnable()
     {
-        experienceSystem.InitializeFromTotalXP(saveContext.LastFactionSaveState().totalXP);
+        experienceSystem.InitializeFromTotalXP(saveContext.LastFactionSaveState().Item2.totalXP);
     }
 
     private void Start()
@@ -164,18 +165,11 @@ public class UIMenuManager : MonoBehaviour
 
     private void SaveFactionExperience()
     {
-        SaveData save = saveContext.CurrentSave;
-        FactionSaveState factionSave = save.LastPlayedFaction switch
-        {
-            Faction.TheBrassArmy => save.brassArmySave,
-            Faction.TheValveboundSeraphs => save.seraphsSave,
-            Faction.OverpressureCollective => save.overpressuSave,
-            _ => null,
-        };
-        if (factionSave == null) return;
+        FactionSaveState factionSave = saveContext.LastFactionSaveState().Item2;
 
         factionSave.totalXP = experienceSystem.ComputeTotalXP();
         factionSave.level = experienceSystem.Level;
+        SaveData save = saveContext.CurrentSave;
         SaveSystem.UpdateSave(save);
     }
 

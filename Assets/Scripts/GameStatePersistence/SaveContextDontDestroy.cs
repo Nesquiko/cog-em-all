@@ -16,13 +16,13 @@ public class SaveContextDontDestroy : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public FactionSaveState LastFactionSaveState()
+    public (Faction, FactionSaveState) LastFactionSaveState()
     {
         return CurrentSave.LastPlayedFaction switch
         {
-            Faction.TheBrassArmy => CurrentSave.brassArmySave,
-            Faction.TheValveboundSeraphs => CurrentSave.seraphsSave,
-            Faction.OverpressureCollective => CurrentSave.overpressuSave,
+            Faction.TheBrassArmy => (Faction.TheBrassArmy, CurrentSave.brassArmySave),
+            Faction.TheValveboundSeraphs => (Faction.TheValveboundSeraphs, CurrentSave.seraphsSave),
+            Faction.OverpressureCollective => (Faction.OverpressureCollective, CurrentSave.overpressuSave),
             _ => throw new ArgumentOutOfRangeException(nameof(CurrentSave.lastPlayedFaction), CurrentSave.lastPlayedFaction, "Unhandled faction"),
         };
     }
