@@ -367,6 +367,9 @@ class Orchestrator : MonoBehaviour
         {
             float xpReward = experienceSystem.GetXPReward(level.operationIndex);
             saveContext.AddXP(xpReward);
+            saveContext.SetHighestOperationClearedIndex(level.operationIndex);
+            saveContext.Save();
+
             operationStatistics.xpReward = xpReward;
         }
 

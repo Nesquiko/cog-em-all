@@ -56,7 +56,8 @@ public class FactionSkillTreeUI : MonoBehaviour
                     brassArmySkillTree.Level,
                     saveData.brassArmySave.totalXP,
                     brassArmySkillTree.SkillNodes,
-                    saveData.brassArmySave.LastActiveAbilitModifiers
+                    saveData.brassArmySave.LastActiveAbilitModifiers,
+                    saveData.brassArmySave.highestClearedOperationIndex
                 );
                 break;
             case Faction.TheValveboundSeraphs:
@@ -65,7 +66,8 @@ public class FactionSkillTreeUI : MonoBehaviour
                     seraphsSkillTree.Level,
                     saveData.seraphsSave.totalXP,
                     seraphsSkillTree.SkillNodes,
-                    saveData.seraphsSave.LastActiveAbilitModifiers
+                    saveData.seraphsSave.LastActiveAbilitModifiers,
+                    saveData.seraphsSave.highestClearedOperationIndex
                 );
                 break;
             case Faction.OverpressureCollective:
@@ -74,7 +76,8 @@ public class FactionSkillTreeUI : MonoBehaviour
                     overpressureSkillTree.Level,
                     saveData.overpressuSave.totalXP,
                     overpressureSkillTree.SkillNodes,
-                    saveData.overpressuSave.LastActiveAbilitModifiers
+                    saveData.overpressuSave.LastActiveAbilitModifiers,
+                    saveData.overpressuSave.highestClearedOperationIndex
                 );
                 break;
 

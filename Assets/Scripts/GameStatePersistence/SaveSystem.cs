@@ -83,18 +83,20 @@ public class FactionSaveState
 
     public int level;
     public float totalXP;
+    public int highestClearedOperationIndex;
 
     public List<SkillModifiers> lastActiveAbilitModifiers;
     public HashSet<SkillModifiers> LastActiveAbilitModifiers => new(lastActiveAbilitModifiers);
 
     public FactionSaveState() { }
 
-    public FactionSaveState(int level, float totalXP, Dictionary<string, int> skillNodes, HashSet<SkillModifiers> lastActiveAbilitModifiers)
+    public FactionSaveState(int level, float totalXP, Dictionary<string, int> skillNodes, HashSet<SkillModifiers> lastActiveAbilitModifiers, int highestClearedOperationIndex)
     {
         this.level = level;
         this.totalXP = totalXP;
         this.skillNodes = new();
         this.lastActiveAbilitModifiers = lastActiveAbilitModifiers.ToList();
+        this.highestClearedOperationIndex = highestClearedOperationIndex;
         foreach (var skillNode in skillNodes)
         {
             this.skillNodes.Add(new SkillNodeEntry { slug = skillNode.Key, rank = skillNode.Value });
@@ -193,9 +195,9 @@ public class SaveSystem : MonoBehaviour
         var data = new SaveData(
             name: saveName,
             lastPlayed: DateTime.UtcNow,
-            brassArmySave: new FactionSaveState(1, 0, new(), new()),
-            seraphsSave: new FactionSaveState(1, 0, new(), new()),
-            overpressuSave: new FactionSaveState(1, 0, new(), new())
+            brassArmySave: new FactionSaveState(1, 0, new(), new(), 0),
+            seraphsSave: new FactionSaveState(1, 0, new(), new(), 0),
+            overpressuSave: new FactionSaveState(1, 0, new(), new(), 0)
         );
 
         SaveToFile(data, SavesFolder);
@@ -237,9 +239,9 @@ public class SaveSystem : MonoBehaviour
         var devSaveData = new SaveData(
             name: DevSaveName,
             lastPlayed: DateTime.UtcNow,
-            brassArmySave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new()),
-            seraphsSave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new()),
-            overpressuSave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new())
+            brassArmySave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new(), 0),
+            seraphsSave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new(), 0),
+            overpressuSave: new FactionSaveState(FactionSaveState.FactionLevelMax, FactionSaveState.FactionTotalXPMax, new(), new(), 0)
         );
 
         SaveToFile(devSaveData, DevSavesFolder);

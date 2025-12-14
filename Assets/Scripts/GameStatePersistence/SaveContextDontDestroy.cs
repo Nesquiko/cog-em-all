@@ -22,7 +22,12 @@ public class SaveContextDontDestroy : MonoBehaviour
     {
         var (_, playedFaction) = LastFactionSaveState();
         playedFaction.totalXP += xp;
-        Save();
+    }
+
+    public void SetHighestOperationClearedIndex(int operationIndex)
+    {
+        var (_, playedFaction) = LastFactionSaveState();
+        playedFaction.highestClearedOperationIndex = operationIndex;
     }
 
     public (Faction, FactionSaveState) LastFactionSaveState()

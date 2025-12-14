@@ -21,7 +21,7 @@ MonoBehaviour:
   - label: Chain radius
     value: 15m
   - label: Max chains
-    value: 2
+    value: 3
   - label: Fire rate
     value: 1/s
   - label: Range
@@ -33,7 +33,7 @@ MonoBehaviour:
   beamDamage: 50
   beamSpeed: 1000
   beamChainRadius: 15
-  beamMaxChains: 2
+  beamMaxChains: 3
   beamStayTimeOnHit: 0.05
   fireRate: 1
   range: 50
