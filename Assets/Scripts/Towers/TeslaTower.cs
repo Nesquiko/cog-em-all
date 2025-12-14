@@ -329,6 +329,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beam.OnEnemyKilled += HandleEnemyKilled;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
 
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.TeslaShoot, transform);
+
         if (stimActive || stunFirstEnemy)
             enemy.ApplyEffect(EnemyStatusEffect.Stun);
     }

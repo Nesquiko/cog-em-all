@@ -31,5 +31,6 @@ public class DisableZonePayload : MonoBehaviour, IAirshipPayload
     {
         GameObject disableZone = Instantiate(disableZonePrefab, target, Quaternion.identity);
         disableZone.GetComponent<DisableZone>().Initialize();
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.AirshipHit, disableZone.transform);
     }
 }

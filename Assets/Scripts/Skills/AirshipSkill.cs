@@ -36,5 +36,7 @@ public class AirshipSkill : MonoBehaviour, ISkill
         if (!airshipGO.TryGetComponent<IAirshipPayload>(out var payload)) return;
             
         payload.DropFromAirship(targetPosition, dropDuration);
+
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.AirshipDrop, airshipGO.transform);
     }
 }

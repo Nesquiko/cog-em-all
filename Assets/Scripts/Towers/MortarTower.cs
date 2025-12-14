@@ -316,7 +316,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         shell.OnDamageDealt += HandleDamageDealt;
         shell.OnEnemyKilled += HandleEnemyKilled;
         shell.Initialize(this);
-        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.Mortar, transform);
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.MortarShoot, transform);
 
         if (recoilRoutine != null)
             StopCoroutine(recoilRoutine);

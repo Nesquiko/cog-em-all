@@ -334,7 +334,7 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bullet.OnEnemyKilled += HandleEnemyKilled;
         bullet.Initialize(this, enemy.Transform, dmg, isCritical);
 
-        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.Gatling, transform);
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.GatlingShoot, transform);
 
         HandleRecoil();
 

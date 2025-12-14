@@ -21,3 +21,24 @@ MonoBehaviour:
     clips:
     - {fileID: 8300000, guid: bb2e2714f962491428dcb0b38598b251, type: 3}
     - {fileID: 8300000, guid: f9eb44b85c96be5429737d4dcadbfa3b, type: 3}
+  - type: 2
+    clips:
+    - {fileID: 8300000, guid: 075b2b172322b0e4b996c4c386ab17c8, type: 3}
+  - type: 3
+    clips:
+    - {fileID: 8300000, guid: 0df90d7b0fb28af41ae9473b6dfbae29, type: 3}
+  - type: 4
+    clips:
+    - {fileID: 8300000, guid: 75adfe9a619833445a701305b983e548, type: 3}
+  - type: 5
+    clips:
+    - {fileID: 8300000, guid: e11a5a019377fbd4c81caa0adcb4c236, type: 3}
+  - type: 6
+    clips:
+    - {fileID: 8300000, guid: 958408b32ccf3714ea02821877b0870c, type: 3}
+  - type: 7
+    clips:
+    - {fileID: 8300000, guid: 281e15cc92254794eaf05caf4d044b76, type: 3}
+  - type: 8
+    clips:
+    - {fileID: 8300000, guid: d47e6ed162da1f740ad807d00f4679f3, type: 3}

@@ -8,8 +8,17 @@ using UnityEngine;
 // one or more clips to it inside SoundFXDatabase SO
 public enum SoundFXType
 {
-    Gatling,
-    Mortar,
+    GatlingShoot,
+    MortarShoot,
+    TeslaShoot,
+    FlamethrowerShoot,
+
+    BanditHit,
+    BomberHit,
+    DreadnoughtHit,
+
+    AirshipDrop,
+    AirshipHit,
 }
 
 [Serializable]

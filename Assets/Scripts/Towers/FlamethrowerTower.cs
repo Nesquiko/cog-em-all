@@ -108,6 +108,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     private Func<float, float> CalculateBaseFlameDamagePerPulse;
     private Func<float, float> CalculateCritChance;
 
+    private AudioSource activeFlameAudioSource;
+
     public TowerTypes TowerType() => TowerTypes.Flamethrower;
 
     public int CurrentLevel() => currentLevel;
@@ -277,6 +279,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         activeFlame.Initialize(this, EffectiveRange(range));
         activeFlame.StartFlame(CalculateBaseFlameDamagePerPulse);
 
+        activeFlameAudioSource = SoundManagersDontDestroy.GerOrCreate().SoundFX.PlayLoopedSoundFX(SoundFXType.FlamethrowerShoot, transform);
+
         StartCoroutine(CooldownRoutine(CalculateFlameDuration(flameDuration)));
     }
 
@@ -296,6 +300,9 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
         activeFlame.StopFlame();
         activeFlame.gameObject.SetActive(false);
+
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.StopSoundFX(activeFlameAudioSource, 0.25f);
+        activeFlameAudioSource = null;
 
         yield return new WaitForSeconds(cooldownDuration);
         isCoolingDown = false;
