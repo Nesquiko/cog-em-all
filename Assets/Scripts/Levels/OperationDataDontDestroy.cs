@@ -16,6 +16,10 @@ public class OperationDataDontDestroy : MonoBehaviour
     [SerializeReference] private List<Modifier> modifiers = new();
     public List<Modifier> Modifiers => modifiers;
 
+    [SerializeField] private List<SkillModifiers> abilityModifiers = new();
+    public List<SkillModifiers> AbilityModifiers => abilityModifiers;
+    public HashSet<SkillModifiers> AbilityModifiersSet => new(abilityModifiers);
+
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -27,6 +31,8 @@ public class OperationDataDontDestroy : MonoBehaviour
         this.level = level;
         this.modifiers = modifiers;
     }
+
+    public void SetAbilityModifiers(HashSet<SkillModifiers> modifiers) => abilityModifiers = modifiers.ToList();
 
     private const string DEV_OPERATION_DATA_PREFAB = "Assets/Prefabs/Levels/DevOperationData.prefab";
 
@@ -78,6 +84,9 @@ public class OperationDataDontDestroyEditor : Editor
     private string[] overpressureCollectiveOptions = new string[0];
     private int overpressureCollectiveIndex;
 
+    private string[] skillModifierOptions = new string[0];
+    private int skillModifierIndex;
+
     private void OnEnable()
     {
         var guids = AssetDatabase.FindAssets("t:ModifiersDatabase");
@@ -108,6 +117,9 @@ public class OperationDataDontDestroyEditor : Editor
         brassArmyIndex = 0;
         valveboundSeraphsIndex = 0;
         overpressureCollectiveIndex = 0;
+
+        skillModifierOptions = System.Enum.GetNames(typeof(SkillModifiers));
+        skillModifierIndex = 0;
     }
 
     public override void OnInspectorGUI()
@@ -132,6 +144,36 @@ public class OperationDataDontDestroyEditor : Editor
             data.Initialize(newFaction, newLevel, modsCopy);
             EditorUtility.SetDirty(data);
         }
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField(
+            "Ability Modifiers (select an entry to add it)",
+            EditorStyles.boldLabel
+        );
+
+        DrawSkillModifiersPopup(data);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Current Ability Modifiers", EditorStyles.boldLabel);
+
+        for (int i = 0; i < data.AbilityModifiers.Count; i++)
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.LabelField(data.AbilityModifiers[i].ToString());
+
+                GUILayout.FlexibleSpace();
+
+                if (GUILayout.Button("Remove", GUILayout.Width(60)))
+                {
+                    Undo.RecordObject(data, "Remove Ability Modifier");
+                    data.AbilityModifiers.RemoveAt(i);
+                    EditorUtility.SetDirty(data);
+                    break;
+                }
+            }
+        }
+
 
         EditorGUILayout.Space();
 
@@ -319,6 +361,50 @@ public class OperationDataDontDestroyEditor : Editor
 
                 // reset back to placeholder so the same item can be added again later if needed
                 index = 0;
+            }
+        }
+    }
+
+    private void DrawSkillModifiersPopup(OperationDataDontDestroy data)
+    {
+        if (skillModifierOptions == null || skillModifierOptions.Length == 0)
+        {
+            skillModifierOptions = System.Enum.GetNames(typeof(SkillModifiers));
+            skillModifierIndex = 0;
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            EditorGUILayout.LabelField("Add Ability Modifier", GUILayout.Width(140));
+
+            var optionsWithPlaceholder = new string[skillModifierOptions.Length + 1];
+            optionsWithPlaceholder[0] = "<Select>";
+            for (int i = 0; i < skillModifierOptions.Length; i++)
+            {
+                optionsWithPlaceholder[i + 1] = skillModifierOptions[i];
+            }
+
+            int previousIndex = skillModifierIndex;
+            skillModifierIndex = EditorGUILayout.Popup(skillModifierIndex, optionsWithPlaceholder);
+
+            // add on selection (index > 0)
+            if (skillModifierIndex > 0 && skillModifierIndex != previousIndex)
+            {
+                var selected =
+                    (SkillModifiers)System.Enum.Parse(
+                        typeof(SkillModifiers),
+                        skillModifierOptions[skillModifierIndex - 1]
+                    );
+
+                if (!data.AbilityModifiers.Contains(selected))
+                {
+                    Undo.RecordObject(data, "Add Ability Modifier");
+                    data.AbilityModifiers.Add(selected);
+                    EditorUtility.SetDirty(data);
+                }
+
+                // reset so the same entry can be selected again later if desired
+                skillModifierIndex = 0;
             }
         }
     }

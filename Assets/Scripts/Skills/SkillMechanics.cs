@@ -23,12 +23,17 @@ public interface ISkillModifier
 
 public enum SkillModifiers
 {
+    // Wall modifiers
     SteelReinforcement = 0,
     SharpThorns = 1,
     LeftoverDebris = 2,
+
+    // Oil modifiers
     SatansWrath = 3,
     GooeyGoo = 4,
     StickityStick = 5,
+
+    // Mine modifiers
     DoubleTheBoom = 6,
     WideDestruction = 7,
     QuickFuse = 8,

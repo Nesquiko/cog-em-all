@@ -11,7 +11,7 @@ public class SkillModifierSystem : MonoBehaviour
     private int maxModifierPoints;
     private int assignedModifierPoints = 0;
     private int availableModifierPoints;
-    private HashSet<SkillModifiers> activeSkillModifiers = new();
+    private OperationDataDontDestroy operationData;
 
     public bool CanUseModifierPoint => availableModifierPoints > 0;
     public bool CanRefundModifierPoint => assignedModifierPoints > 0;
@@ -22,12 +22,7 @@ public class SkillModifierSystem : MonoBehaviour
     {
         saveContext = SaveContextDontDestroy.GetOrCreateDev();
         factionLevel = saveContext.LastFactionSaveState().Item2.level;
-        activeSkillModifiers = new()  // TODO: luky -> tu mi musia dojst modifiery ktore mam aktivne na abilitach
-        {
-            SkillModifiers.SteelReinforcement,
-            SkillModifiers.WideDestruction,
-            SkillModifiers.GooeyGoo,
-        };
+        operationData = OperationDataDontDestroy.GetOrReadDev();
 
         maxModifierPoints = GetMaxModifierPointsFromLevel(factionLevel);
         availableModifierPoints = maxModifierPoints;
@@ -39,7 +34,7 @@ public class SkillModifierSystem : MonoBehaviour
             modifierButton.OnActivate += OnModifierButtonActivate;
             modifierButton.OnDeactivate += OnModifierButtonDeactivate;
 
-            bool shouldBeActive = activeSkillModifiers.Contains(modifierButton.SkillModifier);
+            bool shouldBeActive = operationData.AbilityModifiers.Contains(modifierButton.SkillModifier);
 
             if (shouldBeActive && !modifierButton.Locked)
             {
@@ -75,6 +70,7 @@ public class SkillModifierSystem : MonoBehaviour
         availableModifierPoints--;
         assignedModifierPoints++;
 
+        SaveActivatedModifiers();
         UpdatePointsText();
     }
 
@@ -83,6 +79,7 @@ public class SkillModifierSystem : MonoBehaviour
         availableModifierPoints++;
         assignedModifierPoints--;
 
+        SaveActivatedModifiers();
         UpdatePointsText();
     }
 
@@ -94,8 +91,7 @@ public class SkillModifierSystem : MonoBehaviour
             if (modifierButton.Activated) result.Add(modifierButton.SkillModifier);
         }
 
-        // TODO: luky -> tu mas funkciu na aktivne vyklikane modifiery, uloz ich
-        Debug.Log($"Modifiers to save: {result}");
+        operationData.SetAbilityModifiers(result);
     }
 
     private void OnDestroy()
