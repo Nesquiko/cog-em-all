@@ -2,15 +2,31 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
+public struct DisplayStat
+{
+    public string label;
+    public string value;
+}
+
 public abstract class TowerDataBase : ScriptableObject
 {
     [SerializeField, Min(1)] protected int level = 1;
     [SerializeField] protected int cost;
     [SerializeField] protected int sellPrice;
+    [SerializeField] protected DisplayStat[] displayStats;
 
     public virtual int Level => level;
     public virtual int Cost => cost;
     public virtual int SellPrice => sellPrice;
+    public virtual DisplayStat[] DisplayStats => displayStats;
+    public virtual void RebuildDisplayStats() { }
+
+    protected string PerSecond(float value) => value.ToString("0.##") + "/s";
+    protected string Percent(float value) => (value * 100f).ToString("0.#") + "%";
+    protected string Mult(float value) => value.ToString("0.##") + "x";
+    protected string Seconds(float value) => value.ToString("0.##") + "s";
+    protected string Meters(float value) => value.ToString("0.##") + "m";
 }
 
 
