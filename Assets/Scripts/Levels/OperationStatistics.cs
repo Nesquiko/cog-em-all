@@ -26,6 +26,9 @@ public class OperationStatistics
     [Header("Towers")]
     public int[] towerKills;
 
+    [Header("Reward")]
+    public float xpReward;
+
     public static OperationStatistics Empty()
     {
         return new()
@@ -46,7 +49,9 @@ public class OperationStatistics
             towersBuilt = 0,
             towersUpgraded = 0,
 
-            towerKills = new int[4]
+            towerKills = new int[4],
+
+            xpReward = 0
         };
     }
 
@@ -55,9 +60,10 @@ public class OperationStatistics
         var random = new System.Random();
 
         int totalWaves = random.Next(5, 15);
-        int totalEnemies = random.Next(500, 1500); 
+        int totalEnemies = random.Next(500, 1500);
 
-        return new() {
+        return new()
+        {
             cleared = true,
             operationName = "Operation Badwater Basin",
             duration = random.Next(300, 720),

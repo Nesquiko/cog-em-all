@@ -38,6 +38,9 @@ public class OperationResultUI : MonoBehaviour
     [SerializeField, Range(0f, 1f), Tooltip("Factors should sum up to 1")] private float damageFactor = 0.15f;
     [SerializeField, Range(0f, 1f), Tooltip("Factors should sum up to 1")] private float economyFactor = 0.10f;
 
+    [Header("Rewards")]
+    [SerializeField] private TMP_Text xpRewardText;
+
     [SerializeField] private CanvasGroup retryCanvasGroup;
 
     [SerializeField] private Camera mainCamera;
@@ -136,7 +139,7 @@ public class OperationResultUI : MonoBehaviour
 
     private void ShowPerformance(float performance)
     {
-        performanceRating.text = $"{(int) (performance * 100)} %";
+        performanceRating.text = $"{(int)(performance * 100)} %";
 
         int starCount = performanceRatingImages.Length;
         float segment = 1f / starCount;
@@ -164,7 +167,9 @@ public class OperationResultUI : MonoBehaviour
 
         ShowTowerKills(statistics.towerKills);
         ShowTowerMVP(statistics.towerKills);
-        ShowPerformance(CalculatePerformance(statistics));
+
+        xpRewardText.text = statistics.cleared ? $"{statistics.xpReward} XP Gained" : "";
+        // ShowPerformance(CalculatePerformance(statistics));
     }
 
     public void RetryOperation()

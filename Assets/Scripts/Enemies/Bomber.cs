@@ -42,6 +42,8 @@ public class Bomber : MonoBehaviour, IEnemy
 
     private bool isDashing;
 
+    public int SpawnedInWave { get; set; }
+
     private void Awake()
     {
         behaviour = GetComponent<EnemyBehaviour>();

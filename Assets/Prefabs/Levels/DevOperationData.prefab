@@ -44,20 +44,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96832409f8e81e89c92e0525798a1c66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OperationDataDontDestroy
-  faction: 2
-  level: 15
-  modifiers:
-  - rid: 7348732524715573329
+  faction: 0
+  factionLevel: 0
+  modifiers: []
   abilityModifiers: 
+  levelFileName: level-1.json
   references:
     version: 2
-    RefIds:
-    - rid: 7348732524715573329
-      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
-      data:
-        name: Wall
-        slug: wall
-        description: Grants access to the Wall, allowing you to place temporary barricades
-          directly on enemy paths to block their advance and force them to attack
-          and break through before proceeding.
-        toUnlock: 0
+    RefIds: []

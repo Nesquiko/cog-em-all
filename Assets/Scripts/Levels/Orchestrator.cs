@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Cinemachine;
+using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -12,6 +14,7 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private Spawner spawner;
     private SerializableLevel level;
     private int wavesSpawned = 0;
+    private Dictionary<int, int> perWaveEnemies = new();
     private int enemiesLive = 0;
     private bool operationEnded = false;
 
@@ -41,8 +44,12 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private float passiveTick = 5f;
     [SerializeField, Range(1f, 2f)] private float gearRewardMultiplier = 1f;
 
+    [Header("Operation shenanigans")]
     private OperationStatistics operationStatistics;
     private float operationStartTime;
+
+    [SerializeField] private ExperienceSystem experienceSystem;
+    private SaveContextDontDestroy saveContext;
 
     private int gears = 0;
 
@@ -197,10 +204,11 @@ class Orchestrator : MonoBehaviour
         operationStatistics.towerKills = new int[Enum.GetValues(typeof(TowerTypes)).Length];
     }
 
-    public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer, OperationDataDontDestroy operationData)
+    public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer, OperationDataDontDestroy operationData, SaveContextDontDestroy saveContext)
     {
         Assert.IsNotNull(level);
         this.level = level;
+        this.saveContext = saveContext;
 
         var fact = operationData.Faction;
         modifiers = operationData.Modifiers;
@@ -222,21 +230,22 @@ class Orchestrator : MonoBehaviour
 
         InitializeStatistics();
 
-        for (int w = 0; w < level.waves.Count; w++)
+        for (int waveIndex = 0; waveIndex < level.waves.Count; waveIndex++)
         {
-            var wave = level.waves[w];
+            var wave = level.waves[waveIndex];
             if (!wave.enabled)
             {
-                Debug.Log($"skipping disabled wave {w}");
+                Debug.Log($"skipping disabled wave {waveIndex}");
                 yield break;
             }
+            perWaveEnemies[waveIndex] = 0;
 
             Assert.IsTrue(wave.prepareTimeSeconds != 0f, "Give a player some time to prepare...");
 
             yield return nextWaveCountdown.StartCountdown(wave.prepareTimeSeconds);
 
-            waveCounterInfo.SetCounter(w + 1, level.waves.Count);
-            yield return spawner.RunSpawnWave(wave, w, splineContainer, (enemy) => OnEnemySpawn(enemy, enemyMods), (enemy) => OnEnemyKilled(enemy, enemyMods));
+            waveCounterInfo.SetCounter(waveIndex + 1, level.waves.Count);
+            yield return spawner.RunSpawnWave(wave, waveIndex, splineContainer, (enemy) => OnEnemySpawn(enemy, enemyMods), (enemy) => OnEnemyKilled(enemy, enemyMods));
             wavesSpawned += 1;
         }
 
@@ -279,6 +288,8 @@ class Orchestrator : MonoBehaviour
 
         if (enemyMods.enableBomberFriendlyfire && spawned is Bomber bomber)
             bomber.EnableFriendlyFire();
+
+        perWaveEnemies[spawned.SpawnedInWave]++;
     }
 
     private void OnEnemyKilled(IEnemy killed, EnemyMods enemyMods)
@@ -288,6 +299,7 @@ class Orchestrator : MonoBehaviour
         enemiesLive -= 1;
 
         operationStatistics.killedEnemies++;
+        perWaveEnemies[killed.SpawnedInWave]--;
     }
 
     public void AddGears(int amount)
@@ -350,8 +362,17 @@ class Orchestrator : MonoBehaviour
 
         towerSelectionManager.DisableSelection();
 
+        if (cleared)
+        {
+            float xpReward = experienceSystem.GetXPReward(level.operationIndex);
+            saveContext.AddXP(xpReward);
+            operationStatistics.xpReward = xpReward;
+        }
+
         operationStatistics.cleared = cleared;
         operationStatistics.duration = Time.time - operationStartTime;
+        operationStatistics.clearedWaves = perWaveEnemies.Count(kvp => kvp.Value == 0);
+
         operationResultUI.Initialize(operationStatistics);
 
         HUDPanelUI.gameObject.SetActive(false);

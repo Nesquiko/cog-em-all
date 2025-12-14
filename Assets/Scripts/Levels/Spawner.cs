@@ -48,6 +48,7 @@ class Spawner : MonoBehaviour
                 for (int i = 0; i < entry.count; i++)
                 {
                     var enemy = SpawnEnemy(entry.enemy);
+                    enemy.SpawnedInWave = waveIndex;
                     onEnemySpawn.Invoke(enemy);
                     float startT = Mathf.Clamp01(UnityEngine.Random.Range(spawnTimeStaggerRange.x, spawnTimeStaggerRange.y));
                     float lateralOffset = UnityEngine.Random.Range(spawnLateralOffsetRange.x, spawnLateralOffsetRange.y);

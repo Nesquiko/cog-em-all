@@ -24,6 +24,8 @@ public interface IEnemy
     float HealthPoints { get; }
     float Speed { get; set; }
 
+    int SpawnedInWave { get; set; }
+
     Transform Transform { get; }
 
     event Action<IEnemy> OnDeath;

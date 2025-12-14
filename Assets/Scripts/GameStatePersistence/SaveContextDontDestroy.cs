@@ -18,6 +18,13 @@ public class SaveContextDontDestroy : MonoBehaviour
 
     public void Save() => SaveSystem.UpdateSave(CurrentSave);
 
+    public void AddXP(float xp)
+    {
+        var (_, playedFaction) = LastFactionSaveState();
+        playedFaction.totalXP += xp;
+        Save();
+    }
+
     public (Faction, FactionSaveState) LastFactionSaveState()
     {
         return CurrentSave.LastPlayedFaction switch

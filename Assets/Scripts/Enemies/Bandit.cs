@@ -33,10 +33,9 @@ public class Bandit : MonoBehaviour, IEnemy
     public float Speed { get => behaviour.Speed; set => behaviour.Speed = value; }
     public Transform Transform => transform;
 
-    public bool Marked
-    {
-        get => behaviour.Marked;
-    }
+    public bool Marked => behaviour.Marked;
+
+    public int SpawnedInWave { get; set; }
 
     private void Awake()
     {

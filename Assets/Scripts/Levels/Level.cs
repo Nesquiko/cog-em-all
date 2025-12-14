@@ -16,6 +16,10 @@ public class Level : MonoBehaviour
     [SerializeField]
     private Orchestrator orchestrator;
 
+    [Header("Edited level JSON file name")]
+    [SerializeField]
+    private string levelFileName;
+
     private SerializableLevel data = new();
     private SplineContainer splineContainer;
     private SplineMeshTools.Core.SplineMesh splineMesh;
@@ -40,6 +44,7 @@ public class Level : MonoBehaviour
 
     private void Start()
     {
+        var saveContext = SaveContextDontDestroy.GetOrCreateDev();
         var operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Debug.Log(
@@ -54,7 +59,7 @@ public class Level : MonoBehaviour
         ));
 
         LoadLevelFromFile(operationData.LevelFileName);
-        StartCoroutine(orchestrator.RunLevel(data, splineContainer, operationData));
+        StartCoroutine(orchestrator.RunLevel(data, splineContainer, operationData, saveContext));
     }
 
     private void LoadLevelFromFile(string fileName)
@@ -201,6 +206,8 @@ public class LevelEditorInspector : Editor
 
     private void DrawLevelFileField()
     {
+        EditorGUILayout.HelpBox("THIS FILE ISN'T LOADED INTO THE GAME. You must edit DevOperationData to load a different level.", MessageType.Warning);
+
         EditorGUILayout.BeginHorizontal();
         if (levelFileNameProp != null)
         {
@@ -504,14 +511,23 @@ public class LevelEditorInspector : Editor
             1f
         );
 
+        // Index
+        int newIndex = EditorGUILayout.IntField(
+            new GUIContent("Operation Index", "Progression index used for scaling rewards"),
+            Mathf.Max(0, temp.operationIndex)
+        );
+        newIndex = Mathf.Max(0, newIndex);
+
         bool changed =
             newName != (temp.operationName ?? string.Empty)
-            || !Mathf.Approximately(newDifficulty, temp.operationDifficulty);
+            || !Mathf.Approximately(newDifficulty, temp.operationDifficulty)
+            || newIndex != temp.operationIndex;
 
         if (changed)
         {
             temp.operationName = newName;
             temp.operationDifficulty = newDifficulty;
+            temp.operationIndex = newIndex;
 
             string afterJson = SerializableLevel.ToJson(temp);
             if (afterJson != beforeJson)

@@ -8,6 +8,7 @@ public class SerializableLevel
 {
     public string operationName;
     public float operationDifficulty;
+    public int operationIndex;
     public PlayerResources playerResources;
     public List<Wave> waves = new();
     public List<Spline> pathSplines = new();

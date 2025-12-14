@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.Assertions;
 using System.Linq;
+using System.IO;
 
 
 public class OperationDataDontDestroy : MonoBehaviour
@@ -22,7 +23,7 @@ public class OperationDataDontDestroy : MonoBehaviour
 
     public const string TestingLevelFileName = "testing-level.json";
 
-    [Header("Level JSON (relative to Assets/Levels)")]
+    [Header("Level JSON")]
     [SerializeField]
     private string levelFileName = TestingLevelFileName;
     public string LevelFileName => levelFileName;
@@ -95,6 +96,8 @@ public class OperationDataDontDestroyEditor : Editor
     private string[] skillModifierOptions = new string[0];
     private int skillModifierIndex;
 
+    private SerializedProperty levelFileNameProp;
+
     private void OnEnable()
     {
         var guids = AssetDatabase.FindAssets("t:ModifiersDatabase");
@@ -128,6 +131,8 @@ public class OperationDataDontDestroyEditor : Editor
 
         skillModifierOptions = System.Enum.GetNames(typeof(SkillModifiers));
         skillModifierIndex = 0;
+
+        levelFileNameProp = serializedObject.FindProperty("levelFileName");
     }
 
     public override void OnInspectorGUI()
@@ -135,6 +140,8 @@ public class OperationDataDontDestroyEditor : Editor
         var data = (OperationDataDontDestroy)target;
 
         EditorGUILayout.LabelField("Operation Data", EditorStyles.boldLabel);
+
+        DrawLevelFileField();
 
         EditorGUI.BeginChangeCheck();
         var newFaction = (Faction)EditorGUILayout.EnumPopup("Faction", data.Faction);
@@ -415,6 +422,46 @@ public class OperationDataDontDestroyEditor : Editor
                 skillModifierIndex = 0;
             }
         }
+    }
+
+    private void DrawLevelFileField()
+    {
+        EditorGUILayout.BeginHorizontal();
+        if (levelFileNameProp != null)
+        {
+            EditorGUILayout.PropertyField(levelFileNameProp, new GUIContent("File Name"));
+        }
+        else
+        {
+            EditorGUILayout.LabelField("File Name property not found on Level.");
+        }
+
+        if (GUILayout.Button("Browse", GUILayout.Width(70)))
+        {
+            string initialDir = Path.Combine(Application.streamingAssetsPath, "Levels");
+            string selectedPath = EditorUtility.OpenFilePanel("Select JSON file", initialDir, "json");
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                string assetsPath = Application.streamingAssetsPath.Replace('\\', '/');
+                string levelsDir = (assetsPath + "/Levels/").Replace('\\', '/');
+                selectedPath = selectedPath.Replace('\\', '/');
+
+                if (selectedPath.StartsWith(levelsDir))
+                {
+                    string relativeFile = selectedPath.Substring(levelsDir.Length);
+                    if (levelFileNameProp != null)
+                    {
+                        levelFileNameProp.stringValue = relativeFile;
+                        serializedObject.ApplyModifiedProperties();
+                    }
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Invalid Location", "Please choose a file inside Assets/Levels.", "OK");
+                }
+            }
+        }
+        EditorGUILayout.EndHorizontal();
     }
 }
 

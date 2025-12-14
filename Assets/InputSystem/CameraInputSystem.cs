@@ -118,4 +118,14 @@ public class CameraInputSystem : MonoBehaviour
         Gizmos.DrawWireCube(p3, new Vector3(cubeSize, 0.1f, cubeSize));
         Gizmos.DrawWireCube(p4, new Vector3(cubeSize, 0.1f, cubeSize));
     }
+
+    private void OnDisable()
+    {
+        cameraInputActions?.Camera.Disable();
+    }
+
+    private void OnDestroy()
+    {
+        cameraInputActions?.Dispose();
+    }
 }
