@@ -15,10 +15,21 @@ MonoBehaviour:
   level: 3
   cost: 250
   sellPrice: 125
+  displayStats:
+  - label: Bullet damage
+    value: 100
+  - label: Fire rate
+    value: 6/s
+  - label: Range
+    value: 100m
+  - label: Crit chance
+    value: 15%
+  - label: Crit multiplier
+    value: 2x
   bulletDamage: 100
-  bulletSpeed: 100
+  bulletSpeed: 150
   bulletLifetime: 3
-  fireRate: 2
-  range: 50
-  critChance: 0.5
+  fireRate: 6
+  range: 100
+  critChance: 0.15
   critMultiplier: 2

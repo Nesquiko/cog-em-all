@@ -203,7 +203,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         if (stimCoolingDown) return;
 
         target = GetValidTarget();
-        if (target == null) return;
+        if (target.Equals(null)) return;
 
         RotateTowardTarget(target.Transform);
 
@@ -364,7 +364,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private void RotateTowardTarget(Transform targetTransform)
     {
-        if (targetTransform == null) return;
+        if (targetTransform.Equals(null)) return;
 
         rotationSpeed = Mathf.Lerp(rotationSpeed, 1.5f, Time.deltaTime * 0.5f);
 

@@ -15,6 +15,21 @@ MonoBehaviour:
   level: 1
   cost: 400
   sellPrice: 200
+  displayStats:
+  - label: Beam damage
+    value: 50
+  - label: Chain radius
+    value: 15m
+  - label: Max chains
+    value: 2
+  - label: Fire rate
+    value: 1/s
+  - label: Range
+    value: 50m
+  - label: Crit chance
+    value: 5%
+  - label: Crit multiplier
+    value: 2x
   beamDamage: 50
   beamSpeed: 1000
   beamChainRadius: 15
@@ -22,5 +37,5 @@ MonoBehaviour:
   beamStayTimeOnHit: 0.05
   fireRate: 1
   range: 50
-  critChance: 0.5
+  critChance: 0.05
   critMultiplier: 2

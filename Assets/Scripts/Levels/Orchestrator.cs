@@ -105,7 +105,8 @@ class Orchestrator : MonoBehaviour
         tower.SetRange(towerMods.CalculateTowerRange(tower, tower.Range()));
 
         tower.SetFireRateCalculation((fireRate) => towerMods.CalculateTowerFireRate(tower, fireRate));
-        TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), tower.CurrentLevel());
+        TowerDataBase towerData = towerDataCatalog.FromTypeAndLevel(tower.TowerType(), 1);
+        tower.ApplyUpgrade(towerData);
         SpendGears(towerData.Cost);
 
         if (ModifiersCalculator.IsGainRangeOnHillActive(modifiers))

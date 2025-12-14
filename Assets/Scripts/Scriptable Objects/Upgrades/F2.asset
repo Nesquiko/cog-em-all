@@ -15,11 +15,26 @@ MonoBehaviour:
   level: 2
   cost: 1000
   sellPrice: 500
+  displayStats:
+  - label: Damage per pulse
+    value: 25
+  - label: Pulse interval
+    value: 0.25s
+  - label: Flame duration
+    value: 3s
+  - label: Range
+    value: 20m
+  - label: Cooldown duration
+    value: 2s
+  - label: Crit chance
+    value: 2%
+  - label: Crit multiplier
+    value: 2x
   flameDamagePerPulse: 25
   flamePulseInterval: 0.25
   flameDuration: 3
   range: 20
   flameAngle: 60
   cooldownDuration: 2
-  critChance: 0.2
+  critChance: 0.02
   critMultiplier: 2

@@ -13,16 +13,31 @@ MonoBehaviour:
   m_Name: M1
   m_EditorClassIdentifier: Assembly-CSharp::MortarTowerData
   level: 1
-  cost: 700
-  sellPrice: 350
-  shellDamage: 150
+  cost: 500
+  sellPrice: 250
+  displayStats:
+  - label: Shell damage
+    value: 120
+  - label: Splash radius
+    value: 10m
+  - label: Fire rate
+    value: 0.33/s
+  - label: Min range
+    value: 30m
+  - label: Max range
+    value: 80m
+  - label: Crit chance
+    value: 5%
+  - label: Crit multiplier
+    value: 2x
+  shellDamage: 120
   shellSplashRadius: 10
   shellLifetime: 5
-  fireRate: 0.5
-  minRange: 20
-  maxRange: 60
-  critChance: 0.5
+  fireRate: 0.33
+  minRange: 30
+  maxRange: 80
+  critChance: 0.05
   critMultiplier: 2
   rotationSpeed: 5
   launchSpeed: 30
-  arcHeight: 15
+  arcHeight: 20

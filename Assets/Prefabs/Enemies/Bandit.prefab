@@ -171,12 +171,13 @@ MonoBehaviour:
   attackRange: 1.5
   attackTrigger: {fileID: 3906246663465091158}
   attackRate: 1
-  onKillGearsReward: 10
+  onKillGearsReward: 2
   path: {fileID: 0}
   speed: 20
   maxHealthPoints: 100
   healthBar: {fileID: 7003835318424652525}
   disableBuffsHealFraction: 0.1
+  DEV_isUnkillable: 0
   jumpHeight: 0.5
   forwardDistance: 0.4
   duration: 0.4

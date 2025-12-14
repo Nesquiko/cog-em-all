@@ -151,10 +151,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eded020a0091ff34bb34a43aea671719, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GatlingTower
-  bulletDamage: 50
-  bulletSpeed: 100
+  bulletDamage: 30
+  bulletSpeed: 75
   bulletLifetime: 3
-  fireRate: 6
+  fireRate: 5
   range: 50
   critChance: 0.05
   critMultiplier: 2

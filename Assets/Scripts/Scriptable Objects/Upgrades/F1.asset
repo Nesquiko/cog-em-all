@@ -13,13 +13,28 @@ MonoBehaviour:
   m_Name: F1
   m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTowerData
   level: 1
-  cost: 0
-  sellPrice: 0
-  flameDamagePerPulse: 0
-  flamePulseInterval: 0
-  flameDuration: 0
-  range: 0
-  flameAngle: 0
-  cooldownDuration: 0
-  critChance: 0
-  critMultiplier: 0
+  cost: 1000
+  sellPrice: 500
+  displayStats:
+  - label: Damage per pulse
+    value: 15
+  - label: Pulse interval
+    value: 0.4s
+  - label: Flame duration
+    value: 2s
+  - label: Range
+    value: 18m
+  - label: Cooldown duration
+    value: 3s
+  - label: Crit chance
+    value: 2%
+  - label: Crit multiplier
+    value: 2x
+  flameDamagePerPulse: 15
+  flamePulseInterval: 0.4
+  flameDuration: 2
+  range: 18
+  flameAngle: 45
+  cooldownDuration: 3
+  critChance: 0.02
+  critMultiplier: 2

@@ -92,7 +92,7 @@ MonoBehaviour:
   attackRange: 1.2
   attackTrigger: {fileID: 4718485936862218545}
   attackRate: 1
-  onKillGearsReward: 10
+  onKillGearsReward: 2
   path: {fileID: 0}
   speed: 25
   maxHealthPoints: 50
