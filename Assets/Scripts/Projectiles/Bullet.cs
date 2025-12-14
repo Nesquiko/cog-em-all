@@ -50,7 +50,7 @@ public class Bullet : MonoBehaviour, IDamageSource
             OnDamageDealt?.Invoke(damage);
             if (enemy.HealthPoints < damage) OnEnemyKilled?.Invoke();
             enemy.TakeDamage(damage, Type(), crit, effect);
-            
+
             Destroy(gameObject);
         }
 

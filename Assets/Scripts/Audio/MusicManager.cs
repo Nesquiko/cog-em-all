@@ -3,8 +3,6 @@ using UnityEngine.Audio;
 
 public class MusicManager : MonoBehaviour
 {
-    public static MusicManager Instance { get; private set; }
-
     [SerializeField] private AudioSource audioSource;
 
     [SerializeField] private AudioResource menuMusic;
@@ -16,12 +14,7 @@ public class MusicManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-
-        DontDestroyOnLoad(Instance);
-
         operationData = OperationDataDontDestroy.GetOrReadDev();
-
         PlayMenuMusic();
     }
 

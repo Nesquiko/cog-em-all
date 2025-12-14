@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering.Universal;
@@ -323,7 +324,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
     {
         Transform firePoint = shootFromLeftFirePoint ? gatlingFirePointL : gatlingFirePointR;
         GameObject bulletGO = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        SoundFXManager.Instance.PlaySoundFXClip(SoundFXType.Gatling, transform);
         Bullet bullet = bulletGO.GetComponent<Bullet>();
 
         bool isCritical = UnityEngine.Random.value < critChance;
@@ -333,6 +333,8 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         bullet.OnDamageDealt += HandleDamageDealt;
         bullet.OnEnemyKilled += HandleEnemyKilled;
         bullet.Initialize(this, enemy.Transform, dmg, isCritical);
+
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.Gatling, transform);
 
         HandleRecoil();
 

@@ -14,7 +14,7 @@ public class PauseManager : MonoBehaviour
 
     [SerializeField] private TowerSelectionManager towerSelectionManager;
 
-    private SoundMixerManager soundMixerManager;
+    private SoundManagersDontDestroy soundManagers;
 
     private ConfirmationDialog confirmationDialog;
 
@@ -26,7 +26,7 @@ public class PauseManager : MonoBehaviour
     {
         confirmationDialog = confirmation.GetComponent<ConfirmationDialog>();
 
-        soundMixerManager = FindFirstObjectByType<SoundMixerManager>();
+        soundManagers = SoundManagersDontDestroy.GerOrCreate();
 
         damageDealtCheckbox.isOn = PlayerPrefs.GetInt("ShowDamageDealt") == 1;
         gearDropCheckbox.isOn = PlayerPrefs.GetInt("ShowGearDrops") == 1;
@@ -96,7 +96,8 @@ public class PauseManager : MonoBehaviour
         confirmationDialog.Initialize(
             "Are you sure? All progress will be lost.",
             "Restart",
-            () => {
+            () =>
+            {
                 Time.timeScale = 1f;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
@@ -138,16 +139,16 @@ public class PauseManager : MonoBehaviour
 
     public void SetMasterVolume(float level)
     {
-        SoundMixerManager.Instance.SetMasterVolume(level);
+        soundManagers.Mixer.SetMasterVolume(level);
     }
 
     public void SetSoundFXVolume(float level)
     {
-        SoundMixerManager.Instance.SetSoundFXVolume(level);
+        soundManagers.Mixer.SetSoundFXVolume(level);
     }
 
     public void SetMusicVolume(float level)
     {
-        SoundMixerManager.Instance.SetMusicVolume(level);
+        soundManagers.Mixer.SetMusicVolume(level);
     }
 }
