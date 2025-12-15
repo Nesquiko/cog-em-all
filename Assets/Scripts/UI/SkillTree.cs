@@ -58,7 +58,6 @@ public class SkillTree : MonoBehaviour
 
                 if (!nodeTransform.TryGetComponent<SkillTreeNodeButton>(out var button))
                 {
-                    Debug.LogWarning($"there is no button component on node {nodeTransform.GetInstanceID()}", nodeTransform);
                     continue;
                 }
 

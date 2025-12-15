@@ -155,7 +155,7 @@ public class Bomber : MonoBehaviour, IEnemy
 
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
-        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.BomberHit, transform);
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.BomberHit, transform);
         behaviour.TakeDamage(damage, sourceType, isCritical, effect);
     }
 

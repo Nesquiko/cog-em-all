@@ -73,7 +73,6 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
 
     private void Awake()
     {
-        // activeRanks = TODO: luky -> odniekial vytiahnut
         modifier = GetModifier();
 
         scaleOnHover = button.GetComponent<ScaleOnHover>();

@@ -206,7 +206,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         if (stimCoolingDown) return;
 
         target = GetValidTarget();
-        if (target.Equals(null)) return;
+        if (target == null) return;
 
         RotateTowardTarget(target.Transform);
 

@@ -49,7 +49,7 @@ MonoBehaviour:
   modifiers:
   - rid: 7348732530026348629
   abilityModifiers: 
-  levelFileName: level-1.json
+  levelFileName: level-2.json
   references:
     version: 2
     RefIds:

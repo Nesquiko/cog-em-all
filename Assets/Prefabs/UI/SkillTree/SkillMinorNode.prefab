@@ -420,6 +420,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -650,11 +651,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2064271422251257381, guid: 548d657a79ea21b41879598ae6aa8fc7, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 150
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2064271422251257381, guid: 548d657a79ea21b41879598ae6aa8fc7, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 110
       objectReference: {fileID: 0}
     - target: {fileID: 2064271422251257381, guid: 548d657a79ea21b41879598ae6aa8fc7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
