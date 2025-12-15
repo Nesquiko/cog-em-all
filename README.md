@@ -1,100 +1,125 @@
-# Cog 'em All
+# Cog 'em All!
 
-Tower defense inspiration video https://www.youtube.com/watch?v=f6KTtb1r1lg
+A steampunk-themed 3D tower defense game built with Unity 6.
 
-## Unity sources
+## Overview
 
-- Camera system: https://www.youtube.com/watch?v=pJQndtJ2rk0
-- Input system: https://www.youtube.com/watch?v=Yjee_e4fICc
-- Spline path: https://youtu.be/FbSvEieELXo?si=8x7rc0PScdwviAW0
+Cog 'em All! is a tower defense game featuring steampunk aesthetics with a
+faction-based progression system. Players defend their base against waves of
+enemies by strategically placing towers and utilizing various skills. The game
+includes a skill tree system, multiple tower types with upgrades, and abilities.
 
-## Skill tree
+## Game Features
 
-### Minor skills
+### Towers
 
-- damage buffs/debuffs
-- enemy movement speed buffs/debuffs
-- enemy buffs/debuffs
-- economic buffs/debuffs
-- base health buffs/debuffs
-- number of ability usages
+The game features 4 distinct tower types, each with unique mechanics and upgradeable stats:
 
-### Major skills
+- **Gatling Tower** - Rapid fire projectile tower
+- **Tesla Tower** - Beam based tower with chain lightning that can jump between enemies
+- **Mortar Tower** - AoE explosive tower with shell projectiles
+- **Flamethrower Tower** - Close range tower that applies burning damage over time
 
-#### Tower upgrades
+Towers can be:
 
-Each faction will have upgrades until level 3 for all towers, but each has a unique
-aspect to it.
+- Placed anywhere
+- Upgraded through multiple levels (up to 3, if unlocked in skill tree)
+- Controlled directly by the player (Gatling and Tesla, if unlocked)
 
-#### Manual shooting mode
+### Skills & Abilities
 
-Each faction will have "Manual shooting modes" for all towers, but each has a unique
-aspect to it.
+Players can deploy various tactical skills:
 
-- **Gatling**
-  - **Buff**: no range
-- **Tesla**
-- **Mortar**
-- **Flamethrower**
+| Skill        | Type      | Description                                                          |
+| ------------ | --------- | -------------------------------------------------------------------- |
+| Wall         | Placement | Deploys a defensive barrier, with different modifiers                |
+| Oil Spill    | Placement | Creates a slowing zone that can be ignited, with different modifiers |
+| Mine         | Placement | Explosive trap with different modifier options                       |
+| Airstrike    | Airship   | Calls in aerial bombardment at target location                       |
+| Freeze Zone  | Airship   | Creates a freezing area via airship drop                             |
+| Disable Zone | Airship   | Disables enemy buffs in target area                                  |
+| Mark Enemy   | Raycast   | Marks an enemy for priority targeting by towers                      |
+| Sudden Death | Instant   | High-risk/high-reward mode with boosted gear rewards                 |
 
-#### Stims
+Skills can be enhanced with modifiers unlocked through the skill tree and by
+leveling a faction, which earns ability points
 
-Ability with a cooldown on a tower which when activated make the tower go NUTS...
-but then it has no shooting cooldown + also the ability has cooldown.
+### Enemies
 
-- **Gatling**: fire rate through the roof, bullets flying like crazy, then no-fire cooldown
-- **Tesla**: add another beam, increase beam chain length, then no-fire cooldown
-- **Mortar**: increase range, increase fire rate, then no-fire cooldown
-- **Flamethrower**: wider range, continuous flame, then no-fire cooldown
+Three enemy types challenge players:
 
-#### Selling returns 100%
+- **Bandit** - Standard enemy
+- **Bomber** - Suicide enemy that deals explosive damage
+- **Dreadnought** - Heavy armored enemy
 
-Selling returns 100% of the spent gears, plus 100% of each upgrade.
+Enemies can be affected by various status effects:
 
-**Why**? Pseudo "rebuild tower mechanic", players no longer have the
-disadvantage of not being able to move towers.
+### Factions
 
-#### Call waves early
+Three playable factions with unique skill trees:
 
-Can spawn waves earlier, even though they still are in preparation time, also
-with per kill gears bonus.
+- **The Brass Army**
+- **The Valvebound Seraphs**
+- **Overpressure Collective**
 
-**Why**? Players can set up a combo with [stims](#stims) so that they can kill
-two waves with just one stim setup. Also the gear bonus.
+Each faction has its own progression and skill tree.
 
-#### Suicidal bomber "friendly" fire
+### Economy & Resources
 
-When a suicidal bomber is killed it explodes, dealing damage to near enemies.
+- **Gears** - Primary currency for building and upgrading towers
+- Passive income generation over time
+- Enemy kills reward gears
+- Skill tree modifiers can affect economy rates
 
-#### Towers on hill gain range
+### Progression System
 
-#### On hit effects
+- **Experience (XP)** - Earned by completing operations
+- **Faction Levels** - Up to level 15 per faction
+- **Skill Tree** - Unlock tower upgrades, ability modifiers, and passive bonuses
+- **Save System** - Multiple save slots with per-faction progress
 
-- **Gatling**: "armor shredder", on hitting enemy, successive bullets do more damage, max X stacks
-- **Tesla**:
-  - "ionization", successive beams deal more damage, max X stacks
-  - stun, only targeted enemy, not ones hit by chain
-- **Mortar**:
-  - "bleed", applies DoT, on hit reapplies
-  - slow, enemies in AoE are slowed
-- **Flamethrower**: "burn", applies DoT, on hit reapplies
+## Technical Details
 
-#### Base health regeneration
+### Project Structure
 
-#### Sudden death
+```
+Assets/Scripts/
+├── Audio/           # Sound and music management
+├── Enemies/         # Enemy types and behaviors
+├── Factions/        # Faction data definitions
+├── GameStatePersistence/  # Save system
+├── Levels/          # Wave spawning, orchestration, modifiers
+├── Nexus/           # Player base and health management
+├── Projectiles/     # Bullets, beams, shells, flames
+├── Skills/          # Deployable abilities
+├── Towers/          # Tower types and mechanics
+└── UI/              # HUD, menus, overlays
+```
 
-Doubles gears on kill and passive income, but single enemy hitting base destroys it.
+### Key Systems
 
-#### Mark target
+- **Orchestrator** - Central game loop controller managing waves, resources, and win/lose conditions
+- **Spline-based paths** - Enemy movement along Unity Splines
+- **Level Editor** - Custom inspector for wave design and JSON import/export
+- **Modifiers System** - Skill tree unlocks that modify tower/economy/enemy stats
+- **Save System** - JSON-based persistent storage for player progress
 
-Targeted enemy is prioritized by all towers which have him in the range
+### Level Design
 
-#### Ability unlocks
+Levels are defined in JSON format with:
 
-Oil spill - player can place a segment on road which slows down enemies.
-Wall - Player can place a blocker on the road, which enemies must destroy before continuing on the path.
-Mine - It... explodes
+- Operation metadata (name, difficulty, index)
+- Player starting resources
+- Wave definitions with spawn groups and patterns
+- Spline path data for enemy movement
 
-#### Ability modifiers unlocks
+## Getting Started
 
-Each ability has 3 modifiers
+1. Open the project in Unity 6 (6000.2.6f1 or compatible)
+2. Open a scene from `Assets/Scenes/`
+3. Level data is stored in `Assets/StreamingAssets/Levels/`
+4. Configure operation settings via `DevOperationData` scriptable object for testing
+
+## Inspiration
+
+Tower defense inspiration https://www.youtube.com/watch?v=f6KTtb1r1lg

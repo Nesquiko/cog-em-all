@@ -29,6 +29,7 @@ public class SoundManagersDontDestroy : MonoBehaviour
         dontDestroyInstance = FindFirstObjectByType<SoundManagersDontDestroy>();
         if (dontDestroyInstance != null) return dontDestroyInstance;
 
+#if UNITY_EDITOR
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(PrefabPath);
         Assert.IsNotNull(prefab, $"SoundManagersDontDestroy prefab not found at '{PrefabPath}'. Fix the path or create the prefab.");
 
@@ -37,7 +38,11 @@ public class SoundManagersDontDestroy : MonoBehaviour
 
         var managers = instance.GetComponent<SoundManagersDontDestroy>();
         Assert.IsNotNull(managers, "SoundManagersDontDestroy prefab does not contain an the script component");
-
         return managers;
+
+#else
+        Debug.LogWarning("trying to load sound managers, they weren't in the dont destroy context");
+        return null;
+#endif
     }
 }

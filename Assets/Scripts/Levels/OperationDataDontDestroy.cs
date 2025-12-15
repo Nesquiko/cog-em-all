@@ -50,6 +50,7 @@ public class OperationDataDontDestroy : MonoBehaviour
         var existing = FindFirstObjectByType<OperationDataDontDestroy>();
         if (existing != null) return existing;
 
+#if UNITY_EDITOR
         Debug.Log("Reading DEV operation data");
 
         var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(DEV_OPERATION_DATA_PREFAB);
@@ -68,6 +69,10 @@ public class OperationDataDontDestroy : MonoBehaviour
         );
 
         return data;
+#else
+        Debug.LogWarning("trying to load DEV operation data, it wasn't in the dont destroy context");
+        return null;
+#endif
     }
 }
 

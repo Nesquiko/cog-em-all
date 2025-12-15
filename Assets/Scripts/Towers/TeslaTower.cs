@@ -123,10 +123,12 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     private OperationDataDontDestroy operationData;
 
+#if UNITY_EDITOR
     void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, EffectiveRange(range));
     }
+#endif
 
     private void Awake()
     {

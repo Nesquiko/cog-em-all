@@ -122,6 +122,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private OperationDataDontDestroy operationData;
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         float radius = EffectiveRange(range);
@@ -144,6 +145,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Handles.DrawLine(position, position + startDirection * radius);
         Handles.DrawLine(position, position + endDirection * radius);
     }
+#endif
 
     private void Awake()
     {

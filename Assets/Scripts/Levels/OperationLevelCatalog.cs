@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
-using NUnit.Framework;
+using UnityEngine.Assertions;
 
 [CreateAssetMenu(fileName = "OperationLevelCatalog", menuName = "Scriptable Objects/OperationLevelCatalog")]
 public class OperationLevelCatalog : ScriptableObject

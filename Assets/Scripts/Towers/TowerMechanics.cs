@@ -231,6 +231,7 @@ public static class TowerMechanics
         }
     }
 
+#if UNITY_EDITOR
     public static void DrawRangeGizmos(Vector3 position, Color? color, params float[] radii)
     {
         if (radii == null) return;
@@ -257,6 +258,7 @@ public static class TowerMechanics
             Handles.DrawWireDisc(center, Vector3.up, radius);
         }
     }
+#endif
 
     public static void ApplyHighlight(Renderer[] renderers, Color color)
     {

@@ -127,6 +127,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     private OperationDataDontDestroy operationData;
 
+
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(
@@ -144,6 +146,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         Handles.color = Color.red;
         Handles.DrawWireDisc(transform.position, Vector3.up, EffectiveRange(minRange));
     }
+#endif
 
     private void Awake()
     {

@@ -159,10 +159,12 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     private OperationDataDontDestroy operationData;
 
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         TowerMechanics.DrawRangeGizmos(transform.position, Color.cyan, EffectiveRange(range));
     }
+#endif
 
     private void Awake()
     {
