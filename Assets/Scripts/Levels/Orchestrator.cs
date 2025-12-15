@@ -62,6 +62,7 @@ class Orchestrator : MonoBehaviour
 
     private void Awake()
     {
+        operationStatistics = OperationStatistics.Empty();
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
         towerDataCatalog.OnUpgradeTower += OnUpgradeTower;
@@ -195,16 +196,6 @@ class Orchestrator : MonoBehaviour
         operationStatistics.damageTaken += (int)change;
     }
 
-    private void InitializeStatistics()
-    {
-        operationStartTime = Time.time;
-
-        operationStatistics = OperationStatistics.Empty();
-        operationStatistics.operationName = level.operationName;
-        operationStatistics.totalWaves = level.waves.Count;
-        operationStatistics.towerKills = new int[Enum.GetValues(typeof(TowerTypes)).Length];
-    }
-
     public IEnumerator RunLevel(SerializableLevel level, SplineContainer splineContainer, OperationDataDontDestroy operationData, SaveContextDontDestroy saveContext)
     {
         Assert.IsNotNull(level);
@@ -229,7 +220,10 @@ class Orchestrator : MonoBehaviour
 
         var gearsRoutine = StartCoroutine(PassiveGearsIncomeRoutine(economyMods));
 
-        InitializeStatistics();
+        operationStartTime = Time.time;
+        operationStatistics.operationName = level.operationName;
+        operationStatistics.totalWaves = level.waves.Count;
+        operationStatistics.towerKills = new int[Enum.GetValues(typeof(TowerTypes)).Length];
 
         for (int waveIndex = 0; waveIndex < level.waves.Count; waveIndex++)
         {

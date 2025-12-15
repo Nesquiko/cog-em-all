@@ -24,22 +24,10 @@ public class Level : MonoBehaviour
     private SplineContainer splineContainer;
     private SplineMeshTools.Core.SplineMesh splineMesh;
 
-    void OnValidate()
-    {
-        if (splineContainer == null)
-        {
-            splineContainer = GetComponent<SplineContainer>();
-        }
-
-        if (splineMesh == null)
-        {
-            splineMesh = GetComponent<SplineMeshTools.Core.SplineMesh>();
-        }
-    }
-
     private void Awake()
     {
         splineContainer = GetComponent<SplineContainer>();
+        splineMesh = GetComponent<SplineMeshTools.Core.SplineMesh>();
     }
 
     private void Start()
@@ -48,7 +36,7 @@ public class Level : MonoBehaviour
         var operationData = OperationDataDontDestroy.GetOrReadDev();
 
         Debug.Log(
-            $"Level ${operationData.LevelFileName}: faction {operationData.Faction} with these slugs: "
+            $"Level {operationData.LevelFileName}: faction {operationData.Faction} with these slugs: "
             + string.Join(", ", operationData.Modifiers.Select(m =>
             {
                 var ranks = m is IRankedModifier r ? r.CurrentRanks() : 1;
