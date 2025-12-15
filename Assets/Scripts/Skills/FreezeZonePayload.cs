@@ -31,6 +31,6 @@ public class FreezeZonePayload : MonoBehaviour, IAirshipPayload
     {
         GameObject freezeZone = Instantiate(freezeZonePrefab, target, Quaternion.identity);
         freezeZone.GetComponent<FreezeZone>().Initialize();
-        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.AirshipHit, freezeZone.transform);
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.AirshipHit, freezeZone.transform);
     }
 }

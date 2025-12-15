@@ -31,6 +31,6 @@ public class AirstrikePayload : MonoBehaviour, IAirshipPayload
     {
         GameObject airstrike = Instantiate(airstrikePrefab, target, Quaternion.identity);
         airstrike.GetComponent<Airstrike>().Initialize();
-        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.AirshipHit, airstrike.transform);
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.AirshipHit, airstrike.transform);
     }
 }

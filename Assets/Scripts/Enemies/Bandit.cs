@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -130,6 +131,7 @@ public class Bandit : MonoBehaviour, IEnemy
 
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
+        if (!this || !transform) return;
         SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.BanditHit, transform);
         behaviour.TakeDamage(damage, sourceType, isCritical, effect);
     }

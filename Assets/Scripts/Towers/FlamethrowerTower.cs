@@ -515,7 +515,8 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         critChance = CalculateCritChance(data.critChance);
         critMultiplier = data.critMultiplier;
 
-        activeFlame.UpdateRange(EffectiveRange(range));
+        if (activeFlame != null)
+            activeFlame.UpdateRange(EffectiveRange(range));
         SetRangeProjector(EffectiveRange(range));
 
         OnUpgrade?.Invoke(TowerType());

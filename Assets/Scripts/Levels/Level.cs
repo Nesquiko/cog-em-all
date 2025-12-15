@@ -5,6 +5,7 @@ using UnityEngine;
 using System.IO;
 using UnityEditor;
 using System.Linq;
+using Unity.Properties;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(SplineContainer))]
@@ -28,6 +29,14 @@ public class Level : MonoBehaviour
     {
         splineContainer = GetComponent<SplineContainer>();
         splineMesh = GetComponent<SplineMeshTools.Core.SplineMesh>();
+    }
+
+    private void OnValidate()
+    {
+        if (splineContainer == null)
+            splineContainer = GetComponent<SplineContainer>();
+        if (splineMesh == null)
+            splineMesh = GetComponent<SplineMeshTools.Core.SplineMesh>();
     }
 
     private void Start()

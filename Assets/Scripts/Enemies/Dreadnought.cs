@@ -97,6 +97,7 @@ public class Dreadnought : MonoBehaviour, IEnemy
 
     public void TakeDamage(float damage, DamageSourceType sourceType, bool isCritical = false, EnemyStatusEffect effect = null)
     {
+        if (!this || !transform) return;
         SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.DreadnoughtHit, transform);
 
         if (effect?.type == EffectType.DisabledBuffs) BreakShield();

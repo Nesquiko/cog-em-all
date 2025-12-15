@@ -88,6 +88,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1 &1262293100744859469
 GameObject:
@@ -171,7 +172,7 @@ MonoBehaviour:
   attackRange: 1.5
   attackTrigger: {fileID: 3906246663465091158}
   attackRate: 1
-  onKillGearsReward: 2
+  onKillGearsReward: 5
   path: {fileID: 0}
   speed: 20
   maxHealthPoints: 100

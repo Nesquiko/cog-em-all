@@ -34,9 +34,9 @@ public class AirshipSkill : MonoBehaviour, ISkill
         GameObject airshipGO = Instantiate(payloadPrefab, startPosition, rotation);
 
         if (!airshipGO.TryGetComponent<IAirshipPayload>(out var payload)) return;
-            
+
         payload.DropFromAirship(targetPosition, dropDuration);
 
-        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.AirshipDrop, airshipGO.transform);
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.AirshipDrop, airshipGO.transform);
     }
 }
