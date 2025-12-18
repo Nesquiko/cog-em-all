@@ -152,6 +152,9 @@ public class OperationResultUI : MonoBehaviour
 
     public void Initialize(OperationStatistics statistics)
     {
+        SoundFXType sfxType = statistics.cleared ? SoundFXType.OperationCleared : SoundFXType.OperationFailed;
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(sfxType, transform);
+
         operationStatistics = statistics;
 
         SetTitle(statistics.cleared);
@@ -185,5 +188,6 @@ public class OperationResultUI : MonoBehaviour
         Time.timeScale = 1f;
         brain.enabled = true;
         SceneLoader.LoadScene("MenuScene");
+        SoundManagersDontDestroy.GerOrCreate().Music.PlayMenuMusic();
     }
 }

@@ -63,9 +63,12 @@ public class Nexus : MonoBehaviour, IDamageable
         isDying = true;
 
         healthPoints = 0;
-        OnDestroyed?.Invoke(this);
 
         nexusExplosion.Play(withChildren: true);
+        CinemachineShake.Instance.Shake(ShakeIntensity.Extreme, ShakeLength.Long);
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.BigExplosion, transform);
+
+        OnDestroyed?.Invoke(this);
 
         yield return new WaitForSecondsRealtime(0.1f);
 

@@ -60,6 +60,12 @@ public class HUDPanelUI : MonoBehaviour
     [SerializeField] private GameObject minimapImage;
     [SerializeField] private string minimapBackgroundTag;
     [SerializeField] private string maximizedMinimapTag;
+
+    [Header("Wave Overlay")]
+    [SerializeField] private GameObject waveOverlay;
+    [SerializeField, Range(1f, 3f)] private float waveOverlayDuration = 2.5f;
+
+    [Header("Sudden Death Overlay")]
     [SerializeField] private GameObject suddenDeathOverlay;
     [SerializeField, Range(1f, 3f)] private float suddenDeathOverlayDuration = 2.5f;
 
@@ -378,17 +384,23 @@ public class HUDPanelUI : MonoBehaviour
         minimapMaximized = maximized;
     }
 
-    public void ShowSuddenDeathOverlay()
+    public void ShowWaveOverlay(int wave)
     {
-        StartCoroutine(SuddenDeathOverlay());
+        waveOverlay.GetComponent<WaveOverlay>().Initialize(wave);
+        StartCoroutine(OverlayRoutine(waveOverlay, waveOverlayDuration));
     }
 
-    private IEnumerator SuddenDeathOverlay()
+    public void ShowSuddenDeathOverlay()
     {
-        CanvasGroup cg = suddenDeathOverlay.GetComponent<CanvasGroup>();
-        suddenDeathOverlay.SetActive(true);
+        StartCoroutine(OverlayRoutine(suddenDeathOverlay, suddenDeathOverlayDuration));
+    }
 
-        float totalDuration = suddenDeathOverlayDuration;
+    private IEnumerator OverlayRoutine(GameObject overlay, float duration)
+    {
+        CanvasGroup cg = overlay.GetComponent<CanvasGroup>();
+        overlay.SetActive(true);
+
+        float totalDuration = duration;
         float fadeDuration = totalDuration * 0.25f;
         float holdDuration = totalDuration - 2 * fadeDuration;
 
@@ -412,6 +424,6 @@ public class HUDPanelUI : MonoBehaviour
         }
 
         cg.alpha = 0f;
-        suddenDeathOverlay.SetActive(false);
+        overlay.SetActive(false);
     }
 }

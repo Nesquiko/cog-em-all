@@ -110,6 +110,9 @@ public class Bomber : MonoBehaviour, IEnemy
         explosionVFX.transform.SetParent(null);
         explosionVFX.Play();
 
+        CinemachineShake.Instance.Shake(ShakeIntensity.Low, ShakeLength.Short);
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.Explosion, transform);
+
         target.TakeDamage(behaviour.AttackDamage, this);
 
         Destroy(model);

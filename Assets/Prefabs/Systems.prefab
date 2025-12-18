@@ -177,7 +177,7 @@ MonoBehaviour:
   prewarmCount: 50
   distanceUpdateEveryFrames: 1
   popupHeightOffset: 10
-  pauseManager: {fileID: 0}
+  pauseManager: {fileID: 5980993326044197678}
 --- !u!1 &4351666456078714511
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,8 +283,18 @@ MonoBehaviour:
   - {fileID: 3763980083327337614, guid: 16a5256d607acf14b981f1b9dfeeafb5, type: 3}
   - {fileID: 3639713596541949016, guid: b885353a54770ff46ba288e615523d7b, type: 3}
   - {fileID: 5157639234088474056, guid: 7369b1815d5ae6545ac63789fb25e0c5, type: 3}
-  factionSpecificSkillPrefabs: []
+  factionSpecificSkillPrefabs:
+  - {fileID: 5157639234088474056, guid: afd8979d6901bde4bbbebfa29ce92ea9, type: 3}
+  - {fileID: 5157639234088474056, guid: aaeaf076d5083914aa5d6345b3b50c53, type: 3}
+  - {fileID: 5157639234088474056, guid: d96e8ceeab313b0459fd23223c7baf11, type: 3}
+  - {fileID: 5157639234088474056, guid: d03dcab067971264c84f8a274fc03af9, type: 3}
+  - {fileID: 5157639234088474056, guid: 9174da232f3262e479c3144d7d6d0373, type: 3}
   skillButtons:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -293,8 +303,8 @@ MonoBehaviour:
   ghostInvalidMaterial: {fileID: 2100000, guid: fa647975f89d8744e9417241dd1aa56b, type: 2}
   enemyMask:
     serializedVersion: 2
-    m_Bits: 0
-  cursorSettings: {fileID: 0}
+    m_Bits: 4096
+  cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
 --- !u!1 &4812674696945707097
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,7 +506,7 @@ MonoBehaviour:
   buildProgressPrefab: {fileID: 8046800401251688829, guid: 30bf0823e03c29a4292a593cff38da36, type: 3}
   HUDPanelUI: {fileID: 0}
   towerSelectionManager: {fileID: 7161200660772854307}
-  skillPlacementSystem: {fileID: 0}
+  skillPlacementSystem: {fileID: 4804839545236141888}
   pauseManager: {fileID: 5980993326044197678}
   towerPrefabs:
   - {fileID: 3790200311388746545, guid: 082a34f533816ac40af20f94ec2e00e5, type: 3}

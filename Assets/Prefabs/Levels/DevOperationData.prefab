@@ -45,15 +45,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OperationDataDontDestroy
   faction: 0
-  factionLevel: 0
+  factionLevel: 15
   modifiers:
-  - rid: 7348732530026348629
+  - rid: 240750541994197066
+  - rid: 240750541994197067
+  - rid: 240750541994197068
+  - rid: 240750541994197085
+  - rid: 240750541994197086
+  - rid: 240750541994197087
+  - rid: 240750541994197088
+  - rid: 240750541994197089
+  - rid: 240750541994197090
+  - rid: 240750541994197091
+  - rid: 240750541994197092
   abilityModifiers: 
-  levelFileName: level-2.json
+  levelFileName: testing-level.json
   references:
     version: 2
     RefIds:
-    - rid: 7348732530026348629
+    - rid: 240750541994197066
       type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
       data:
         name: Tesla Tower
@@ -62,3 +72,193 @@ MonoBehaviour:
           channels chaining lightning to strike enemies and arc damage through clustered
           targets.
         toUnlock: 1
+    - rid: 240750541994197067
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar
+        slug: mortar
+        description: Grants access to the Mortar, a long-range artillery platform
+          that lobs explosive shells to devastate enemies in a wide area along distant
+          paths.
+        toUnlock: 2
+    - rid: 240750541994197068
+      type: {class: UnlockTowerTypeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower
+        slug: flamethrower
+        description: Grants access to the Flamethrower, a close-range weapon that
+          bathes enemies in burning fuel, dealing continuous damage over time to
+          anything caught in its cone.
+        toUnlock: 3
+    - rid: 240750541994197085
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Gatling Level 2
+        slug: gatling_level_2
+        description: Upgrades the Gatling Tower with reinforced barrels and refined
+          targeting, increasing its fire rate, damage, and critical hit chance.
+        applyTo: 0
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+    - rid: 240750541994197086
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Gatling Level 3
+        slug: gatling_level_3
+        description: Further enhances the Gatling Tower with superior barrel assemblies
+          and advanced optics, boosting its fire rate, damage, critical hit chance,
+          range, and critical damage.
+        applyTo: 0
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+        - modifiedAttribute: 2
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 4
+          changeType: 0
+          change: 0.25
+    - rid: 240750541994197087
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Level 2
+        slug: tesla_level_2
+        description: Upgrades the Tesla Tower with reinforced coils and improved
+          conduits, increasing its damage, fire rate, and critical hit chance.
+        applyTo: 1
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.1
+    - rid: 240750541994197088
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Tesla Level 3
+        slug: tesla_level_3
+        description: Perfects the Tesla Tower with high-capacity capacitors and extended
+          conductors, further boosting its damage, fire rate, critical hit chance,
+          range, and critical damage.
+        applyTo: 1
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.1
+        - modifiedAttribute: 2
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 4
+          changeType: 0
+          change: 0.25
+    - rid: 240750541994197089
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar Level 2
+        slug: mortar_level_2
+        description: Upgrades the Mortar with enhanced shell loading and explosive
+          payloads, increasing its fire rate, the area-of-effect damage of its blasts
+          and crit chance.
+        applyTo: 2
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+    - rid: 240750541994197090
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mortar Level 3
+        slug: mortar_level_3
+        description: Further refines the Mortar with advanced targeting and high-yield
+          munitions, boosting its fire rate, area-of-effect damage, range, and critical
+          damage.
+        applyTo: 2
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 3
+          changeType: 0
+          change: 0.05
+        - modifiedAttribute: 2
+          changeType: 1
+          change: 1.25
+        - modifiedAttribute: 4
+          changeType: 0
+          change: 0.2
+    - rid: 240750541994197091
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower Level 2
+        slug: flamethrower_level_2
+        description: Upgrades the Flamethrower with enriched fuel and improved feed
+          systems, increasing its damage and sustained firing duration.
+        applyTo: 3
+        allowLevel: 2
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 5
+          changeType: 1
+          change: 1.1
+    - rid: 240750541994197092
+      type: {class: UnlockTowerUpgradeModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Flamethrower Level 3
+        slug: flamethrower_level_3
+        description: Further refines the Flamethrower with optimized pressure and
+          cooling systems, boosting its burn damage, sustained firing duration, and
+          reducing its cooldown time between bursts.
+        applyTo: 3
+        allowLevel: 3
+        upgrades:
+        - modifiedAttribute: 0
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 5
+          changeType: 1
+          change: 1.1
+        - modifiedAttribute: 1
+          changeType: 1
+          change: 1.1

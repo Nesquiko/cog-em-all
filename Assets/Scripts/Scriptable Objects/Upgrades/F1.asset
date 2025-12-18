@@ -23,7 +23,7 @@ MonoBehaviour:
   - label: Flame duration
     value: 2s
   - label: Range
-    value: 18m
+    value: 50m
   - label: Cooldown duration
     value: 3s
   - label: Crit chance
@@ -33,8 +33,8 @@ MonoBehaviour:
   flameDamagePerPulse: 15
   flamePulseInterval: 0.4
   flameDuration: 2
-  range: 18
-  flameAngle: 45
+  range: 50
+  flameAngle: 34
   cooldownDuration: 3
   critChance: 0.02
   critMultiplier: 2

@@ -17,6 +17,7 @@ public class DisableZone : MonoBehaviour
     {
         sphereCollider.radius = disableRadius;
 
+        CinemachineShake.Instance.Shake(ShakeIntensity.High, ShakeLength.Long);
         disableExplosionVFX.Play();
         disableVFX.Play();
 

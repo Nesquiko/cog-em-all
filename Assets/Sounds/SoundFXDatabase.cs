@@ -19,6 +19,12 @@ public enum SoundFXType
 
     AirshipDrop,
     AirshipHit,
+
+    OperationCleared,
+    OperationFailed,
+
+    Explosion,
+    BigExplosion,
 }
 
 [Serializable]

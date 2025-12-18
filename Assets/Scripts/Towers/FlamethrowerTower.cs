@@ -25,7 +25,7 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
     [SerializeField] private Transform firePoint;
     [SerializeField] private GameObject flamethrowerHead;
     [SerializeField] private GameObject flameCollider;
-    [SerializeField] private DecalProjector rangeProjector;
+    [SerializeField] private GameObject rangeProjector;
     [SerializeField] private Renderer[] highlightRenderers;
 
     [Header("UI References")]
@@ -200,14 +200,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     private void ShowRange(bool show)
     {
-        rangeProjector.gameObject.SetActive(show);
+        rangeProjector.SetActive(show);
     }
 
     private void SetRangeProjector(float range)
     {
-        var size = rangeProjector.size;
-        size.x = size.y = range;
-        rangeProjector.size = size;
+        rangeProjector.transform.localScale = new(range, rangeProjector.transform.localScale.y, range);
     }
 
     private void Update()

@@ -19,6 +19,7 @@ public class FreezeZone : MonoBehaviour
     {
         sphereCollider.radius = freezeRadius;
 
+        CinemachineShake.Instance.Shake(ShakeIntensity.High, ShakeLength.Long);
         freezeExplosionVFX.Play();
         freezeVFX.Play();
 
@@ -30,6 +31,7 @@ public class FreezeZone : MonoBehaviour
         if (exploded) return;
         exploded = true;
 
+        CinemachineShake.Instance.Shake(ShakeIntensity.High, ShakeLength.Long);
         freezeExplosionVFX.Play();
         freezeVFX.Stop(withChildren: true);
 

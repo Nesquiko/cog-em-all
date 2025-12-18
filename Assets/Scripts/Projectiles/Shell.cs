@@ -84,6 +84,8 @@ public class Shell : MonoBehaviour, IDamageSource
         shellExplosionVFX.transform.parent = null;
         shellExplosionVFX.Play();
 
+        CinemachineShake.Instance.Shake(ShakeIntensity.Low, ShakeLength.Medium);
+
         Collider[] hits = Physics.OverlapSphere(transform.position, owner.ShellSplashRadius);
         HashSet<IEnemy> damaged = new();
 
@@ -104,6 +106,9 @@ public class Shell : MonoBehaviour, IDamageSource
         float vfxLife = shellExplosionVFX.main.duration + shellExplosionVFX.main.startLifetime.constantMax;
         Destroy(shellExplosionVFX.gameObject, vfxLife);
         Destroy(gameObject);
+
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.Explosion, transform);
+
         yield break;
     }
 }

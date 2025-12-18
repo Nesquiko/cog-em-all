@@ -69,6 +69,12 @@ public class UIMenuManager : MonoBehaviour
         ShowPanel(Panel.Factions);
     }
 
+    public void ShowSkillTree(int factionIndex)
+    {
+        Faction faction = (Faction)factionIndex;
+        ShowSkillTree(faction);
+    }
+
     public void ShowSkillTree(Faction faction)
     {
         skillTreeUI.Initialize(faction, saveContext.CurrentSave);
@@ -188,6 +194,16 @@ public class UIMenuManager : MonoBehaviour
     private void HandleLevelUp(int newLevel)
     {
         Debug.Log($"Leveled up, new level: {newLevel}");
+    }
+
+    public void HandleHomeClick()
+    {
+        SceneLoader.LoadScene("HomeScene");
+    }
+
+    public void HandleQuitClick()
+    {
+        Application.Quit();
     }
 
     private void OnDestroy()

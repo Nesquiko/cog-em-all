@@ -195,6 +195,7 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
         Vector3 offset = Random.insideUnitSphere * 0.5f;
         mineExplosion.transform.position = transform.position + offset;
 
+        CinemachineShake.Instance.Shake(ShakeIntensity.Medium, ShakeLength.Medium);
         mineExplosion.Play();
 
         Collider[] hits = Physics.OverlapSphere(transform.position, explosionRadius, enemyMask, QueryTriggerInteraction.Collide);
@@ -214,5 +215,7 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
                 zone.ShatterTheIce(explosionDamage);
             }
         }
+
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.Explosion, transform);
     }
 }

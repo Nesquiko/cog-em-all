@@ -74,8 +74,6 @@ public class EnemyStatusEffect
     public int maxStacks = 1;
     public float damageMultiplierPerStack = 0f;
 
-    public EnemyStatusEffect() { }
-
     public EnemyStatusEffect(
         EffectType type,
         float duration,

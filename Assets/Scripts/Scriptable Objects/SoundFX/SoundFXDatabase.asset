@@ -42,3 +42,15 @@ MonoBehaviour:
   - type: 8
     clips:
     - {fileID: 8300000, guid: d47e6ed162da1f740ad807d00f4679f3, type: 3}
+  - type: 9
+    clips:
+    - {fileID: 8300000, guid: f1c745c7ecc6c4748b46dba428252a4c, type: 3}
+  - type: 10
+    clips:
+    - {fileID: 8300000, guid: a8841d2988a86604aa38dfb7b838c91e, type: 3}
+  - type: 11
+    clips:
+    - {fileID: 8300000, guid: 1fd31868d68903d4f9e2c4a3b7ef98f3, type: 3}
+  - type: 12
+    clips:
+    - {fileID: 8300000, guid: 986d6b30567e30e428f3f21373fe45ca, type: 3}

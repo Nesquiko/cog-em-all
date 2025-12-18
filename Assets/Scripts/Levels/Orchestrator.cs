@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Cinemachine;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Splines;
@@ -14,7 +13,7 @@ class Orchestrator : MonoBehaviour
     [SerializeField] private Spawner spawner;
     private SerializableLevel level;
     private int wavesSpawned = 0;
-    private Dictionary<int, int> perWaveEnemies = new();
+    private readonly Dictionary<int, int> perWaveEnemies = new();
     private int enemiesLive = 0;
     private bool operationEnded = false;
 
@@ -72,6 +71,8 @@ class Orchestrator : MonoBehaviour
 
         mainCamera = Camera.main;
         brain = mainCamera.GetComponent<CinemachineBrain>();
+
+        SoundManagersDontDestroy.GerOrCreate().Music.PlayGameMusic();
     }
 
     private void Update()
@@ -240,6 +241,7 @@ class Orchestrator : MonoBehaviour
             yield return nextWaveCountdown.StartCountdown(wave.prepareTimeSeconds);
 
             waveCounterInfo.SetCounter(waveIndex + 1, level.waves.Count);
+            HUDPanelUI.ShowWaveOverlay(waveIndex + 1);
             yield return spawner.RunSpawnWave(wave, waveIndex, splineContainer, (enemy) => OnEnemySpawn(enemy, enemyMods), (enemy) => OnEnemyKilled(enemy, enemyMods));
             wavesSpawned += 1;
         }

@@ -51,7 +51,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f650365f30e146ee8c3a12d54245131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Orchestator
-  operationModifiers: {fileID: 11400000, guid: df4fbe4c48df68d64bc0ba08d9043e65, type: 2}
   spawner: {fileID: 3241147788221084188}
   towerDataCatalog: {fileID: 11400000, guid: 1844d4d3151219eca819e33912557610, type: 2}
   skillDataCatalog: {fileID: 11400000, guid: e88482c826f516b418297443642d8cd6, type: 2}
@@ -60,6 +59,7 @@ MonoBehaviour:
   skillPlacementSystem: {fileID: 0}
   towerSellManager: {fileID: 0}
   towerSelectionManager: {fileID: 0}
+  gearDropManager: {fileID: 0}
   mainCamera: {fileID: 0}
   brain: {fileID: 0}
   waveCounterInfo: {fileID: 0}
@@ -69,6 +69,8 @@ MonoBehaviour:
   operationResultUI: {fileID: 0}
   passiveIncome: 10
   passiveTick: 5
+  gearRewardMultiplier: 1
+  experienceSystem: {fileID: 0}
 --- !u!114 &8284664547945944436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,6 +100,7 @@ MonoBehaviour:
   bomberPrefab: {fileID: 4046338385926235126, guid: ac9f15c6e8fe192b4804b630aff58f0e, type: 3}
   banditPrefab: {fileID: 5990062324861547421, guid: 693325028fe6c1c40bd66416464bd64f, type: 3}
   dreadnoughtPrefab: {fileID: 2468554044529842787, guid: f25aaea06ca110827877045cd36f43d7, type: 3}
+  spawnInThisGameObject: {fileID: 0}
   spawnTimeStaggerRange: {x: 0, y: 0.05}
   spawnLateralOffsetRange: {x: -7, y: 7}
 --- !u!114 &1144577461460255518
@@ -815,6 +818,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
 --- !u!64 &4510211835133337065
 MeshCollider:

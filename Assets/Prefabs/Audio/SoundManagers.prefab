@@ -141,10 +141,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MusicManager
   audioSource: {fileID: 4203721929703277678}
-  menuMusic: {fileID: 8300000, guid: e1c9d0eca9c16c54a89b11c29350c187, type: 3}
-  brassArmyMusic: {fileID: 0}
-  valveboundSeraphsMusic: {fileID: 0}
-  overpressureCollectiveMusic: {fileID: 0}
+  menuMusic: {fileID: 8300000, guid: 8c4b838668f3a924081932720b9605a9, type: 3}
+  gameMusic: {fileID: 8300000, guid: 3ed3ea9406dca354a90e6bd857b5d445, type: 3}
 --- !u!82 &4203721929703277678
 AudioSource:
   m_ObjectHideFlags: 0

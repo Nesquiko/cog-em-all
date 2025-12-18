@@ -11,6 +11,7 @@ public class Airstrike : MonoBehaviour, IDamageSource
 
     public void Initialize()
     {
+        CinemachineShake.Instance.Shake(ShakeIntensity.High, ShakeLength.Long);
         explosionVFX.Play();
 
         Destroy(gameObject, 3);
