@@ -166,6 +166,7 @@ GameObject:
   - component: {fileID: 3068088195512795185}
   - component: {fileID: 5638517182766248833}
   - component: {fileID: 1423010571269786868}
+  - component: {fileID: 5306778469524670448}
   m_Layer: 5
   m_Name: SkillMajorNode
   m_TagString: Untagged
@@ -315,6 +316,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
   hoverScale: 1.1
   speed: 15
+--- !u!114 &5306778469524670448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6732208326636679577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &7397998767241314786
 GameObject:
   m_ObjectHideFlags: 0

@@ -99,6 +99,8 @@ public class Wall : MonoBehaviour, IDamageSource, ISkillPlaceable, IDamageable
             wallHealthBar.SetActive(true);
         }
 
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.WallHit, transform);
+
         OnHealthChanged?.Invoke(this);
 
         if (sharpThornsActive)

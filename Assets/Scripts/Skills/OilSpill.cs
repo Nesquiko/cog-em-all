@@ -118,6 +118,8 @@ public class OilSpill : MonoBehaviour, ISkillPlaceable
         if (enemiesInRange.ContainsKey(id)) return;
         enemiesInRange.Add(id, e);
 
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.OilSpill, transform);
+
         e.ApplyEffect(EnemyStatusEffect.Oiled(slowMultiplier));
         if (satansWrathActive && burning) e.ApplyEffect(EnemyStatusEffect.OilBurn(flameTickDamage, flameTickInterval));
     }

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public static class SceneLoader
 {
     private static string targetScene;
-    private static readonly float minimumLoadingTime = 1.5f;
+    private static readonly float minimumLoadingTime = 2f;
 
     public static void LoadScene(string sceneName)
     {

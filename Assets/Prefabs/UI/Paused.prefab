@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 4621515856587443487}
   - component: {fileID: 3333957065135936021}
   - component: {fileID: 3765020098542172278}
+  - component: {fileID: 4277942797719877254}
+  - component: {fileID: 2284808683251692578}
   m_Layer: 5
   m_Name: RestartButton
   m_TagString: Untagged
@@ -147,6 +149,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &4277942797719877254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165075796406302298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d6796ac0f77c4e4fae0ab7c58284272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
+  hoverScale: 1.1
+  speed: 15
+--- !u!114 &2284808683251692578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165075796406302298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &1454670409608020967
 GameObject:
   m_ObjectHideFlags: 0
@@ -195,6 +223,8 @@ GameObject:
   - component: {fileID: 1679391671910199724}
   - component: {fileID: 7095085504352049439}
   - component: {fileID: 2731956596981440652}
+  - component: {fileID: 6295352905558226474}
+  - component: {fileID: 2918880638527757301}
   m_Layer: 5
   m_Name: ResumeButton
   m_TagString: Untagged
@@ -329,6 +359,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &6295352905558226474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2404633587207187836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d6796ac0f77c4e4fae0ab7c58284272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
+  hoverScale: 1.1
+  speed: 15
+--- !u!114 &2918880638527757301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2404633587207187836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &3621916566176596078
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,6 +488,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -478,6 +535,8 @@ GameObject:
   - component: {fileID: 8002793804316225892}
   - component: {fileID: 1552606178047555768}
   - component: {fileID: 6093609822151355966}
+  - component: {fileID: 8339676958893236325}
+  - component: {fileID: 6381306326893768059}
   m_Layer: 5
   m_Name: OptionsButton
   m_TagString: Untagged
@@ -612,6 +671,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &8339676958893236325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3894949940458162229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d6796ac0f77c4e4fae0ab7c58284272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
+  hoverScale: 1.1
+  speed: 15
+--- !u!114 &6381306326893768059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3894949940458162229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &4030815940361969417
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,6 +878,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -929,6 +1015,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1065,6 +1152,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1111,6 +1199,8 @@ GameObject:
   - component: {fileID: 1647039833675034815}
   - component: {fileID: 4861295874183134287}
   - component: {fileID: 3307873178509310890}
+  - component: {fileID: 3061332585863936550}
+  - component: {fileID: 1617126566116968572}
   m_Layer: 5
   m_Name: QuitButton
   m_TagString: Untagged
@@ -1245,6 +1335,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &3061332585863936550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878517947022767010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d6796ac0f77c4e4fae0ab7c58284272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
+  hoverScale: 1.1
+  speed: 15
+--- !u!114 &1617126566116968572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8878517947022767010}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &9055125244326130935
 GameObject:
   m_ObjectHideFlags: 0

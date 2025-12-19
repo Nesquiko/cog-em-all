@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -152,6 +153,7 @@ GameObject:
   - component: {fileID: 5967489643205415112}
   - component: {fileID: 2230849176296334559}
   - component: {fileID: 3211412981433962512}
+  - component: {fileID: 6706572592764898446}
   m_Layer: 5
   m_Name: StimModeButton
   m_TagString: Untagged
@@ -328,6 +330,18 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &6706572592764898446
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5237424352485166714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &6822571778609699023
 GameObject:
   m_ObjectHideFlags: 0

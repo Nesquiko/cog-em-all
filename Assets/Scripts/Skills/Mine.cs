@@ -168,6 +168,8 @@ public class Mine : MonoBehaviour, IDamageSource, ISkillPlaceable
             if (screw != null)
                 screw.material = screwArmedMaterial;
 
+            SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.MineTrigger, transform);
+
             yield return new WaitForSeconds(interval);
         }
 

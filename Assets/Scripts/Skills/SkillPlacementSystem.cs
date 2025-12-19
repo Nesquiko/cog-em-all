@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -22,7 +20,7 @@ public class SkillPlacementSystem : MonoBehaviour
     [SerializeField] private GameObject[] skillPrefabs;
     [SerializeField] private GameObject[] factionSpecificSkillPrefabs;
     [SerializeField] private SkillButton[] skillButtons;
-    [SerializeField] private GameObject airshipDropPoint;
+    [SerializeField] private AirshipController airshipController;
 
     [Header("Visuals")]
     [SerializeField] private Material ghostValidMaterial;
@@ -315,9 +313,8 @@ public class SkillPlacementSystem : MonoBehaviour
 
             case SkillActivationMode.Airship:
                 if (!skillPrefab.TryGetComponent<AirshipSkill>(out var airshipSkill)) break;
-                Vector3 startPosition = airshipDropPoint.transform.position;
                 airshipSkill.Initialize(
-                    startPos: startPosition,
+                    airshipController: airshipController,
                     targetPos: position
                 );
                 break;

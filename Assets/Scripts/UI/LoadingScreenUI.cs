@@ -8,18 +8,23 @@ public class LoadingScreenUI : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Image progressBarFill;
-    [SerializeField] private TextMeshProUGUI tipText;
+
+    [Header("Cinematic Pictures")]
+    [SerializeField] private Image pictureImage;
+    [SerializeField] private Sprite[] pictures;
 
     [Header("Tips")]
+    [SerializeField] private TextMeshProUGUI tipText;
     [SerializeField] private LoadingTipsData loadingTipsData;
 
     private float currentFill;
-
     private int currentTipIndex = -1;
 
     private void OnEnable()
     {
         Assert.IsTrue(loadingTipsData.TipCount > 0);
+        Assert.IsTrue(pictures.Length > 0);
+        ShowCinematicPicture();
         StartCoroutine(RotateTips());
     }
 
@@ -33,6 +38,12 @@ public class LoadingScreenUI : MonoBehaviour
         progress = Mathf.Clamp01(progress);
         currentFill = Mathf.Lerp(currentFill, progress, Time.deltaTime * 5f);
         progressBarFill.fillAmount = currentFill;
+    }
+
+    private void ShowCinematicPicture()
+    {
+        int pictureIndex = Random.Range(0, pictures.Length);
+        pictureImage.sprite = pictures[pictureIndex];
     }
 
     private IEnumerator RotateTips()

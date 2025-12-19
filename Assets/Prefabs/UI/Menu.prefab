@@ -619,6 +619,8 @@ GameObject:
   - component: {fileID: 1680727326363040931}
   - component: {fileID: 5513616022226059438}
   - component: {fileID: 6833739430380417683}
+  - component: {fileID: 5508755720569075979}
+  - component: {fileID: 5829941250169861564}
   m_Layer: 5
   m_Name: MenuButton
   m_TagString: Untagged
@@ -753,6 +755,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &5508755720569075979
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8082074441365946279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d6796ac0f77c4e4fae0ab7c58284272, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
+  hoverScale: 1.1
+  speed: 15
+--- !u!114 &5829941250169861564
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8082074441365946279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &8305032220915338724
 GameObject:
   m_ObjectHideFlags: 0

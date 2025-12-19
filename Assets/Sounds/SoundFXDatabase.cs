@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// music / sfx work when starting in HomeScene
-
 // to add more sounds, create a new enum value and assign
 // one or more clips to it inside SoundFXDatabase SO
 public enum SoundFXType
@@ -25,6 +23,18 @@ public enum SoundFXType
 
     Explosion,
     BigExplosion,
+
+    NexusHit,
+    WallHit,
+    OilSpill,
+    MineTrigger,
+
+    WaveSpawn,
+    BanditBattlecry,
+    BomberDash,
+    DreadnoughtShieldEquip,
+
+    ButtonClick,
 }
 
 [Serializable]

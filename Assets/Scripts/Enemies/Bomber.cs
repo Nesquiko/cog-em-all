@@ -86,6 +86,9 @@ public class Bomber : MonoBehaviour, IEnemy
     private IEnumerator Dash()
     {
         if (isDashing) yield break;
+
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.BomberDash, transform);
+
         isDashing = true;
         float dashSpeed = behaviour.OriginalSpeed * dashSpeedMultiplier;
         behaviour.Speed = dashSpeed;

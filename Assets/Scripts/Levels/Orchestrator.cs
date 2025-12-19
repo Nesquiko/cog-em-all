@@ -242,6 +242,7 @@ class Orchestrator : MonoBehaviour
 
             waveCounterInfo.SetCounter(waveIndex + 1, level.waves.Count);
             HUDPanelUI.ShowWaveOverlay(waveIndex + 1);
+            SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.WaveSpawn, transform);
             yield return spawner.RunSpawnWave(wave, waveIndex, splineContainer, (enemy) => OnEnemySpawn(enemy, enemyMods), (enemy) => OnEnemyKilled(enemy, enemyMods));
             wavesSpawned += 1;
         }

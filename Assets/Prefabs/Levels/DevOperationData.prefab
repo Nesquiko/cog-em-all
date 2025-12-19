@@ -58,6 +58,11 @@ MonoBehaviour:
   - rid: 240750541994197090
   - rid: 240750541994197091
   - rid: 240750541994197092
+  - rid: 240750612219953229
+  - rid: 240750612219953230
+  - rid: 240750612219953231
+  - rid: 240750612219953232
+  - rid: 240750612219953233
   abilityModifiers: 
   levelFileName: testing-level.json
   references:
@@ -262,3 +267,52 @@ MonoBehaviour:
         - modifiedAttribute: 1
           changeType: 1
           change: 1.1
+    - rid: 240750612219953229
+      type: {class: TowerModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Ballistic Superiority
+        slug: ballistic_superiority
+        description: The Brass Army's rigorous gunnery drills and precision forged
+          barrels permanently increase Gatling Tower damage by 10%.
+        applyTo: 0
+        modifiedAttribute: 0
+        changeType: 1
+        change: 1.1
+        currentRanks: 0
+        maxRanks: 1
+    - rid: 240750612219953230
+      type: {class: BaseUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Iron Rain
+        slug: iron_rain
+        description: Call in a Brass Army airship to blanket a targeted area in a
+          devastating bombardment, pelting enemies below with a concentrated storm
+          of explosive ordnance.
+        unlocks: 1
+    - rid: 240750612219953231
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Wall
+        slug: wall
+        description: Grants access to the Wall, allowing you to place temporary barricades
+          directly on enemy paths to block their advance and force them to attack
+          and break through before proceeding.
+        toUnlock: 0
+    - rid: 240750612219953232
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Oil Spill
+        slug: oil_spill
+        description: Grants access to the Oil Spill, allowing you to coat a section
+          of the path in slick fuel that significantly slows enemies moving through
+          it.
+        toUnlock: 1
+    - rid: 240750612219953233
+      type: {class: AbilityUnlock, ns: , asm: Assembly-CSharp}
+      data:
+        name: Mine
+        slug: mine
+        description: Grants access to the Mine, letting you plant hidden explosives
+          on the path that arm when stepped on, then detonate after a short fuse
+          to damage nearby enemies.
+        toUnlock: 2

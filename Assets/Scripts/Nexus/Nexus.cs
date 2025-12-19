@@ -49,6 +49,8 @@ public class Nexus : MonoBehaviour, IDamageable
             nexusHealthBar.SetActive(true);
         }
 
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.NexusHit, transform);
+
         OnHealthChanged?.Invoke(this, damage);
 
         if (healthPoints <= 0f)

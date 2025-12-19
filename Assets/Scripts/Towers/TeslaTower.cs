@@ -65,6 +65,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
     [SerializeField] private float damageFactor = 0.75f;
 
     [Header("VFX")]
+    [SerializeField] private ParticleSystem flareVFX;
     [SerializeField] private ParticleSystem upgradeVFX;
     [SerializeField] private ParticleSystem stimModeVFX;
     [SerializeField] private ParticleSystem[] stimCooldownVFX;
@@ -331,6 +332,8 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beam.OnEnemyKilled += HandleEnemyKilled;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
 
+        flareVFX.Play();
+
         SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.TeslaShoot, transform);
 
         if (stimActive || stunFirstEnemy)
@@ -427,6 +430,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         float baseBeamDamage = CalculateBaseBeamDamage?.Invoke(beamDamage) ?? beamDamage;
         float dmg = baseBeamDamage * (isCritical ? critMultiplier : 1f);
         beam.Initialize(this, firePoint.transform, fakeTarget.transform, dmg, isCritical);
+
+        flareVFX.Play();
+
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.TeslaShoot, transform);
 
         if (controlPoint.TryGetComponent<CameraRecoil>(out var recoil)) recoil.PlayRecoil();
 

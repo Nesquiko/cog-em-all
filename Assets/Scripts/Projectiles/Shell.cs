@@ -27,12 +27,6 @@ public class Shell : MonoBehaviour, IDamageSource
     public event Action<float> OnDamageDealt;
     public event Action OnEnemyKilled;
 
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, owner.ShellSplashRadius);
-    }
-
     public void Initialize(MortarTower ownerTower)
     {
         owner = ownerTower;

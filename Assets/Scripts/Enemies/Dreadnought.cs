@@ -67,6 +67,9 @@ public class Dreadnought : MonoBehaviour, IEnemy
     private void ActivateShield()
     {
         if (behaviour.BuffsDisabled) return;
+
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.DreadnoughtShieldEquip, transform, 0.5f);
+
         shieldHealthPoints = behaviour.MaxHealthPoints * shieldHealthFraction;
         shieldActive = true;
         shieldVFX.Play();

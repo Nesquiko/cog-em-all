@@ -73,6 +73,7 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
     [SerializeField] private float recoilReturnSpeed = 5f;
 
     [Header("VFX")]
+    [SerializeField] private ParticleSystem muzzleFlashVFX;
     [SerializeField] private ParticleSystem upgradeVFX;
     [SerializeField] private ParticleSystem stimModeVFX;
     [SerializeField] private ParticleSystem stimCooldownVFX;
@@ -319,6 +320,8 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         shell.OnDamageDealt += HandleDamageDealt;
         shell.OnEnemyKilled += HandleEnemyKilled;
         shell.Initialize(this);
+
+        muzzleFlashVFX.Play();
         SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.MortarShoot, transform);
 
         if (recoilRoutine != null)

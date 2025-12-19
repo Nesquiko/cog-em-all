@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1822416663633985211}
   - component: {fileID: 7737966228453166846}
   - component: {fileID: 2701447244238260759}
+  - component: {fileID: 3086198908553102455}
   m_Layer: 5
   m_Name: IconButton
   m_TagString: Untagged
@@ -149,3 +150,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &3086198908553102455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 95394437754341696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound

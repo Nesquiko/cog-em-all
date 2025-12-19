@@ -20,4 +20,10 @@ MonoBehaviour:
     strategy."
   - "Remember: upgrades and rotations pause towers \u2014 plan adjustments between
     waves."
-  tipChangeInterval: 1
+  - Upgrading a tower early is often stronger than building a new one.
+  - "Selling and rebuilding is part of the strategy \u2014 adapt to enemy paths."
+  - "Not all waves need more towers \u2014 sometimes better positioning is enough."
+  - Mortars deal massive area damage but struggle with fast targets.
+  - "Flamethrowers dominate close range \u2014 place them where enemies bunch up."
+  - "Stim modes trade control for power \u2014 activate when you can commit."
+  tipChangeInterval: 1.5

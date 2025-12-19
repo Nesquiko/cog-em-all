@@ -7,7 +7,7 @@ public class LoadingTipsData : ScriptableObject
     [Tooltip("List of all loading screen tips that show randomly.")]
     [SerializeField, TextArea(2, 5)] private List<string> tips = new();
 
-    [SerializeField] private float tipChangeInterval = 1f;
+    [SerializeField] private float tipChangeInterval = 1.5f;
 
     public IReadOnlyList<string> Tips => tips;
 

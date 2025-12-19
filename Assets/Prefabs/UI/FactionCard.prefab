@@ -178,6 +178,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -300,6 +301,7 @@ GameObject:
   - component: {fileID: 7596486996420478288}
   - component: {fileID: 4796390804211368702}
   - component: {fileID: 2850660302244702477}
+  - component: {fileID: 6587482458099030295}
   m_Layer: 5
   m_Name: Select
   m_TagString: Untagged
@@ -433,6 +435,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CursorPointer
   cursorSettings: {fileID: 11400000, guid: 99a0c69cc1789cb45b28b11b02748d4e, type: 2}
+--- !u!114 &6587482458099030295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2439570347356518066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &3638857876789491501
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +626,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -961,6 +976,7 @@ GameObject:
   - component: {fileID: 3562221765113541185}
   - component: {fileID: 7421746076597009544}
   - component: {fileID: 6168516154943542731}
+  - component: {fileID: 8074387275044984257}
   m_Layer: 5
   m_Name: FactionCard
   m_TagString: Untagged
@@ -1063,3 +1079,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
   hoverScale: 1.05
   speed: 15
+--- !u!114 &8074387275044984257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5560419167908967092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound

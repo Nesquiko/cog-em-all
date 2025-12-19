@@ -53,7 +53,7 @@ MonoBehaviour:
   executedPopupPrefab: {fileID: 3764628356170761970, guid: 216222628f94225478f033521c145fe8, type: 3}
 --- !u!120 &704088555992295267
 LineRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -99,6 +99,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Positions:
   - {x: 215.78, y: 14, z: 112.41}
   - {x: 0, y: 0, z: 1}
@@ -157,7 +158,6 @@ LineRenderer:
     textureScale: {x: 1, y: 1}
     shadowBias: 0.5
     generateLightingData: 0
-  m_MaskInteraction: 0
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1

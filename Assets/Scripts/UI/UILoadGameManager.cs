@@ -6,7 +6,7 @@ public class UILoadGameManager : MonoBehaviour
 {
     [SerializeField] private GameObject loadGamePanel;
     [SerializeField] private GameObject homePanel;
-    [SerializeField] private VerticalLayoutGroup savedGamesButtonsParent;
+    [SerializeField] private Transform savedGamesButtonsParent;
     [SerializeField] private SaveContextDontDestroy saveContext;
     [SerializeField] private SavedGameButton savedGameButtonPrefab;
 

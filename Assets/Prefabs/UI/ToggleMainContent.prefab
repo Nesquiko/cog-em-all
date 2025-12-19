@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 3963740572634978542}
   - component: {fileID: 4174824860511552495}
   - component: {fileID: 2251741963281276179}
+  - component: {fileID: 7671043485683958261}
   m_Layer: 5
   m_Name: ToggleMainContent
   m_TagString: Untagged
@@ -162,6 +163,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScaleOnHover
   hoverScale: 1.1
   speed: 15
+--- !u!114 &7671043485683958261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2131179773463992156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a619a7ddff852de4e99b71a9b388ae79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ButtonSound
 --- !u!1 &6865647316627905188
 GameObject:
   m_ObjectHideFlags: 0
@@ -265,6 +278,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

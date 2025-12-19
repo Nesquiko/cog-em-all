@@ -98,6 +98,8 @@ public class Bandit : MonoBehaviour, IEnemy
 
     private void Battlecry()
     {
+        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.BanditBattlecry, transform);
+
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
             battlecryRange / 2f,

@@ -54,3 +54,32 @@ MonoBehaviour:
   - type: 12
     clips:
     - {fileID: 8300000, guid: 986d6b30567e30e428f3f21373fe45ca, type: 3}
+  - type: 13
+    clips:
+    - {fileID: 8300000, guid: f0cb1ed61a9709c4ea6dc3d313e1dd30, type: 3}
+  - type: 14
+    clips:
+    - {fileID: 8300000, guid: 9b3e6ef6f95679c45b9a69d371964031, type: 3}
+    - {fileID: 8300000, guid: 2008e316098099b43a0f212cc0969859, type: 3}
+  - type: 15
+    clips:
+    - {fileID: 8300000, guid: 6834c5689b600104c84a65949812cd56, type: 3}
+    - {fileID: 8300000, guid: d343e2f476797ac44b025f913c398dc3, type: 3}
+  - type: 16
+    clips:
+    - {fileID: 8300000, guid: ecb0ff18b02ba7d46a63aba3bb0a303a, type: 3}
+  - type: 17
+    clips:
+    - {fileID: 8300000, guid: 19420c1f0ecbb7d46a98f17d13441e50, type: 3}
+  - type: 18
+    clips:
+    - {fileID: 8300000, guid: bf0edaf4f76391c4a891e1e049b35b24, type: 3}
+  - type: 19
+    clips:
+    - {fileID: 8300000, guid: c9f6704526aea9341bb13ea8287fb109, type: 3}
+  - type: 20
+    clips:
+    - {fileID: 8300000, guid: 54bdeae571f10a645a77699b9dd9c2ef, type: 3}
+  - type: 21
+    clips:
+    - {fileID: 8300000, guid: 7ef8cd1464d508b47a2ccba5cb847b7b, type: 3}
