@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: F3
   m_EditorClassIdentifier: Assembly-CSharp::FlamethrowerTowerData
   level: 3
-  cost: 500
+  cost: 300
   sellPrice: 250
   displayStats:
   - label: Damage per pulse

@@ -37,6 +37,7 @@ public class EnemyHealthBar : MonoBehaviour
 
     public void SetActive(bool value)
     {
+        if (!this || !gameObject) return;
         gameObject.SetActive(value);
     }
 }

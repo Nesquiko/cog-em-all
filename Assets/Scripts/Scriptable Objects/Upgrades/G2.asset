@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: G2
   m_EditorClassIdentifier: Assembly-CSharp::GatlingTowerData
   level: 2
-  cost: 250
+  cost: 150
   sellPrice: 125
   displayStats:
   - label: Bullet damage

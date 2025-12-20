@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: M3
   m_EditorClassIdentifier: Assembly-CSharp::MortarTowerData
   level: 3
-  cost: 500
+  cost: 300
   sellPrice: 250
   displayStats:
   - label: Shell damage

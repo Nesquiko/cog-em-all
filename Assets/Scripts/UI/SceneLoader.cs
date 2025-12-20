@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public static class SceneLoader
 {
     private static string targetScene;
-    private static readonly float minimumLoadingTime = 2f;
 
     public static void LoadScene(string sceneName)
     {
@@ -31,7 +30,7 @@ public static class SceneLoader
 
             timer += Time.deltaTime;
 
-            if (async.progress >= 0.9f && timer >= minimumLoadingTime)
+            if (async.progress >= 0.9f)
             {
                 onProgress?.Invoke(1f);
                 async.allowSceneActivation = true;

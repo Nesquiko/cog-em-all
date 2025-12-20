@@ -331,11 +331,10 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beam.OnDamageDealt += HandleDamageDealt;
         beam.OnEnemyKilled += HandleEnemyKilled;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
-        Debug.Log($"where the fuck is the beam? {beam.transform.position}", transform);
 
         flareVFX.Play();
 
-        SoundManagersDontDestroy.GerOrCreate()?.SoundFX.PlaySoundFXClip(SoundFXType.TeslaShoot, transform);
+        SoundManagersDontDestroy.GerOrCreate().SoundFX.PlaySoundFXClip(SoundFXType.TeslaShoot, transform);
 
         if (stimActive || stunFirstEnemy)
             enemy.ApplyEffect(EnemyStatusEffect.Stun);
