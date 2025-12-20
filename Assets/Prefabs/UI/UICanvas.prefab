@@ -1135,6 +1135,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerControl
       objectReference: {fileID: 0}
+    - target: {fileID: 3476923360246269614, guid: 2e40bbafd9f2dfe44ad93028d36f2647, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6427249597525016189, guid: 2e40bbafd9f2dfe44ad93028d36f2647, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
