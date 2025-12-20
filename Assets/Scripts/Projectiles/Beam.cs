@@ -201,7 +201,6 @@ public class Beam : MonoBehaviour, IDamageSource
     private IEnemy FindClosestEnemy(Vector3 origin, List<IEnemy> exclude)
     {
         Collider[] hits = Physics.OverlapSphere(origin, owner.BeamChainRadius, enemyMask);
-        Debug.Log($"tesla hits in closest enemy: {hits}", transform);
 
         IEnemy closest = null;
         float minDistance = Mathf.Infinity;

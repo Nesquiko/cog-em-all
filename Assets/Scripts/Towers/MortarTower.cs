@@ -570,4 +570,6 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
 
     public float Range() => maxRange;
     public void SetRange(float range) => maxRange = range;
+
+    public void AdjustOverlayButton() => towerOverlay.AdjustOverlayButtons();
 }

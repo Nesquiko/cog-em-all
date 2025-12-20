@@ -65,6 +65,7 @@ class Orchestrator : MonoBehaviour
         towerPlacementSystem.OnPlace += OnPlaceTower;
         towerSellManager.OnSellTower += OnSellTower;
         towerDataCatalog.OnUpgradeTower += OnUpgradeTower;
+        towerDataCatalog.PlayersGearBalance += () => gears;
         skillPlacementSystem.OnUseSkill += OnUseSkill;
         nexus.OnHealthChanged += OnNexusHealthChange;
         nexus.OnDestroyed += OnNexusDestroyed;
@@ -85,7 +86,15 @@ class Orchestrator : MonoBehaviour
         {
             OperationEnd(cleared: true);
         }
+
     }
+
+    private void FixedUpdate()
+    {
+        foreach (var tower in towers.Values)
+            tower.AdjustOverlayButton();
+    }
+
 
     private void OnPlaceTower(ITower tower)
     {

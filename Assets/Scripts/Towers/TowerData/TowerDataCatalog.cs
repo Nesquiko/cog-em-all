@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NUnit.Framework.Internal.Commands;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -14,6 +16,8 @@ public class TowerDataCatalog : ScriptableObject
     private readonly Dictionary<TowerTypes, TowerData<TowerDataBase>> catalog = new();
 
     public Action<int> OnUpgradeTower;
+
+    public event Func<int> PlayersGearBalance;
 
     public Dictionary<TowerTypes, TowerData<TowerDataBase>> Catalog => catalog;
     public int TowersCount => towers.Count();
@@ -88,7 +92,14 @@ public class TowerDataCatalog : ScriptableObject
     public bool CanUpgrade(TowerTypes type, int currentLevel, int maxAllowedLevel)
     {
         if (currentLevel + 1 > maxAllowedLevel) return false;
+        int gears = PlayersGearBalance.Invoke();
+
         if (!catalog.TryGetValue(type, out var data)) return false;
+
+        int cost = data.GetDataForLevel(currentLevel + 1).Cost;
+
+        if (cost > gears) return false;
+
         return data.CanUpgrade(currentLevel);
     }
 

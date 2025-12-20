@@ -601,4 +601,6 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
 
     public float Range() => range;
     public void SetRange(float range) => this.range = range;
+
+    public void AdjustOverlayButton() => towerOverlay.AdjustOverlayButtons();
 }

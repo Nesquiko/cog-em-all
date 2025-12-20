@@ -702,4 +702,6 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
 
     public float Range() => range;
     public void SetRange(float range) => this.range = range;
+
+    public void AdjustOverlayButton() => towerOverlay.AdjustOverlayButtons();
 }

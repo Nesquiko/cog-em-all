@@ -42,6 +42,9 @@ public interface ITower
     event Action<TowerTypes> OnUpgrade;
     float Range();
     void SetRange(float range);
+
+    // when amount of gears changes (on tick, or reward from enemies, adjust buttons (e.g. upgrade) by making them (in)visible
+    void AdjustOverlayButton();
 }
 
 public interface IAppliesDOT

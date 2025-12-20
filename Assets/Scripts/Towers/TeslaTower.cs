@@ -331,6 +331,7 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         beam.OnDamageDealt += HandleDamageDealt;
         beam.OnEnemyKilled += HandleEnemyKilled;
         beam.Initialize(this, firePoint, enemy.Transform, damage, isCritical);
+        Debug.Log($"where the fuck is the beam? {beam.transform.position}", transform);
 
         flareVFX.Play();
 
@@ -539,4 +540,5 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
 
     public void EnableDisableBuffs() => disableBuffsOnHitActive = true;
 
+    public void AdjustOverlayButton() => towerOverlay.AdjustOverlayButtons();
 }
