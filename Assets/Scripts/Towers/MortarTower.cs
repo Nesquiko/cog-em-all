@@ -472,11 +472,11 @@ public class MortarTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellab
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase baseData)
+    public void ApplyUpgrade(TowerDataBase baseData, bool withVFX = true)
     {
         if (baseData is not MortarTowerData data) return;
 
-        upgradeVFX.Play();
+        if (withVFX) upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 

@@ -448,11 +448,11 @@ public class TeslaTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSellabl
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase baseData)
+    public void ApplyUpgrade(TowerDataBase baseData, bool withVFX = true)
     {
         if (baseData is not TeslaTowerData data) return;
 
-        upgradeVFX.Play();
+        if (withVFX) upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 

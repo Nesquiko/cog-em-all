@@ -63,6 +63,8 @@ MonoBehaviour:
   - rid: 240750612219953231
   - rid: 240750612219953232
   - rid: 240750612219953233
+  - rid: 240750627698507850
+  - rid: 240750627698507888
   abilityModifiers: 
   levelFileName: testing-level.json
   references:
@@ -316,3 +318,21 @@ MonoBehaviour:
           on the path that arm when stepped on, then detonate after a short fuse
           to damage nearby enemies.
         toUnlock: 2
+    - rid: 240750627698507850
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Commanded Fire
+        slug: commanded_fire
+        description: Unlocks manual control for Gatling Towers, letting you personally
+          direct their shots anywhere on the battlefield with no range limitation.
+        unlockOn: 0
+        unlock: 1
+    - rid: 240750627698507888
+      type: {class: UnlockTowerAbilityModifier, ns: , asm: Assembly-CSharp}
+      data:
+        name: Executioner's Current
+        slug: executioners_current
+        description: Unlocks manual control for Tesla Towers, allowing them to channel
+          a lethal surge that instantly executes enemies below 30% health.
+        unlockOn: 1
+        unlock: 1

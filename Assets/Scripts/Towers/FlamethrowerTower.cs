@@ -494,11 +494,11 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase baseData)
+    public void ApplyUpgrade(TowerDataBase baseData, bool withVFX = true)
     {
         if (baseData is not FlamethrowerTowerData data) return;
 
-        upgradeVFX.Play();
+        if (withVFX) upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 
@@ -592,7 +592,12 @@ public class FlamethrowerTower : MonoBehaviour, ITower, ITowerSelectable, ITower
         enemiesInRange.Clear();
     }
 
-    public void ActivateGainRangeOnHill() => hillRangeSkillActive = true;
+    public void ActivateGainRangeOnHill()
+    {
+        return;
+        // flamethrower should not get its range resized
+        // hillRangeSkillActive = true;
+    }
 
     public float Range() => range;
     public void SetRange(float range) => this.range = range;

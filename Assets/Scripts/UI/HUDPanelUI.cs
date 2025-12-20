@@ -386,6 +386,7 @@ public class HUDPanelUI : MonoBehaviour
 
     public void ShowWaveOverlay(int wave)
     {
+        if (!gameObject.activeSelf) return;
         waveOverlay.GetComponent<WaveOverlay>().Initialize(wave);
         StartCoroutine(OverlayRoutine(waveOverlay, waveOverlayDuration));
     }

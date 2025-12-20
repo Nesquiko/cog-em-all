@@ -590,11 +590,11 @@ public class GatlingTower : MonoBehaviour, ITower, ITowerSelectable, ITowerSella
         Destroy(gameObject);
     }
 
-    public void ApplyUpgrade(TowerDataBase baseData)
+    public void ApplyUpgrade(TowerDataBase baseData, bool withVFX = true)
     {
         if (baseData is not GatlingTowerData data) return;
 
-        upgradeVFX.Play();
+        if (withVFX) upgradeVFX.Play();
 
         towerSelectionManager.DeselectCurrent();
 

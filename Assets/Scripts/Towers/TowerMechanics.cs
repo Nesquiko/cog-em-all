@@ -30,7 +30,7 @@ public interface ITower
     TowerTypes TowerType();
     int CurrentLevel();
     int MaxAllowedLevel();
-    void ApplyUpgrade(TowerDataBase data);
+    void ApplyUpgrade(TowerDataBase data, bool withVFX = true);
     void SetDamageCalculation(Func<float, float> f);
     void SetFireRateCalculation(Func<float, float> f);
     void ActivateGainRangeOnHill();
