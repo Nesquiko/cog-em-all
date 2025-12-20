@@ -1378,7 +1378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6f650365f30e146ee8c3a12d54245131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Orchestator
---- !u!43 &1004235381
+--- !u!43 &964652615
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2180,7 +2180,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &1467292431
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3225,7 +3225,7 @@ PrefabInstance:
     - target: {fileID: 4510211835133337065, guid: 00e4b1dd012a4754e9ce77e7019ddfab, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1004235381}
+      objectReference: {fileID: 964652615}
     - target: {fileID: 6533097512586065665, guid: 00e4b1dd012a4754e9ce77e7019ddfab, type: 3}
       propertyPath: brain
       value: 
@@ -3285,7 +3285,7 @@ PrefabInstance:
     - target: {fileID: 7689043821053285061, guid: 00e4b1dd012a4754e9ce77e7019ddfab, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 1004235381}
+      objectReference: {fileID: 964652615}
     - target: {fileID: 7921115603638293308, guid: 00e4b1dd012a4754e9ce77e7019ddfab, type: 3}
       propertyPath: m_Enabled
       value: 0
