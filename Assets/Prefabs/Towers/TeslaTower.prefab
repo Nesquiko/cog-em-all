@@ -121,7 +121,7 @@ MonoBehaviour:
   beamDamage: 30
   beamSpeed: 1000
   beamChainRadius: 10
-  beamChains: 1
+  beamChains: 3
   beamStayTimeOnHit: 0.05
   fireRate: 1
   range: 50

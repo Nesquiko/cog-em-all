@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -43,7 +42,7 @@ public class Beam : MonoBehaviour, IDamageSource
             return;
         }
 
-        if (!initialTarget.TryGetComponent<IEnemy>(out _))
+        if (initialTarget.GetComponentInParent<IEnemy>() == null)
         {
             StartCoroutine(StraightBeamRoutine());
             return;
@@ -113,13 +112,14 @@ public class Beam : MonoBehaviour, IDamageSource
 
     private IEnumerator ChainRoutine()
     {
-        if (!initialTarget.TryGetComponent<IEnemy>(out var firstEnemy))
+        var firstEnemy = initialTarget.GetComponentInParent<IEnemy>();
+        if (firstEnemy == null)
         {
             yield return StraightBeamRoutine();
             yield break;
         }
 
-        List<IEnemy> chainTargets = BuildChain(initialTarget, owner.BeamMaxChains - 1)
+        List<IEnemy> chainTargets = BuildChain(firstEnemy.Transform, owner.BeamMaxChains - 1)
             .Where(e => e != null)
             .ToList();
 
@@ -137,7 +137,7 @@ public class Beam : MonoBehaviour, IDamageSource
         widthCurve.AddKey(1f, 1.5f);
         lineRenderer.widthCurve = widthCurve;
 
-        for (int i = 0; i < chainTargets.Count; i++)
+        for (int i = 1; i < chainTargets.Count; i++)
         {
             var nextEnemy = chainTargets[i];
             if (nextEnemy.Equals(null) || nextEnemy.Transform.Equals(null)) continue;
@@ -170,14 +170,15 @@ public class Beam : MonoBehaviour, IDamageSource
             currentPos = targetPos;
         }
 
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(owner.BeamStayTimeOnHit);
         Destroy(gameObject);
     }
 
     private List<IEnemy> BuildChain(Transform startTransform, int maxAdditional)
     {
         List<IEnemy> chain = new();
-        if (startTransform.TryGetComponent<IEnemy>(out var first))
+        var first = startTransform.GetComponentInParent<IEnemy>();
+        if (first != null)
         {
             chain.Add(first);
         }
@@ -199,7 +200,8 @@ public class Beam : MonoBehaviour, IDamageSource
 
     private IEnemy FindClosestEnemy(Vector3 origin, List<IEnemy> exclude)
     {
-        Collider[] hits = Physics.OverlapSphere(origin, owner.BeamChainRadius, enemyMask, QueryTriggerInteraction.Ignore);
+        Collider[] hits = Physics.OverlapSphere(origin, owner.BeamChainRadius, enemyMask);
+        Debug.Log($"tesla hits in closest enemy: {hits}", transform);
 
         IEnemy closest = null;
         float minDistance = Mathf.Infinity;
@@ -208,7 +210,8 @@ public class Beam : MonoBehaviour, IDamageSource
         {
             if (hit == null) continue;
 
-            if (!hit.TryGetComponent<IEnemy>(out var e)) continue;
+            var e = hit.GetComponentInParent<IEnemy>();
+            if (e == null) continue;
             if (exclude.Contains(e)) continue;
 
             float distance = Vector3.Distance(origin, e.Transform.position);
