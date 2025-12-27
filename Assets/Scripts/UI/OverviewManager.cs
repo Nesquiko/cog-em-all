@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
 using System.IO;
-using System.Linq;
-using UnityEditor;
+using System.Collections;
 
 public class OverviewManager : MonoBehaviour
 {
@@ -20,11 +19,15 @@ public class OverviewManager : MonoBehaviour
     [SerializeField] private GameObject factionDisplay;
     [SerializeField] private GameObject levelTree;
     [SerializeField] private TMP_Text toggleMainContentText;
-    [SerializeField] private Image[] difficultyFillImages;
+    [SerializeField] private TMP_Text difficultyLabel;
+    [SerializeField] private Image difficultyFill;
+    [SerializeField] private float difficultyFillDuration = 0.5f;
 
     [SerializeField] private FactionDataCatalog factionDataCatalog;
     [SerializeField] private ModifiersDatabase modifiersDatabase;
     [SerializeField] private OperationLevelCatalog operationLevelCatalog;
+
+    private Coroutine difficultyFillRoutine;
 
     private GameObject currentMainContent;
 
@@ -99,15 +102,30 @@ public class OverviewManager : MonoBehaviour
 
     private void DisplayDifficulty()
     {
-        float perSegment = 1f / difficultyFillImages.Length;
-        float remaining = level.operationDifficulty;
+        float diff = Mathf.Clamp01(level.operationDifficulty);
+        difficultyLabel.text = $"Difficulty  {Mathf.RoundToInt(diff * 100)}%";
+        if (difficultyFillRoutine != null) StopCoroutine(difficultyFillRoutine);
+        difficultyFillRoutine = StartCoroutine(AnimateDifficultyFill(diff));
+    }
 
-        for (int i = 0; i < difficultyFillImages.Length; i++)
+    private IEnumerator AnimateDifficultyFill(float targetFill)
+    {
+        difficultyFill.fillAmount = 0f;
+
+        float t = 0f;
+        while (t < 1f)
         {
-            float fill = Mathf.Clamp01(remaining / perSegment);
-            difficultyFillImages[i].fillAmount = fill;
-            remaining -= perSegment;
+            t += Time.unscaledDeltaTime / difficultyFillDuration;
+            difficultyFill.fillAmount = Mathf.Lerp(
+                0f,
+                targetFill,
+                Mathf.SmoothStep(0f, 1f, t)
+            );
+            yield return null;
         }
+
+        difficultyFill.fillAmount = targetFill;
+        difficultyFillRoutine = null;
     }
 
     public void StartOperation()

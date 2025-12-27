@@ -16,6 +16,6 @@ MonoBehaviour:
   displayName: The Valvebound Seraphs
   description: The Valvebound Seraphs description.
   mainImage: {fileID: 21300000, guid: 163bd2907df05164db97124380649ded, type: 3}
-  symbol: {fileID: 21300000, guid: 3177eb42e7dd2fe4da3cf9af2820c411, type: 3}
+  symbol: {fileID: 3665019714469203449, guid: 604f92c9fa27a544ab3997807313c644, type: 3}
   mainColor: {r: 0.047169786, g: 0.2830189, b: 0.047169786, a: 1}
   accentColor: {r: 0.19935913, g: 0.6037736, b: 0.19935913, a: 1}

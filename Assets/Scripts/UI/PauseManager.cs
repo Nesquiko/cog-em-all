@@ -105,10 +105,10 @@ public class PauseManager : MonoBehaviour
         confirmation.SetActive(true);
     }
 
-    public void ReturnToMainMenu()
+    public void Concede()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MenuScene");
+        SceneLoader.LoadScene("MenuScene");
     }
 
     public void QuitGame()

@@ -16,6 +16,6 @@ MonoBehaviour:
   displayName: Overpressure Collective
   description: Overpressure Collective description.
   mainImage: {fileID: 21300000, guid: 3d5cf73bfe0de00419ec109e0d006fcf, type: 3}
-  symbol: {fileID: 21300000, guid: 3731049b1fa42fb439b2e52d06d8e6bd, type: 3}
+  symbol: {fileID: -3367560936028209171, guid: 4a82e804aa2303243a2809843ec25157, type: 3}
   mainColor: {r: 0.38993704, g: 0.38993704, b: 0.013488343, a: 1}
   accentColor: {r: 0.78616345, g: 0.78616345, b: 0.40297052, a: 1}

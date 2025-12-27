@@ -16,6 +16,6 @@ MonoBehaviour:
   displayName: The Brass Army
   description: The Brass Army description.
   mainImage: {fileID: 21300000, guid: 42b0e557e3ba8b248b94796e4008345f, type: 3}
-  symbol: {fileID: 21300000, guid: bf9e8abb6e4d02844b7c2045a342b983, type: 3}
+  symbol: {fileID: 7854409646409066988, guid: 4a82e804aa2303243a2809843ec25157, type: 3}
   mainColor: {r: 0.5, g: 0, b: 0, a: 0}
   accentColor: {r: 0.74213827, g: 0.38507167, b: 0.38507167, a: 1}
