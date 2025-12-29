@@ -26,8 +26,10 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     [SerializeField] private string skillSlug;
     [SerializeField] private Faction faction;
     [SerializeField] private Button button;
-    [SerializeField] private GameObject unlockedOverlay;
-    [SerializeField] private GameObject lockedOverlay;
+    [SerializeField] private Image backgroundImage;
+    [SerializeField] private Sprite lockedSprite;
+    [SerializeField] private Sprite unlockedSprite;
+    [SerializeField] private Sprite activeSprite;
     [SerializeField] private SkillNodeType type;
     [SerializeField] private RectTransform rectTransform;
     [SerializeField] private SkillTreeNodeButton[] prerequisities;
@@ -282,32 +284,59 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
         switch (state)
         {
             case SkillNodeState.Locked:
-                lockedOverlay.SetActive(true);
-                unlockedOverlay.SetActive(false);
-                ClearRanks();
+                backgroundImage.sprite = lockedSprite;
                 break;
             case SkillNodeState.Unlocked:
-                lockedOverlay.SetActive(false);
-                unlockedOverlay.SetActive(true);
+                backgroundImage.sprite = unlockedSprite;
                 break;
             case SkillNodeState.Active:
-                lockedOverlay.SetActive(false);
-                unlockedOverlay.SetActive(false);
+                backgroundImage.sprite = activeSprite;
                 break;
         }
 
         button.interactable = state != SkillNodeState.Locked;
         scaleOnHover.enabled = state != SkillNodeState.Locked;
+
+        UpdateRankVisual();
+        UpdateTooltipVisual();
     }
 
-    private static Color FactionAccent(Faction f)
+    private void UpdateRankVisual()
     {
-        return f switch
+        if (modifier is not IRankedModifier ranked)
         {
-            Faction.TheBrassArmy => Color.red,
-            Faction.TheValveboundSeraphs => Color.green,
-            Faction.OverpressureCollective => Color.yellow,
-            _ => Color.black,
+            rankText.text = "";
+            ClearRanks();
+            return;
+        }
+
+        tooltipActiveRanksLabel.text = "Active ranks";
+        tooltipActiveRanks.text = activeRanks.ToString();
+        tooltipMaxRanksLabel.text = "Max ranks";
+        tooltipMaxRanks.text = maxRanks.ToString();
+        tooltipRanksSeparator.text = "/";
+
+        if (state == SkillNodeState.Locked)
+        {
+            ClearRanks();
+            return;
+        }
+
+        GenerateRanks();
+        FillRanks();
+        rankText.text = $"{activeRanks} / {maxRanks}";
+    }
+
+    private void UpdateTooltipVisual()
+    {
+        if (modifier is IRankedModifier) return;
+
+        tooltipActiveRanksLabel.text = state switch
+        {
+            SkillNodeState.Locked => "Locked",
+            SkillNodeState.Unlocked => "Unlocked",
+            SkillNodeState.Active => "Active",
+            _ => ""
         };
     }
 

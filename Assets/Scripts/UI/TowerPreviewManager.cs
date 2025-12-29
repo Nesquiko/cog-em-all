@@ -26,6 +26,7 @@ public class TowerPreviewManager : MonoBehaviour
     [Header("Stats Display")]
     [SerializeField] private Transform statsContainer;
     [SerializeField] private GameObject statsEntryPrefab;
+    [SerializeField] private Vector2 statsEntrySize = new(550f, 40f);
 
     private int currentTowerIndex;
     private int currentLevelIndex;
@@ -81,7 +82,7 @@ public class TowerPreviewManager : MonoBehaviour
         {
             GameObject entry = Instantiate(statsEntryPrefab, statsContainer);
             if (entry.TryGetComponent<RectTransform>(out var entryRect))
-                entryRect.sizeDelta = new(550f, 60f);
+                entryRect.sizeDelta = statsEntrySize;
             TMP_Text[] texts = entry.GetComponentsInChildren<TMP_Text>();
             if (texts.Length >= 2)
             {
@@ -92,7 +93,7 @@ public class TowerPreviewManager : MonoBehaviour
                 {
                     if (!text.TryGetComponent<RectTransform>(out var tRect)) continue;
                     var sizeDelta = tRect.sizeDelta;
-                    sizeDelta.y = 60f;
+                    sizeDelta.y = statsEntrySize.y;
                     tRect.sizeDelta = sizeDelta;
                 }
             }

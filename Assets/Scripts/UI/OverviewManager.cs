@@ -37,9 +37,13 @@ public class OverviewManager : MonoBehaviour
 
     private void Awake()
     {
-
         var go = new GameObject(nameof(OperationDataDontDestroy));
         operationData = go.AddComponent<OperationDataDontDestroy>();
+    }
+
+    private void OnEnable()
+    {
+        PlayDifficultyAnimation();
     }
 
     public void Initialize(SaveContextDontDestroy ctx)
@@ -70,6 +74,7 @@ public class OverviewManager : MonoBehaviour
         skillModifiers.gameObject.SetActive(false);
 
         UpdateVisuals();
+        PlayDifficultyAnimation();
     }
 
     public void ToggleMainContent()
@@ -104,8 +109,19 @@ public class OverviewManager : MonoBehaviour
     {
         float diff = Mathf.Clamp01(level.operationDifficulty);
         difficultyLabel.text = $"Difficulty  {Mathf.RoundToInt(diff * 100)}%";
-        if (difficultyFillRoutine != null) StopCoroutine(difficultyFillRoutine);
-        difficultyFillRoutine = StartCoroutine(AnimateDifficultyFill(diff));
+    }
+
+    private void PlayDifficultyAnimation()
+    {
+        if (!isActiveAndEnabled) return;
+        if (level == null) return;
+
+        if (difficultyFillRoutine != null)
+            StopCoroutine(difficultyFillRoutine);
+
+        difficultyFillRoutine = StartCoroutine(
+            AnimateDifficultyFill(Mathf.Clamp01(level.operationDifficulty))
+        );
     }
 
     private IEnumerator AnimateDifficultyFill(float targetFill)
