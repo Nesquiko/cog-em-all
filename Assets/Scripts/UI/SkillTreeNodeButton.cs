@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -43,6 +44,11 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     [SerializeField] private TMP_Text rankText;
     [SerializeField] private SkillTree skillTree;
 
+    [Header("Gear Rotation")]
+    [SerializeField] private RectTransform gearTransform;
+    [SerializeField] private float rotationStep = 90f;
+    [SerializeField] private float rotationDuration = 0.2f;
+
     [Header("Tooltip")]
     [SerializeField] private GameObject tooltip;
     [SerializeField] private TMP_Text tooltipTitle;
@@ -60,8 +66,11 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     private SkillNodeState state = SkillNodeState.Unlocked;
 
     private int maxRanks = 1;
+    private float currentRotation;
+    private Coroutine rotationRoutine;
 
     private readonly List<GameObject> rankIndicators = new();
+    private readonly Dictionary<SkillTreeNodeButton, SkillConnection> connections = new();
 
     Modifier modifier;
 
@@ -108,6 +117,7 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
     {
         UpdateState();
         UpdateVisual();
+        SyncRotationToRanks();
     }
 
     public void UpdateState()
@@ -147,7 +157,19 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
         if (state != oldState)
         {
             UpdateVisual();
+            UpdateConnections();
             NotifyPostrequisities();
+        }
+    }
+
+    private void UpdateConnections()
+    {
+        foreach (var kvp in connections)
+        {
+            SkillTreeNodeButton prerequisite = kvp.Key;
+            SkillConnection connection = kvp.Value;
+            bool shouldFill = state == SkillNodeState.Active && prerequisite.State == SkillNodeState.Active;
+            connection.AnimateFill(shouldFill);
         }
     }
 
@@ -158,6 +180,7 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
         foreach (var pr in postrequisities)
         {
             pr.UpdateState();
+            pr.UpdateConnections();
         }
     }
 
@@ -229,10 +252,57 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
         if (delta < 0 && (!skillTree.CanRemoveSkillPoint || postrequisities.Any(pr => pr.State == SkillNodeState.Active))) return;  // cannot remove skill point
 
         activeRanks = newActiveRanks;
+
+        RotateGear(delta);
+
         UpdateState();
         UpdateVisual();
 
         OnActiveRanksChanged?.Invoke(this, delta);
+    }
+
+    private void RotateGear(int delta)
+    {
+        float targetDelta = delta * rotationStep;
+        float targetRotation = currentRotation + targetDelta;
+
+        if (rotationRoutine != null)
+            StopCoroutine(rotationRoutine);
+
+        rotationRoutine = StartCoroutine(
+            RotateGearRoutine(currentRotation, targetRotation)
+        );
+
+        currentRotation = targetRotation;
+    }
+
+    private IEnumerator RotateGearRoutine(float from, float to)
+    {
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / rotationDuration;
+
+            float angle = Mathf.LerpUnclamped(
+                from,
+                to,
+                Mathf.SmoothStep(0f, 1.1f, t)
+            );
+
+            gearTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+
+            yield return null;
+        }
+
+        gearTransform.localRotation = Quaternion.Euler(0f, 0f, to);
+        rotationRoutine = null;
+    }
+
+    private void SyncRotationToRanks()
+    {
+        currentRotation = activeRanks * rotationStep;
+        gearTransform.localRotation = Quaternion.Euler(0f, 0f, currentRotation);
     }
 
     public void ResetActiveRanks()
@@ -347,28 +417,22 @@ public class SkillTreeNodeButton : MonoBehaviour, IPointerClickHandler, IPointer
 
         foreach (var pr in prerequisities)
         {
-            DrawConnection(rectTransform, pr.RectTransform);
+            DrawConnection(pr);
         }
     }
 
-    private void DrawConnection(RectTransform from, RectTransform to)
+    private void DrawConnection(SkillTreeNodeButton node)
     {
-        var lineObj = Instantiate(connectionPrefab, connectionLayer);
-        lineObj.name = $"{linePrefix}_{from.name}_{to.name}";
+        var obj = Instantiate(connectionPrefab, connectionLayer);
+        obj.name = $"{linePrefix}_{node.name}_{name}";
 
-        var line = lineObj.GetComponent<Image>();
-        var rt = line.rectTransform;
+        var connection = obj.GetComponent<SkillConnection>();
+        connection.Build(node.RectTransform, rectTransform, connectionLayer);
 
-        Vector2 start = connectionLayer.InverseTransformPoint(from.position);
-        Vector2 end = connectionLayer.InverseTransformPoint(to.position);
+        bool filled = state == SkillNodeState.Active && node.State == SkillNodeState.Active;
+        connection.SetFilledInstant(filled);
 
-        Vector2 direction = end - start;
-        float length = direction.magnitude;
-
-        rt.sizeDelta = new(length, 4f);
-        rt.anchoredPosition = start + direction * 0.5f;
-        rt.rotation = Quaternion.Euler(0, 0,
-            Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        connections[node] = connection;
     }
 
     [ContextMenu("Clear Connections")]

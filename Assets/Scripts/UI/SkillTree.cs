@@ -42,6 +42,8 @@ public class SkillTree : MonoBehaviour
         // recalculate after using skill points on saved active skills
         availableSkillPoints = CalculateAvailableSkillPoints();
         UpdateVisual();
+
+        RefreshAllConnections();
     }
 
     private int AssignSkillPoints(bool addActions)
@@ -124,5 +126,21 @@ public class SkillTree : MonoBehaviour
         suppressEvents = false;
         availableSkillPoints = CalculateAvailableSkillPoints();
         UpdateVisual();
+    }
+
+    private void RefreshAllConnections()
+    {
+        foreach (var rank in ranks)
+        {
+            if (rank == null) continue;
+
+            for (int i = 0; i < rank.transform.childCount; i++)
+            {
+                if (rank.transform.GetChild(i).TryGetComponent<SkillTreeNodeButton>(out var button))
+                {
+                    button.UpdateState();
+                }
+            }
+        }
     }
 }

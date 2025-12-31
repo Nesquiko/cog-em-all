@@ -1,13 +1,18 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SkillTreeConnector : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private RectTransform[] ranks;
+
+    private IEnumerator Start()
+    {
+        yield return null;
+        yield return null;
+        yield return null;
+        GenerateConnections();
+    }
 
     [ContextMenu("Generate Connections")]
     public void GenerateConnections()
