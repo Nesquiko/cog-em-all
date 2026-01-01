@@ -147,7 +147,8 @@ public class OverviewManager : MonoBehaviour
     public void StartOperation()
     {
         LoadOperationData();
-        SceneLoader.LoadScene("GameScene");
+        //SceneLoader.LoadScene("GameScene");
+        SceneTransition.GetOrCreate().TransitionToScene("GameScene");
     }
 
     private void LoadOperationData()

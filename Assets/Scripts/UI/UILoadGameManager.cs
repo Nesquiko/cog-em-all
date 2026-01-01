@@ -25,7 +25,8 @@ public class UILoadGameManager : MonoBehaviour
         Debug.Log($"Loading save '{save}'");
         loadGamePanel.SetActive(false);
         saveContext.SetCurrentSave(save);
-        SceneLoader.LoadScene("MenuScene");
+        //SceneLoader.LoadScene("MenuScene");
+        SceneTransition.GetOrCreate().TransitionToScene("MenuScene");
     }
 
     public void HandleBackToHomeClick()

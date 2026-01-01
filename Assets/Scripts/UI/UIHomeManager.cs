@@ -33,7 +33,8 @@ public class UIHomeManager : MonoBehaviour
     {
         var newSaveData = SaveSystem.CreateNewSave();
         saveContext.SetCurrentSave(newSaveData);
-        SceneLoader.LoadScene("MenuScene");
+        //SceneLoader.LoadScene("MenuScene");
+        SceneTransition.GetOrCreate().TransitionToScene("MenuScene");
     }
 
     public void HandleLoadGameClick()

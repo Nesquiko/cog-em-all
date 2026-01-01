@@ -198,7 +198,8 @@ public class UIMenuManager : MonoBehaviour
 
     public void HandleHomeClick()
     {
-        SceneLoader.LoadScene("HomeScene");
+        //SceneLoader.LoadScene("HomeScene");
+        SceneTransition.GetOrCreate().TransitionToScene("HomeScene");
     }
 
     public void HandleQuitClick()

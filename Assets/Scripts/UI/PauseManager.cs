@@ -108,7 +108,8 @@ public class PauseManager : MonoBehaviour
     public void Concede()
     {
         Time.timeScale = 1f;
-        SceneLoader.LoadScene("MenuScene");
+        //SceneLoader.LoadScene("MenuScene");
+        SceneTransition.GetOrCreate().TransitionToScene("MenuScene");
     }
 
     public void QuitGame()

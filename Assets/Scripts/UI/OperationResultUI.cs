@@ -180,14 +180,16 @@ public class OperationResultUI : MonoBehaviour
         if (operationStatistics.cleared) return;
         Time.timeScale = 1f;
         brain.enabled = true;
-        SceneLoader.ReloadCurrentScene();
+        //SceneLoader.ReloadCurrentScene();
+        SceneTransition.GetOrCreate().ReloadCurrentScene();
     }
 
     public void Continue()
     {
         Time.timeScale = 1f;
         brain.enabled = true;
-        SceneLoader.LoadScene("MenuScene");
+        //SceneLoader.LoadScene("MenuScene");
+        SceneTransition.GetOrCreate().TransitionToScene("MenuScene");
         SoundManagersDontDestroy.GerOrCreate().Music.PlayMenuMusic();
     }
 }
