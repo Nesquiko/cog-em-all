@@ -1,6 +1,5 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -9,12 +8,18 @@ public class SkillTree : MonoBehaviour
 {
     [SerializeField] private Faction faction;
     public Faction Faction => faction;
-    [SerializeField] private TMP_Text skillPointsText;
+    [SerializeField] private Image skillPointsDigitTens;
+    [SerializeField] private Image skillPointsDigitOnes;
+    [SerializeField] private FancyDigits digits;
+    [SerializeField] private float pulseScale = 1.15f;
+    [SerializeField] private float pulseDuration = 0.15f;
     [SerializeField] private Button resetSkillPointsButton;
     [SerializeField] private GameObject[] ranks;
 
     private int availableSkillPoints = 0;
     private int assignedSkillPoints = 0;
+
+    private Coroutine pulseRoutine;
 
     private bool suppressEvents = false;
 
@@ -99,8 +104,51 @@ public class SkillTree : MonoBehaviour
 
     private void UpdateVisual()
     {
-        skillPointsText.text = $"Skill points:  {availableSkillPoints}";
+        SetDigitSprites(availableSkillPoints);
         resetSkillPointsButton.interactable = assignedSkillPoints > 0;
+
+        PulseDigits();
+    }
+
+    private void PulseDigits()
+    {
+        if (pulseRoutine != null)
+            StopCoroutine(pulseRoutine);
+        pulseRoutine = StartCoroutine(PulseRoutine());
+    }
+
+    private IEnumerator PulseRoutine()
+    {
+        Vector3 baseScale = Vector3.one;
+        Vector3 pulse = Vector3.one * pulseScale;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / pulseDuration;
+            skillPointsDigitOnes.transform.localScale = Vector3.Lerp(baseScale, pulse, t);
+            if (skillPointsDigitTens.gameObject.activeSelf)
+                skillPointsDigitTens.transform.localScale = Vector3.Lerp(baseScale, pulse, t);
+
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / pulseDuration;
+            skillPointsDigitOnes.transform.localScale = Vector3.Lerp(pulse, baseScale, t);
+
+            if (skillPointsDigitTens.gameObject.activeSelf)
+                skillPointsDigitTens.transform.localScale = Vector3.Lerp(pulse, baseScale, t);
+
+            yield return null;
+        }
+
+        skillPointsDigitOnes.transform.localScale = baseScale;
+        skillPointsDigitTens.transform.localScale = baseScale;
+
+        pulseRoutine = null;
     }
 
     public void ResetSkillPoints()
@@ -142,5 +190,21 @@ public class SkillTree : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void SetDigitSprites(int number)
+    {
+        digits.GetDigits(
+            number,
+            out Sprite tens,
+            out Sprite ones
+        );
+
+        skillPointsDigitOnes.sprite = ones;
+        skillPointsDigitOnes.gameObject.SetActive(true);
+
+        if (tens != null)
+            skillPointsDigitTens.sprite = tens;
+        skillPointsDigitTens.gameObject.SetActive(tens != null);
     }
 }

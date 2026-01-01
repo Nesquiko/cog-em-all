@@ -3,15 +3,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(Button))]
 public class SavedGameButton : MonoBehaviour
 {
     [SerializeField] private TMP_Text label;
+
     private Button button;
 
     private void Awake()
     {
-        button = GetComponent<Button>();
+        button = GetComponentInChildren<Button>();
     }
 
     public void SetLabel(string value)

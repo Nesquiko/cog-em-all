@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac54a9c533087b94f93d3b5204dfeee6, type: 3}
+  m_Name: FancyDigits
+  m_EditorClassIdentifier: Assembly-CSharp::FancyDigits
+  digitsRaw:
+  - {fileID: 3568120661864194315, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -1493191071480523210, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -1663591504370042298, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -6548443136736984356, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -1619872287464233621, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: 2492104690626832231, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: 7942458814390890394, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -4419781093917103727, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -3420069868775723228, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
+  - {fileID: -1658651887462659250, guid: 2a074b3b141f32f4e8abeb83cb9e231f, type: 3}
