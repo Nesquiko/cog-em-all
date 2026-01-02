@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2f1077a343f2718459e3ed3bbd34d59a, type: 2}
     - target: {fileID: 919132149155446097, guid: 065f79a343b68b5418f9b144da5f1e63, type: 3}
       propertyPath: m_Name
-      value: Stylized Hammer
+      value: Stylized Hammer Transparent
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

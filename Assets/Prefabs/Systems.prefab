@@ -298,7 +298,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  airshipDropPoint: {fileID: 0}
+  airshipController: {fileID: 0}
   ghostValidMaterial: {fileID: 2100000, guid: b1473191157a0264381e30e6f99447fb, type: 2}
   ghostInvalidMaterial: {fileID: 2100000, guid: fa647975f89d8744e9417241dd1aa56b, type: 2}
   enemyMask:
@@ -457,6 +457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8474918390741430316}
   - component: {fileID: 2434695089664011963}
+  - component: {fileID: 4009776334244548240}
   m_Layer: 0
   m_Name: TowerPlacementSystem
   m_TagString: Untagged
@@ -523,9 +524,25 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  hammerStrikeController: {fileID: 4009776334244548240}
   ghostValidMaterial: {fileID: 2100000, guid: b1473191157a0264381e30e6f99447fb, type: 2}
   ghostInvalidMaterial: {fileID: 2100000, guid: fa647975f89d8744e9417241dd1aa56b, type: 2}
   placementSettings: {fileID: 11400000, guid: 5ca76f9905673fb4a95807acaa9c855c, type: 2}
+--- !u!114 &4009776334244548240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6945318046986012754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2dce43cef0ef084b85a8ca311115f0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HammerStrikeController
+  hammerPrefab: {fileID: 2970559957510935171, guid: 581a0b0a7fa41b7458bca696e76113da, type: 3}
+  strikeDuration: 0.35
+  impactVFXPrefab: {fileID: 1406861477063768124, guid: 4e91ed1a8efe7044785b9bd97a47d87f, type: 3}
 --- !u!1 &7029648472926619784
 GameObject:
   m_ObjectHideFlags: 0

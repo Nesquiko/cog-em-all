@@ -24,6 +24,11 @@ public class TowerPlacementSystem : MonoBehaviour
     [SerializeField] private Material ghostValidMaterial;
     [SerializeField] private Material ghostInvalidMaterial;
 
+    [Header("Place Animation")]
+    [SerializeField] private HammerStrikeController hammerStrikeController;
+    [SerializeField] private float towerRiseHeight = 10f;
+    [SerializeField] private float towerRiseDuration = 0.25f;
+
     [SerializeField] private TowerPlacementSettings placementSettings;
 
     private GameObject towerPrefab;
@@ -134,24 +139,67 @@ public class TowerPlacementSystem : MonoBehaviour
     {
         if (!isPlacing) return;
 
-        GameObject towerGO = Instantiate(towerPrefab, position, Quaternion.identity);
+        StartCoroutine(PlaceTowerAfterImpact(position));
+
+        CancelPlacement(resetTowerPrefab: false);
+    }
+
+    private IEnumerator PlaceTowerAfterImpact(Vector3 position)
+    {
+        bool spawned = false;
+        GameObject towerGO = null;
+
+        void OnImpact(Vector3 impactPosition)
+        {
+            if (spawned) return;
+            spawned = true;
+
+            Vector3 spawnPos = position - Vector3.up * towerRiseHeight;
+            towerGO = Instantiate(towerPrefab, spawnPos, Quaternion.identity);
+
+            towerGO.SetActive(false);
+        }
+
+        hammerStrikeController.Impact += OnImpact;
+        hammerStrikeController.Strike(position);
+
+        while (!spawned)
+            yield return null;
+
+        hammerStrikeController.Impact -= OnImpact;
+
+        towerGO.SetActive(true);
+
+        yield return StartCoroutine(RiseTower(towerGO, position));
 
         ITower tower = towerGO.GetComponent<ITower>();
         OnPlace?.Invoke(tower);
 
-        var circle = Instantiate(buildProgressPrefab, position, Quaternion.identity);
-        var progress = circle.GetComponent<BuildProgress>();
-        progress.Initialize(towerGO, disableObjectBehaviors: true);
-
-        CancelPlacement();
-
-        StartCoroutine(ReenableSelectionNextFrame());
+        towerPrefab = null;
     }
 
-    public void CancelPlacement(bool enableSelectionAfter = true)
+    private IEnumerator RiseTower(GameObject tower, Vector3 targetPos)
+    {
+        Vector3 startPos = tower.transform.position;
+        float t = 0f;
+
+        while (t < 1f)
+        {
+            t += Time.deltaTime / towerRiseDuration;
+            float e = Mathf.SmoothStep(0f, 1f, t);
+
+            tower.transform.position = Vector3.Lerp(startPos, targetPos, e);
+
+            yield return null;
+        }
+
+        tower.transform.position = targetPos;
+    }
+
+    public void CancelPlacement(bool enableSelectionAfter = true, bool resetTowerPrefab = true)
     {
         isPlacing = false;
-        towerPrefab = null;
+        if (resetTowerPrefab) towerPrefab = null;
         currentHotkeyIndex = -1;
 
         if (ghostInstance != null) Destroy(ghostInstance);
