@@ -129,7 +129,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 0
   m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 1000
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -357,6 +357,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 281d62ff74350444a9991183c0f75be5, type: 3}
+--- !u!1 &448425051252972673 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1962152250470022794, guid: 281d62ff74350444a9991183c0f75be5, type: 3}
+  m_PrefabInstance: {fileID: 2090751211248443915}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &908525056074602138 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1267883827606336657, guid: 281d62ff74350444a9991183c0f75be5, type: 3}
@@ -511,11 +516,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 540369917395929088, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
       propertyPath: m_Padding.m_Left
-      value: 90
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 540369917395929088, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
       propertyPath: m_Padding.m_Right
-      value: 90
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 540369917395929088, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
       propertyPath: m_ChildForceExpandHeight
@@ -597,6 +602,14 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6145163203106748138, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
+      propertyPath: homePanel
+      value: 
+      objectReference: {fileID: 448425051252972673}
+    - target: {fileID: 6145163203106748138, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
+      propertyPath: savedGameButtonPrefab
+      value: 
+      objectReference: {fileID: 6727305311937150097, guid: 73ebf839f71cb3e209f9603ffcdfc7df, type: 3}
     - target: {fileID: 6701333649857736982, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -723,7 +736,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7732128023517770883, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: -17
       objectReference: {fileID: 0}
     - target: {fileID: 7732128023517770883, guid: 7f465f6d553731248b506db6c1df1373, type: 3}
       propertyPath: m_AnchoredPosition.y

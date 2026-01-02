@@ -30,11 +30,7 @@ public class SceneTransition : MonoBehaviour
     [SerializeField] private float shakeDuration = 0.08f;
     [SerializeField] private AnimationCurve shakeDamping = AnimationCurve.EaseInOut(0, 1, 1, 0);
 
-    [Header("Steam FX")]
-    [SerializeField] private ParticleSystem steamBurstClose;
-    [SerializeField] private ParticleSystem steamBurstOpen;
-
-    private TransitionCanvas transitionCanvas;
+    private CanvasGroup canvasGroup;
     private Quaternion knobStartRotation;
 
     private Vector2 topClosedPosition;
@@ -54,11 +50,7 @@ public class SceneTransition : MonoBehaviour
 
         Instance = this;
 
-        transitionCanvas = GetComponentInParent<TransitionCanvas>();
         knobStartRotation = doorKnob.localRotation;
-
-        steamBurstClose.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-        steamBurstOpen.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
 
         float screenHeight = ((RectTransform)transform).rect.height;
 
@@ -70,7 +62,12 @@ public class SceneTransition : MonoBehaviour
 
         doorTop.anchoredPosition = topOpenPosition;
         doorBottom.anchoredPosition = bottomOpenPosition;
-        transitionCanvas.CanvasGroup.blocksRaycasts = false;
+    }
+
+    public void SetCanvasGroup(CanvasGroup cg)
+    {
+        canvasGroup = cg;
+        canvasGroup.blocksRaycasts = false;
     }
 
     private void OnEnable()
@@ -126,7 +123,7 @@ public class SceneTransition : MonoBehaviour
 
     private IEnumerator CloseDoors()
     {
-        transitionCanvas.CanvasGroup.blocksRaycasts = true;
+        canvasGroup.blocksRaycasts = true;
 
         float t = 0f;
         while (t < 1f)
@@ -149,15 +146,11 @@ public class SceneTransition : MonoBehaviour
             -knobRotation
         );
 
-        steamBurstClose.Play();
-
         yield return ShakeDoors();
     }
 
     private IEnumerator OpenDoors()
     {
-        steamBurstOpen.Play();
-
         float t = 0f;
         while (t < 1f)
         {
@@ -179,7 +172,7 @@ public class SceneTransition : MonoBehaviour
             0f
         );
 
-        transitionCanvas.CanvasGroup.blocksRaycasts = false;
+        canvasGroup.blocksRaycasts = false;
     }
 
     private IEnumerator SettleKnob(float fromAngle, float toAngle)

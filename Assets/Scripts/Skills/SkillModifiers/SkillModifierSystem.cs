@@ -1,16 +1,23 @@
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SkillModifierSystem : MonoBehaviour
 {
-    [SerializeField] private TMP_Text modifierPointsText;
     [SerializeField] private SkillModifierButton[] modifierButtons;
     [SerializeField] private ModifiersDatabase modifiersDatabase;
+    [SerializeField] private Image digitTens;
+    [SerializeField] private Image digitOnes;
+    [SerializeField] private FancyDigits digits;
+    [SerializeField] private float pulseScale = 1.15f;
+    [SerializeField] private float pulseDuration = 0.15f;
 
     private int maxModifierPoints;
     private int assignedModifierPoints = 0;
     private int availableModifierPoints;
+
+    private Coroutine pulseRoutine;
 
     public bool CanUseModifierPoint => availableModifierPoints > 0;
     public bool CanRefundModifierPoint => assignedModifierPoints > 0;
@@ -50,7 +57,7 @@ public class SkillModifierSystem : MonoBehaviour
             }
         }
 
-        UpdatePointsText();
+        UpdatePoints(withPulse: true);
     }
 
     private int GetMaxModifierPointsFromLevel(int factionLevel)
@@ -58,9 +65,50 @@ public class SkillModifierSystem : MonoBehaviour
         return Mathf.FloorToInt(factionLevel / 5);
     }
 
-    private void UpdatePointsText()
+    private void UpdatePoints(bool withPulse = false)
     {
-        modifierPointsText.text = $"Available skill modifier points:  {availableModifierPoints}";
+        SetDigitSprites(availableModifierPoints);
+        if (withPulse) PulseDigits();
+    }
+
+    private void PulseDigits()
+    {
+        if (pulseRoutine != null)
+            StopCoroutine(pulseRoutine);
+        pulseRoutine = StartCoroutine(PulseRoutine());
+    }
+
+    private IEnumerator PulseRoutine()
+    {
+        Vector3 baseScale = Vector3.one;
+        Vector3 pulse = Vector3.one * pulseScale;
+
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / pulseDuration;
+            digitOnes.transform.localScale = Vector3.Lerp(baseScale, pulse, t);
+            if (digitTens.gameObject.activeSelf)
+                digitTens.transform.localScale = Vector3.Lerp(baseScale, pulse, t);
+
+            yield return null;
+        }
+
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.unscaledDeltaTime / pulseDuration;
+            digitOnes.transform.localScale = Vector3.Lerp(pulse, baseScale, t);
+            if (digitTens.gameObject.activeSelf)
+                digitTens.transform.localScale = Vector3.Lerp(pulse, baseScale, t);
+
+            yield return null;
+        }
+
+        digitOnes.transform.localScale = baseScale;
+        digitTens.transform.localScale = baseScale;
+
+        pulseRoutine = null;
     }
 
     private void OnModifierButtonActivate(SkillModifiers modifier)
@@ -69,7 +117,7 @@ public class SkillModifierSystem : MonoBehaviour
         assignedModifierPoints++;
 
         SaveActivatedModifiers();
-        UpdatePointsText();
+        UpdatePoints();
     }
 
     private void OnModifierButtonDeactivate(SkillModifiers modifier)
@@ -78,7 +126,7 @@ public class SkillModifierSystem : MonoBehaviour
         assignedModifierPoints--;
 
         SaveActivatedModifiers();
-        UpdatePointsText();
+        UpdatePoints();
     }
 
     public void SaveActivatedModifiers()
@@ -100,5 +148,21 @@ public class SkillModifierSystem : MonoBehaviour
             modifierButton.OnActivate -= OnModifierButtonActivate;
             modifierButton.OnDeactivate -= OnModifierButtonDeactivate;
         }
+    }
+
+    private void SetDigitSprites(int number)
+    {
+        digits.GetDigits(
+            number,
+            out Sprite tens,
+            out Sprite ones
+        );
+
+        digitOnes.sprite = ones;
+        digitOnes.gameObject.SetActive(true);
+
+        if (tens != null)
+            digitTens.sprite = tens;
+        digitTens.gameObject.SetActive(tens != null);
     }
 }
