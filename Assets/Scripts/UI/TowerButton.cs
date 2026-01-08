@@ -1,29 +1,28 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(CanvasGroup), typeof(CursorPointer), typeof(ScaleOnHover))]
-public class TowerButton : MonoBehaviour, IPointerClickHandler
+[RequireComponent(typeof(Button), typeof(CanvasGroup), typeof(CursorPointer))]
+public class TowerButton : MonoBehaviour
 {
+    [SerializeField] private Button button;
     [SerializeField] private TowerPlacementSystem towerPlacementSystem;
     [SerializeField] private GameObject towerPrefab;
-    [SerializeField] private ScaleOnHover scaleOnHover;
     [SerializeField] private CursorPointer cursorPointer;
     [SerializeField] private int hotkeyIndex = -1;
 
     private CanvasGroup canvasGroup;
 
-    private bool isEnabled = false;
     private bool permanentlyDisabled = false;
-    public bool IsEnabled => isEnabled && !permanentlyDisabled;
+    public bool IsEnabled => button.interactable && !permanentlyDisabled;
 
     private void Awake()
     {
         canvasGroup = GetComponent<CanvasGroup>();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void HandleClick()
     {
-        if (!isEnabled || permanentlyDisabled) return;
+        if (!button.interactable || permanentlyDisabled) return;
         towerPlacementSystem.BeginPlacement(towerPrefab, hotkeyIndex);
     }
 
@@ -33,17 +32,13 @@ public class TowerButton : MonoBehaviour, IPointerClickHandler
         if (!enable && permanently)
             permanentlyDisabled = true;
 
-        isEnabled = enable;
+        button.interactable = enable;
         UpdateVisualState();
     }
 
     private void UpdateVisualState()
     {
-        bool active = isEnabled && !permanentlyDisabled;
-        canvasGroup.alpha = active ? 1f : 0.5f;
-        canvasGroup.interactable = active;
-        canvasGroup.blocksRaycasts = active;
-        scaleOnHover.enabled = active;
+        bool active = button.interactable && !permanentlyDisabled;
         cursorPointer.enabled = active;
     }
 }

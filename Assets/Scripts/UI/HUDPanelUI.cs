@@ -17,7 +17,6 @@ public enum FactionSpecificSkill
 public class HUDPanelUI : MonoBehaviour
 {
     [Header("Gears")]
-    [SerializeField] private Image gearsFill;
     [SerializeField] private TextMeshProUGUI gearsLabel;
     [SerializeField] private Image gearsPassiveFill;
 

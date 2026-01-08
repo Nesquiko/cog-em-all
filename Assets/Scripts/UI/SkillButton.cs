@@ -17,7 +17,7 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
     [SerializeField] private int hotkeyIndex = -1;
 
     [Header("Cooldown")]
-    [SerializeField] private Image[] cooldownImages;
+    [SerializeField] private Image cooldown;
     [SerializeField] private float pulseScale = 1.25f;
     [SerializeField] private float pulseSpeed = 5f;
 
@@ -52,8 +52,7 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
         InitializeUsages();
 
-        foreach (var img in cooldownImages)
-            img.fillAmount = 0f;
+        cooldown.fillAmount = 0f;
     }
 
     private void InitializeUsages()
@@ -161,19 +160,7 @@ public class SkillButton : MonoBehaviour, IPointerClickHandler
 
     public void UpdateCooldownVisual(float progress)
     {
-        int segmentCount = cooldownImages.Length;
-        float perSegment = 1f / segmentCount;
-        for (int i = 0; i < segmentCount; i++)
-        {
-            float fill = Mathf.Clamp01((progress - i * perSegment) / perSegment);
-            cooldownImages[i].fillAmount = Mathf.Clamp01(fill);
-        }
-
-        if (progress == 1)
-        {
-            for (int i = 0; i < cooldownImages.Count(); i++)
-                cooldownImages[i].fillAmount = 0f;
-        }
+        cooldown.fillAmount = progress >= 1 ? 0f : progress;
     }
 
     public void SetCoolingDown(bool cooling)
